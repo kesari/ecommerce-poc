@@ -10,8 +10,19 @@ spring:
     password: ${DB_PASSWORD:account_service}
   flyway:
     locations: classpath:db/migration
+  data:
+    redis:
+      host: ${VALKEY_HOST:localhost}
+      port: ${VALKEY_PORT:6379}
+
+auth:
+  jwt-secret: ${AUTH_JWT_SECRET:poc-dev-only-secret-key-change-me-0123456789abcdefghijklmnopqrstuv}
+  access-ttl: ${AUTH_ACCESS_TTL:15m}
+  refresh-ttl: ${AUTH_REFRESH_TTL:336h}
+  issuer: poc-account-service
 
 mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
