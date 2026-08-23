@@ -1,0 +1,32 @@
+server:
+  port: ${SERVER_PORT:8087}
+
+spring:
+  application:
+    name: shipment-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/shipment_service}
+    username: ${DB_USERNAME:shipment_service}
+    password: ${DB_PASSWORD:shipment_service}
+  flyway:
+    locations: classpath:db/migration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+  data:
+    redis:
+      host: ${VALKEY_HOST:localhost}
+      port: ${VALKEY_PORT:6379}
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
