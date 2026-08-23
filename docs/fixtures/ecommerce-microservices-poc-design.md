@@ -104,6 +104,12 @@ Services use stable Java 21 language features without enabling preview features:
 - MapStruct may generate repetitive structural mappings between boundary records.
 - Persistence rows, domain values, and transport contracts remain separate types even when their shapes are similar.
 
+### 4.9 Fail fast at synchronous boundaries
+
+Every synchronous service-to-service HTTP client uses an explicit connection timeout, response timeout, and circuit breaker. A circuit breaker is isolated per caller and downstream service so one unavailable dependency does not exhaust request threads or prevent calls to healthy dependencies.
+
+Circuit breakers protect synchronous HTTP calls only. Kafka consumers use bounded retries, retry topics, dead-letter topics, and idempotent handlers instead.
+
 ---
 
 ## 5. System Context
@@ -369,7 +375,7 @@ Example response:
 
 ```json
 {
-  "quoteId": "quo_01K3Q8Z2V7",
+  "quoteId": "9bfd9d49-67a7-41f4-9476-5c5131ea43b2",
   "expiresAt": "2026-08-23T12:10:00Z",
   "basketVersion": 7,
   "price": {
@@ -381,8 +387,8 @@ Example response:
     "currency": "INR"
   },
   "estimatedDelivery": {
-    "from": "2026-08-26",
-    "to": "2026-08-28"
+    "from": "2026-08-25",
+    "to": "2026-08-26"
   }
 }
 ```
@@ -438,7 +444,7 @@ GET    /api/v1/orders/{orderId}
 
 ```json
 {
-  "quoteId": "quo_01K3Q8Z2V7",
+  "quoteId": "9bfd9d49-67a7-41f4-9476-5c5131ea43b2",
   "payment": {
     "method": "CREDIT_CARD",
     "token": "tok_success"
@@ -452,12 +458,12 @@ The request must include an `Idempotency-Key` header. Reusing the key with the s
 
 ```http
 HTTP/1.1 202 Accepted
-Location: /api/v1/orders/ord_01K3Q91C5A
+Location: /api/v1/orders/a33f31d7-6d64-4476-a70f-9fca42a5308f
 ```
 
 ```json
 {
-  "orderId": "ord_01K3Q91C5A",
+  "orderId": "a33f31d7-6d64-4476-a70f-9fca42a5308f",
   "status": "PENDING"
 }
 ```
@@ -543,10 +549,15 @@ This is an exceptional compensation path:
 ```text
 PAYMENT_CHARGED
   -> INVENTORY_COMMIT_PENDING
+  -> INVENTORY_COMMIT_FAILED
   -> COMPENSATION_PENDING
   -> PAYMENT_REFUND_PENDING
   -> CANCELLED
 ```
+
+Inventory reports the domain failure through `inventory.commit-failed.v1`.
+Processing exceptions continue through retry topics and the DLQ rather than
+being misreported as a domain outcome.
 
 The Order service records every state transition so failures are explainable.
 
@@ -562,6 +573,7 @@ inventory.reserved.v1
 inventory.reservation-rejected.v1
 inventory.commit.requested.v1
 inventory.committed.v1
+inventory.commit-failed.v1
 inventory.release.requested.v1
 inventory.released.v1
 
@@ -590,19 +602,20 @@ Retry topics and dead-letter topics follow a consistent suffix convention:
 
 ```json
 {
-  "eventId": "evt_01K3Q96D4P",
+  "eventId": "d7b3a7d1-8c59-4bf3-95fb-312f94f54b10",
   "eventType": "inventory.reserved",
   "schemaVersion": 1,
   "occurredAt": "2026-08-23T12:02:31.442Z",
   "producer": "inventory-service",
-  "correlationId": "ord_01K3Q91C5A",
-  "causationId": "evt_01K3Q93H8M",
-  "partitionKey": "ord_01K3Q91C5A",
+  "correlationId": "a33f31d7-6d64-4476-a70f-9fca42a5308f",
+  "causationId": "4370e4eb-0f12-4939-b470-3aa8a67ee7aa",
+  "partitionKey": "a33f31d7-6d64-4476-a70f-9fca42a5308f",
   "payload": {}
 }
 ```
 
-All order-saga messages use `orderId` as the Kafka partition key, preserving order within an order's event stream.
+All order-saga identifiers use canonical UUID strings. Messages use `orderId`
+as the Kafka partition key, preserving order within an order's event stream.
 
 ### 11.3 Delivery guarantees
 
@@ -627,7 +640,7 @@ PostgreSQL remains the source of truth. The initial POC uses one Valkey instance
 | Catalog | Product details | `catalog:product:{productId}` | 10 minutes |
 | Catalog | Product list page | `catalog:list:{queryHash}` | 2 minutes |
 | Basket | Active basket snapshot | `basket:user:{userId}` | 20 minutes |
-| Shipment | Delivery estimate | `shipment:estimate:{addressHash}:{basketHash}` | 5 minutes |
+| Shipment | Delivery estimate | `shipment:estimate:{requestSha256}` | 5 minutes |
 | BFF | Anonymous catalog response | `bff:catalog:{queryHash}` | 1 minute |
 
 The default pattern is cache-aside:
@@ -800,7 +813,10 @@ Rules:
 - The BFF validates authentication and forwards trusted identity metadata.
 - Domain services still enforce resource ownership; they do not trust client-supplied user IDs.
 - Address access is scoped to the authenticated user.
-- Logs and events exclude passwords, tokens, raw card data, and other secrets.
+- Logs and events exclude passwords, real provider tokens, raw card data, and
+  other secrets. The three fixed mock payment selectors are non-secret POC test
+  controls and are redacted from logs even though the asynchronous charge
+  command carries one.
 - APIs validate request sizes and field formats.
 - Login and signup endpoints are rate-limited using temporary Valkey counters.
 
@@ -827,7 +843,7 @@ HTTP services use a consistent problem response based on RFC 9457 semantics:
   "status": 409,
   "code": "QUOTE_EXPIRED",
   "detail": "Create a new checkout quote before placing the order.",
-  "correlationId": "req_01K3QA2F9P"
+  "correlationId": "9160033c-5288-46d7-ab7a-ad231b69e17d"
 }
 ```
 
@@ -853,7 +869,50 @@ ORDER_NOT_FOUND
 
 ---
 
-## 17. Observability
+## 17. Synchronous HTTP Resilience
+
+Circuit breakers apply to all synchronous service boundaries:
+
+- BFF to Account, Catalog, Basket, and Order
+- Basket to Catalog
+- Order to Account, Basket, and Shipment
+
+Each caller maintains a separate Resilience4j circuit-breaker instance for each downstream service. Calls use explicit HTTP client timeouts in addition to the breaker; a circuit breaker does not cancel a slow request by itself.
+
+### 17.1 Default POC policy
+
+| Setting | Default |
+|---|---:|
+| Connection timeout | 500 ms |
+| Overall downstream call budget | 2 seconds, including any retry |
+| Sliding window | Last 20 calls, count based |
+| Minimum calls before evaluation | 10 |
+| Failure-rate threshold | 50% |
+| Slow-call threshold | 1.5 seconds |
+| Slow-call-rate threshold | 50% |
+| Open-state wait duration | 10 seconds |
+| Calls permitted in half-open state | 3 |
+
+Connection failures, timeouts, HTTP `5xx` responses, and HTTP `429` responses count as breaker failures. Expected domain and validation responses in the `4xx` range do not count as breaker failures.
+
+These values are POC defaults, not universal production values. They are configured externally per client and may be tuned from measured latency and failure data without recompiling a service.
+
+### 17.2 Retry and fallback rules
+
+- State-changing HTTP requests are not retried automatically. Their existing idempotency controls protect user-initiated retries.
+- Idempotent reads may make at most one retry with short jitter, and only for connection failures, timeouts, `429`, or `5xx` responses.
+- The retry is composed inside the circuit breaker so one logical downstream operation contributes one final breaker outcome; all attempts must remain within the overall call budget.
+- No fallback may fabricate authentication, basket, address, price, tax, delivery, or order data.
+- A valid Catalog value already present in the normal cache may still be served according to its existing cache policy. An open circuit does not extend its TTL.
+- Checkout-quote creation fails as a whole if Account, Basket, or Shipment is unavailable; partial quotes are prohibited.
+- When no valid fallback exists, the caller returns RFC 9457 problem details with HTTP `503`, code `DOWNSTREAM_SERVICE_UNAVAILABLE`, a correlation ID, and an optional `Retry-After` header.
+- Breaker state is local and temporary; PostgreSQL and Kafka remain authoritative for durable business state.
+
+Readiness indicates whether the application can accept work and must not flap merely because one downstream circuit is open. Breaker state is exposed through restricted health details, metrics, logs, and traces.
+
+---
+
+## 18. Observability
 
 Every HTTP request and Kafka message carries:
 
@@ -882,11 +941,14 @@ payments_total{result}
 order_saga_duration_seconds
 kafka_consumer_failures_total{service,topic}
 cache_requests_total{service,result}
+resilience4j_circuitbreaker_calls_seconds_count{name,kind}
+resilience4j_circuitbreaker_not_permitted_calls_total{name}
+resilience4j_circuitbreaker_state{name,state}
 ```
 
 ---
 
-## 18. Repository Structure
+## 19. Repository Structure
 
 Each application is an independent Git repository beneath the POC workspace:
 
@@ -914,7 +976,10 @@ service-name/
 ├── asyncapi/             # Only when the service produces or consumes Kafka
 ├── db/migration/
 ├── Dockerfile
-├── build.gradle.kts
+├── pom.xml
+├── mvnw
+├── mvnw.cmd
+├── .mvn/wrapper/
 └── README.md
 ```
 
@@ -936,15 +1001,16 @@ There is no shared database and no universal shared domain model. Producer-owned
 
 ---
 
-## 19. Technology Baseline
+## 20. Technology Baseline
 
 | Area | Choice |
 |---|---|
 | SPA | React and TypeScript |
 | Backend | Java 21 and Spring Boot 3.5.x |
 | Java language policy | Stable features only; preview disabled |
-| Build | Gradle Kotlin DSL |
+| Build | Maven Wrapper with Maven 3.9.x |
 | HTTP | Spring MVC and JSON |
+| Synchronous resilience | Resilience4j Spring Boot 3 starter, HTTP client timeouts, and Micrometer metrics |
 | Authentication | Spring Security and JWT |
 | Messaging | Apache Kafka in KRaft mode |
 | Database | PostgreSQL |
@@ -962,7 +1028,7 @@ Exact dependency versions are pinned when repositories are scaffolded. The initi
 
 ---
 
-## 20. Testing Strategy
+## 21. Testing Strategy
 
 ### Unit tests
 
@@ -983,6 +1049,8 @@ Exact dependency versions are pinned when repositories are scaffolded. The initi
 - Outbox publication and inbox deduplication
 - OpenAPI request and response validation
 - JSON schema validation for Kafka events
+- Circuit-breaker closed, open, and half-open transitions using deterministic failure injection
+- Confirmation that domain `4xx` responses do not open a circuit and dependency failures map to the stable `503` problem response
 
 ### Contract tests
 
@@ -1004,10 +1072,11 @@ Exact dependency versions are pinned when repositories are scaffolded. The initi
 10. Payment success followed by simulated inventory commit failure and refund
 11. Valkey outage with correct database fallback
 12. Consumer failure followed by retry and dead-letter handling
+13. Synchronous dependency outage opens its circuit, fails fast with `503`, and recovers through half-open to closed
 
 ---
 
-## 21. Cross-Repository Change-Impact Scenarios
+## 22. Cross-Repository Change-Impact Scenarios
 
 The POC should establish a known expected blast radius for each seeded change.
 
@@ -1028,7 +1097,7 @@ These scenarios distinguish local implementation changes from changes that cross
 
 ---
 
-## 22. Delivery Plan
+## 23. Delivery Plan
 
 ### Milestone 1: Platform and conventions
 
@@ -1036,6 +1105,7 @@ These scenarios distinguish local implementation changes from changes that cross
 - Run PostgreSQL, Kafka, and Valkey with Docker Compose.
 - Establish MyBatis mapper, row-record, repository-adapter, and transaction conventions.
 - Define correlation, errors, event envelope, outbox, and inbox conventions.
+- Establish shared circuit-breaker policy conventions without introducing a shared domain library.
 - Add baseline observability.
 
 ### Milestone 2: Identity and catalog
@@ -1072,7 +1142,7 @@ These scenarios distinguish local implementation changes from changes that cross
 
 ---
 
-## 23. Acceptance Criteria
+## 24. Acceptance Criteria
 
 The POC is complete when:
 
@@ -1088,6 +1158,9 @@ The POC is complete when:
 - The confirmed order creates a shipment and completes the basket.
 - Duplicate HTTP requests and Kafka events do not duplicate business operations.
 - PostgreSQL remains authoritative when Valkey is unavailable.
+- Every synchronous downstream HTTP call has an explicit timeout and isolated circuit breaker.
+- An unavailable synchronous dependency fails fast with the stable `DOWNSTREAM_SERVICE_UNAVAILABLE` response, and its circuit recovers through half-open state.
+- Domain `4xx` responses do not contribute to circuit-breaker failure rates.
 - Persistence uses tested MyBatis mappings into immutable records without JPA/Hibernate.
 - OpenAPI and AsyncAPI contracts describe every cross-repository interface.
 - Distributed traces connect the initial place-order request to saga events.
@@ -1095,7 +1168,7 @@ The POC is complete when:
 
 ---
 
-## 24. Key Decisions
+## 25. Key Decisions
 
 | Decision | Outcome |
 |---|---|
@@ -1105,6 +1178,7 @@ The POC is complete when:
 | Domain modeling | Records, sealed interfaces, and exhaustive pattern switches |
 | Shopping container terminology | Basket |
 | User-facing interaction style | Synchronous HTTP |
+| Synchronous failure isolation | Resilience4j circuit breaker per caller and downstream service, with explicit HTTP timeouts |
 | Order processing style | Kafka-based orchestrated saga |
 | Order submission response | `202 Accepted` with polling |
 | Payment methods | Credit card only, using mock tokens |

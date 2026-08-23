@@ -12,7 +12,7 @@ Read first:
 
 ## File ownership
 
-Everything under src/, pom.xml, application.yml of payment-service.
+Everything under src/, asyncapi/, pom.xml, application.yml of payment-service.
 No files outside this repo.
 
 ## Schema
@@ -34,8 +34,8 @@ No files outside this repo.
     inbox(event_id uuid PRIMARY KEY, processed_at timestamptz NOT NULL DEFAULT now())
     outbox(same shape as shared contracts doc)
 
-No card data is ever stored (fixture section 15); the token string is the
-only payment credential retained.
+No card data or real provider token is ever stored. The `token_used` value is
+one of the three non-secret POC scenario selectors from the shared contract.
 
 ## Behavior
 
@@ -47,8 +47,10 @@ only payment credential retained.
   duplicate orderId command -> return existing outcome without a second
   charge (provider idempotency reference = orderId + operation).
 - payment.refund.requested.v1 consumer:
-  valid CHARGED payment -> REFUND_PENDING then REFUNDED, refunds row,
-  payment.refunded outbox event. Unknown/duplicate -> idempotent skip.
+  a valid full-amount refund for a CHARGED payment -> REFUND_PENDING then
+  REFUNDED, refunds row, payment.refunded outbox event. Unknown payments and
+  duplicate refunds are idempotent no-ops. A paymentId/orderId mismatch or a
+  partial or excessive amount is an invalid message handled by retry/DLQ.
 - Outbox poller identical to shared contract conventions.
 
 ## Verification (definition of done)
@@ -64,3 +66,5 @@ PaymentIntegrationTest with Testcontainers PostgreSQL + Kafka:
    request is a no-op.
 5. tok_error message ends up on payment.charge.requested.v1.dlq after
    bounded retries, service stays healthy.
+6. AsyncAPI and JSON schemas cover every consumed and produced topic and pass
+   contract validation against the shared contract.
