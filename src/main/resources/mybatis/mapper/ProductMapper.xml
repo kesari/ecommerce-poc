@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poc.catalog.infrastructure.persistence.mapper.ProductMapper">
+
+    <sql id="columns">
+        id, name, description, image_url AS imageUrl, price_minor AS priceMinor,
+        currency, active, created_at AS createdAt, updated_at AS updatedAt
+    </sql>
+
+    <select id="findById" resultType="com.poc.catalog.infrastructure.persistence.row.ProductRow">
+        SELECT <include refid="columns"/>
+        FROM products
+        WHERE id = #{id}
+    </select>
+
+    <select id="findActivePage" resultType="com.poc.catalog.infrastructure.persistence.row.ProductRow">
+        SELECT <include refid="columns"/>
+        FROM products
+        WHERE active
+        ORDER BY name, id
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findAllByIds" resultType="com.poc.catalog.infrastructure.persistence.row.ProductRow">
+        SELECT <include refid="columns"/>
+        FROM products
+        WHERE id IN
+        <foreach item="id" collection="ids" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY name, id
+    </select>
+
+    <update id="updatePrice">
+        UPDATE products
+        SET price_minor = #{priceMinor},
+            updated_at = now()
+        WHERE id = #{id}
+    </update>
+</mapper>

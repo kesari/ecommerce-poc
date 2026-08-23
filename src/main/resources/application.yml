@@ -16,6 +16,8 @@ spring:
       port: ${VALKEY_PORT:6379}
 
 mybatis:
+  type-handlers-package: com.poc.catalog.infrastructure.persistence.typehandler
+  mapper-locations: classpath:mybatis/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
 
