@@ -12,10 +12,29 @@ spring:
     locations: classpath:db/migration
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    consumer:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    listener:
+      ack-mode: record
 
 mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-handlers-package: com.poc.payment.infrastructure.persistence.typehandler
   configuration:
     map-underscore-to-camel-case: true
+    auto-mapping-unknown-column-behavior: failing
+
+payment:
+  kafka:
+    enabled: ${PAYMENT_KAFKA_ENABLED:true}
+  outbox:
+    fixed-delay: ${PAYMENT_OUTBOX_DELAY:100ms}
 
 management:
   endpoints:

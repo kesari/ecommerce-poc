@@ -1,0 +1,86 @@
+asyncapi: 3.0.0
+info:
+  title: Payment Service Events
+  version: 1.0.0
+  description: Frozen Wave 1 payment command and result contracts.
+defaultContentType: application/json
+channels:
+  chargeRequested:
+    address: payment.charge.requested.v1
+    messages: { chargeRequested: { $ref: '#/components/messages/chargeRequested' } }
+  chargeRetryOne:
+    address: payment.charge.requested.v1.retry.1
+    messages: { chargeRequested: { $ref: '#/components/messages/chargeRequested' } }
+  chargeRetryTwo:
+    address: payment.charge.requested.v1.retry.2
+    messages: { chargeRequested: { $ref: '#/components/messages/chargeRequested' } }
+  chargeDlq:
+    address: payment.charge.requested.v1.dlq
+    messages: { chargeRequested: { $ref: '#/components/messages/chargeRequested' } }
+  refundRequested:
+    address: payment.refund.requested.v1
+    messages: { refundRequested: { $ref: '#/components/messages/refundRequested' } }
+  refundRetryOne:
+    address: payment.refund.requested.v1.retry.1
+    messages: { refundRequested: { $ref: '#/components/messages/refundRequested' } }
+  refundRetryTwo:
+    address: payment.refund.requested.v1.retry.2
+    messages: { refundRequested: { $ref: '#/components/messages/refundRequested' } }
+  refundDlq:
+    address: payment.refund.requested.v1.dlq
+    messages: { refundRequested: { $ref: '#/components/messages/refundRequested' } }
+  charged:
+    address: payment.charged.v1
+    messages: { charged: { $ref: '#/components/messages/charged' } }
+  declined:
+    address: payment.declined.v1
+    messages: { declined: { $ref: '#/components/messages/declined' } }
+  refunded:
+    address: payment.refunded.v1
+    messages: { refunded: { $ref: '#/components/messages/refunded' } }
+operations:
+  consumeCharge:
+    action: receive
+    channel: { $ref: '#/channels/chargeRequested' }
+  consumeChargeRetryOne:
+    action: receive
+    channel: { $ref: '#/channels/chargeRetryOne' }
+  consumeChargeRetryTwo:
+    action: receive
+    channel: { $ref: '#/channels/chargeRetryTwo' }
+  consumeRefund:
+    action: receive
+    channel: { $ref: '#/channels/refundRequested' }
+  consumeRefundRetryOne:
+    action: receive
+    channel: { $ref: '#/channels/refundRetryOne' }
+  consumeRefundRetryTwo:
+    action: receive
+    channel: { $ref: '#/channels/refundRetryTwo' }
+  publishChargeDlq:
+    action: send
+    channel: { $ref: '#/channels/chargeDlq' }
+  publishRefundDlq:
+    action: send
+    channel: { $ref: '#/channels/refundDlq' }
+  publishCharged:
+    action: send
+    channel: { $ref: '#/channels/charged' }
+  publishDeclined:
+    action: send
+    channel: { $ref: '#/channels/declined' }
+  publishRefunded:
+    action: send
+    channel: { $ref: '#/channels/refunded' }
+components:
+  messages:
+    chargeRequested:
+      payload: { $ref: './schemas/payment-charge-requested.schema.json' }
+    refundRequested:
+      payload: { $ref: './schemas/payment-refund-requested.schema.json' }
+    charged:
+      payload: { $ref: './schemas/payment-charged.schema.json' }
+    declined:
+      payload: { $ref: './schemas/payment-declined.schema.json' }
+    refunded:
+      payload: { $ref: './schemas/payment-refunded.schema.json' }

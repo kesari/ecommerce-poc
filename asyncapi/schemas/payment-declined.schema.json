@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    { "$ref": "event-envelope.schema.json" },
+    {
+      "properties": {
+        "eventType": { "const": "payment.declined" },
+        "producer": { "const": "payment-service" },
+        "payload": {
+          "type": "object",
+          "required": ["orderId", "paymentId", "reason"],
+          "properties": {
+            "orderId": { "type": "string", "format": "uuid" },
+            "paymentId": { "type": "string", "format": "uuid" },
+            "reason": { "const": "PAYMENT_DECLINED" }
+          },
+          "additionalProperties": true
+        }
+      }
+    }
+  ]
+}
