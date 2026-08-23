@@ -4,13 +4,15 @@ import com.poc.shipment.domain.model.DeliveryEstimate;
 
 import java.time.LocalDate;
 
-public record DeliveryEstimateResponse(long shippingMinor, String currency,
-                                       EstimatedDelivery estimatedDelivery) {
-
-    public record EstimatedDelivery(LocalDate from, LocalDate to) {}
+public record DeliveryEstimateResponse(
+        LocalDate fromDate,
+        LocalDate toDate,
+        long shippingChargeMinor,
+        String currency
+) {
 
     public static DeliveryEstimateResponse from(DeliveryEstimate estimate) {
-        return new DeliveryEstimateResponse(estimate.shippingMinor(), estimate.currency(),
-                new EstimatedDelivery(estimate.window().from(), estimate.window().to()));
+        return new DeliveryEstimateResponse(estimate.window().from(), estimate.window().to(),
+                estimate.shippingMinor(), estimate.currency());
     }
 }

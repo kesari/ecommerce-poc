@@ -1,13 +1,12 @@
 package com.poc.shipment.application;
 
-import com.poc.shipment.domain.model.DeliveryAddress;
 import com.poc.shipment.domain.model.DeliveryEstimate;
 
 import java.util.Optional;
 
 public interface EstimateCache {
 
-    Optional<DeliveryEstimate> get(DeliveryAddress address, long subtotalMinor);
+    Optional<DeliveryEstimate> get(String postalCode, int itemCount, long subtotalMinor);
 
-    void put(DeliveryAddress address, long subtotalMinor, DeliveryEstimate estimate);
+    void put(String postalCode, int itemCount, long subtotalMinor, DeliveryEstimate estimate);
 }

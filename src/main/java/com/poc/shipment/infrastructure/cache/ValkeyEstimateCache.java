@@ -3,7 +3,6 @@ package com.poc.shipment.infrastructure.cache;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poc.shipment.application.EstimateCache;
-import com.poc.shipment.domain.model.DeliveryAddress;
 import com.poc.shipment.domain.model.DeliveryEstimate;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
@@ -36,9 +35,9 @@ public class ValkeyEstimateCache implements EstimateCache {
     }
 
     @Override
-    public Optional<DeliveryEstimate> get(DeliveryAddress address, long subtotalMinor) {
+    public Optional<DeliveryEstimate> get(String postalCode, int itemCount, long subtotalMinor) {
         try {
-            String raw = valkey.opsForValue().get(key(address, subtotalMinor));
+            String raw = valkey.opsForValue().get(key(postalCode, itemCount, subtotalMinor));
             if (raw == null) {
                 record("miss");
                 return Optional.empty();
@@ -55,9 +54,9 @@ public class ValkeyEstimateCache implements EstimateCache {
     }
 
     @Override
-    public void put(DeliveryAddress address, long subtotalMinor, DeliveryEstimate estimate) {
+    public void put(String postalCode, int itemCount, long subtotalMinor, DeliveryEstimate estimate) {
         try {
-            valkey.opsForValue().set(key(address, subtotalMinor),
+            valkey.opsForValue().set(key(postalCode, itemCount, subtotalMinor),
                     objectMapper.writeValueAsString(estimate), TTL);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("failed to serialize estimate cache entry", e);
@@ -66,9 +65,8 @@ public class ValkeyEstimateCache implements EstimateCache {
         }
     }
 
-    static String key(DeliveryAddress address, long subtotalMinor) {
-        return "shipment:estimate:" + hash(address.postalCode() + "|" + address.country())
-                + ":" + hash(String.valueOf(subtotalMinor));
+    static String key(String postalCode, int itemCount, long subtotalMinor) {
+        return "shipment:estimate:" + hash(postalCode + "|" + itemCount + "|" + subtotalMinor);
     }
 
     private static String hash(String value) {

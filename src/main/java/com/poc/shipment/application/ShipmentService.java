@@ -37,20 +37,20 @@ public class ShipmentService {
         this.clock = clock;
     }
 
-    public DeliveryEstimate estimate(DeliveryAddress address, long subtotalMinor) {
-        Optional<DeliveryEstimate> cached = cache.get(address, subtotalMinor);
+    public DeliveryEstimate estimate(String postalCode, int itemCount, long subtotalMinor) {
+        Optional<DeliveryEstimate> cached = cache.get(postalCode, itemCount, subtotalMinor);
         if (cached.isPresent()) {
             return cached.get();
         }
-        DeliveryEstimate estimate = DeliveryEstimator.estimate(address, subtotalMinor,
+        DeliveryEstimate estimate = DeliveryEstimator.estimate(postalCode,
                 LocalDate.now(clock));
-        cache.put(address, subtotalMinor, estimate);
+        cache.put(postalCode, itemCount, subtotalMinor, estimate);
         return estimate;
     }
 
     @Transactional
-    public void createFromConfirmedOrder(String eventId, UUID orderId, UUID userId,
-                                         DeliveryAddress address, long subtotalMinor,
+    public void createFromConfirmedOrder(String eventId, UUID orderId,
+                                         DeliveryAddress address,
                                          String correlationId) {
         if (inbox.alreadyProcessed(eventId)) {
             return;
@@ -59,10 +59,10 @@ public class ShipmentService {
         if (shipments.findByOrderId(orderId).isPresent()) {
             return;
         }
-        DeliveryEstimate estimate = DeliveryEstimator.estimate(address, subtotalMinor,
+        DeliveryEstimate estimate = DeliveryEstimator.estimate(address.postalCode(),
                 LocalDate.now(clock));
         Instant now = clock.instant();
-        Shipment shipment = new Shipment(UUID.randomUUID(), orderId, userId, ShipmentStatus.CREATED,
+        Shipment shipment = new Shipment(UUID.randomUUID(), orderId, null, ShipmentStatus.CREATED,
                 address, estimate.shippingMinor(), estimate.currency(), estimate.window(), now, now);
         shipments.save(shipment);
         outbox.append(shipment.id(), envelope("shipment.created", shipment, correlationId, eventId));
@@ -89,7 +89,6 @@ public class ShipmentService {
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("shipmentId", shipment.id().toString());
         payload.put("orderId", shipment.orderId().toString());
-        payload.put("userId", shipment.userId().toString());
         payload.put("status", shipment.status().name());
         payload.put("shippingMinor", shipment.shippingMinor());
         payload.put("currency", shipment.currency());

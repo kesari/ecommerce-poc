@@ -1,7 +1,7 @@
 CREATE TABLE shipments (
     id             uuid PRIMARY KEY,
     order_id       uuid        NOT NULL UNIQUE,
-    user_id        uuid        NOT NULL,
+    user_id        uuid,
     status         text        NOT NULL,
     postal_code    text        NOT NULL,
     city           text        NOT NULL,

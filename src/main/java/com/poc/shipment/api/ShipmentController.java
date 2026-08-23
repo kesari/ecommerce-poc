@@ -27,11 +27,8 @@ public class ShipmentController {
 
     @PostMapping("/delivery-estimates")
     DeliveryEstimateResponse estimate(@Valid @RequestBody DeliveryEstimateRequest request) {
-        DeliveryEstimateRequest.AddressPayload address = request.address();
         return DeliveryEstimateResponse.from(shipments.estimate(
-                new DeliveryAddress(address.postalCode(), address.city(),
-                        address.state(), address.country()),
-                request.subtotalMinor()));
+                request.postalCode(), request.itemCount(), request.subtotalMinor()));
     }
 
     @GetMapping("/shipments/by-order/{orderId}")

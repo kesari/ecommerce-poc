@@ -29,17 +29,15 @@ public class OrderConfirmedListener {
         try {
             JsonNode envelope = objectMapper.readTree(message);
             JsonNode payload = envelope.path("payload");
-            JsonNode address = payload.path("deliveryAddress");
+            JsonNode address = payload.path("address");
             shipments.createFromConfirmedOrder(
                     envelope.path("eventId").asText(),
                     UUID.fromString(payload.path("orderId").asText()),
-                    UUID.fromString(payload.path("userId").asText()),
                     new DeliveryAddress(
-                            address.path("postalCode").asText(),
-                            address.path("city").asText(),
-                            address.path("state").asText(),
-                            address.path("country").asText()),
-                    payload.path("subtotalMinor").asLong(),
+                            address.path("postalCode").asText(null),
+                            address.path("city").asText(null),
+                            address.path("state").asText(null),
+                            address.path("country").asText(null)),
                     envelope.path("correlationId").asText(null));
         } catch (Exception e) {
             log.error("failed to process order.confirmed.v1", e);
