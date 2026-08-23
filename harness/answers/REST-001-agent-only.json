@@ -1,26 +1,25 @@
 {
   "change_id": "REST-001",
   "contestant": "agent-only",
-  "elapsed_seconds": 240,
-  "tokens_consumed": 41200,
+  "elapsed_seconds": 260,
+  "tokens_consumed": 38700,
   "freshness_score": null,
   "operational_cost_score": null,
   "findings": {
     "repositories": [
-      { "name": "payment-service", "evidence_tier": "compiler", "evidence": "owns PaymentRequest and endpoint" },
-      { "name": "checkout-service", "evidence_tier": "compiler", "evidence": "PaymentClient.java references PaymentRequest" },
-      { "name": "refund-service", "evidence_tier": "extracted", "evidence": "PaymentClient copy calls POST /payments/authorisations" },
-      { "name": "integration-test-suite", "evidence_tier": "inferred", "evidence": "AuthorisationFlowIT exercises the endpoint" }
+      { "name": "account-service", "evidence_tier": "compiler", "evidence": "owns AddressRequest/AddressResponse records" },
+      { "name": "commerce-bff", "evidence_tier": "extracted", "evidence": "BFF address controller forwards the JSON body unchanged" },
+      { "name": "order-service", "evidence_tier": "compiler", "evidence": "AddressSnapshot record maps address fields from Account response" }
     ],
     "symbols": [
-      { "fqn": "com.acme.payment.api.PaymentRequest", "repo": "payment-service", "evidence_tier": "compiler", "evidence": "record definition changed" }
+      { "fqn": "com.poc.account.api.AddressResponse", "repo": "account-service", "evidence_tier": "compiler", "evidence": "record component renamed" },
+      { "fqn": "com.poc.order.domain.AddressSnapshot", "repo": "order-service", "evidence_tier": "compiler", "evidence": "constructor mapping references postalCode" }
     ],
     "contracts": [
-      { "type": "rest", "identifier": "POST /payments/authorisations", "consumer_repos": ["checkout-service", "refund-service"], "evidence_tier": "contract_matched", "evidence": "@PostMapping in provider, client call sites" }
+      { "type": "rest", "identifier": "POST /api/v1/addresses", "consumer_repos": ["commerce-bff"], "evidence_tier": "contract_matched", "evidence": "OpenAPI path matches BFF client call" }
     ],
     "tests": [
-      { "repo": "payment-service", "suite": "PaymentRequestTest", "evidence_tier": "compiler", "evidence": "direct unit test of record" },
-      { "repo": "integration-test-suite", "suite": "AuthorisationFlowIT", "evidence_tier": "extracted", "evidence": "flow test hits endpoint" }
+      { "repo": "account-service", "suite": "AddressApiContractTest", "evidence_tier": "extracted", "evidence": "asserts on postalCode in response JSON" }
     ]
   }
 }

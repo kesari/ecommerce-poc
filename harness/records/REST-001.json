@@ -1,54 +1,47 @@
 {
   "change_id": "REST-001",
   "category": "rest_contract",
-  "title": "PaymentRequest.amount type change on payment authorisation endpoint",
-  "query": "What breaks across repositories if PaymentRequest.amount changes from BigDecimal to Money on POST /payments/authorisations?",
+  "title": "Address postalCode field renamed to postcode",
+  "query": "What breaks across repositories if the address JSON field postalCode is renamed to postcode in Account's address API?",
   "proposed_change": {
-    "repo": "payment-service",
-    "diff": "-   BigDecimal amount,\n+   Money amount,"
+    "repo": "account-service",
+    "diff": "-    String postalCode,\n+    String postcode,"
   },
   "ground_truth": {
     "affected_repositories": [
-      { "name": "payment-service", "criticality": "critical", "evidence_note": "owns endpoint" },
-      { "name": "checkout-service", "criticality": "critical", "evidence_note": "PaymentClient calls POST /payments/authorisations" },
-      { "name": "refund-service", "criticality": "contract_consumer", "evidence_note": "shares PaymentClient contract" },
-      { "name": "partner-api", "criticality": "contract_consumer", "evidence_note": "consumes OpenAPI /payments spec via partner-payment-sdk" },
-      { "name": "reconciliation-service", "criticality": "informational", "evidence_note": "reads payment.authorised events downstream, amount semantics affected" },
-      { "name": "integration-test-suite", "criticality": "test_only", "evidence_note": "end-to-end payment flows" }
+      { "name": "account-service", "criticality": "critical", "evidence_note": "owns Address records and address OpenAPI" },
+      { "name": "commerce-bff", "criticality": "contract_consumer", "evidence_note": "forwards address request/response JSON between SPA and Account" },
+      { "name": "order-service", "criticality": "critical", "evidence_note": "deserializes Address into immutable quote/order snapshot" },
+      { "name": "shipment-service", "criticality": "contract_consumer", "evidence_note": "delivery-estimate rules read postalCode" },
+      { "name": "commerce-web", "criticality": "contract_consumer", "evidence_note": "address form renders and submits postalCode" }
     ],
     "affected_symbols": [
-      { "fqn": "com.acme.payment.api.PaymentRequest", "repo": "payment-service", "kind": "record", "severity": "contract_consumer" },
-      { "fqn": "com.acme.checkout.client.PaymentClient", "repo": "checkout-service", "kind": "class", "severity": "contract_consumer" }
+      { "fqn": "com.poc.account.api.AddressResponse", "repo": "account-service", "kind": "record", "severity": "contract_consumer" },
+      { "fqn": "com.poc.account.api.AddressRequest", "repo": "account-service", "kind": "record", "severity": "contract_consumer" },
+      { "fqn": "com.poc.order.domain.AddressSnapshot", "repo": "order-service", "kind": "record", "severity": "contract_consumer" }
     ],
     "affected_contracts": [
       {
         "type": "rest",
-        "identifier": "POST /payments/authorisations",
-        "provider_repo": "payment-service",
-        "consumer_repos": ["checkout-service", "refund-service"],
+        "identifier": "POST /api/v1/addresses",
+        "provider_repo": "account-service",
+        "consumer_repos": ["commerce-bff"],
         "severity": "contract_consumer"
       },
       {
         "type": "openapi",
-        "identifier": "openapi:payments.yaml#/components/schemas/PaymentRequest",
-        "provider_repo": "payment-service",
-        "consumer_repos": ["partner-api"],
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "provider_repo": "account-service",
+        "consumer_repos": ["order-service", "shipment-service"],
         "severity": "contract_consumer"
-      },
-      {
-        "type": "kafka",
-        "identifier": "payment.authorised",
-        "provider_repo": "payment-service",
-        "consumer_repos": ["reconciliation-service"],
-        "severity": "informational"
       }
     ],
     "required_tests": [
-      { "repo": "payment-service", "suite": "PaymentRequestTest", "level": "unit" },
-      { "repo": "checkout-service", "suite": "PaymentClientContractTest", "level": "contract" },
-      { "repo": "integration-test-suite", "suite": "AuthorisationFlowIT", "level": "integration" }
+      { "repo": "account-service", "suite": "AddressApiContractTest", "level": "contract" },
+      { "repo": "order-service", "suite": "QuoteAddressSnapshotTest", "level": "unit" },
+      { "repo": "commerce-platform", "suite": "SignupToConfirmedOrderIT", "level": "integration" }
     ],
     "known_incidents": []
   },
-  "notes": "Derived from the canonical example in docs/architecture/cross-repo-change-impact-architectural-poc-proposal.md section 7.2."
+  "notes": "Fixture scenario row 1 of ecommerce-microservices-poc-design.md section 21. Order stores an immutable address snapshot at quote time, so Order breaks on deserialization even though it never mutates addresses."
 }

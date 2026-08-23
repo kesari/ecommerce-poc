@@ -1,33 +1,32 @@
 {
   "change_id": "REST-001",
   "contestant": "gortex",
-  "elapsed_seconds": 95,
-  "tokens_consumed": 9800,
+  "elapsed_seconds": 110,
+  "tokens_consumed": 9100,
   "freshness_score": null,
   "operational_cost_score": null,
   "findings": {
     "repositories": [
-      { "name": "payment-service", "evidence_tier": "compiler", "evidence": "owns PaymentRequest and endpoint" },
-      { "name": "checkout-service", "evidence_tier": "contract_matched", "evidence": "http::POST::/v1/payments/authorisations consumer edge" },
-      { "name": "refund-service", "evidence_tier": "contract_matched", "evidence": "http::POST::/v1/payments/authorisations consumer edge" },
-      { "name": "partner-api", "evidence_tier": "contract_matched", "evidence": "OpenAPI /payments spec consumed by partner-payment-sdk" },
-      { "name": "reconciliation-service", "evidence_tier": "contract_matched", "evidence": "consumes payment.authorised published by payment-service" },
-      { "name": "integration-test-suite", "evidence_tier": "extracted", "evidence": "AuthorisationFlowIT exercises the endpoint" },
-      { "name": "fraud-orchestrator", "evidence_tier": "inferred", "evidence": "subscribes to authorisation webhooks, possibly affected" }
+      { "name": "account-service", "evidence_tier": "compiler", "evidence": "owns AddressRequest/AddressResponse records" },
+      { "name": "commerce-bff", "evidence_tier": "contract_matched", "evidence": "http::POST::/api/v1/addresses consumer edge" },
+      { "name": "order-service", "evidence_tier": "contract_matched", "evidence": "consumes openapi:account.yaml AddressResponse for quote snapshot" },
+      { "name": "shipment-service", "evidence_tier": "contract_matched", "evidence": "delivery-estimate input schema references AddressResponse" },
+      { "name": "commerce-web", "evidence_tier": "extracted", "evidence": "AddressForm.tsx submits postalCode field" },
+      { "name": "commerce-platform", "evidence_tier": "inferred", "evidence": "platform owns compose config; possibly affected by env var naming" }
     ],
     "symbols": [
-      { "fqn": "com.acme.payment.api.PaymentRequest", "repo": "payment-service", "evidence_tier": "compiler", "evidence": "record definition changed" },
-      { "fqn": "com.acme.checkout.client.PaymentClient", "repo": "checkout-service", "evidence_tier": "compiler", "evidence": "method signature uses PaymentRequest" }
+      { "fqn": "com.poc.account.api.AddressResponse", "repo": "account-service", "evidence_tier": "compiler", "evidence": "record component renamed" },
+      { "fqn": "com.poc.account.api.AddressRequest", "repo": "account-service", "evidence_tier": "compiler", "evidence": "record component renamed" },
+      { "fqn": "com.poc.order.domain.AddressSnapshot", "repo": "order-service", "evidence_tier": "compiler", "evidence": "constructor mapping references postalCode" }
     ],
     "contracts": [
-      { "type": "rest", "identifier": "POST /payments/authorisations", "consumer_repos": ["checkout-service", "refund-service"], "evidence_tier": "contract_matched", "evidence": "provider/consumer contract match" },
-      { "type": "openapi", "identifier": "openapi:payments.yaml#/components/schemas/PaymentRequest", "consumer_repos": ["partner-api"], "evidence_tier": "contract_matched", "evidence": "spec diff detected" },
-      { "type": "kafka", "identifier": "payment.authorised", "consumer_repos": ["reconciliation-service"], "evidence_tier": "contract_matched", "evidence": "topic publisher/consumer edge" }
+      { "type": "rest", "identifier": "POST /api/v1/addresses", "consumer_repos": ["commerce-bff"], "evidence_tier": "contract_matched", "evidence": "provider/consumer path match" },
+      { "type": "openapi", "identifier": "openapi:account.yaml#/components/schemas/AddressResponse", "consumer_repos": ["order-service", "shipment-service"], "evidence_tier": "contract_matched", "evidence": "schema reference graph" }
     ],
     "tests": [
-      { "repo": "payment-service", "suite": "PaymentRequestTest", "evidence_tier": "compiler", "evidence": "direct unit test of record" },
-      { "repo": "checkout-service", "suite": "PaymentClientContractTest", "evidence_tier": "extracted", "evidence": "contract test bound to endpoint" },
-      { "repo": "integration-test-suite", "suite": "AuthorisationFlowIT", "evidence_tier": "extracted", "evidence": "flow test hits endpoint" }
+      { "repo": "account-service", "suite": "AddressApiContractTest", "evidence_tier": "extracted", "evidence": "asserts on postalCode in response JSON" },
+      { "repo": "order-service", "suite": "QuoteAddressSnapshotTest", "evidence_tier": "compiler", "evidence": "constructs AddressSnapshot from Account response" },
+      { "repo": "commerce-platform", "suite": "SignupToConfirmedOrderIT", "evidence_tier": "inferred", "evidence": "journey covers address entry and delivery estimate" }
     ]
   }
 }
