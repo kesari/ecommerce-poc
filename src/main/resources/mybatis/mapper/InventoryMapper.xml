@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poc.inventory.infrastructure.persistence.mapper.InventoryMapper">
+
+    <select id="lockForUpdate" resultType="com.poc.inventory.infrastructure.persistence.row.StockRow">
+        SELECT product_id, available FROM stock
+        WHERE product_id IN
+        <foreach item="id" collection="productIds" open="(" separator="," close=")">#{id}</foreach>
+        ORDER BY product_id
+        FOR UPDATE
+    </select>
+
+    <select id="findAllStock" resultType="com.poc.inventory.infrastructure.persistence.row.StockRow">
+        SELECT product_id, available FROM stock ORDER BY product_id
+    </select>
+
+    <update id="decrementStock">
+        UPDATE stock SET available = available - #{quantity}
+        WHERE product_id = #{productId} AND available >= #{quantity}
+    </update>
+
+    <update id="incrementStock">
+        UPDATE stock SET available = available + #{quantity} WHERE product_id = #{productId}
+    </update>
+
+    <insert id="insertReservation">
+        INSERT INTO reservations (reservation_id, order_id, status, expires_at)
+        VALUES (#{reservationId}, #{orderId}, #{status}, #{expiresAt})
+    </insert>
+
+    <insert id="insertReservationItems">
+        INSERT INTO reservation_items (reservation_id, product_id, quantity) VALUES
+        <foreach item="item" collection="items" separator=",">
+            (#{item.reservationId}, #{item.productId}, #{item.quantity})
+        </foreach>
+    </insert>
+
+    <select id="findReservationByOrderId"
+            resultType="com.poc.inventory.infrastructure.persistence.row.ReservationRow">
+        SELECT reservation_id, order_id, status, expires_at
+        FROM reservations WHERE order_id = #{orderId}
+    </select>
+
+    <select id="findReservationItems"
+            resultType="com.poc.inventory.infrastructure.persistence.row.ReservationItemRow">
+        SELECT reservation_id, product_id, quantity
+        FROM reservation_items WHERE reservation_id = #{reservationId} ORDER BY product_id
+    </select>
+
+    <update id="updateReservationStatus">
+        UPDATE reservations SET status = #{status} WHERE reservation_id = #{reservationId}
+    </update>
+
+    <insert id="claimInbox">
+        INSERT INTO inbox (event_id) VALUES (#{eventId}) ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
+    <insert id="insertOutbox">
+        INSERT INTO outbox (event_id, aggregate_id, topic, payload, published, created_at)
+        VALUES (#{eventId}, #{aggregateId}, #{topic}, #{payload}::jsonb, #{published}, #{createdAt})
+    </insert>
+
+    <select id="findUnpublished" resultType="com.poc.inventory.infrastructure.persistence.row.OutboxRow">
+        SELECT event_id, aggregate_id, topic, payload::text AS payload, published, created_at
+        FROM outbox WHERE published = false ORDER BY created_at LIMIT #{limit}
+    </select>
+
+    <update id="markPublished">
+        UPDATE outbox SET published = true WHERE event_id = #{eventId} AND published = false
+    </update>
+
+</mapper>

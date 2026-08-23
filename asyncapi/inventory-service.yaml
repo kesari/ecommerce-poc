@@ -1,0 +1,85 @@
+asyncapi: 2.6.0
+info:
+  title: Inventory Service
+  version: 1.0.0
+  description: >
+    Reserves, commits, and releases stock for the order saga. Payload shapes are
+    frozen in cross-repo-impact-study/docs/tasks/wave1-shared-contracts.md.
+defaultContentType: application/json
+
+channels:
+  inventory.reserve.requested.v1:
+    subscribe:
+      operationId: onReserveRequested
+      message:
+        $ref: '#/components/messages/ReserveRequested'
+  inventory.commit.requested.v1:
+    subscribe:
+      operationId: onCommitRequested
+      message:
+        $ref: '#/components/messages/CommitRequested'
+  inventory.release.requested.v1:
+    subscribe:
+      operationId: onReleaseRequested
+      message:
+        $ref: '#/components/messages/ReleaseRequested'
+  inventory.reserved.v1:
+    publish:
+      operationId: emitReserved
+      message:
+        $ref: '#/components/messages/Reserved'
+  inventory.reservation-rejected.v1:
+    publish:
+      operationId: emitReservationRejected
+      message:
+        $ref: '#/components/messages/ReservationRejected'
+  inventory.committed.v1:
+    publish:
+      operationId: emitCommitted
+      message:
+        $ref: '#/components/messages/Committed'
+  inventory.commit-failed.v1:
+    publish:
+      operationId: emitCommitFailed
+      message:
+        $ref: '#/components/messages/CommitFailed'
+  inventory.released.v1:
+    publish:
+      operationId: emitReleased
+      message:
+        $ref: '#/components/messages/Released'
+
+components:
+  messages:
+    ReserveRequested:
+      name: inventory.reserve.requested
+      payload:
+        $ref: './schemas/inventory.reserve.requested.v1.json'
+    CommitRequested:
+      name: inventory.commit.requested
+      payload:
+        $ref: './schemas/inventory.commit.requested.v1.json'
+    ReleaseRequested:
+      name: inventory.release.requested
+      payload:
+        $ref: './schemas/inventory.release.requested.v1.json'
+    Reserved:
+      name: inventory.reserved
+      payload:
+        $ref: './schemas/inventory.reserved.v1.json'
+    ReservationRejected:
+      name: inventory.reservation-rejected
+      payload:
+        $ref: './schemas/inventory.reservation-rejected.v1.json'
+    Committed:
+      name: inventory.committed
+      payload:
+        $ref: './schemas/inventory.committed.v1.json'
+    CommitFailed:
+      name: inventory.commit-failed
+      payload:
+        $ref: './schemas/inventory.commit-failed.v1.json'
+    Released:
+      name: inventory.released
+      payload:
+        $ref: './schemas/inventory.released.v1.json'
