@@ -57,9 +57,9 @@ class BasketApiMockedTest {
     void setUp() {
         repository = new FakeBasketRepository(USER_ID);
         catalog = new FakeCatalogPort();
-        catalog.seed(new CatalogPort.ProductInfo(KEYBOARD, "Keyboard", 1299, "GBP", true));
-        catalog.seed(new CatalogPort.ProductInfo(MOUSE, "Mouse", 500, "GBP", true));
-        catalog.seed(new CatalogPort.ProductInfo(RETIRED, "Retired", 900, "GBP", false));
+        catalog.seed(new CatalogPort.ProductInfo(KEYBOARD, "Keyboard", 1299, "INR", true));
+        catalog.seed(new CatalogPort.ProductInfo(MOUSE, "Mouse", 500, "INR", true));
+        catalog.seed(new CatalogPort.ProductInfo(RETIRED, "Retired", 900, "INR", false));
         mockMvc = MockMvcBuilders
                 .standaloneSetup(new BasketController(new BasketService(repository, catalog)))
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -78,7 +78,7 @@ class BasketApiMockedTest {
                 .andExpect(jsonPath("$.items[0].lineTotalMinor").value(2598))
                 .andExpect(jsonPath("$.subtotalMinor").value(2598))
                 .andExpect(jsonPath("$.totalMinor").value(2598))
-                .andExpect(jsonPath("$.currency").value("GBP"))
+                .andExpect(jsonPath("$.currency").value("INR"))
                 .andExpect(jsonPath("$.basketVersion").value(1));
     }
 

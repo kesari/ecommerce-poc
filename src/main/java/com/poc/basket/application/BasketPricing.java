@@ -7,7 +7,7 @@ import java.util.List;
 
 public final class BasketPricing {
 
-    public static final String DEFAULT_CURRENCY = "GBP";
+    public static final String DEFAULT_CURRENCY = "INR";
 
     private BasketPricing() {
     }
