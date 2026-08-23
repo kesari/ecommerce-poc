@@ -1,0 +1,33 @@
+topics:
+  - name: inventory.reserve.requested.v1
+    partitions: 3
+  - name: inventory.reserved.v1
+    partitions: 3
+  - name: inventory.reservation-rejected.v1
+    partitions: 3
+  - name: inventory.commit.requested.v1
+    partitions: 3
+  - name: inventory.committed.v1
+    partitions: 3
+  - name: inventory.release.requested.v1
+    partitions: 3
+  - name: inventory.released.v1
+    partitions: 3
+  - name: payment.charge.requested.v1
+    partitions: 3
+  - name: payment.charged.v1
+    partitions: 3
+  - name: payment.declined.v1
+    partitions: 3
+  - name: payment.refund.requested.v1
+    partitions: 3
+  - name: payment.refunded.v1
+    partitions: 3
+  - name: order.confirmed.v1
+    partitions: 3
+  - name: order.cancelled.v1
+    partitions: 3
+  - name: shipment.created.v1
+    partitions: 3
+  - name: shipment.delivery-updated.v1
+    partitions: 3
