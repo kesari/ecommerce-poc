@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "inventory.release.requested.v1",
+  "type": "object",
+  "required": ["orderId", "reason"],
+  "properties": {
+    "orderId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "reason": {"enum": ["PAYMENT_FAILED", "ORDER_CANCELLED", "EXPIRED"]}
+  }
+}

@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: Order Service
+  version: 1.0.0
+paths:
+  /api/v1/checkout/quotes:
+    post:
+      operationId: createQuote
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateQuoteRequest' }
+      responses:
+        '200':
+          description: Quote
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/QuoteResponse' }
+  /api/v1/orders:
+    post:
+      operationId: placeOrder
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PlaceOrderRequest' }
+      responses:
+        '202':
+          description: Order accepted
+          headers:
+            Location:
+              schema: { type: string }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderResponse' }
+        '400': { $ref: '#/components/responses/Problem' }
+        '409': { $ref: '#/components/responses/Problem' }
+        '410': { $ref: '#/components/responses/Problem' }
+  /api/v1/orders/{orderId}:
+    get:
+      operationId: getOrder
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OrderResponse' }
+        '404': { $ref: '#/components/responses/Problem' }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+  responses:
+    Problem:
+      description: Problem
+      content:
+        application/problem+json:
+          schema: { $ref: '#/components/schemas/Problem' }
+  schemas:
+    CreateQuoteRequest:
+      type: object
+      required: [addressId]
+      properties:
+        addressId: { type: string, format: uuid }
+    QuoteResponse:
+      type: object
+      required: [quoteId, expiresAt, basketVersion, price, estimatedDelivery]
+      properties:
+        quoteId: { type: string, format: uuid }
+        expiresAt: { type: string, format: date-time }
+        basketVersion: { type: integer }
+        price:
+          type: object
+          required: [subtotalMinor, discountMinor, shippingMinor, taxMinor, totalMinor, currency]
+          properties:
+            subtotalMinor: { type: integer }
+            discountMinor: { type: integer }
+            shippingMinor: { type: integer }
+            taxMinor: { type: integer }
+            totalMinor: { type: integer }
+            currency: { type: string, enum: [INR] }
+        estimatedDelivery:
+          type: object
+          required: [from, to]
+          properties:
+            from: { type: string, format: date }
+            to: { type: string, format: date }
+    PlaceOrderRequest:
+      type: object
+      required: [quoteId, payment]
+      properties:
+        quoteId: { type: string, format: uuid }
+        payment:
+          type: object
+          required: [method, token]
+          properties:
+            method: { type: string, enum: [CREDIT_CARD] }
+            token: { type: string, enum: [tok_success, tok_declined, tok_error] }
+    OrderResponse:
+      type: object
+      required: [orderId, status, totalMinor, currency, items]
+      properties:
+        orderId: { type: string, format: uuid }
+        status: { type: string }
+        totalMinor: { type: integer }
+        currency: { type: string, enum: [INR] }
+        items:
+          type: array
+          items:
+            type: object
+            required: [productId, name, unitPriceMinor, quantity]
+            properties:
+              productId: { type: string, format: uuid }
+              name: { type: string }
+              unitPriceMinor: { type: integer }
+              quantity: { type: integer }
+    Problem:
+      type: object
+      required: [type, title, status, code]
+      properties:
+        type: { type: string }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        code:
+          type: string
+          enum: [QUOTE_NOT_FOUND, QUOTE_EXPIRED, ORDER_NOT_FOUND, BASKET_VERSION_CHANGED,
+                 IDEMPOTENCY_KEY_REQUIRED, IDEMPOTENCY_KEY_REUSED,
+                 UNSUPPORTED_PAYMENT_METHOD, DOWNSTREAM_SERVICE_UNAVAILABLE,
+                 INVALID_REQUEST, INTERNAL_ERROR]
+        correlationId: { type: [string, 'null'] }

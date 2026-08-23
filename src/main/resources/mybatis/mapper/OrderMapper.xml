@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poc.order.infrastructure.persistence.mapper.OrderMapper">
+
+    <insert id="insertQuote">
+        INSERT INTO quotes (quote_id, user_id, basket_version, address_snapshot, subtotal_minor,
+                            discount_minor, shipping_minor, tax_minor, total_minor, currency,
+                            promised_from, promised_to, expires_at)
+        VALUES (#{quoteId}, #{userId}, #{basketVersion}, #{addressSnapshot}::jsonb,
+                #{subtotalMinor}, #{discountMinor}, #{shippingMinor}, #{taxMinor},
+                #{totalMinor}, #{currency}, #{promisedFrom}, #{promisedTo}, #{expiresAt})
+    </insert>
+
+    <insert id="insertQuoteLines">
+        INSERT INTO quote_lines (quote_id, product_id, name, unit_price_minor, quantity) VALUES
+        <foreach item="line" collection="lines" separator=",">
+            (#{line.parentId}, #{line.productId}, #{line.name}, #{line.unitPriceMinor}, #{line.quantity})
+        </foreach>
+    </insert>
+
+    <select id="findQuote" resultType="com.poc.order.infrastructure.persistence.row.QuoteRow">
+        SELECT quote_id, user_id, basket_version, address_snapshot::text AS address_snapshot,
+               subtotal_minor, discount_minor, shipping_minor, tax_minor, total_minor, currency,
+               promised_from, promised_to, expires_at
+        FROM quotes WHERE quote_id = #{quoteId}
+    </select>
+
+    <select id="findQuoteLines" resultType="com.poc.order.infrastructure.persistence.row.LineRow">
+        SELECT quote_id AS parent_id, product_id, name, unit_price_minor, quantity
+        FROM quote_lines WHERE quote_id = #{quoteId} ORDER BY product_id
+    </select>
+
+    <insert id="insertOrder">
+        INSERT INTO orders (order_id, user_id, quote_id, status, basket_version, address_snapshot,
+                            payment_method, payment_token, total_minor, currency, payment_id)
+        VALUES (#{orderId}, #{userId}, #{quoteId}, #{status}, #{basketVersion},
+                #{addressSnapshot}::jsonb, #{paymentMethod}, #{paymentToken}, #{totalMinor},
+                #{currency}, #{paymentId})
+    </insert>
+
+    <insert id="insertOrderLines">
+        INSERT INTO order_lines (order_id, product_id, name, unit_price_minor, quantity) VALUES
+        <foreach item="line" collection="lines" separator=",">
+            (#{line.parentId}, #{line.productId}, #{line.name}, #{line.unitPriceMinor}, #{line.quantity})
+        </foreach>
+    </insert>
+
+    <select id="findOrder" resultType="com.poc.order.infrastructure.persistence.row.OrderRow">
+        SELECT order_id, user_id, quote_id, status, basket_version,
+               address_snapshot::text AS address_snapshot, payment_method, payment_token,
+               total_minor, currency, payment_id
+        FROM orders WHERE order_id = #{orderId}
+    </select>
+
+    <select id="findOrderLines" resultType="com.poc.order.infrastructure.persistence.row.LineRow">
+        SELECT order_id AS parent_id, product_id, name, unit_price_minor, quantity
+        FROM order_lines WHERE order_id = #{orderId} ORDER BY product_id
+    </select>
+
+    <update id="updateOrderStatus">
+        UPDATE orders SET status = #{status}, updated_at = now() WHERE order_id = #{orderId}
+    </update>
+
+    <update id="updatePaymentId">
+        UPDATE orders SET payment_id = #{paymentId}, updated_at = now() WHERE order_id = #{orderId}
+    </update>
+
+    <insert id="insertHistory">
+        INSERT INTO order_status_history (order_id, status) VALUES (#{orderId}, #{status})
+    </insert>
+
+    <select id="findHistory" resultType="string">
+        SELECT status FROM order_status_history WHERE order_id = #{orderId} ORDER BY id
+    </select>
+
+    <select id="findIdempotency" resultType="com.poc.order.infrastructure.persistence.row.IdempotencyRow">
+        SELECT idempotency_key, user_id, request_hash, order_id
+        FROM idempotency_keys WHERE idempotency_key = #{idempotencyKey}
+    </select>
+
+    <insert id="insertIdempotency">
+        INSERT INTO idempotency_keys (idempotency_key, user_id, request_hash, order_id)
+        VALUES (#{idempotencyKey}, #{userId}, #{requestHash}, #{orderId})
+    </insert>
+
+    <insert id="claimInbox">
+        INSERT INTO inbox (event_id) VALUES (#{eventId}) ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
+    <insert id="insertOutbox">
+        INSERT INTO outbox (event_id, aggregate_id, topic, payload, published, created_at)
+        VALUES (#{eventId}, #{aggregateId}, #{topic}, #{payload}::jsonb, #{published}, #{createdAt})
+    </insert>
+
+    <select id="findUnpublished" resultType="com.poc.order.infrastructure.persistence.row.OutboxRow">
+        SELECT event_id, aggregate_id, topic, payload::text AS payload, published, created_at
+        FROM outbox WHERE published = false ORDER BY created_at LIMIT #{limit}
+    </select>
+
+    <update id="markPublished">
+        UPDATE outbox SET published = true WHERE event_id = #{eventId} AND published = false
+    </update>
+
+</mapper>

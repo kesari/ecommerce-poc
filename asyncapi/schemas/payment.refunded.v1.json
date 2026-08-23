@@ -1,0 +1,3 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"payment.refunded.v1",
+ "type":"object","required":["orderId","refundId"],
+ "properties":{"orderId":{"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},"refundId":{"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"}}}

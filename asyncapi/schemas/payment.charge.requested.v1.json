@@ -1,0 +1,4 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","title":"payment.charge.requested.v1",
+ "type":"object","required":["orderId","amountMinor","currency","token"],
+ "properties":{"orderId":{"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},"amountMinor":{"type":"integer","minimum":0},
+ "currency":{"enum":["INR"]},"token":{"enum":["tok_success","tok_declined","tok_error"]}}}
