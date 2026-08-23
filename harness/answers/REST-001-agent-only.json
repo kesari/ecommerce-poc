@@ -1,0 +1,26 @@
+{
+  "change_id": "REST-001",
+  "contestant": "agent-only",
+  "elapsed_seconds": 240,
+  "tokens_consumed": 41200,
+  "freshness_score": null,
+  "operational_cost_score": null,
+  "findings": {
+    "repositories": [
+      { "name": "payment-service", "evidence_tier": "compiler", "evidence": "owns PaymentRequest and endpoint" },
+      { "name": "checkout-service", "evidence_tier": "compiler", "evidence": "PaymentClient.java references PaymentRequest" },
+      { "name": "refund-service", "evidence_tier": "extracted", "evidence": "PaymentClient copy calls POST /payments/authorisations" },
+      { "name": "integration-test-suite", "evidence_tier": "inferred", "evidence": "AuthorisationFlowIT exercises the endpoint" }
+    ],
+    "symbols": [
+      { "fqn": "com.acme.payment.api.PaymentRequest", "repo": "payment-service", "evidence_tier": "compiler", "evidence": "record definition changed" }
+    ],
+    "contracts": [
+      { "type": "rest", "identifier": "POST /payments/authorisations", "consumer_repos": ["checkout-service", "refund-service"], "evidence_tier": "contract_matched", "evidence": "@PostMapping in provider, client call sites" }
+    ],
+    "tests": [
+      { "repo": "payment-service", "suite": "PaymentRequestTest", "evidence_tier": "compiler", "evidence": "direct unit test of record" },
+      { "repo": "integration-test-suite", "suite": "AuthorisationFlowIT", "evidence_tier": "extracted", "evidence": "flow test hits endpoint" }
+    ]
+  }
+}

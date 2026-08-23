@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Contestant answer",
+  "type": "object",
+  "required": ["change_id", "contestant", "findings"],
+  "properties": {
+    "change_id": { "type": "string", "pattern": "^[A-Z]+-[0-9]+$" },
+    "contestant": {
+      "type": "string",
+      "enum": ["agent-only", "hybrid-retrieval", "scip", "gortex", "graphify", "combined"]
+    },
+    "elapsed_seconds": { "type": "number" },
+    "tokens_consumed": { "type": "integer" },
+    "freshness_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Manual rubric score 0-1 from Phase E. Omit or null to exclude freshness from the composite (weights renormalize)."
+    },
+    "operational_cost_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Manual rubric score 0-1 where 1 is cheapest to operate. Null excludes it from the composite."
+    },
+    "findings": {
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "evidence_tier": {
+                "type": "string",
+                "enum": ["compiler", "extracted", "contract_matched", "inferred", "hypothesis"],
+                "description": "Provenance: compiler=VERY HIGH, extracted/contract_matched=HIGH, inferred=MEDIUM, hypothesis=INVESTIGATE."
+              },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["fqn"],
+            "properties": {
+              "fqn": { "type": "string" },
+              "repo": { "type": "string" },
+              "evidence_tier": { "type": "string" },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "identifier"],
+            "properties": {
+              "type": { "type": "string", "enum": ["rest", "kafka", "grpc", "openapi", "db"] },
+              "identifier": { "type": "string" },
+              "consumer_repos": { "type": "array", "items": { "type": "string" } },
+              "evidence_tier": { "type": "string" },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["repo", "suite"],
+            "properties": {
+              "repo": { "type": "string" },
+              "suite": { "type": "string" },
+              "evidence_tier": { "type": "string" },
+              "evidence": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

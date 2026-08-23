@@ -1,0 +1,33 @@
+{
+  "change_id": "REST-001",
+  "contestant": "gortex",
+  "elapsed_seconds": 95,
+  "tokens_consumed": 9800,
+  "freshness_score": null,
+  "operational_cost_score": null,
+  "findings": {
+    "repositories": [
+      { "name": "payment-service", "evidence_tier": "compiler", "evidence": "owns PaymentRequest and endpoint" },
+      { "name": "checkout-service", "evidence_tier": "contract_matched", "evidence": "http::POST::/v1/payments/authorisations consumer edge" },
+      { "name": "refund-service", "evidence_tier": "contract_matched", "evidence": "http::POST::/v1/payments/authorisations consumer edge" },
+      { "name": "partner-api", "evidence_tier": "contract_matched", "evidence": "OpenAPI /payments spec consumed by partner-payment-sdk" },
+      { "name": "reconciliation-service", "evidence_tier": "contract_matched", "evidence": "consumes payment.authorised published by payment-service" },
+      { "name": "integration-test-suite", "evidence_tier": "extracted", "evidence": "AuthorisationFlowIT exercises the endpoint" },
+      { "name": "fraud-orchestrator", "evidence_tier": "inferred", "evidence": "subscribes to authorisation webhooks, possibly affected" }
+    ],
+    "symbols": [
+      { "fqn": "com.acme.payment.api.PaymentRequest", "repo": "payment-service", "evidence_tier": "compiler", "evidence": "record definition changed" },
+      { "fqn": "com.acme.checkout.client.PaymentClient", "repo": "checkout-service", "evidence_tier": "compiler", "evidence": "method signature uses PaymentRequest" }
+    ],
+    "contracts": [
+      { "type": "rest", "identifier": "POST /payments/authorisations", "consumer_repos": ["checkout-service", "refund-service"], "evidence_tier": "contract_matched", "evidence": "provider/consumer contract match" },
+      { "type": "openapi", "identifier": "openapi:payments.yaml#/components/schemas/PaymentRequest", "consumer_repos": ["partner-api"], "evidence_tier": "contract_matched", "evidence": "spec diff detected" },
+      { "type": "kafka", "identifier": "payment.authorised", "consumer_repos": ["reconciliation-service"], "evidence_tier": "contract_matched", "evidence": "topic publisher/consumer edge" }
+    ],
+    "tests": [
+      { "repo": "payment-service", "suite": "PaymentRequestTest", "evidence_tier": "compiler", "evidence": "direct unit test of record" },
+      { "repo": "checkout-service", "suite": "PaymentClientContractTest", "evidence_tier": "extracted", "evidence": "contract test bound to endpoint" },
+      { "repo": "integration-test-suite", "suite": "AuthorisationFlowIT", "evidence_tier": "extracted", "evidence": "flow test hits endpoint" }
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "change_id": "REST-001",
+  "category": "rest_contract",
+  "title": "PaymentRequest.amount type change on payment authorisation endpoint",
+  "query": "What breaks across repositories if PaymentRequest.amount changes from BigDecimal to Money on POST /payments/authorisations?",
+  "proposed_change": {
+    "repo": "payment-service",
+    "diff": "-   BigDecimal amount,\n+   Money amount,"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      { "name": "payment-service", "criticality": "critical", "evidence_note": "owns endpoint" },
+      { "name": "checkout-service", "criticality": "critical", "evidence_note": "PaymentClient calls POST /payments/authorisations" },
+      { "name": "refund-service", "criticality": "contract_consumer", "evidence_note": "shares PaymentClient contract" },
+      { "name": "partner-api", "criticality": "contract_consumer", "evidence_note": "consumes OpenAPI /payments spec via partner-payment-sdk" },
+      { "name": "reconciliation-service", "criticality": "informational", "evidence_note": "reads payment.authorised events downstream, amount semantics affected" },
+      { "name": "integration-test-suite", "criticality": "test_only", "evidence_note": "end-to-end payment flows" }
+    ],
+    "affected_symbols": [
+      { "fqn": "com.acme.payment.api.PaymentRequest", "repo": "payment-service", "kind": "record", "severity": "contract_consumer" },
+      { "fqn": "com.acme.checkout.client.PaymentClient", "repo": "checkout-service", "kind": "class", "severity": "contract_consumer" }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /payments/authorisations",
+        "provider_repo": "payment-service",
+        "consumer_repos": ["checkout-service", "refund-service"],
+        "severity": "contract_consumer"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:payments.yaml#/components/schemas/PaymentRequest",
+        "provider_repo": "payment-service",
+        "consumer_repos": ["partner-api"],
+        "severity": "contract_consumer"
+      },
+      {
+        "type": "kafka",
+        "identifier": "payment.authorised",
+        "provider_repo": "payment-service",
+        "consumer_repos": ["reconciliation-service"],
+        "severity": "informational"
+      }
+    ],
+    "required_tests": [
+      { "repo": "payment-service", "suite": "PaymentRequestTest", "level": "unit" },
+      { "repo": "checkout-service", "suite": "PaymentClientContractTest", "level": "contract" },
+      { "repo": "integration-test-suite", "suite": "AuthorisationFlowIT", "level": "integration" }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Derived from the canonical example in docs/architecture/cross-repo-change-impact-architectural-poc-proposal.md section 7.2."
+}
