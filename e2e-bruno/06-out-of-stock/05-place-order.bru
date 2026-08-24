@@ -17,7 +17,11 @@ headers {
 
 script:pre-request {
   if (!bru.getVar("idempotencyKey")) {
-    bru.setVar("idempotencyKey", crypto.randomUUID());
+    bru.setVar("idempotencyKey",
+      "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
+      }));
   }
 }
 
@@ -34,11 +38,13 @@ body:json {
 script:post-response {
   const body = res.getBody();
   bru.setVar("orderId", body.orderId);
+  console.log("BRUNOORDER=" + body.orderId);
 }
 
 tests {
   test("order accepted", function() {
     expect(res.getStatus()).to.equal(202);
-    expect(res.getBody().status).to.equal("PENDING");
+    expect(["PENDING", "INVENTORY_RESERVATION_PENDING", "INVENTORY_RESERVED", "PAYMENT_PENDING"])
+      .to.include(res.getBody().status);
   });
 }

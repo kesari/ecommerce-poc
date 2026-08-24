@@ -3,6 +3,7 @@ name: commerce-platform
 x-java-env: &java-env
   KAFKA_BOOTSTRAP_SERVERS: kafka:29092
   VALKEY_HOST: valkey
+  SPRING_DATA_REDIS_TIMEOUT: "500ms"
   AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-0123456789-abcdefghijklmnopqrstuvwxyz-0123456789
 
 services:
@@ -205,6 +206,7 @@ services:
       ORDER_BASE_URL: http://order-service:8085
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       VALKEY_HOST: valkey
+      SPRING_DATA_REDIS_TIMEOUT: "500ms"
       AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-0123456789-abcdefghijklmnopqrstuvwxyz-0123456789
     ports: ["8080:8080"]
     depends_on:

@@ -28,7 +28,8 @@ tests {
   test("quote created with breakdown", function() {
     expect(res.getStatus()).to.equal(200);
     const b = res.getBody();
-    expect(b.totalMinor).to.be.above(0);
+    expect(b.price.totalMinor).to.be.above(0);
+    expect(b.price.taxMinor).to.be.at.least(0);
     expect(b.estimatedDelivery.from).to.be.a("string");
   });
 }

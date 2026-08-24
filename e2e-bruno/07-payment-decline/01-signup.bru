@@ -22,7 +22,9 @@ body:json {
 }
 
 script:post-response {
-  bru.setVar("accessToken", res.getBody().accessToken);
+  const token = res.getBody().accessToken;
+  bru.setVar("accessToken", token);
+  console.log("BRUNOTOKEN=" + token);
 }
 
 tests {
