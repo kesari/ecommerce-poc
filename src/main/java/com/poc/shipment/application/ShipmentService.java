@@ -95,7 +95,7 @@ public class ShipmentService {
         payload.put("promisedFrom", shipment.promised().from().toString());
         payload.put("promisedTo", shipment.promised().to().toString());
         return new EventEnvelope(
-                "evt_" + UUID.randomUUID(),
+                UUID.randomUUID().toString(),
                 eventType,
                 EventEnvelope.SCHEMA_VERSION,
                 clock.instant(),

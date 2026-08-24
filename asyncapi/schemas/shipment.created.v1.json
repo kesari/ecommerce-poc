@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "shipment.created.v1",
+  "description": "Required fields are the four frozen in wave1-shared-contracts. Additional fields are emitted and may be ignored by consumers.",
+  "type": "object",
+  "required": ["orderId","shipmentId","promisedFrom","promisedTo"],
+  "properties": {
+    "orderId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "shipmentId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "promisedFrom": {"type": "string", "format": "date"},
+    "promisedTo": {"type": "string", "format": "date"},
+    "status": {"type": "string"},
+    "shippingMinor": {"type": "integer"},
+    "currency": {"type": "string"}
+  }
+}
