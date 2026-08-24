@@ -34,4 +34,6 @@ public interface BasketMapper {
     Optional<CouponRow> findCoupon(@Param("code") String code);
 
     int markCheckedOut(@Param("userId") UUID userId);
+
+    int claimInbox(@Param("eventId") UUID eventId);
 }

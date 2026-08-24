@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "order.confirmed.v1",
+  "type": "object",
+  "required": ["orderId","userId","confirmedAt","address","items"],
+  "properties": {
+    "orderId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "userId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "confirmedAt": {"type": "string", "format": "date-time"},
+    "address": {
+      "type": "object",
+      "required": ["fullName","line1","city","postalCode","country"],
+      "properties": {
+        "fullName": {"type": "string"},
+        "line1": {"type": "string"},
+        "line2": {"type": ["string","null"]},
+        "city": {"type": "string"},
+        "state": {"type": ["string","null"]},
+        "postalCode": {"type": "string", "pattern": "^[0-9]{4,10}$"},
+        "country": {"type": "string"}
+      }
+    },
+    "items": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["productId","name","quantity"],
+        "properties": {
+          "productId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+          "name": {"type": "string"},
+          "quantity": {"type": "integer", "minimum": 1}
+        }
+      }
+    }
+  }
+}

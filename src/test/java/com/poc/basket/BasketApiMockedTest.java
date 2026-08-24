@@ -61,7 +61,7 @@ class BasketApiMockedTest {
         catalog.seed(new CatalogPort.ProductInfo(MOUSE, "Mouse", 500, "INR", true));
         catalog.seed(new CatalogPort.ProductInfo(RETIRED, "Retired", 900, "INR", false));
         mockMvc = MockMvcBuilders
-                .standaloneSetup(new BasketController(new BasketService(repository, catalog)))
+                .standaloneSetup(new BasketController(new BasketService(repository, catalog, eventId -> true)))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .setCustomArgumentResolvers(new JwtPrincipalResolver(USER_ID))
                 .build();

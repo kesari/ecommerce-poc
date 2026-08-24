@@ -85,4 +85,9 @@
         WHERE user_id = #{userId}
           AND status = 'ACTIVE'
     </update>
+
+    <insert id="claimInbox">
+        INSERT INTO inbox (event_id) VALUES (#{eventId}) ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
 </mapper>

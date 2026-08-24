@@ -1,6 +1,7 @@
 package com.poc.basket.application;
 
 import com.poc.basket.application.port.BasketRepository;
+import com.poc.basket.application.port.InboxRepository;
 import com.poc.basket.application.port.CatalogPort;
 import com.poc.basket.domain.exception.BasketVersionConflictException;
 import com.poc.basket.domain.exception.CouponAlreadyAppliedException;
@@ -12,6 +13,7 @@ import com.poc.basket.domain.model.BasketItem;
 import com.poc.basket.domain.model.Coupon;
 import com.poc.basket.domain.model.SaveResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +27,21 @@ public class BasketService {
 
     private final BasketRepository repository;
     private final CatalogPort catalog;
+    private final InboxRepository inbox;
 
-    public BasketService(BasketRepository repository, CatalogPort catalog) {
+    public BasketService(BasketRepository repository, CatalogPort catalog,
+                         InboxRepository inbox) {
         this.repository = repository;
         this.catalog = catalog;
+        this.inbox = inbox;
+    }
+
+    @Transactional
+    public void completeCheckout(UUID eventId, UUID userId) {
+        if (!inbox.claim(eventId)) {
+            return;
+        }
+        repository.markCheckedOut(userId);
     }
 
     public record BasketView(Basket basket, BasketPricing.Breakdown breakdown) {}
