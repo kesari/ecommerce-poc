@@ -1,0 +1,132 @@
+openapi: 3.1.0
+info:
+  description: Delivery estimates and shipment records. Request and response shapes
+    are frozen in cross-repo-impact-study/docs/tasks/wave1-shared-contracts.md.
+  title: Shipment Service
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths:
+  /api/v1/delivery-estimates:
+    post:
+      operationId: estimate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryEstimateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryEstimateResponse"
+          description: Delivery estimate
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: INVALID_REQUEST
+      tags:
+      - shipment-controller
+  /api/v1/shipments/by-order/{orderId}:
+    get:
+      operationId: byOrder
+      parameters:
+      - in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentResponse"
+          description: Shipment
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: SHIPMENT_NOT_FOUND
+      tags:
+      - shipment-controller
+components:
+  schemas:
+    DeliveryEstimateRequest:
+      type: object
+      properties:
+        itemCount:
+          type: integer
+          format: int32
+          minimum: 1
+        postalCode:
+          type: string
+          minLength: 1
+          pattern: "[0-9]{4,10}"
+        subtotalMinor:
+          type: integer
+          format: int64
+          minimum: 0
+    DeliveryEstimateResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+        fromDate:
+          type: string
+          format: date
+        shippingChargeMinor:
+          type: integer
+          format: int64
+        toDate:
+          type: string
+          format: date
+    ProblemDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          format: uri
+    ShipmentResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+        orderId:
+          type: string
+          format: uuid
+        promisedFrom:
+          type: string
+          format: date
+        promisedTo:
+          type: string
+          format: date
+        shipmentId:
+          type: string
+          format: uuid
+        shippingMinor:
+          type: integer
+          format: int64
+        status:
+          type: string

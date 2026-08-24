@@ -38,6 +38,13 @@ shipment:
 auth:
   jwt-secret: ${AUTH_JWT_SECRET:poc-dev-only-secret-key-change-me-0123456789abcdefghijklmnopqrstuv}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  writer-with-order-by-keys: true
+
 management:
   endpoints:
     web:
