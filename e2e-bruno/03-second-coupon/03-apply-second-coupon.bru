@@ -1,0 +1,28 @@
+meta {
+  name: apply second coupon
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/v1/basket/coupon
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "code": "WELCOME15"
+  }
+}
+
+tests {
+  test("second coupon rejected COUPON_ALREADY_APPLIED", function() {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody().code).to.equal("COUPON_ALREADY_APPLIED");
+  });
+}

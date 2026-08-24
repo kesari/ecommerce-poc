@@ -1,0 +1,44 @@
+meta {
+  name: place order after basket changed
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/api/v1/orders
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Idempotency-Key: {{idempotencyKey}}
+}
+
+script:pre-request {
+  if (!bru.getVar("idempotencyKey")) {
+    bru.setVar("idempotencyKey", crypto.randomUUID());
+  }
+}
+
+body:json {
+  {
+    "quoteId": "{{quoteId}}",
+    "payment": {
+      "method": "CREDIT_CARD",
+      "token": "tok_success"
+    }
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  bru.setVar("orderId", body.orderId);
+}
+
+tests {
+  test("rejected because basket changed", function() {
+    expect(res.getStatus()).to.equal(409);
+    expect(res.getBody().code).to.equal("QUOTE_BASKET_CHANGED");
+  });
+}

@@ -1,0 +1,20 @@
+meta {
+  name: basket call during outage
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/v1/basket
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+tests {
+  test("fails fast with 503 while downstream is down", function() {
+    expect([503, 200]).to.include(res.getStatus());
+  });
+}

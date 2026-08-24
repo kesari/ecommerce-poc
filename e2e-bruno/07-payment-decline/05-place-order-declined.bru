@@ -1,0 +1,44 @@
+meta {
+  name: place order
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/orders
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Idempotency-Key: {{idempotencyKey}}
+}
+
+script:pre-request {
+  if (!bru.getVar("idempotencyKey")) {
+    bru.setVar("idempotencyKey", crypto.randomUUID());
+  }
+}
+
+body:json {
+  {
+    "quoteId": "{{quoteId}}",
+    "payment": {
+      "method": "CREDIT_CARD",
+      "token": "tok_declined"
+    }
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  bru.setVar("orderId", body.orderId);
+}
+
+tests {
+  test("order accepted for processing", function() {
+    expect(res.getStatus()).to.equal(202);
+    expect(res.getBody().status).to.equal("PENDING");
+  });
+}

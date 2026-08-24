@@ -1,0 +1,48 @@
+meta {
+  name: replay place order with same idempotency key
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/orders
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+  Idempotency-Key: {{idempotencyKey}}
+}
+
+script:pre-request {
+  if (!bru.getVar("idempotencyKey")) {
+    bru.setVar("idempotencyKey", crypto.randomUUID());
+  }
+}
+
+body:json {
+  {
+    "quoteId": "{{quoteId}}",
+    "payment": {
+      "method": "CREDIT_CARD",
+      "token": "tok_success"
+    }
+  }
+}
+
+script:post-response {
+  const body = res.getBody();
+  if (!bru.getVar("firstOrderId")) {
+    bru.setVar("firstOrderId", body.orderId);
+  }
+  bru.setVar("secondOrderId", body.orderId);
+  bru.setVar("orderStatus", body.status);
+}
+
+tests {
+  test("duplicate request returns the original order", function() {
+    expect(res.getStatus()).to.equal(202);
+    expect(bru.getVar("secondOrderId")).to.equal(bru.getVar("firstOrderId"));
+  });
+}

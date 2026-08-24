@@ -1,0 +1,28 @@
+meta {
+  name: apply invalid coupon
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/api/v1/basket/coupon
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "code": "NOPE40"
+  }
+}
+
+tests {
+  test("rejected COUPON_INVALID", function() {
+    expect(res.getStatus()).to.equal(400);
+    expect(res.getBody().code).to.equal("COUPON_INVALID");
+  });
+}
