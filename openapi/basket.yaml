@@ -1,0 +1,269 @@
+openapi: 3.1.0
+info:
+  description: "Active baskets, basket items, coupon application, and pricing totals."
+  title: Basket Service
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths:
+  /api/v1/basket:
+    get:
+      operationId: current
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasketResponse"
+          description: Current basket
+      tags:
+      - basket-controller
+  /api/v1/basket/coupon:
+    delete:
+      operationId: removeCoupon
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasketResponse"
+          description: Updated basket
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: BASKET_VERSION_CONFLICT
+      tags:
+      - basket-controller
+    put:
+      operationId: applyCoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CouponRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasketResponse"
+          description: Updated basket
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: COUPON_INVALID or INVALID_REQUEST
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: COUPON_ALREADY_APPLIED or BASKET_VERSION_CONFLICT
+      tags:
+      - basket-controller
+  /api/v1/basket/items:
+    post:
+      operationId: addItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddItemRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasketResponse"
+          description: Updated basket
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: INVALID_REQUEST
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_NOT_FOUND
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_INACTIVE or BASKET_VERSION_CONFLICT
+        "503":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: DOWNSTREAM_SERVICE_UNAVAILABLE
+      tags:
+      - basket-controller
+  /api/v1/basket/items/{productId}:
+    delete:
+      operationId: removeItem
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasketResponse"
+          description: Updated basket
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: BASKET_VERSION_CONFLICT
+      tags:
+      - basket-controller
+    patch:
+      operationId: setQuantity
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateQuantityRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasketResponse"
+          description: Updated basket
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: INVALID_REQUEST
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_NOT_FOUND
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: BASKET_VERSION_CONFLICT
+      tags:
+      - basket-controller
+components:
+  schemas:
+    AddItemRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
+      required:
+      - productId
+    BasketItemResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+        lineTotalMinor:
+          type: integer
+          format: int64
+        name:
+          type: string
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          format: int32
+        unitPriceMinor:
+          type: integer
+          format: int64
+    BasketResponse:
+      type: object
+      properties:
+        basketId:
+          type: string
+          format: uuid
+        basketVersion:
+          type: integer
+          format: int64
+        couponCode:
+          type: string
+        currency:
+          type: string
+        discountMinor:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BasketItemResponse"
+        subtotalMinor:
+          type: integer
+          format: int64
+        totalMinor:
+          type: integer
+          format: int64
+    CouponRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+    ProblemDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          format: uri
+    UpdateQuantityRequest:
+      type: object
+      properties:
+        quantity:
+          type: integer
+          format: int32
+          minimum: 1
