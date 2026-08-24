@@ -1,5 +1,10 @@
 name: commerce-platform
 
+x-java-env: &java-env
+  KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+  VALKEY_HOST: valkey
+  AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-key-0123456789-abcdefghij
+
 services:
   postgres:
     image: postgres:17
@@ -98,6 +103,114 @@ services:
     volumes:
       - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
+
+  account-service:
+    build: ../account-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/account_service
+      DB_USERNAME: account_service
+      DB_PASSWORD: account_service
+    ports: ["8081:8081"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  catalog-service:
+    build: ../catalog-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/catalog_service
+      DB_USERNAME: catalog_service
+      DB_PASSWORD: catalog_service
+    ports: ["8082:8082"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+      valkey: { condition: service_healthy }
+
+  basket-service:
+    build: ../basket-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/basket_service
+      DB_USERNAME: basket_service
+      DB_PASSWORD: basket_service
+      CATALOG_BASE_URL: http://catalog-service:8082
+    ports: ["8083:8083"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+      valkey: { condition: service_healthy }
+
+  inventory-service:
+    build: ../inventory-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/inventory_service
+      DB_USERNAME: inventory_service
+      DB_PASSWORD: inventory_service
+    ports: ["8084:8084"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  order-service:
+    build: ../order-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/order_service
+      DB_USERNAME: order_service
+      DB_PASSWORD: order_service
+      ACCOUNT_BASE_URL: http://account-service:8081
+      BASKET_BASE_URL: http://basket-service:8083
+      SHIPMENT_BASE_URL: http://shipment-service:8087
+    ports: ["8085:8085"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  payment-service:
+    build: ../payment-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/payment_service
+      DB_USERNAME: payment_service
+      DB_PASSWORD: payment_service
+    ports: ["8086:8086"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+
+  shipment-service:
+    build: ../shipment-service
+    environment:
+      <<: *java-env
+      DB_URL: jdbc:postgresql://postgres:5432/shipment_service
+      DB_USERNAME: shipment_service
+      DB_PASSWORD: shipment_service
+    ports: ["8087:8087"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_healthy }
+      valkey: { condition: service_healthy }
+
+  commerce-bff:
+    build: ../commerce-bff
+    environment:
+      ACCOUNT_BASE_URL: http://account-service:8081
+      CATALOG_BASE_URL: http://catalog-service:8082
+      BASKET_BASE_URL: http://basket-service:8083
+      ORDER_BASE_URL: http://order-service:8085
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      VALKEY_HOST: valkey
+      AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-key-0123456789-abcdefghij
+    ports: ["8080:8080"]
+    depends_on:
+      - account-service
+      - catalog-service
+      - basket-service
+      - order-service
 
 volumes:
   postgres-data:
