@@ -22,6 +22,7 @@ public class ProductCache {
     private static final Duration LIST_TTL = Duration.ofMinutes(2);
     private static final String HIT = "hit";
     private static final String MISS = "miss";
+    private static final String ERROR = "error";
 
     private final StringRedisTemplate valkey;
     private final ObjectMapper objectMapper;
@@ -34,7 +35,13 @@ public class ProductCache {
     }
 
     public Optional<Product> getProduct(UUID productId) {
-        String raw = valueOf("catalog:product:" + productId);
+        String raw;
+        try {
+            raw = valueOf("catalog:product:" + productId);
+        } catch (RuntimeException e) {
+            record(ERROR);
+            return Optional.empty();
+        }
         if (raw == null) {
             record(MISS);
             return Optional.empty();
@@ -49,15 +56,27 @@ public class ProductCache {
                     objectMapper.writeValueAsString(product), DETAIL_TTL);
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("failed to serialize product cache entry", e);
+        } catch (RuntimeException e) {
+            record(ERROR);
         }
     }
 
     public void evictProduct(UUID productId) {
-        valkey.delete("catalog:product:" + productId);
+        try {
+            valkey.delete("catalog:product:" + productId);
+        } catch (RuntimeException e) {
+            record(ERROR);
+        }
     }
 
     public Optional<String> getListPage(int page, int size) {
-        String raw = valueOf("catalog:list:" + queryHash(page, size));
+        String raw;
+        try {
+            raw = valueOf("catalog:list:" + queryHash(page, size));
+        } catch (RuntimeException e) {
+            record(ERROR);
+            return Optional.empty();
+        }
         if (raw == null) {
             record(MISS);
             return Optional.empty();
@@ -67,7 +86,11 @@ public class ProductCache {
     }
 
     public void putListPage(int page, int size, String payload) {
-        valkey.opsForValue().set("catalog:list:" + queryHash(page, size), payload, LIST_TTL);
+        try {
+            valkey.opsForValue().set("catalog:list:" + queryHash(page, size), payload, LIST_TTL);
+        } catch (RuntimeException e) {
+            record(ERROR);
+        }
     }
 
     private String valueOf(String key) {
