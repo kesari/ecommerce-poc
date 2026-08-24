@@ -16,6 +16,7 @@ spring:
       port: ${VALKEY_PORT:6379}
 
 auth:
+  rate-limit-per-minute: ${AUTH_RATE_LIMIT_PER_MINUTE:10}
   jwt-secret: ${AUTH_JWT_SECRET:poc-dev-only-secret-key-change-me-0123456789abcdefghijklmnopqrstuv}
   access-ttl: ${AUTH_ACCESS_TTL:15m}
   refresh-ttl: ${AUTH_REFRESH_TTL:336h}

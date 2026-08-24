@@ -19,13 +19,17 @@ import java.util.UUID;
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
 
-    private static final int LIMIT_PER_MINUTE = 10;
+    private static final int DEFAULT_LIMIT_PER_MINUTE = 10;
 
     private final StringRedisTemplate valkey;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final int limitPerMinute;
 
-    public RateLimitFilter(StringRedisTemplate valkey) {
+    public RateLimitFilter(StringRedisTemplate valkey,
+            @org.springframework.beans.factory.annotation.Value(
+                    "${auth.rate-limit-per-minute:" + DEFAULT_LIMIT_PER_MINUTE + "}") int limitPerMinute) {
         this.valkey = valkey;
+        this.limitPerMinute = limitPerMinute;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
             if (count != null && count == 1L) {
                 valkey.expire(key, Duration.ofMinutes(1));
             }
-            if (count != null && count > LIMIT_PER_MINUTE) {
+            if (count != null && count > limitPerMinute) {
                 writeTooManyRequests(response);
                 return;
             }
