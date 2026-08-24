@@ -8,8 +8,15 @@ import com.poc.order.application.CheckoutService;
 import com.poc.order.application.OrderService;
 import com.poc.order.domain.exception.IdempotencyKeyRequiredException;
 import com.poc.order.domain.model.Order;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -25,7 +32,7 @@ import java.net.URI;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CheckoutController {
 
     private final CheckoutService checkout;
@@ -36,6 +43,11 @@ public class CheckoutController {
         this.orders = orders;
     }
 
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Checkout quote"),
+            @ApiResponse(responseCode = "503", description = "DOWNSTREAM_SERVICE_UNAVAILABLE",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class)))})
     @PostMapping("/checkout/quotes")
     QuoteResponse createQuote(@AuthenticationPrincipal Jwt principal,
                               @RequestHeader("Authorization") String authorization,
@@ -44,9 +56,29 @@ public class CheckoutController {
                 request.addressId()));
     }
 
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Order accepted"),
+            @ApiResponse(responseCode = "400",
+                    description = "IDEMPOTENCY_KEY_REQUIRED, UNSUPPORTED_PAYMENT_METHOD",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "404", description = "QUOTE_NOT_FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "409",
+                    description = "BASKET_VERSION_CHANGED, IDEMPOTENCY_KEY_REUSED",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "410", description = "QUOTE_EXPIRED",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class)))})
     @PostMapping("/orders")
     ResponseEntity<OrderResponse> placeOrder(@AuthenticationPrincipal Jwt principal,
                                              @RequestHeader("Authorization") String authorization,
+                                             @Parameter(required = true,
+                                                     description = "Client-generated key; "
+                                                             + "an identical retry returns the "
+                                                             + "original order")
                                              @RequestHeader(value = "Idempotency-Key",
                                                      required = false) String idempotencyKey,
                                              @Valid @RequestBody PlaceOrderRequest request) {
@@ -60,6 +92,11 @@ public class CheckoutController {
                 .body(OrderResponse.from(order));
     }
 
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Order status"),
+            @ApiResponse(responseCode = "404", description = "ORDER_NOT_FOUND",
+                    content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                            schema = @Schema(implementation = ProblemDetail.class)))})
     @GetMapping("/orders/{orderId}")
     OrderResponse byId(@AuthenticationPrincipal Jwt principal, @PathVariable UUID orderId) {
         return OrderResponse.from(orders.byId(userId(principal), orderId));

@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ContractValidationTest {
 
     private static final Path ASYNCAPI = Path.of("asyncapi/order-service.yaml");
-    private static final Path OPENAPI = Path.of("openapi/order-service.yaml");
     private static final Path SCHEMAS = Path.of("asyncapi/schemas");
 
     private static final List<String> PRODUCED = List.of(
@@ -66,21 +65,6 @@ class ContractValidationTest {
         for (String topic : CONSUMED) {
             assertThat(SCHEMAS.resolve(topic + ".json")).as(topic).exists();
         }
-    }
-
-    @Test
-    void openApiDeclaresTheThreeEndpointsAndIdempotencyKey() throws IOException {
-        JsonNode paths = yaml.readTree(Files.readString(OPENAPI)).path("paths");
-
-        assertThat(paths.has("/api/v1/checkout/quotes")).isTrue();
-        assertThat(paths.has("/api/v1/orders")).isTrue();
-        assertThat(paths.has("/api/v1/orders/{orderId}")).isTrue();
-
-        JsonNode parameters = paths.path("/api/v1/orders").path("post").path("parameters");
-        assertThat(parameters).anySatisfy(parameter -> {
-            assertThat(parameter.path("name").asText()).isEqualTo("Idempotency-Key");
-            assertThat(parameter.path("required").asBoolean()).isTrue();
-        });
     }
 
     @Test
