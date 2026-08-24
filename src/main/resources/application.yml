@@ -21,6 +21,13 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  writer-with-order-by-keys: true
+
 management:
   endpoints:
     web:

@@ -1,130 +1,171 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
+  description: "Product identity, descriptions, prices, and active status."
   title: Catalog Service
-  version: "1.0"
-  description: >-
-    Product identity, descriptions, prices, and active status.
-    Consumed by commerce-bff and basket-service. Stock is owned by
-    inventory-service and is not represented here.
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
 paths:
   /api/v1/products:
     get:
-      operationId: listProducts
+      operationId: list
       parameters:
-        - name: page
-          in: query
-          schema: { type: integer, minimum: 0, default: 0 }
-        - name: size
-          in: query
-          schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
       responses:
         "200":
-          description: Active products ordered by name; inactive products are excluded
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/ProductResponse"
-  /api/v1/products/{productId}:
-    get:
-      operationId: getProduct
-      parameters:
-        - name: productId
-          in: path
-          required: true
-          schema: { type: string, format: uuid }
-      responses:
-        "200":
-          description: Product detail including inactive products
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ProductResponse"
-        "404":
-          description: PRODUCT_NOT_FOUND
-          content:
-            application/problem+json:
-              schema:
-                $ref: "#/components/schemas/Problem"
+          description: Active products
+      tags:
+      - product-controller
   /api/v1/products/batch-lookup:
     post:
       operationId: batchLookup
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              type: object
-              required: [productIds]
-              properties:
-                productIds:
-                  type: array
-                  maxItems: 50
-                  items: { type: string, format: uuid }
+              $ref: "#/components/schemas/BatchLookupRequest"
+        required: true
       responses:
         "200":
-          description: Products found among the requested ids; unknown ids are omitted
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: "#/components/schemas/ProductResponse"
-  /api/v1/products/{productId}/price:
-    put:
-      operationId: updatePrice
-      description: >-
-        Internal POC endpoint used to simulate catalog price changes;
-        invalidates the product detail cache entry after a successful write.
+          description: Known products from the requested identifiers
+      tags:
+      - product-controller
+  /api/v1/products/{productId}:
+    get:
+      operationId: get
       parameters:
-        - name: productId
-          in: path
-          required: true
-          schema: { type: string, format: uuid }
-      requestBody:
+      - in: path
+        name: productId
         required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [priceMinor]
-              properties:
-                priceMinor: { type: integer, minimum: 0 }
+        schema:
+          type: string
+          format: uuid
       responses:
         "200":
-          description: Updated product
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProductResponse"
+          description: Product detail
         "404":
-          description: PRODUCT_NOT_FOUND
           content:
             application/problem+json:
               schema:
-                $ref: "#/components/schemas/Problem"
-
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_NOT_FOUND
+      tags:
+      - product-controller
+  /api/v1/products/{productId}/price:
+    put:
+      operationId: updatePrice
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriceUpdateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: Updated product
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_NOT_FOUND
+      tags:
+      - product-controller
 components:
   schemas:
+    BatchLookupRequest:
+      type: object
+      properties:
+        productIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 50
+          minItems: 0
+    PriceUpdateRequest:
+      type: object
+      properties:
+        priceMinor:
+          type: integer
+          format: int64
+    ProblemDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          format: uri
     ProductResponse:
       type: object
-      required: [id, name, priceMinor, currency, active]
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        description: { type: string, nullable: true }
-        imageUrl: { type: string, nullable: true }
-        priceMinor: { type: integer }
-        currency: { type: string }
-        active: { type: boolean }
-    Problem:
-      type: object
-      required: [type, title, status, code, correlationId]
-      properties:
-        type: { type: string, format: uri }
-        title: { type: string }
-        status: { type: integer }
-        code: { type: string }
-        detail: { type: string }
-        correlationId: { type: string }
+        active:
+          type: boolean
+        currency:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+          format: uuid
+        imageUrl:
+          type: string
+        name:
+          type: string
+        priceMinor:
+          type: integer
+          format: int64
