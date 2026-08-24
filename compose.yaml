@@ -3,7 +3,7 @@ name: commerce-platform
 x-java-env: &java-env
   KAFKA_BOOTSTRAP_SERVERS: kafka:29092
   VALKEY_HOST: valkey
-  AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-key-0123456789-abcdefghij
+  AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-0123456789-abcdefghijklmnopqrstuvwxyz-0123456789
 
 services:
   postgres:
@@ -111,6 +111,7 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/account_service
       DB_USERNAME: account_service
       DB_PASSWORD: account_service
+      AUTH_RATE_LIMIT_PER_MINUTE: "10000"
     ports: ["8081:8081"]
     depends_on:
       postgres: { condition: service_healthy }
@@ -204,7 +205,7 @@ services:
       ORDER_BASE_URL: http://order-service:8085
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
       VALKEY_HOST: valkey
-      AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-key-0123456789-abcdefghij
+      AUTH_JWT_SECRET: poc-estate-shared-jwt-secret-0123456789-abcdefghijklmnopqrstuvwxyz-0123456789
     ports: ["8080:8080"]
     depends_on:
       - account-service
