@@ -1,0 +1,458 @@
+openapi: 3.1.0
+info:
+  description: "The only backend the SPA calls. Pass-through to account, catalog,\
+    \ basket, and order; owns no business rules. Contract frozen in cross-repo-impact-study/docs/tasks/step9-commerce-bff.md."
+  title: Commerce BFF
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths:
+  /api/v1/addresses:
+    get:
+      operationId: list
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Saved addresses
+      tags:
+      - address-proxy-controller
+    post:
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Created address
+      tags:
+      - address-proxy-controller
+  /api/v1/addresses/{addressId}:
+    delete:
+      operationId: delete
+      parameters:
+      - in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Deleted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: ADDRESS_NOT_FOUND
+      tags:
+      - address-proxy-controller
+    put:
+      operationId: update
+      parameters:
+      - in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Updated address
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: ADDRESS_NOT_FOUND
+      tags:
+      - address-proxy-controller
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Token pair
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: INVALID_CREDENTIALS
+      tags:
+      - auth-proxy-controller
+  /api/v1/auth/refresh:
+    post:
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Rotated token pair
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: INVALID_CREDENTIALS
+      tags:
+      - auth-proxy-controller
+  /api/v1/auth/signup:
+    post:
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Account created
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: EMAIL_ALREADY_REGISTERED
+      tags:
+      - auth-proxy-controller
+  /api/v1/basket:
+    get:
+      operationId: current
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Current basket
+      tags:
+      - basket-proxy-controller
+  /api/v1/basket/coupon:
+    delete:
+      operationId: removeCoupon
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Basket with the coupon removed
+      tags:
+      - basket-proxy-controller
+    put:
+      operationId: applyCoupon
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Basket with the coupon applied
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: COUPON_INVALID
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: COUPON_ALREADY_APPLIED
+      tags:
+      - basket-proxy-controller
+  /api/v1/basket/items:
+    post:
+      operationId: addItem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Basket with the item added
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: PRODUCT_NOT_FOUND
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: PRODUCT_INACTIVE
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: DOWNSTREAM_SERVICE_UNAVAILABLE
+      tags:
+      - basket-proxy-controller
+  /api/v1/basket/items/{productId}:
+    delete:
+      operationId: removeItem
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Basket with the line removed
+      tags:
+      - basket-proxy-controller
+    patch:
+      operationId: setQuantity
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Basket with the quantity applied
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: PRODUCT_NOT_FOUND
+      tags:
+      - basket-proxy-controller
+  /api/v1/checkout/quotes:
+    post:
+      operationId: createQuote
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Checkout quote
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: DOWNSTREAM_SERVICE_UNAVAILABLE
+      tags:
+      - checkout-proxy-controller
+  /api/v1/orders:
+    post:
+      operationId: placeOrder
+      parameters:
+      - description: Relayed verbatim to order-service
+        in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JsonNode"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Order accepted
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: "IDEMPOTENCY_KEY_REQUIRED, UNSUPPORTED_PAYMENT_METHOD"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: QUOTE_NOT_FOUND
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: "BASKET_VERSION_CHANGED, IDEMPOTENCY_KEY_REUSED"
+        "410":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: QUOTE_EXPIRED
+      tags:
+      - checkout-proxy-controller
+  /api/v1/orders/{orderId}:
+    get:
+      operationId: orderById
+      parameters:
+      - in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: Order status
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: ORDER_NOT_FOUND
+      tags:
+      - checkout-proxy-controller
+  /api/v1/products:
+    get:
+      operationId: list_1
+      parameters:
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: "Product page, cached for one minute"
+      tags:
+      - catalog-proxy-controller
+  /api/v1/products/{productId}:
+    get:
+      operationId: byId
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: "Product detail, cached for one minute"
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonNode"
+          description: PRODUCT_NOT_FOUND
+      tags:
+      - catalog-proxy-controller
+components:
+  schemas:
+    JsonNode:
+      type: object
