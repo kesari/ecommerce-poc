@@ -1,4 +1,5 @@
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -152,6 +153,49 @@ class MarginalTests(unittest.TestCase):
                          "ghost-service is reported by both contestants, so it is not a unique discovery")
         tp_keys = [i["key"] for i in result["unique_repository_discoveries"] if i["classification"] == "true_positive"]
         self.assertIn("reconciliation-service", tp_keys)
+
+
+class ValidateTests(unittest.TestCase):
+
+    def write(self, name, payload):
+        directory = Path(tempfile.mkdtemp())
+        (directory / name).write_text(json.dumps(payload))
+        return directory
+
+    def test_valid_record_passes(self):
+        report = score.validate_files("record", [str(self.write("OK-001.json", GT))])
+        self.assertTrue(report["valid"], report["errors"])
+
+    def test_missing_required_field_is_reported(self):
+        broken = json.loads(json.dumps(GT))
+        del broken["ground_truth"]["affected_repositories"][0]["name"]
+        report = score.validate_files("record", [str(self.write("X-001.json", broken))])
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("missing required field 'name'" in e
+                            for e in report["errors"]["X-001.json"]))
+
+    def test_bad_enum_value_is_reported(self):
+        broken = json.loads(json.dumps(GT))
+        broken["ground_truth"]["affected_repositories"][0]["criticality"] = "made-up"
+        report = score.validate_files("record", [str(self.write("X-001.json", broken))])
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("criticality" in e for e in report["errors"]["X-001.json"]))
+
+    def test_status_accepts_only_draft_or_frozen(self):
+        record = json.loads(json.dumps(GT))
+        record["status"] = "frozen"
+        self.assertTrue(score.validate_files(
+            "record", [str(self.write("OK-001.json", record))])["valid"])
+        record["status"] = "provisional"
+        self.assertFalse(score.validate_files(
+            "record", [str(self.write("X-001.json", record))])["valid"])
+
+    def test_answer_evidence_tier_enum_covers_every_finding_type(self):
+        bad = answer()
+        bad["findings"]["contracts"][0]["evidence_tier"] = "guesswork"
+        report = score.validate_files("answer", [str(self.write("A-001.json", bad))])
+        self.assertFalse(report["valid"],
+                         "contracts.evidence_tier must be enum-checked, not a bare string")
 
 
 if __name__ == "__main__":

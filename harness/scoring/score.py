@@ -102,6 +102,56 @@ def evidence_quality(answer):
     return ratio, distribution
 
 
+SCHEMA_DIR = Path(__file__).resolve().parent.parent / "schema"
+
+
+def check(node, schema, path, errors):
+    if not isinstance(schema, dict):
+        return
+    expected = schema.get("type")
+    if expected == "object" and not isinstance(node, dict):
+        errors.append(f"{path}: expected object, got {type(node).__name__}")
+        return
+    if expected == "array" and not isinstance(node, list):
+        errors.append(f"{path}: expected array, got {type(node).__name__}")
+        return
+    if "enum" in schema and node not in schema["enum"]:
+        errors.append(f"{path}: {node!r} is not one of {schema['enum']}")
+    if "const" in schema and node != schema["const"]:
+        errors.append(f"{path}: {node!r} must be {schema['const']!r}")
+    if isinstance(node, dict):
+        for name in schema.get("required", []):
+            if name not in node:
+                errors.append(f"{path}: missing required field '{name}'")
+        for name, value in node.items():
+            child = schema.get("properties", {}).get(name)
+            if child is not None:
+                check(value, child, f"{path}.{name}", errors)
+    if isinstance(node, list) and "items" in schema:
+        for index, item in enumerate(node):
+            check(item, schema["items"], f"{path}[{index}]", errors)
+
+
+def validate_files(kind, paths):
+    schema_file = {
+        "record": "change-ground-truth.schema.json",
+        "answer": "contestant-answer.schema.json",
+    }[kind]
+    schema = load(SCHEMA_DIR / schema_file)
+    report = {"kind": kind, "schema": schema_file, "checked": [], "errors": {}}
+    for raw in paths:
+        target = Path(raw)
+        files = sorted(target.glob("*.json")) if target.is_dir() else [target]
+        for file in files:
+            errors = []
+            check(load(file), schema, file.name, errors)
+            report["checked"].append(file.name)
+            if errors:
+                report["errors"][file.name] = errors
+    report["valid"] = not report["errors"]
+    return report
+
+
 def score_change(gt, answer, target_latency_seconds):
     change_id = require(gt, "change_id", "ground truth")
     if answer.get("change_id") != change_id:
@@ -271,6 +321,11 @@ def main():
     score_parser.add_argument("--target-latency-seconds", type=float, default=300.0)
     score_parser.add_argument("--output")
 
+    validate_parser = sub.add_parser("validate", help="check records or answers against their JSON schema")
+    validate_parser.add_argument("--kind", choices=["record", "answer"], required=True)
+    validate_parser.add_argument("paths", nargs="+", help="files or directories")
+    validate_parser.add_argument("--output")
+
     marginal_parser = sub.add_parser("marginal", help="label discoveries unique to a candidate over a baseline")
     marginal_parser.add_argument("--ground-truth", required=True)
     marginal_parser.add_argument("--baseline", required=True)
@@ -281,6 +336,8 @@ def main():
 
     if args.mode == "score":
         report = score_change(load(args.ground_truth), load(args.answer), args.target_latency_seconds)
+    elif args.mode == "validate":
+        report = validate_files(args.kind, args.paths)
     else:
         report = marginal(load(args.ground_truth), load(args.baseline), load(args.candidate))
 
@@ -288,6 +345,8 @@ def main():
     if args.output:
         Path(args.output).write_text(text + "\n")
     print(text)
+    if args.mode == "validate" and not report["valid"]:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
