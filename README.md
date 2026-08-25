@@ -1,14 +1,17 @@
 # Commerce Platform
 
-Local platform for the e-commerce microservice estate: PostgreSQL, Kafka, Valkey,
-and observability (OpenTelemetry Collector, Jaeger, Prometheus).
+Local platform for the complete e-commerce POC: storefront, BFF, Java services,
+PostgreSQL, Kafka, Valkey, and observability.
 
 ## Run
 
 ```bash
-docker compose up -d
+docker compose up --build -d
 docker compose ps
 ```
+
+Open the storefront at `http://localhost:3000` and the BFF Swagger UI at
+`http://localhost:8080/swagger-ui.html`.
 
 Topic creation runs automatically in the `kafka-init` container once the broker
 is healthy: 16 base topics from `kafka/topic-definitions.yaml`, each with
@@ -24,6 +27,8 @@ is healthy: 16 base topics from `kafka/topic-definitions.yaml`, each with
 | Jaeger UI | 16686 | traces arrive via OTel Collector OTLP export |
 | OTel Collector | 4317 gRPC / 4318 HTTP | services send spans here |
 | Prometheus | 9090 | scrapes `/actuator/prometheus` on each service |
+| Commerce Web | 3000 | React storefront served by Nginx |
+| Commerce BFF | 8080 | browser-facing API and Swagger UI |
 
 ## In-network endpoints for services
 
@@ -36,8 +41,7 @@ otel-collector:4317
 
 ## Notes
 
-- Prometheus targets list all planned services; they show as DOWN until the
-  corresponding repositories are implemented.
+- The Compose credentials and shared JWT secret are for local POC use only.
 - Metrics use Spring Boot Actuator scraped directly by Prometheus.
 - Traces flow through the collector into Jaeger; logs stay structured JSON on
   service stdout in this phase.

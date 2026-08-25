@@ -215,6 +215,12 @@ services:
       - basket-service
       - order-service
 
+  commerce-web:
+    build: ../commerce-web
+    ports: ["3000:80"]
+    depends_on:
+      - commerce-bff
+
 volumes:
   postgres-data:
   kafka-data:
