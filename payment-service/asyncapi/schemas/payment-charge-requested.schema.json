@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "allOf": [
+    { "$ref": "event-envelope.schema.json" },
+    {
+      "properties": {
+        "eventType": { "const": "payment.charge.requested" },
+        "payload": {
+          "type": "object",
+          "required": ["orderId", "amountMinor", "currency", "token"],
+          "properties": {
+            "orderId": { "type": "string", "format": "uuid" },
+            "amountMinor": { "type": "integer", "minimum": 0 },
+            "currency": { "const": "INR" },
+            "token": { "enum": ["tok_success", "tok_declined", "tok_error"] }
+          },
+          "additionalProperties": true
+        }
+      }
+    }
+  ]
+}
