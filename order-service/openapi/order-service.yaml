@@ -1,0 +1,246 @@
+openapi: 3.1.0
+info:
+  description: "Checkout quotes, idempotent order placement, and saga status. Contracts\
+    \ are frozen in cross-repo-impact-study/docs/tasks/step8-order-service.md."
+  title: Order Service
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths:
+  /api/v1/checkout/quotes:
+    post:
+      operationId: createQuote
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateQuoteRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteResponse"
+          description: Checkout quote
+        "503":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: DOWNSTREAM_SERVICE_UNAVAILABLE
+      tags:
+      - checkout-controller
+  /api/v1/orders:
+    post:
+      operationId: placeOrder
+      parameters:
+      - in: header
+        name: Authorization
+        required: true
+        schema:
+          type: string
+      - description: Client-generated key; an identical retry returns the original
+          order
+        in: header
+        name: Idempotency-Key
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PlaceOrderRequest"
+        required: true
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+          description: Order accepted
+        "400":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: "IDEMPOTENCY_KEY_REQUIRED, UNSUPPORTED_PAYMENT_METHOD"
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: QUOTE_NOT_FOUND
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: "BASKET_VERSION_CHANGED, IDEMPOTENCY_KEY_REUSED"
+        "410":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: QUOTE_EXPIRED
+      tags:
+      - checkout-controller
+  /api/v1/orders/{orderId}:
+    get:
+      operationId: byId
+      parameters:
+      - in: path
+        name: orderId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+          description: Order status
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: ORDER_NOT_FOUND
+      tags:
+      - checkout-controller
+components:
+  schemas:
+    CreateQuoteRequest:
+      type: object
+      properties:
+        addressId:
+          type: string
+          format: uuid
+      required:
+      - addressId
+    EstimatedDelivery:
+      type: object
+      properties:
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+    Line:
+      type: object
+      properties:
+        name:
+          type: string
+        productId:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+          format: int32
+        unitPriceMinor:
+          type: integer
+          format: int64
+    OrderResponse:
+      type: object
+      properties:
+        currency:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Line"
+        orderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+        totalMinor:
+          type: integer
+          format: int64
+    Payment:
+      type: object
+      properties:
+        method:
+          type: string
+          minLength: 1
+        token:
+          type: string
+          minLength: 1
+    PlaceOrderRequest:
+      type: object
+      properties:
+        payment:
+          $ref: "#/components/schemas/Payment"
+        quoteId:
+          type: string
+          format: uuid
+      required:
+      - payment
+      - quoteId
+    Price:
+      type: object
+      properties:
+        currency:
+          type: string
+        discountMinor:
+          type: integer
+          format: int64
+        shippingMinor:
+          type: integer
+          format: int64
+        subtotalMinor:
+          type: integer
+          format: int64
+        taxMinor:
+          type: integer
+          format: int64
+        totalMinor:
+          type: integer
+          format: int64
+    ProblemDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          format: uri
+    QuoteResponse:
+      type: object
+      properties:
+        basketVersion:
+          type: integer
+          format: int64
+        estimatedDelivery:
+          $ref: "#/components/schemas/EstimatedDelivery"
+        expiresAt:
+          type: string
+          format: date-time
+        price:
+          $ref: "#/components/schemas/Price"
+        quoteId:
+          type: string
+          format: uuid

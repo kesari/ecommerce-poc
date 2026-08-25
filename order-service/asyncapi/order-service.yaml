@@ -1,0 +1,103 @@
+asyncapi: 2.6.0
+info:
+  title: Order Service
+  version: 1.0.0
+  description: >
+    Saga orchestrator. Payload shapes are frozen in
+    cross-repo-impact-study/docs/tasks/wave1-shared-contracts.md.
+defaultContentType: application/json
+
+channels:
+  inventory.reserve.requested.v1:
+    publish:
+      operationId: emitReserveRequested
+      message: { $ref: '#/components/messages/ReserveRequested' }
+  inventory.commit.requested.v1:
+    publish:
+      operationId: emitCommitRequested
+      message: { $ref: '#/components/messages/CommitRequested' }
+  inventory.release.requested.v1:
+    publish:
+      operationId: emitReleaseRequested
+      message: { $ref: '#/components/messages/ReleaseRequested' }
+  payment.charge.requested.v1:
+    publish:
+      operationId: emitChargeRequested
+      message: { $ref: '#/components/messages/ChargeRequested' }
+  payment.refund.requested.v1:
+    publish:
+      operationId: emitRefundRequested
+      message: { $ref: '#/components/messages/RefundRequested' }
+  order.confirmed.v1:
+    publish:
+      operationId: emitOrderConfirmed
+      message: { $ref: '#/components/messages/OrderConfirmed' }
+  order.cancelled.v1:
+    publish:
+      operationId: emitOrderCancelled
+      message: { $ref: '#/components/messages/OrderCancelled' }
+  inventory.reserved.v1:
+    subscribe:
+      operationId: onReserved
+      message: { $ref: '#/components/messages/Reserved' }
+  inventory.reservation-rejected.v1:
+    subscribe:
+      operationId: onReservationRejected
+      message: { $ref: '#/components/messages/ReservationRejected' }
+  inventory.committed.v1:
+    subscribe:
+      operationId: onCommitted
+      message: { $ref: '#/components/messages/Committed' }
+  inventory.commit-failed.v1:
+    subscribe:
+      operationId: onCommitFailed
+      message: { $ref: '#/components/messages/CommitFailed' }
+  inventory.released.v1:
+    subscribe:
+      operationId: onReleased
+      message: { $ref: '#/components/messages/Released' }
+  payment.charged.v1:
+    subscribe:
+      operationId: onCharged
+      message: { $ref: '#/components/messages/Charged' }
+  payment.declined.v1:
+    subscribe:
+      operationId: onDeclined
+      message: { $ref: '#/components/messages/Declined' }
+  payment.refunded.v1:
+    subscribe:
+      operationId: onRefunded
+      message: { $ref: '#/components/messages/Refunded' }
+
+components:
+  messages:
+    ReserveRequested:
+      payload: { $ref: './schemas/inventory.reserve.requested.v1.json' }
+    CommitRequested:
+      payload: { $ref: './schemas/inventory.commit.requested.v1.json' }
+    ReleaseRequested:
+      payload: { $ref: './schemas/inventory.release.requested.v1.json' }
+    ChargeRequested:
+      payload: { $ref: './schemas/payment.charge.requested.v1.json' }
+    RefundRequested:
+      payload: { $ref: './schemas/payment.refund.requested.v1.json' }
+    OrderConfirmed:
+      payload: { $ref: './schemas/order.confirmed.v1.json' }
+    OrderCancelled:
+      payload: { $ref: './schemas/order.cancelled.v1.json' }
+    Reserved:
+      payload: { $ref: './schemas/inventory.reserved.v1.json' }
+    ReservationRejected:
+      payload: { $ref: './schemas/inventory.reservation-rejected.v1.json' }
+    Committed:
+      payload: { $ref: './schemas/inventory.committed.v1.json' }
+    CommitFailed:
+      payload: { $ref: './schemas/inventory.commit-failed.v1.json' }
+    Released:
+      payload: { $ref: './schemas/inventory.released.v1.json' }
+    Charged:
+      payload: { $ref: './schemas/payment.charged.v1.json' }
+    Declined:
+      payload: { $ref: './schemas/payment.declined.v1.json' }
+    Refunded:
+      payload: { $ref: './schemas/payment.refunded.v1.json' }

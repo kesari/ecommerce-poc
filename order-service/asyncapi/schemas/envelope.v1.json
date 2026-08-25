@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "event envelope v1",
+  "type": "object",
+  "required": ["eventId", "eventType", "schemaVersion", "occurredAt", "producer",
+               "correlationId", "partitionKey", "payload"],
+  "properties": {
+    "eventId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "eventType": {"type": "string"},
+    "schemaVersion": {"const": 1},
+    "occurredAt": {"type": "string", "format": "date-time"},
+    "producer": {"type": "string"},
+    "correlationId": {"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"},
+    "causationId": {"oneOf": [{"type":"string","format":"uuid","pattern":"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"}, {"type": "null"}]},
+    "partitionKey": {"type": "string"},
+    "payload": {"type": "object"}
+  }
+}
