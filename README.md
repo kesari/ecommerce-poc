@@ -5,6 +5,9 @@ registration and login, catalog browsing, basket management, one coupon per
 basket, address selection, delivery and price quotes, credit-card token payment,
 and order tracking.
 
+The estate is intentionally realistic enough to support cross-repository
+change-impact analysis as well as end-to-end commerce experiments.
+
 [Project documentation](https://kesari.github.io/ecommerce-poc/) ·
 [Local setup](https://kesari.github.io/ecommerce-poc/running-locally.html) ·
 [API and event contracts](https://kesari.github.io/ecommerce-poc/contracts.html)
