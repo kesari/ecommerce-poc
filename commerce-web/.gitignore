@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.vite/
+.idea/
+.vscode/
+*.iml
+.DS_Store
+*.local
+*.log
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
