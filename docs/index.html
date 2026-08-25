@@ -3,39 +3,55 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Architecture and developer documentation for the e-commerce microservices POC.">
-  <title>E-commerce Microservices POC</title>
+  <meta name="description" content="An evidence-driven POC for cross-repository software change-impact analysis.">
+  <title>Cross-Repository Change-Impact POC</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <header>
     <nav>
-      <a href="index.html">Overview</a>
-      <a href="architecture.html">Architecture</a>
-      <a href="running-locally.html">Run locally</a>
-      <a href="contracts.html">Contracts</a>
+      <a href="index.html">Study</a>
+      <a href="architecture.html">Experiment</a>
+      <a href="running-locally.html">Run it</a>
+      <a href="contracts.html">Corpus &amp; scoring</a>
       <a href="https://github.com/kesari/ecommerce-poc">GitHub</a>
     </nav>
-    <h1>Commerce, split into clear boundaries.</h1>
-    <p class="lead">A Java 21 and React proof of concept demonstrating synchronous APIs, asynchronous workflows, service-owned data, observable execution, and reviewable contracts.</p>
+    <h1>What else breaks when this changes?</h1>
+    <p class="lead">A controlled experiment comparing agents, retrieval, compiler indexes, and system graphs on exhaustive cross-repository change-impact analysis.</p>
   </header>
   <main>
-    <section class="grid" aria-label="Capabilities">
-      <article class="card"><h2>Complete journey</h2><p>Sign up, sign in, browse, manage a basket and coupon, choose an address, review a quote, pay, and track an order.</p></article>
-      <article class="card"><h2>Async where useful</h2><p>Kafka decouples order, stock, payment, and shipment transitions. Outbox and inbox records support reliable delivery and idempotency.</p></article>
-      <article class="card"><h2>Contracts as code</h2><p>OpenAPI and AsyncAPI live beside their implementations. Springdoc drift tests keep REST controllers aligned with committed specifications.</p></article>
+    <section class="panel">
+      <h2>The decision</h2>
+      <p>Does a maintained code/system graph add enough incremental recall and evidence quality to justify its operational complexity over compiler indexing plus agent-driven retrieval?</p>
+      <p><strong>Commerce is the fixture estate, not the product.</strong> Its APIs, event chains, schemas, tests, caches, and browser client provide realistic dependencies for measuring each approach.</p>
+    </section>
+    <section class="grid" aria-label="Core thesis">
+      <article class="card"><h2>Retrieval</h2><p>Finds relevant code, documentation, configuration, history, and business context.</p></article>
+      <article class="card"><h2>Compiler truth</h2><p>Establishes exact symbol identity, definitions, references, implementations, and type relationships.</p></article>
+      <article class="card"><h2>System topology</h2><p>Connects REST providers and consumers, Kafka publishers and subscribers, schemas, and runtime dependencies.</p></article>
+      <article class="card"><h2>Agent reasoning</h2><p>Combines evidence, follows transitive effects, explains uncertainty, and proposes verification.</p></article>
     </section>
     <section class="panel">
-      <h2>Request path</h2>
-      <div class="flow" aria-label="Browser request flow"><span class="node">React SPA</span><span class="arrow">→</span><span class="node">Commerce BFF</span><span class="arrow">→</span><span class="node">Domain services</span><span class="arrow">→</span><span class="node">Service-owned PostgreSQL</span></div>
-      <p>REST serves interactive work. Kafka propagates longer-running state changes to inventory, payment, shipment, and order consumers.</p>
+      <h2>Experiment loop</h2>
+      <div class="flow" aria-label="Experiment sequence">
+        <span class="node">Freeze ground truth</span><span class="arrow">→</span>
+        <span class="node">Run contestants blind</span><span class="arrow">→</span>
+        <span class="node">Score evidence</span><span class="arrow">→</span>
+        <span class="node">Measure marginal value</span>
+      </div>
+      <p>False negatives dominate the decision. A single missed critical runtime consumer is worse than several reviewable false positives.</p>
+    </section>
+    <section class="panel">
+      <h2>Worked discriminator: REST-001</h2>
+      <p>Rename Account's address field from <code>postalCode</code> to <code>postcode</code>. Order silently binds a null value and publishes it through an unchanged Kafka event. Shipment then rejects the value and sends the event to its dead-letter queue. Static key matching misses the transitive failure; naive text matching reports the pass-through BFF incorrectly.</p>
+      <div class="flow"><span class="node">Account JSON</span><span class="arrow">→</span><span class="node">Order binding</span><span class="arrow">→</span><span class="node">Kafka value</span><span class="arrow">→</span><span class="node">Shipment DLQ</span></div>
     </section>
     <section class="grid" aria-label="Documentation">
-      <article class="card"><h3><a href="architecture.html">Explore the architecture</a></h3><p>Service responsibilities, communication choices, persistence, resilience, and observability.</p></article>
-      <article class="card"><h3><a href="running-locally.html">Run the full POC</a></h3><p>Start the estate with Docker Compose or work on one application at a time.</p></article>
-      <article class="card"><h3><a href="contracts.html">Browse contracts</a></h3><p>Find every REST and event contract in the repository.</p></article>
+      <article class="card"><h3><a href="architecture.html">Experiment design</a></h3><p>Contestants, evidence aggregation, hypotheses, and decision gates.</p></article>
+      <article class="card"><h3><a href="running-locally.html">Run the POC</a></h3><p>Execute the scorer and marginal-value comparison, then start the fixture estate.</p></article>
+      <article class="card"><h3><a href="contracts.html">Corpus and scoring</a></h3><p>Ground truth, answer schema, evidence tiers, metric weights, and current coverage.</p></article>
     </section>
   </main>
-  <footer>Built as a focused microservices proof of concept.</footer>
+  <footer>Cross-repository recall first. Evidence for every claim.</footer>
 </body>
 </html>

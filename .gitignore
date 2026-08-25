@@ -20,3 +20,6 @@ yarn-error.log*
 pnpm-debug.log*
 hs_err_pid*
 replay_pid*
+__pycache__/
+*.py[cod]
+.pytest_cache/

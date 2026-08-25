@@ -9,6 +9,24 @@ permissions:
   contents: read
 
 jobs:
+  impact-study:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - run: python3 -m unittest discover -s impact-study/harness/scoring -p 'test*.py'
+      - run: >-
+          python3 impact-study/harness/scoring/score.py score
+          --ground-truth impact-study/harness/records/REST-001.json
+          --answer impact-study/harness/answers/examples/REST-001-agent-only.json
+      - run: >-
+          python3 impact-study/harness/scoring/score.py marginal
+          --ground-truth impact-study/harness/records/REST-001.json
+          --baseline impact-study/harness/answers/examples/REST-001-agent-only.json
+          --candidate impact-study/harness/answers/examples/REST-001-gortex.json
+
   java:
     name: ${{ matrix.service }}
     runs-on: ubuntu-latest
