@@ -1,0 +1,105 @@
+{
+  "change_id": "REST-001",
+  "contestant": "gortex",
+  "elapsed_seconds": 110,
+  "tokens_consumed": 9100,
+  "freshness_score": null,
+  "operational_cost_score": null,
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "owns AddressRequest/AddressResponse records"
+      },
+      {
+        "name": "commerce-bff",
+        "evidence_tier": "contract_matched",
+        "evidence": "http::POST::/api/v1/addresses consumer edge"
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "consumes openapi:account.yaml AddressResponse for quote snapshot"
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "delivery-estimate input schema references AddressResponse"
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "evidence": "AddressForm.tsx submits postalCode field"
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "inferred",
+        "evidence": "platform owns compose config; possibly affected by env var naming"
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "record component renamed"
+      },
+      {
+        "fqn": "com.poc.account.api.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "record component renamed"
+      },
+      {
+        "fqn": "com.poc.order.domain.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "constructor mapping references postalCode"
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "provider/consumer path match"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "schema reference graph"
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AddressApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "asserts on postalCode in response JSON"
+      },
+      {
+        "repo": "order-service",
+        "suite": "QuoteAddressSnapshotTest",
+        "evidence_tier": "compiler",
+        "evidence": "constructs AddressSnapshot from Account response"
+      },
+      {
+        "repo": "commerce-platform",
+        "suite": "SignupToConfirmedOrderIT",
+        "evidence_tier": "inferred",
+        "evidence": "journey covers address entry and delivery estimate"
+      }
+    ]
+  },
+  "synthetic": true,
+  "synthetic_note": "Hand-written illustration of the answer format, not tool output. Predates the corrected REST-001 ground truth and asserts contract_matched evidence for commerce-bff and shipment-service, which the estate shows do not exist. Never score this as a result."
+}

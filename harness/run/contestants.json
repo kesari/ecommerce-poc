@@ -1,0 +1,24 @@
+{
+  "claude-agent": {
+    "label": "agent-only",
+    "description": "Claude Code headless, read-only tools, scoped to the estate copy",
+    "command": [
+      "claude", "-p", "@PROMPT_TEXT@",
+      "--output-format", "json",
+      "--add-dir", "@WORKDIR@",
+      "--allowedTools", "Read", "Grep", "Glob"
+    ],
+    "extract": "claude-json"
+  },
+  "codex-agent": {
+    "label": "agent-only",
+    "description": "Codex non-interactive, read-only sandbox, scoped to the estate copy",
+    "command": [
+      "codex", "exec",
+      "--cd", "@WORKDIR@",
+      "--sandbox", "read-only",
+      "@PROMPT_TEXT@"
+    ],
+    "extract": "raw"
+  }
+}

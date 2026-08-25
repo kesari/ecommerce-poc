@@ -2,7 +2,7 @@
   "change_id": "REST-001",
   "status": "frozen",
   "category": "rest_contract",
-  "title": "Address postalCode field renamed to postcode in the Account API",
+  "title": "Address postalCode field renamed to postcode",
   "query": "What breaks across repositories if the address JSON field postalCode is renamed to postcode in Account's address API?",
   "proposed_change": {
     "repo": "account-service",
@@ -13,49 +13,97 @@
       {
         "name": "account-service",
         "criticality": "critical",
-        "evidence_note": "Owns the field. api/dto/AddressRequest.java, api/dto/AddressResponse.java, domain/model/Address.java, infrastructure/persistence/row/AddressRow.java, application/AddressBookService.java, api/AddressController.java, mybatis/mapper/AddressMapper.xml, db/migration/V1__identity_schema.sql, and the generated openapi/account.yaml."
+        "evidence_note": "owns AddressRequest/AddressResponse records and the address OpenAPI"
       },
       {
         "name": "order-service",
         "criticality": "critical",
-        "evidence_note": "infrastructure/client/AccountClient.java declares record AddressResponse(..., String postalCode, ...) and reads response.postalCode() when building the quote address snapshot. After the rename Jackson binds null, so the quote and the resulting order carry a null postcode. Fails silently at runtime, not at compile time."
+        "evidence_note": "AccountClient.AddressResponse binds postalCode by name into AddressSnapshot; after the rename the property is silently null at runtime and no order-service test catches it"
+      },
+      {
+        "name": "shipment-service",
+        "criticality": "critical",
+        "evidence_note": "Transitive through order.confirmed.v1 VALUES, not keys. Order binds null from the renamed Account field into AddressSnapshot and emits \"postalCode\": null. OrderConfirmedListener passes it to DeliveryEstimator.estimate, whose [0-9]{4,10} guard throws UnsupportedDestinationException, so the listener routes to DLQ and no shipment is created for any confirmed order."
       },
       {
         "name": "commerce-web",
         "criticality": "contract_consumer",
-        "evidence_note": "src/api/types.ts declares postalCode on the address type; src/pages/CheckoutPage.tsx renders it at line 112 and binds the input at line 119."
+        "evidence_note": "CheckoutPage and api/types.ts submit and render postalCode against the BFF relay"
       }
     ],
     "affected_symbols": [
-      { "fqn": "com.poc.account.api.dto.AddressResponse", "repo": "account-service", "kind": "record", "severity": "critical_runtime_dependency" },
-      { "fqn": "com.poc.account.api.dto.AddressRequest", "repo": "account-service", "kind": "record", "severity": "critical_runtime_dependency" },
-      { "fqn": "com.poc.account.domain.model.Address", "repo": "account-service", "kind": "record", "severity": "contract_consumer" },
-      { "fqn": "com.poc.account.infrastructure.persistence.row.AddressRow", "repo": "account-service", "kind": "record", "severity": "contract_consumer" },
-      { "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse", "repo": "order-service", "kind": "record", "severity": "critical_runtime_dependency" }
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
     ],
     "affected_contracts": [
       {
         "type": "rest",
         "identifier": "POST /api/v1/addresses",
         "provider_repo": "account-service",
-        "consumer_repos": ["order-service", "commerce-web"],
-        "severity": "critical_runtime_dependency"
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "severity": "contract_consumer"
       },
       {
         "type": "openapi",
         "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
         "provider_repo": "account-service",
-        "consumer_repos": ["order-service", "commerce-web"],
-        "severity": "critical_runtime_dependency"
+        "consumer_repos": [
+          "order-service"
+        ],
+        "severity": "contract_consumer"
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode (value-level dependency)",
+        "provider_repo": "order-service",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "severity": "contract_consumer"
       }
     ],
     "required_tests": [
-      { "repo": "account-service", "suite": "AccountFlowComponentTest", "level": "integration" },
-      { "repo": "account-service", "suite": "OpenApiContractTest", "level": "contract" },
-      { "repo": "commerce-web", "suite": "app.test.tsx", "level": "unit" },
-      { "repo": "commerce-platform", "suite": "01-signup-to-confirmed-order/04-create-address", "level": "integration" }
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "commerce-platform",
+        "suite": "e2e-bruno/01-signup-to-confirmed-order",
+        "level": "contract"
+      }
     ],
     "known_incidents": []
   },
-  "notes": "Derived from the built estate, not from the design table. Design section 22 predicts Account, BFF, Order, Shipment, SPA; two of those are false positives and are excluded deliberately.\n\nEXCLUDED - commerce-bff. Zero postalCode references in src/main. api/AddressProxyController.java relays com.fasterxml.jackson.databind.JsonNode and never names a field, so the rename passes through with no compile break, no runtime break, and no code change. An untyped pass-through BFF is genuinely outside the blast radius of a field rename.\n\nEXCLUDED - shipment-service. Twelve files match a naive grep for postalCode, and none belong to the contract being changed. infrastructure/messaging/OrderConfirmedListener.java reads address.path(\"postalCode\") from order.confirmed.v1, whose payload is produced by order-service and frozen in wave1-shared-contracts.md; order keeps emitting postalCode because its own event contract does not change. api/dto/DeliveryEstimateRequest.java declares shipment's own request field, and order-service passes it a scalar via ShipmentClient Map.of(\"postalCode\", postalCode, ...). This is the discriminating case in the corpus: a true negative that looks like a strong positive to any tool matching on identifier text.\n\nCOVERAGE GAP - order-service has the most severe impact and no test that detects it. No test exercises AccountClient over HTTP; there is no WireMock or MockRestServiceServer in order-service/src/test, and every test substitutes FakeAccountPort. Only the platform e2e flow surfaces the break."
+  "notes": "Revision 3. Merged from two independent audits that each got one thing right.\n\nINCLUDED - shipment-service. Caught by the second audit; the first missed it. The rename does not change any key shipment reads: OrderConfirmedListener reads postalCode from order.confirmed.v1, produced by order-service, whose event contract is unchanged. The damage travels as a VALUE. Order's AccountClient binds null, order emits a null postcode, and shipment's PIN guard rejects it into the DLQ. Tracing contract keys alone reports this repository as unaffected, which is wrong.\n\nEXCLUDED - commerce-bff. Claimed by the second audit on the grounds that its OpenAPI description drifts. It does not: commerce-bff/openapi/bff.yaml contains zero postalCode references because AddressProxyController relays com.fasterxml.jackson.databind.JsonNode and the generated spec documents relayed bodies as generic objects. Zero references in src/main as well. An untyped pass-through BFF is genuinely outside the blast radius of a field rename.\n\nCOVERAGE GAP - order-service has the most severe direct impact and no test detects it. Nothing exercises AccountClient over HTTP; there is no WireMock or MockRestServiceServer in order-service/src/test and every test substitutes FakeAccountPort. The break is a silent null, not a compile error.\n\nThis record is the corpus's best discriminator. A tool matching on identifier text reports shipment for the wrong reason and commerce-bff wrongly; a tool tracing only static contract keys misses shipment entirely."
 }

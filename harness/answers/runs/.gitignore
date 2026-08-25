@@ -1,0 +1,2 @@
+# Raw agent stdout, written only when an answer fails to parse. Debug aid, not a result.
+*.raw.txt
