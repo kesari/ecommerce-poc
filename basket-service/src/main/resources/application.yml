@@ -1,0 +1,89 @@
+server:
+  port: ${SERVER_PORT:8083}
+
+spring:
+  application:
+    name: basket-service
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/basket_service}
+    username: ${DB_USERNAME:basket_service}
+    password: ${DB_PASSWORD:basket_service}
+  flyway:
+    locations: classpath:db/migration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    consumer:
+      group-id: basket-service
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+    listener:
+      ack-mode: record
+  data:
+    redis:
+      host: ${VALKEY_HOST:localhost}
+      port: ${VALKEY_PORT:6379}
+
+mybatis:
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  type-handlers-package: com.poc.basket.infrastructure.persistence.typehandler
+  configuration:
+    map-underscore-to-camel-case: true
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  writer-with-order-by-keys: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+catalog:
+  base-url: ${CATALOG_BASE_URL:http://localhost:8082}
+  connect-timeout: ${CATALOG_CONNECT_TIMEOUT:500ms}
+  read-timeout: ${CATALOG_READ_TIMEOUT:1500ms}
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      catalog:
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 20
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 50
+        slow-call-duration-threshold: 1500ms
+        slow-call-rate-threshold: 50
+        wait-duration-in-open-state: ${BREAKER_OPEN_WAIT:10s}
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.HttpClientErrorException
+  retry:
+    instances:
+      catalog:
+        max-attempts: 2
+        wait-duration: 100ms
+        retry-exceptions:
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.HttpClientErrorException

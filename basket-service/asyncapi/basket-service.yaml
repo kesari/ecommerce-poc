@@ -1,0 +1,27 @@
+asyncapi: 2.6.0
+info:
+  title: Basket Service
+  version: 1.0.0
+  description: >
+    Completes the user's active basket when an order is confirmed. Envelope and
+    payload shapes are frozen in
+    cross-repo-impact-study/docs/tasks/wave1-shared-contracts.md.
+    Basket produces no events in this POC.
+defaultContentType: application/json
+
+channels:
+  order.confirmed.v1:
+    description: >
+      Consumed. Deduplicated by envelope eventId in the inbox table; the update
+      is additionally guarded by status = 'ACTIVE', so replays are no-ops.
+    subscribe:
+      operationId: onOrderConfirmed
+      message:
+        $ref: '#/components/messages/OrderConfirmed'
+
+components:
+  messages:
+    OrderConfirmed:
+      name: order.confirmed
+      payload:
+        $ref: './schemas/order.confirmed.v1.json'
