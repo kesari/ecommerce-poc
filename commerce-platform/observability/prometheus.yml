@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets:
+          - localhost:9090
+
+  - job_name: commerce-services
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+          - commerce-bff:8080
+          - account-service:8081
+          - catalog-service:8082
+          - basket-service:8083
+          - inventory-service:8084
+          - order-service:8085
+          - payment-service:8086
+          - shipment-service:8087

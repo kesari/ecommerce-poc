@@ -1,0 +1,32 @@
+meta {
+  name: add basmati rice to basket
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/basket/items
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+params:query {
+  ~productId: 11111111-1111-4111-8111-111111111111
+}
+
+body:json {
+  {
+    "productId": "11111111-1111-4111-8111-111111111111",
+    "quantity": 2
+  }
+}
+
+tests {
+  test("item added", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

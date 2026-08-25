@@ -1,0 +1,28 @@
+meta {
+  name: mutate basket after quote
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/v1/basket/items
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "productId": "22222222-2222-4222-8222-222222222222",
+    "quantity": 1
+  }
+}
+
+tests {
+  test("item added", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

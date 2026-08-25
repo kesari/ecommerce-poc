@@ -1,0 +1,36 @@
+meta {
+  name: create address
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/v1/addresses
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+body:json {
+  {
+    "fullName": "E2E Runner",
+    "line1": "12 MG Road",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "postalCode": "560001",
+    "country": "IN"
+  }
+}
+
+script:post-response {
+  bru.setVar("addressId", res.getBody().id);
+}
+
+tests {
+  test("address created", function() {
+    expect(res.getStatus()).to.equal(201);
+  });
+}
