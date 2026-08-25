@@ -1,0 +1,109 @@
+{
+  "change_id": "REST-001",
+  "status": "frozen",
+  "category": "rest_contract",
+  "title": "Address postalCode field renamed to postcode",
+  "query": "What breaks across repositories if the address JSON field postalCode is renamed to postcode in Account's address API?",
+  "proposed_change": {
+    "repo": "account-service",
+    "diff": "-    String postalCode,\n+    String postcode,"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "account-service",
+        "criticality": "critical",
+        "evidence_note": "owns AddressRequest/AddressResponse records and the address OpenAPI"
+      },
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "AccountClient.AddressResponse binds postalCode by name into AddressSnapshot; after the rename the property is silently null at runtime and no order-service test catches it"
+      },
+      {
+        "name": "shipment-service",
+        "criticality": "critical",
+        "evidence_note": "Transitive through order.confirmed.v1 VALUES, not keys. Order binds null from the renamed Account field into AddressSnapshot and emits \"postalCode\": null. OrderConfirmedListener passes it to DeliveryEstimator.estimate, whose [0-9]{4,10} guard throws UnsupportedDestinationException, so the listener routes to DLQ and no shipment is created for any confirmed order."
+      },
+      {
+        "name": "commerce-web",
+        "criticality": "contract_consumer",
+        "evidence_note": "CheckoutPage and api/types.ts submit and render postalCode against the BFF relay"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "provider_repo": "account-service",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "severity": "contract_consumer"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "provider_repo": "account-service",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "severity": "contract_consumer"
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode (value-level dependency)",
+        "provider_repo": "order-service",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "commerce-platform",
+        "suite": "e2e-bruno/01-signup-to-confirmed-order",
+        "level": "contract"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Revision 3. Merged from two independent audits that each got one thing right.\n\nINCLUDED - shipment-service. Caught by the second audit; the first missed it. The rename does not change any key shipment reads: OrderConfirmedListener reads postalCode from order.confirmed.v1, produced by order-service, whose event contract is unchanged. The damage travels as a VALUE. Order's AccountClient binds null, order emits a null postcode, and shipment's PIN guard rejects it into the DLQ. Tracing contract keys alone reports this repository as unaffected, which is wrong.\n\nEXCLUDED - commerce-bff. Claimed by the second audit on the grounds that its OpenAPI description drifts. It does not: commerce-bff/openapi/bff.yaml contains zero postalCode references because AddressProxyController relays com.fasterxml.jackson.databind.JsonNode and the generated spec documents relayed bodies as generic objects. Zero references in src/main as well. An untyped pass-through BFF is genuinely outside the blast radius of a field rename.\n\nCOVERAGE GAP - order-service has the most severe direct impact and no test detects it. Nothing exercises AccountClient over HTTP; there is no WireMock or MockRestServiceServer in order-service/src/test and every test substitutes FakeAccountPort. The break is a silent null, not a compile error.\n\nThis record is the corpus's best discriminator. A tool matching on identifier text reports shipment for the wrong reason and commerce-bff wrongly; a tool tracing only static contract keys misses shipment entirely."
+}
