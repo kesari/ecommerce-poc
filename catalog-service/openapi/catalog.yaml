@@ -1,0 +1,171 @@
+openapi: 3.1.0
+info:
+  description: "Product identity, descriptions, prices, and active status."
+  title: Catalog Service
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths:
+  /api/v1/products:
+    get:
+      operationId: list
+      parameters:
+      - in: query
+        name: page
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - in: query
+        name: size
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 20
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductResponse"
+          description: Active products
+      tags:
+      - product-controller
+  /api/v1/products/batch-lookup:
+    post:
+      operationId: batchLookup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BatchLookupRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductResponse"
+          description: Known products from the requested identifiers
+      tags:
+      - product-controller
+  /api/v1/products/{productId}:
+    get:
+      operationId: get
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: Product detail
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_NOT_FOUND
+      tags:
+      - product-controller
+  /api/v1/products/{productId}/price:
+    put:
+      operationId: updatePrice
+      parameters:
+      - in: path
+        name: productId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriceUpdateRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+          description: Updated product
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: PRODUCT_NOT_FOUND
+      tags:
+      - product-controller
+components:
+  schemas:
+    BatchLookupRequest:
+      type: object
+      properties:
+        productIds:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 50
+          minItems: 0
+    PriceUpdateRequest:
+      type: object
+      properties:
+        priceMinor:
+          type: integer
+          format: int64
+    ProblemDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          format: uri
+    ProductResponse:
+      type: object
+      properties:
+        active:
+          type: boolean
+        currency:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+          format: uuid
+        imageUrl:
+          type: string
+        name:
+          type: string
+        priceMinor:
+          type: integer
+          format: int64
