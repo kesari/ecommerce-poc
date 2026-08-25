@@ -6,8 +6,8 @@ basket, address selection, delivery and price quotes, credit-card token payment,
 and order tracking.
 
 [Project documentation](https://kesari.github.io/ecommerce-poc/) ·
-[Local setup](docs/running-locally.html) ·
-[API and event contracts](docs/contracts.html)
+[Local setup](https://kesari.github.io/ecommerce-poc/running-locally.html) ·
+[API and event contracts](https://kesari.github.io/ecommerce-poc/contracts.html)
 
 ## Architecture
 
@@ -114,6 +114,11 @@ npm run build
 
 Committed OpenAPI documents are guarded by contract tests. Controller changes
 must be accompanied by a regenerated and reviewed specification.
+
+The `commerce-platform/e2e-bruno` collection covers the principal happy path
+and failure scenarios, including invalid coupons, stale quotes, unavailable
+stock, declined payments, idempotent order placement, and circuit-breaker
+recovery.
 
 ## POC boundaries
 
