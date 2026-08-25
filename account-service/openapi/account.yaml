@@ -1,0 +1,310 @@
+openapi: 3.1.0
+info:
+  description: "User accounts, authentication, and saved delivery addresses."
+  title: Account Service
+  version: 1.0.0
+servers:
+- description: Generated server url
+  url: http://localhost
+paths:
+  /api/v1/addresses:
+    get:
+      operationId: list
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AddressResponse"
+          description: Saved addresses for the authenticated user
+      tags:
+      - address-controller
+    post:
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressResponse"
+          description: Created address
+      tags:
+      - address-controller
+  /api/v1/addresses/{addressId}:
+    delete:
+      operationId: delete
+      parameters:
+      - in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: Deleted
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: ADDRESS_NOT_FOUND
+      tags:
+      - address-controller
+    get:
+      operationId: get
+      parameters:
+      - in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressResponse"
+          description: Address detail
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: ADDRESS_NOT_FOUND
+      tags:
+      - address-controller
+    put:
+      operationId: update
+      parameters:
+      - in: path
+        name: addressId
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddressRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AddressResponse"
+          description: Updated address
+        "404":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: ADDRESS_NOT_FOUND
+      tags:
+      - address-controller
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: Tokens issued
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: INVALID_CREDENTIALS
+      tags:
+      - auth-controller
+  /api/v1/auth/refresh:
+    post:
+      operationId: refresh
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefreshRequest"
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: Refreshed pair; old refresh token is revoked
+        "401":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: INVALID_CREDENTIALS
+      tags:
+      - auth-controller
+  /api/v1/auth/signup:
+    post:
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+          description: Account created and tokens issued
+        "409":
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: EMAIL_ALREADY_REGISTERED
+      tags:
+      - auth-controller
+components:
+  schemas:
+    AddressRequest:
+      type: object
+      properties:
+        city:
+          type: string
+          maxLength: 100
+          minLength: 0
+        country:
+          type: string
+          minLength: 1
+          pattern: "[A-Za-z]{2}"
+        fullName:
+          type: string
+          maxLength: 120
+          minLength: 0
+        line1:
+          type: string
+          maxLength: 200
+          minLength: 0
+        line2:
+          type: string
+          maxLength: 200
+          minLength: 0
+        phoneNumber:
+          type: string
+          maxLength: 20
+          minLength: 0
+        postalCode:
+          type: string
+          maxLength: 12
+          minLength: 3
+        state:
+          type: string
+          maxLength: 100
+          minLength: 0
+    AddressResponse:
+      type: object
+      properties:
+        city:
+          type: string
+        country:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        fullName:
+          type: string
+        id:
+          type: string
+          format: uuid
+        line1:
+          type: string
+        line2:
+          type: string
+        phoneNumber:
+          type: string
+        postalCode:
+          type: string
+        state:
+          type: string
+        updatedAt:
+          type: string
+          format: date-time
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+    ProblemDetail:
+      type: object
+      properties:
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+        properties:
+          type: object
+          additionalProperties:
+            type: object
+        status:
+          type: integer
+          format: int32
+        title:
+          type: string
+        type:
+          type: string
+          format: uri
+    RefreshRequest:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+          minLength: 1
+    SignupRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          maxLength: 200
+          minLength: 0
+        password:
+          type: string
+          maxLength: 128
+          minLength: 8
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        expiresInSeconds:
+          type: integer
+          format: int64
+        refreshToken:
+          type: string
+        tokenType:
+          type: string

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poc.account.infrastructure.persistence.mapper.AddressMapper">
+
+    <sql id="columns">
+        id, user_id AS userId, full_name AS fullName, line1, line2, city, state,
+        postal_code AS postalCode, country, phone_number AS phoneNumber,
+        created_at AS createdAt, updated_at AS updatedAt
+    </sql>
+
+    <insert id="insert">
+        INSERT INTO addresses (id, user_id, full_name, line1, line2, city, state,
+                               postal_code, country, phone_number, created_at, updated_at)
+        VALUES (#{id}, #{userId}, #{fullName}, #{line1}, #{line2}, #{city}, #{state},
+                #{postalCode}, #{country}, #{phoneNumber}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <select id="findByIdAndUserId" resultType="com.poc.account.infrastructure.persistence.row.AddressRow">
+        SELECT <include refid="columns"/>
+        FROM addresses
+        WHERE id = #{id} AND user_id = #{userId}
+    </select>
+
+    <select id="findAllByUserId" resultType="com.poc.account.infrastructure.persistence.row.AddressRow">
+        SELECT <include refid="columns"/>
+        FROM addresses
+        WHERE user_id = #{userId}
+        ORDER BY created_at, id
+    </select>
+
+    <update id="update">
+        UPDATE addresses
+        SET full_name = #{fullName},
+            line1 = #{line1},
+            line2 = #{line2},
+            city = #{city},
+            state = #{state},
+            postal_code = #{postalCode},
+            country = #{country},
+            phone_number = #{phoneNumber},
+            updated_at = now()
+        WHERE id = #{id} AND user_id = #{userId}
+    </update>
+
+    <delete id="deleteByIdAndUserId">
+        DELETE FROM addresses
+        WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+</mapper>
