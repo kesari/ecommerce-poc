@@ -1,0 +1,37 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: commerce-bff
+  data:
+    redis:
+      host: ${VALKEY_HOST:localhost}
+      port: ${VALKEY_PORT:6379}
+      timeout: ${VALKEY_TIMEOUT:500ms}
+
+downstream:
+  account:  ${ACCOUNT_BASE_URL:http://localhost:8081}
+  catalog:  ${CATALOG_BASE_URL:http://localhost:8082}
+  basket:   ${BASKET_BASE_URL:http://localhost:8083}
+  order:    ${ORDER_BASE_URL:http://localhost:8085}
+
+auth:
+  jwt-secret: ${AUTH_JWT_SECRET:poc-dev-only-secret-key-change-me-0123456789abcdefghijklmnopqrstuv}
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+  writer-with-order-by-keys: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
