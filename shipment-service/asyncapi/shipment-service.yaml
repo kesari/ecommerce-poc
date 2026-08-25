@@ -1,0 +1,34 @@
+asyncapi: 2.6.0
+info:
+  title: Shipment Service
+  version: 1.0.0
+  description: >
+    Creates a shipment when an order is confirmed. Envelope and payload shapes
+    are frozen in cross-repo-impact-study/docs/tasks/wave1-shared-contracts.md.
+    shipment.delivery-updated.v1 is out of Wave 1 scope.
+defaultContentType: application/json
+
+channels:
+  order.confirmed.v1:
+    description: Consumed. Deduplicated by envelope eventId; replays are no-ops.
+    subscribe:
+      operationId: onOrderConfirmed
+      message:
+        $ref: '#/components/messages/OrderConfirmed'
+  shipment.created.v1:
+    description: Produced through the transactional outbox, keyed by orderId.
+    publish:
+      operationId: emitShipmentCreated
+      message:
+        $ref: '#/components/messages/ShipmentCreated'
+
+components:
+  messages:
+    OrderConfirmed:
+      name: order.confirmed
+      payload:
+        $ref: './schemas/order.confirmed.v1.json'
+    ShipmentCreated:
+      name: shipment.created
+      payload:
+        $ref: './schemas/shipment.created.v1.json'
