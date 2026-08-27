@@ -3,62 +3,62 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Experiment design · Cross-Repository Change-Impact POC</title>
+  <title>The comparison · Cross-Repository Change-Impact POC</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <header>
-    <nav><a href="index.html">Study</a><a href="architecture.html">Experiment</a><a href="running-locally.html">Run it</a><a href="contracts.html">Corpus &amp; scoring</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
-    <h1>Experiment design</h1>
-    <p class="lead">Test each source of change-impact evidence independently, then ask whether the combined architecture earns its complexity.</p>
+    <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
+    <h1>Gortex, Graphify, SCIP, and agents</h1>
+    <p class="lead">They solve different parts of the same problem. That distinction matters more than their feature lists.</p>
   </header>
   <main>
-    <section class="panel">
-      <h2>Candidate architecture</h2>
-      <div class="flow"><span class="node">Proposed change</span><span class="arrow">→</span><span class="node">Agent</span><span class="arrow">→</span><span class="node">Retrieval · SCIP · system graph</span><span class="arrow">→</span><span class="node">Evidence aggregation</span><span class="arrow">→</span><span class="node">Change contract</span></div>
-      <p>The study does not assume that a graph is inherently correct. An edge should be persisted only when traversing it materially improves a dependency or topology question that retrieval cannot answer reliably.</p>
-    </section>
-    <section class="panel">
-      <h2>Independent contestants</h2>
-      <table>
-        <thead><tr><th>Contestant</th><th>Expected strength</th><th>Expected gap</th></tr></thead>
-        <tbody>
-          <tr><td>Agent-only</td><td>Semantic and architectural reasoning; fresh local changes</td><td>Recall depends on search decisions</td></tr>
-          <tr><td>Hybrid retrieval</td><td>Relevant code, documents, history, and configuration</td><td>Similarity does not prove dependency</td></tr>
-          <tr><td>SCIP</td><td>Exact compiler-derived symbol structure</td><td>Runtime contracts are not always symbol edges</td></tr>
-          <tr><td>Gortex</td><td>REST, event, schema, and service blast radius</td><td>Graph freshness and operating cost</td></tr>
-          <tr><td>Graphify</td><td>Lightweight persistent structural context</td><td>Inferred edges may not improve authoritative recall</td></tr>
-          <tr><td>Combined</td><td>Compiler truth plus topology, retrieval, and reasoning</td><td>Must justify its total complexity</td></tr>
-        </tbody>
-      </table>
-    </section>
     <section class="grid">
-      <article class="card"><h2>H1 · Compiler truth</h2><p>SCIP should provide the highest-confidence symbol-level dependency evidence.</p></article>
-      <article class="card"><h2>H2 · System topology</h2><p>Gortex should improve recall for cross-service relationships that language indexes cannot represent.</p></article>
-      <article class="card"><h2>H3 · Agent reasoning</h2><p>Agents should explain business and architectural effects well but remain non-exhaustive alone.</p></article>
-      <article class="card"><h2>H4 · Graph value</h2><p>A broad graph must demonstrate marginal findings, not merely reproduce retrieval results.</p></article>
-      <article class="card"><h2>H5 · Combined evidence</h2><p>The best answer may aggregate different evidence sources with explicit confidence.</p></article>
+      <article class="card"><h2>SCIP tells you what is statically true.</h2><p>The compiler knows that two references point to the same Java symbol. This is the strongest evidence for code-level relationships.</p></article>
+      <article class="card"><h2>Gortex tells you what may be affected.</h2><p>It joins service-level relationships such as HTTP consumers, endpoint providers, topic publishers, and topic subscribers.</p></article>
+      <article class="card"><h2>Graphify gives an agent a graph to explore.</h2><p>It creates broad structural context from code, documents, configuration, and concepts, with a relatively simple setup.</p></article>
+      <article class="card"><h2>Claude and Codex investigate.</h2><p>They search, connect evidence, understand business meaning, and explain the result—but their completeness depends on where they searched.</p></article>
     </section>
     <section class="panel">
-      <h2>Decision gates</h2>
+      <h2>Gortex / Graphify comparison</h2>
       <table>
-        <thead><tr><th>Gate</th><th>Question</th></tr></thead>
+        <thead><tr><th>Question</th><th>Gortex</th><th>Graphify</th></tr></thead>
         <tbody>
-          <tr><td>Deterministic correctness</td><td>Are symbol and structural claims exact?</td></tr>
-          <tr><td>Incremental recall</td><td>Does topology find critical consumers missed by simpler approaches?</td></tr>
-          <tr><td>False-negative reduction</td><td>Are critical misses materially lower?</td></tr>
-          <tr><td>Precision and provenance</td><td>Can engineers verify why every finding exists?</td></tr>
-          <tr><td>Freshness</td><td>Do uncommitted and newly changed relationships appear quickly?</td></tr>
-          <tr><td>Value versus cost</td><td>Is the marginal gain worth indexing, storage, daemons, and maintenance?</td></tr>
+          <tr><td>What is it?</td><td>A specialized code and system dependency graph</td><td>A broad graph that gives an agent persistent context</td></tr>
+          <tr><td>What does it model best?</td><td>Calls, REST, Kafka, schemas, and service dependencies</td><td>Code structure, docs, config, concepts, and communities</td></tr>
+          <tr><td>How is impact found?</td><td>Blast radius is a core operation</td><td>The agent traverses the graph and reasons</td></tr>
+          <tr><td>REST and Kafka?</td><td>First-class provider and consumer edges</td><td>Usually extracted context or inference</td></tr>
+          <tr><td>Main advantage</td><td>Stronger cross-service topology</td><td>Simple, portable, transparent, and easy to visualize</td></tr>
+          <tr><td>Main risk</td><td>Indexing, freshness, operational cost, and platform maturity</td><td>May not be authoritative enough for exhaustive blast radius</td></tr>
+          <tr><td>Role in this POC</td><td>Main graph candidate</td><td>Lightweight graph control</td></tr>
         </tbody>
       </table>
     </section>
     <section class="panel">
-      <h2>Fixture estate</h2>
-      <p>The React and Java commerce system supplies the test surface: Account, Catalog, Basket, Inventory, Order, Payment, Shipment, BFF, Web, and local platform repositories. REST handles immediate user interactions; Kafka carries order, inventory, payment, and shipment state. Each service owns PostgreSQL data, while Valkey remains a non-authoritative cache.</p>
-      <p><a href="https://github.com/kesari/ecommerce-poc/blob/main/impact-study/docs/fixtures/ecommerce-microservices-poc-design.md">Read the complete fixture design</a>.</p>
+      <h2>Where each approach should win</h2>
+      <table>
+        <thead><tr><th>Change</th><th>Likely strongest approach</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Rename a Java method</td><td>SCIP</td><td>It has compiler-level symbol identity</td></tr>
+          <tr><td>Change a shared Java type</td><td>SCIP</td><td>It can find exact consumers across indexed repositories</td></tr>
+          <tr><td>Rename a REST field</td><td>Gortex plus agent</td><td>The dependency crosses serialization and service boundaries</td></tr>
+          <tr><td>Change a Kafka event</td><td>Gortex plus agent</td><td>Publishers and consumers may not share code symbols</td></tr>
+          <tr><td>Change a business rule</td><td>Claude / Codex</td><td>The meaning may live in code, docs, configuration, and history</td></tr>
+          <tr><td>Get the most complete answer</td><td>Combined</td><td>No single evidence source covers every dependency type</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>The architecture we are testing</h2>
+      <div class="flow"><span class="node">SCIP</span><span class="arrow">+</span><span class="node">Gortex</span><span class="arrow">+</span><span class="node">Git, docs, tests</span><span class="arrow">→</span><span class="node">Claude / Codex</span><span class="arrow">→</span><span class="node">Evidence-backed change report</span></div>
+      <p>The agent is the reasoner, not the source of truth. Exact code evidence, service topology, and semantic reasoning stay distinguishable in the final answer.</p>
+    </section>
+    <section class="panel">
+      <h2>What would justify Gortex?</h2>
+      <p>It must find critical REST, Kafka, schema, or cross-language consumers that SCIP plus intelligent agent search misses. If it cannot do that reliably, the extra graph layer is difficult to justify.</p>
+      <p><a href="https://github.com/kesari/ecommerce-poc/blob/main/impact-study/docs/research/gortex-vs-graphify-vs-scip-vs-agent-cross-repo-change-impact.md">Read the original detailed comparison</a>.</p>
     </section>
   </main>
-  <footer><a href="index.html">Back to study overview</a></footer>
+  <footer><a href="index.html">Back to the overview</a></footer>
 </body>
 </html>

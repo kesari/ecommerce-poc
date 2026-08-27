@@ -3,55 +3,65 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="An evidence-driven POC for cross-repository software change-impact analysis.">
+  <meta name="description" content="A simple comparison of tools for finding cross-repository software change impact.">
   <title>Cross-Repository Change-Impact POC</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <header>
     <nav>
-      <a href="index.html">Study</a>
-      <a href="architecture.html">Experiment</a>
+      <a href="index.html">Overview</a>
+      <a href="architecture.html">The comparison</a>
       <a href="running-locally.html">Run it</a>
-      <a href="contracts.html">Corpus &amp; scoring</a>
+      <a href="contracts.html">Test data &amp; scores</a>
       <a href="https://github.com/kesari/ecommerce-poc">GitHub</a>
     </nav>
-    <h1>What else breaks when this changes?</h1>
-    <p class="lead">A controlled experiment comparing agents, retrieval, compiler indexes, and system graphs on exhaustive cross-repository change-impact analysis.</p>
+    <h1>If I change this, what else breaks?</h1>
+    <p class="lead">We built a small e-commerce system to compare four ways of finding change impact across repositories.</p>
   </header>
   <main>
     <section class="panel">
-      <h2>The decision</h2>
-      <p>Does a maintained code/system graph add enough incremental recall and evidence quality to justify its operational complexity over compiler indexing plus agent-driven retrieval?</p>
-      <p><strong>Commerce is the fixture estate, not the product.</strong> Its APIs, event chains, schemas, tests, caches, and browser client provide realistic dependencies for measuring each approach.</p>
-    </section>
-    <section class="grid" aria-label="Core thesis">
-      <article class="card"><h2>Retrieval</h2><p>Finds relevant code, documentation, configuration, history, and business context.</p></article>
-      <article class="card"><h2>Compiler truth</h2><p>Establishes exact symbol identity, definitions, references, implementations, and type relationships.</p></article>
-      <article class="card"><h2>System topology</h2><p>Connects REST providers and consumers, Kafka publishers and subscribers, schemas, and runtime dependencies.</p></article>
-      <article class="card"><h2>Agent reasoning</h2><p>Combines evidence, follows transitive effects, explains uncertainty, and proposes verification.</p></article>
+      <h2>The idea</h2>
+      <p>The shop is not the product. It is realistic test data: separate services connected through Java code, REST APIs, Kafka events, schemas, and a React client.</p>
+      <p>We make one change, ask each approach what will be affected, and compare its answer with a frozen correct answer.</p>
     </section>
     <section class="panel">
-      <h2>Experiment loop</h2>
-      <div class="flow" aria-label="Experiment sequence">
-        <span class="node">Freeze ground truth</span><span class="arrow">→</span>
-        <span class="node">Run contestants blind</span><span class="arrow">→</span>
-        <span class="node">Score evidence</span><span class="arrow">→</span>
-        <span class="node">Measure marginal value</span>
+      <h2>The four approaches</h2>
+      <table>
+        <thead><tr><th>Approach</th><th>Think of it as</th><th>Best at</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SCIP</strong></td><td>A compiler-accurate map</td><td>Exact code definitions and references</td></tr>
+          <tr><td><strong>Gortex</strong></td><td>A map of service communication</td><td>REST, Kafka, schemas, and blast radius</td></tr>
+          <tr><td><strong>Graphify</strong></td><td>A broad, lightweight graph</td><td>Quick visual context across code and docs</td></tr>
+          <tr><td><strong>Claude / Codex</strong></td><td>An investigator</td><td>Searching, reasoning, and explaining meaning</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Why one approach is not enough</h2>
+      <div class="flow" aria-label="Combined approach">
+        <span class="node">SCIP: code truth</span><span class="arrow">+</span>
+        <span class="node">Gortex: system map</span><span class="arrow">+</span>
+        <span class="node">Agent: reasoning</span>
       </div>
-      <p>False negatives dominate the decision. A single missed critical runtime consumer is worse than several reviewable false positives.</p>
+      <p>Graphify is the lightweight control. It helps us test whether a simpler graph provides enough value before adopting a specialized system graph.</p>
     </section>
     <section class="panel">
-      <h2>Worked discriminator: REST-001</h2>
-      <p>Rename Account's address field from <code>postalCode</code> to <code>postcode</code>. Order silently binds a null value and publishes it through an unchanged Kafka event. Shipment then rejects the value and sends the event to its dead-letter queue. Static key matching misses the transitive failure; naive text matching reports the pass-through BFF incorrectly.</p>
-      <div class="flow"><span class="node">Account JSON</span><span class="arrow">→</span><span class="node">Order binding</span><span class="arrow">→</span><span class="node">Kafka value</span><span class="arrow">→</span><span class="node">Shipment DLQ</span></div>
+      <h2>A change that looks small</h2>
+      <p>Account renames <code>postalCode</code> to <code>postcode</code>.</p>
+      <div class="flow"><span class="node">Account JSON</span><span class="arrow">→</span><span class="node">Order gets null</span><span class="arrow">→</span><span class="node">Kafka carries null</span><span class="arrow">→</span><span class="node">Shipment DLQ</span></div>
+      <p>Shipment does not directly reference Account's field. Finding that transitive failure is the point of the POC.</p>
     </section>
-    <section class="grid" aria-label="Documentation">
-      <article class="card"><h3><a href="architecture.html">Experiment design</a></h3><p>Contestants, evidence aggregation, hypotheses, and decision gates.</p></article>
-      <article class="card"><h3><a href="running-locally.html">Run the POC</a></h3><p>Execute the scorer and marginal-value comparison, then start the fixture estate.</p></article>
-      <article class="card"><h3><a href="contracts.html">Corpus and scoring</a></h3><p>Ground truth, answer schema, evidence tiers, metric weights, and current coverage.</p></article>
+    <section class="panel">
+      <h2>The decision</h2>
+      <p><strong>Does Gortex find important cross-service dependencies that SCIP plus a good coding agent misses often enough to justify another graph platform?</strong></p>
+    </section>
+    <section class="grid">
+      <article class="card"><h3><a href="architecture.html">See the comparison</a></h3><p>A clear Gortex, Graphify, SCIP, and agent comparison.</p></article>
+      <article class="card"><h3><a href="running-locally.html">Run it</a></h3><p>Three commands to test and score the worked example.</p></article>
+      <article class="card"><h3><a href="contracts.html">Understand the score</a></h3><p>What we count, why missed dependencies matter most, and current progress.</p></article>
     </section>
   </main>
-  <footer>Cross-repository recall first. Evidence for every claim.</footer>
+  <footer>Find the blast radius. Show the evidence.</footer>
 </body>
 </html>

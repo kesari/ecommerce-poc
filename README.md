@@ -1,131 +1,92 @@
 # Cross-Repository Change-Impact POC
 
-An evidence-driven experiment for answering a difficult engineering question:
+This POC asks one practical question:
 
-> When a change starts in one repository, which other repositories, contracts,
-> symbols, and tests are actually affected—and how do we know the answer is
-> complete?
+> **If I change something in one repository, what else will break?**
 
-The e-commerce system in this repository is the **fixture estate**, not the
-research goal. Its REST APIs, Kafka events, database schemas, caches, shared
-business values, and browser client create realistic dependencies for comparing
-change-impact approaches.
+The e-commerce services are test data. They give us realistic REST calls, Kafka
+events, database schemas, frontend consumers, and transitive failures to find.
 
-[Study documentation](https://kesari.github.io/ecommerce-poc/) ·
-[Experiment design](https://kesari.github.io/ecommerce-poc/architecture.html) ·
-[Run the study](https://kesari.github.io/ecommerce-poc/running-locally.html) ·
-[Corpus and scoring](https://kesari.github.io/ecommerce-poc/contracts.html)
+[Simple overview](https://kesari.github.io/ecommerce-poc/) ·
+[How the comparison works](https://kesari.github.io/ecommerce-poc/architecture.html) ·
+[Run it](https://kesari.github.io/ecommerce-poc/running-locally.html) ·
+[Test data and scores](https://kesari.github.io/ecommerce-poc/contracts.html)
 
-## Primary decision
+## The four approaches in plain English
 
-Determine whether a maintained code/system graph adds enough incremental
-cross-repository recall and evidence quality to justify its operational cost
-over compiler indexing plus agent-driven retrieval.
+| Approach | Simple explanation | Best at | Main limitation |
+|---|---|---|---|
+| **SCIP / Sourcegraph** | A compiler-accurate map of the code | Exact definitions, references, and shared-library usage | REST, Kafka, and serialized data are not always code references |
+| **Gortex** | A map of how services communicate | Cross-repo REST, event, schema, and blast-radius questions | More infrastructure and maturity risk |
+| **Graphify** | A broad, lightweight graph for an agent to explore | Quick setup, visualization, code plus documentation context | Less authoritative for exhaustive impact analysis |
+| **Claude Code / Codex** | An investigator that searches and reasons while doing the task | Meaning, business rules, fresh changes, and explanations | Cannot prove it searched everything |
 
-The working thesis is:
+The POC is not trying to pick one tool for every job.
 
-> **Retrieval finds relevant knowledge. Graphs encode dependency topology.
-> Compilers establish deterministic truth. Agents reason across all three.**
-
-The experiment optimizes for low false-negative rates. Missing one critical
-runtime consumer is worse than returning several evidence-backed false
-positives.
-
-## Contestants
-
-| Contestant | What it tests |
-|---|---|
-| Agent-only | Dynamic search and semantic reasoning with repository-native tools |
-| Hybrid retrieval | Agent reasoning augmented by lexical and semantic retrieval |
-| SCIP | Compiler-derived symbol identity, definitions, and references |
-| Gortex | Cross-service REST, event, schema, and blast-radius topology |
-| Graphify | A lighter persistent structural and semantic graph |
-| Combined | Retrieval, compiler truth, system topology, and agent reasoning together |
-
-The harness currently has executable Claude and Codex agent-only runners. Its
-answer schema and scorer support all six contestants, and worked answers
-demonstrate agent-only and Gortex scoring. Adding the remaining integrations is
-part of the POC rather than a completed claim.
-
-## Experiment model
-
-```mermaid
-flowchart LR
-    Change[Proposed change] --> Contestants[Independent contestants]
-    Estate[E-commerce fixture estate] --> Contestants
-    Truth[Frozen ground truth] --> Score[Deterministic scorer]
-    Contestants --> Answers[Evidence-backed answers]
-    Answers --> Score
-    Score --> Decision[Recall · precision · provenance · freshness · cost]
-```
-
-Every scenario freezes ground truth before contestants run. An answer identifies
-affected repositories, symbols, contracts, and tests, with an evidence tier for
-each finding:
-
-| Evidence tier | Meaning |
-|---|---|
-| `compiler` | Compiler/indexer truth; very high confidence |
-| `extracted` | Direct structural evidence from code or configuration |
-| `contract_matched` | Provider/consumer relationship matched through a contract |
-| `inferred` | Semantic inference requiring review |
-| `hypothesis` | Lead to investigate, not established impact |
-
-The weighted score emphasizes cross-repository recall (35%) and contract recall
-(20%), followed by precision, evidence quality, freshness, latency, and
-operational cost. Critical misses are also reported independently so a composite
-score cannot hide them.
-
-## Worked discriminator: REST-001
-
-The current frozen record asks:
-
-> What breaks if Account renames address JSON field `postalCode` to
-> `postcode`?
-
-The direct provider is Account, but the actual blast radius crosses repository
-and contract boundaries:
+The likely useful combination is:
 
 ```text
-account-service
-  └─ Address JSON response
-       ├─ commerce-web consumes the field
-       └─ order-service binds it by name
-            └─ order.confirmed.v1 carries the now-null value
-                 └─ shipment-service rejects it and routes the event to its DLQ
+SCIP                 Gortex               Claude / Codex
+exact code truth  +  service topology  +  reasoning and explanation
 ```
 
-The Shipment dependency is value-level and transitive: contract-key matching
-alone misses it. The pass-through BFF contains no typed field reference and is
-correctly excluded. This separates topology-aware analysis from simple grep.
+Graphify is the lightweight control: it tells us how much value a simpler broad
+graph adds before we pay for a specialized system graph.
 
-## Repository map
+## Gortex / Graphify comparison
+
+| Question | Gortex | Graphify |
+|---|---|---|
+| What kind of graph? | Purpose-built code and system dependency graph | Broad code, docs, config, and concept graph |
+| REST and Kafka links | First-class provider/consumer relationships | Usually extracted or inferred context |
+| Blast-radius analysis | Core use case | Agent traverses the graph and reasons |
+| Evidence | Strong structural and contract provenance | Clear extracted-versus-inferred provenance |
+| Adoption | More setup and operational cost | Simpler and more portable |
+| Best role in this POC | Main system-topology candidate | Lightweight graph control |
+
+The deciding question is simple:
+
+> **Does Gortex find important cross-service dependencies that SCIP plus a good
+> coding agent misses often enough to justify another graph platform?**
+
+## One example
+
+Suppose Account renames an address JSON field:
 
 ```text
-ecommerce-poc/
-├── impact-study/             experiment definition, research, corpus, and harness
-│   ├── docs/
-│   └── harness/
-├── account-service/          fixture repositories
-├── basket-service/
-├── catalog-service/
-├── inventory-service/
-├── order-service/
-├── payment-service/
-├── shipment-service/
-├── commerce-bff/
-├── commerce-web/
-├── commerce-platform/        local infrastructure and end-to-end scenarios
-└── docs/                     published GitHub Pages site
+postalCode  →  postcode
 ```
 
-The fixture repositories retain their original histories in this assembled
-repository, allowing contestants to use source, contracts, tests, configuration,
-and history as evidence.
+A text search finds Account and the web app. An exact code index finds typed Java
+references. But the real failure is transitive:
 
-## Run the harness
+```text
+Account JSON
+    ↓
+Order silently binds postalCode as null
+    ↓
+Order publishes an unchanged Kafka event containing the null value
+    ↓
+Shipment rejects the value and sends the event to its DLQ
+```
 
-The scorer uses only the Python standard library:
+Shipment never references Account's field directly. This is the kind of
+cross-repository impact the POC is designed to measure.
+
+## How the experiment works
+
+1. Write down the correct blast radius before running any tool.
+2. Give every contestant the same change question and repository estate.
+3. Compare what each contestant found against the frozen answer.
+4. Penalize missed critical dependencies more heavily than extra suggestions.
+5. Record the evidence behind every finding.
+6. Measure what the graph found that the simpler baseline did not.
+
+The current worked scenario is `REST-001`. The planned study expands to 30
+changes covering Java symbols, shared libraries, REST, Kafka, schemas,
+configuration, and business rules.
+
+## Run the scorer
 
 ```bash
 cd impact-study/harness
@@ -141,41 +102,22 @@ python3 scoring/score.py marginal \
   --candidate answers/examples/REST-001-gortex.json
 ```
 
-See the
-[architectural proposal](impact-study/docs/architecture/cross-repo-change-impact-architectural-poc-proposal.md)
-for hypotheses, decision gates, and the target 30-record corpus.
+## Repository layout
 
-## Run the fixture estate
-
-Docker Compose starts the React storefront, BFF, domain services, PostgreSQL,
-Kafka, Valkey, and observability stack:
-
-```bash
-docker compose -f commerce-platform/compose.yaml up --build -d
+```text
+impact-study/       research, frozen answers, runner, and scorer
+*-service/          independent Java fixture repositories
+commerce-bff/       browser-facing backend fixture
+commerce-web/       React consumer fixture
+commerce-platform/  Kafka, PostgreSQL, Valkey, observability, and E2E tests
+docs/               the GitHub Pages site
 ```
 
-- Storefront: `http://localhost:3000`
-- BFF Swagger UI: `http://localhost:8080/swagger-ui.html`
-- Jaeger: `http://localhost:16686`
-- Prometheus: `http://localhost:9090`
+The harness currently runs Claude and Codex as agent-only baselines. The answer
+format supports SCIP, Gortex, Graphify, hybrid retrieval, and the combined
+approach; those integrations and the remaining corpus are the next POC work.
 
-The Compose credentials and JWT secret are local fixtures only.
-
-## Current scope
-
-Implemented:
-
-- realistic Java 21/Spring Boot and React fixture estate;
-- REST, OpenAPI, Kafka, AsyncAPI, Flyway, MyBatis, Valkey, and circuit-breaker surfaces;
-- frozen-record-first JSON schemas and deterministic scorer;
-- miss severity, evidence provenance, marginal-value comparison, aggregation,
-  blind agent runner, and example answers;
-- CI for all fixture services and the web application.
-
-Still required for the full study:
-
-- expand the corpus from the worked record to the planned 30 changes, including
-  shared-library, database-schema, and less-greppable scenarios;
-- integrate and run hybrid retrieval, SCIP, Gortex, Graphify, and the combined stack;
-- execute fresh-change overlays and collect latency and operational-cost data;
-- apply the decision gates and publish the architecture recommendation.
+For the full rationale and detailed scoring model, read the
+[architectural proposal](impact-study/docs/architecture/cross-repo-change-impact-architectural-poc-proposal.md)
+and the
+[original comparison](impact-study/docs/research/gortex-vs-graphify-vs-scip-vs-agent-cross-repo-change-impact.md).
