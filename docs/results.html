@@ -16,14 +16,16 @@
   <main>
     <section class="panel">
       <h2>The three assistants</h2>
+      <p>All three are the same AI model (GPT-5.4) searching the same code with the same read-only file tools. The only difference is the reference material each one gets.</p>
       <table>
-        <thead><tr><th>Assistant</th><th>What extra help it gets</th></tr></thead>
+        <thead><tr><th>Assistant</th><th>Harness name</th><th>What extra help it gets</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong></td><td>Nothing. It searches the code file by file.</td></tr>
-          <tr><td><strong>With a code directory</strong></td><td>A complete list of every code component and where it lives.</td></tr>
-          <tr><td><strong>With a service map</strong></td><td>A diagram of which service talks to which, and over what contract.</td></tr>
+          <tr><td><strong>Alone</strong></td><td><code>pi-codex</code> (agent-only)</td><td>Nothing. It searches the code file by file — the Claude / Codex investigator from the comparison page.</td></tr>
+          <tr><td><strong>With a code directory</strong></td><td><code>pi-codex-scip</code> (scip)</td><td>A precomputed list of every code component and where it lives — the SCIP idea: compiler-accurate truth.</td></tr>
+          <tr><td><strong>With a service map</strong></td><td><code>pi-codex-gortex</code> (gortex)</td><td>A precomputed diagram of which service talks to which, and over what contract — the Gortex idea: system topology.</td></tr>
         </tbody>
       </table>
+      <p>Every run is blind: each assistant works in an isolated copy of the code and never sees the frozen correct answer. Full run commands live on the <a href="running-locally.html">Run it</a> page.</p>
     </section>
     <section class="panel">
       <h2>Test 1: the renamed address field</h2>
