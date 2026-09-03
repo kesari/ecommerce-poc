@@ -1,0 +1,233 @@
+{
+  "change_id": "INT-001",
+  "contestant": "graphify",
+  "findings": {
+    "repositories": [
+      {
+        "name": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:21 rejects PINs outside [0-9]{4,10}."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 sends postalCode to shipment POST /api/v1/delivery-estimates."
+      },
+      {
+        "name": "account-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 allows 3-12 char postalCode reused by order-service."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "inferred",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 collects postalCode with no 6-digit client guard before quote creation."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:21 contains the narrowed PIN guard."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java:45 and :62 call DeliveryEstimator for REST and Kafka flows."
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java:8 still validates postalCode as [0-9]{4,10}."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 passes address.postalCode to ShipmentService."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:34 posts to /api/v1/delivery-estimates with postalCode."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:51 uses address.postalCode for shipment estimate during quote creation."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 emits order.address().postalCode in order.confirmed."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 accepts postalCode min 3 max 12."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:11 defines it; order-service ShipmentClient.java:34 calls it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:shipment-service.yaml#/components/schemas/DeliveryEstimateRequest",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:64 sets postalCode pattern [0-9]{4,10}; ShipmentClient.java:36 sends that field."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service asyncapi schema line 19 allows [0-9]{4,10}; shipment OrderConfirmedListener.java:37 reads it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/openapi/account.yaml:217 allows postalCode min 3; order AccountClient maps it and web form submits it."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java:54 covers invalid PIN rejection logic."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:88 and :171 cover estimate REST and order.confirmed flows."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:50 validates order.confirmed.v1 sample postalCode."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:135 asserts emitted order.confirmed address.postalCode."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:85 validates order.confirmed.v1 sample with postalCode."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:352 stubs ShipmentPort estimate used by quote flow."
+      }
+    ]
+  },
+  "runner": "pi-graphify",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T16:46:20.169Z",
+  "elapsed_seconds": 78.2,
+  "tool_calls": 53,
+  "index_sha256": "032b23ecec7adb0da25d89dbcb5f47ca092c2804689d5b743075c77bbc347149",
+  "tokens_consumed": 147766,
+  "cost_usd": 0.1575185,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "849bf1ff1c7807df1a0e550ce66204fa0341b4a7045c20c1e73d28503ce1a739",
+  "contestant_config_sha256": "67ca97fc4f4d6d71053382b6bd9bf7b46e4450065f8bc693cddf6f3f340ab3ab",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

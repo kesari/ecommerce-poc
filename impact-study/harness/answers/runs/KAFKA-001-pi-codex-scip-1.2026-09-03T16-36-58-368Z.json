@@ -1,0 +1,170 @@
+{
+  "change_id": "KAFKA-001",
+  "contestant": "scip",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/asyncapi/order-service.yaml:31 publishes order.confirmed.v1."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/asyncapi/shipment-service.yaml:12 subscribes to order.confirmed.v1 from order-service."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service/asyncapi/basket-service.yaml:13 subscribes to order.confirmed.v1 from order-service."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-platform/kafka/topic-definitions.yaml:26 defines topic order.confirmed.v1."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:27 listens on order.confirmed.v1."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java:52 creates shipments from confirmed orders."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/messaging/OrderConfirmedListener.java:32 listens on order.confirmed.v1."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketService",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketService.java:40 completes checkout from eventId and userId."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1",
+        "consumer_repos": [
+          "shipment-service",
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/asyncapi/order-service.yaml:31 matches consumers in shipment-service.yaml:12 and basket-service.yaml:13."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:28 includes order.confirmed.v1 in produced topics."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:135 awaits order.confirmed.v1."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:24 sets CONSUMED to order.confirmed.v1."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:195 sends order.confirmed.v1 to drive shipment creation."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T16:36:58.368Z",
+  "elapsed_seconds": 48,
+  "tool_calls": 24,
+  "index_sha256": "d858db37744c7d2005d78271e7849afb2dcf9891b8547f78a6499bfb65bf4c40",
+  "tokens_consumed": 146096,
+  "cost_usd": 0.128896,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "ec4189d2922a367477dcda3f61f36a61351d6d3068319434518fc77d0c9e83a7",
+  "contestant_config_sha256": "ff51fc7a8baae088757fcb8e4c265e26a4cea0b5515eda0770c1a1e1ecb1e278",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}
