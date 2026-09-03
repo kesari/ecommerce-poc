@@ -263,10 +263,10 @@ def score_change(gt, answer, target_latency_seconds):
         "weights_applied": {name: round(w, 4) for name, w in applied_weights.items()},
         "excluded_components": excluded,
         "counts": {
-            "gt_repos": len(index["repos"]),
-            "reported_repos": len(reported_repos),
-            "matched_repos": len(matched_repos),
-            "false_positive_repos": len(fp_repos),
+            "repositories": tally(index["repos"], reported_repos, matched_repos, fp_repos),
+            "symbols": tally(index["symbols"], reported_symbols, matched_symbols, fp_symbols),
+            "contracts": tally(index["contracts"], reported_contracts, matched_contracts, fp_contracts),
+            "tests": tally(index["tests"], reported_tests, matched_tests, fp_tests),
             "missed_by_severity": count_by_severity(
                 missed_repos + missed_symbols + missed_contracts + missed_tests
             ),
@@ -286,11 +286,89 @@ def score_change(gt, answer, target_latency_seconds):
     }
 
 
+def tally(ground_truth, reported, matched, false_positives):
+    return {
+        "ground_truth": len(ground_truth),
+        "reported": len(reported),
+        "matched": len(matched),
+        "false_positives": len(false_positives),
+    }
+
+
 def count_by_severity(misses):
     result = {}
     for miss in misses:
         result[miss["severity"]] = result.get(miss["severity"], 0) + 1
     return result
+
+
+SEVERITY_ORDER = [
+    "critical_runtime_dependency",
+    "contract_consumer",
+    "test_suite",
+    "informational",
+]
+
+
+def render_score(report):
+    """Human-readable score report: what was found, what the composite is made of."""
+    metrics = report["metrics"]
+    counts = report["counts"]
+    lines = [
+        f"{report['change_id']}  {report.get('contestant') or 'unknown'}"
+        f"  composite {metrics['composite']:.2f}",
+        "",
+        "  found (matched / in ground truth, and false positives):",
+    ]
+    for kind in ("repositories", "symbols", "contracts", "tests"):
+        item = counts[kind]
+        lines.append(
+            f"    {kind:<13} {item['matched']}/{item['ground_truth']} matched"
+            f"    {item['false_positives']} false positive"
+            f"{'' if item['false_positives'] == 1 else 's'}"
+            f" out of {item['reported']} reported"
+        )
+
+    lines += ["", "  composite is the weighted sum of:"]
+    for name, weight in report["weights_applied"].items():
+        lines.append(f"    {metrics[name]:.3f} x {weight:.2f}   {name}")
+    lines.append(f"    {metrics['composite']:.3f}           = composite")
+    if report["excluded_components"]:
+        excluded = ", ".join(report["excluded_components"])
+        lines.append(f"    weights renormalized; the answer supplied no {excluded}")
+
+    missed = report["missed"]
+    if missed:
+        lines += ["", f"  missed {len(missed)}, worst first:"]
+        lines += [
+            f"    {miss['severity']:<28}{miss['kind']:<12}{miss['key']}"
+            for miss in sorted(
+                missed,
+                key=lambda m: (severity_rank(m["severity"]), m["kind"], m["key"]),
+            )
+        ]
+
+    false_positives = [
+        (kind, key) for kind, keys in report["false_positives"].items() for key in keys
+    ]
+    if false_positives:
+        lines += ["", f"  reported but not in ground truth ({len(false_positives)}):"]
+        lines += [f"    {kind:<14}{key}" for kind, key in false_positives]
+
+    provenance = ", ".join(
+        f"{tier} {count}" for tier, count in sorted(report["provenance_distribution"].items())
+    )
+    raw = report["raw"]
+    lines += [
+        "",
+        f"  evidence tiers: {provenance or 'none'}",
+        f"  {raw.get('elapsed_seconds')}s, {raw.get('tokens_consumed')} tokens",
+    ]
+    return "\n".join(lines)
+
+
+def severity_rank(severity):
+    return SEVERITY_ORDER.index(severity) if severity in SEVERITY_ORDER else len(SEVERITY_ORDER)
 
 
 def marginal(gt, baseline_answer, candidate_answer):
@@ -349,7 +427,8 @@ def main():
     score_parser.add_argument("--ground-truth", required=True)
     score_parser.add_argument("--answer", required=True)
     score_parser.add_argument("--target-latency-seconds", type=float, default=300.0)
-    score_parser.add_argument("--output")
+    score_parser.add_argument("--output", help="write the full JSON report here")
+    score_parser.add_argument("--json", action="store_true", help="print JSON instead of text")
 
     validate_parser = sub.add_parser("validate", help="check records or answers against their JSON schema")
     validate_parser.add_argument("--kind", choices=["record", "answer"], required=True)
@@ -373,10 +452,13 @@ def main():
     else:
         report = marginal(load(args.ground_truth), load(args.baseline), load(args.candidate))
 
-    text = json.dumps(report, indent=2)
+    document = json.dumps(report, indent=2)
     if args.output:
-        Path(args.output).write_text(text + "\n")
-    print(text)
+        Path(args.output).write_text(document + "\n")
+    if args.mode == "score" and not args.json:
+        print(render_score(report))
+    else:
+        print(document)
     if args.mode == "validate" and not report["valid"]:
         raise SystemExit(1)
 

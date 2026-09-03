@@ -35,5 +35,22 @@ class AggregateValidationTests(unittest.TestCase):
             self.assertEqual(rejected[0]["reason"], "answer schema validation failed")
 
 
+class RenderScorecardTests(unittest.TestCase):
+    def test_separates_blind_spots_from_unstable_misses(self):
+        def cell(missed):
+            return {"change_id": "REST-001", "contestant": "agent-only",
+                    "metrics": {"composite": 0.5}, "counts": {"missed_by_severity": {}},
+                    "missed": [{"kind": "repository", "key": key, "severity": "contract_consumer"}
+                               for key in missed]}
+
+        summary = aggregate.summarize([cell(["always", "sometimes"]), cell(["always"])])
+        text = aggregate.render_scorecard(
+            {"cells": {"REST-001": {"pi": summary}}, "by_contestant": {}, "rejected": []})
+
+        self.assertIn("composite           0.50", text)
+        self.assertIn("blind spots, missed in every run:\n      always", text)
+        self.assertIn("unstable, missed in some runs:\n      sometimes", text)
+
+
 if __name__ == "__main__":
     unittest.main()

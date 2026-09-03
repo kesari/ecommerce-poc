@@ -128,6 +128,25 @@ class ScoreTests(unittest.TestCase):
             score.score_change(GT, answer(change_id="REST-002"), 300)
 
 
+class RenderTests(unittest.TestCase):
+    def setUp(self):
+        self.text = score.render_score(score.score_change(GT, answer(), 300))
+
+    def test_shows_counts_weights_and_worst_miss_first(self):
+        self.assertIn("repositories  2/5 matched", self.text)
+        self.assertIn("x 0.41   cross_repo_recall", self.text)
+        self.assertIn("= composite", self.text)
+    def test_worst_miss_is_listed_first(self):
+        blind = score.render_score(score.score_change(GT, answer(findings={"repositories": []}), 300))
+        listed = blind.split("missed ", 1)[1].splitlines()[1:]
+        self.assertIn("critical_runtime_dependency", listed[0])
+        self.assertIn("payment-service", listed[0])
+
+    def test_names_the_components_that_were_dropped(self):
+        self.assertIn("weights renormalized", self.text)
+        self.assertIn("freshness", self.text)
+
+
 class MarginalTests(unittest.TestCase):
     def gortex_answer(self):
         return answer(
