@@ -22,20 +22,26 @@ python3 -m unittest discover -s run -p 'test*.py'</code></pre>
     </section>
     <section class="panel">
       <h2>2. Score a measured answer</h2>
-      <pre><code>python3 scoring/score.py score +  --ground-truth records/REST-001.json +  --answer answers/runs/REST-001-pi-qwen3-coder-3.json</code></pre>
+      <pre><code>python3 scoring/score.py score \
+  --ground-truth records/REST-001.json \
+  --answer answers/runs/REST-001-pi-qwen3-coder-3.json</code></pre>
       <p>The report shows what the agent found, what it missed, and which extra findings were false positives. Hand-written examples under <code>answers/examples/</code> are documentation and are refused by the scorer.</p>
     </section>
     <section class="panel">
       <h2>3. Ask what a contestant added</h2>
-      <pre><code>python3 scoring/score.py marginal +  --ground-truth records/REST-001.json +  --baseline answers/runs/REST-001-pi-qwen3-coder-1.json +  --candidate answers/runs/REST-001-pi-qwen3-coder-3.json</code></pre>
+      <pre><code>python3 scoring/score.py marginal \
+  --ground-truth records/REST-001.json \
+  --baseline answers/runs/REST-001-pi-qwen3-coder-1.json \
+  --candidate answers/runs/REST-001-pi-qwen3-coder-3.json</code></pre>
       <p>Each discovery unique to the candidate is labeled a true or false positive against the frozen answer — the marginal-value comparison the study exists to make.</p>
     </section>
     <section class="panel">
       <h2>Optional: run an agent blind</h2>
-      <p>The runner isolates the estate, gives the model read-only tools plus optional precomputed indexes, and scores the result. Contestants cover local Ollama models and Claude/Codex subscriptions.</p>
+      <p>The runner isolates the estate, gives the model read-only tools plus optional precomputed indexes, and scores the result. Contestants cover local Ollama models and Claude/Codex subscriptions. Fifteen frozen scenarios live under <code>records/</code>.</p>
       <pre><code>cd impact-study/harness/run
 npm ci --ignore-scripts
 node run.ts --record REST-001 --runs 1</code></pre>
+      <p>Run everything with <code>node run.ts --record all --runs 1</code>, or pick a contestant with <code>--contestant pi-codex-scip</code>. Thin runs that answer without searching are rejected automatically.</p>
     </section>
     <section class="panel">
       <h2>Optional: start the e-commerce fixture</h2>

@@ -35,16 +35,16 @@
       </table>
     </section>
     <section class="panel">
-      <h2>Where each approach should win</h2>
+      <h2>Where each approach should win — and what we measured</h2>
       <table>
-        <thead><tr><th>Change</th><th>Likely strongest approach</th><th>Reason</th></tr></thead>
+        <thead><tr><th>Change</th><th>Likely strongest approach</th><th>Reason</th><th>Measured</th></tr></thead>
         <tbody>
-          <tr><td>Rename a Java method</td><td>SCIP</td><td>It has compiler-level symbol identity</td></tr>
-          <tr><td>Change a shared Java type</td><td>SCIP</td><td>It can find exact consumers across indexed repositories</td></tr>
-          <tr><td>Rename a REST field</td><td>Gortex plus agent</td><td>The dependency crosses serialization and service boundaries</td></tr>
-          <tr><td>Change a Kafka event</td><td>Gortex plus agent</td><td>Publishers and consumers may not share code symbols</td></tr>
-          <tr><td>Change a business rule</td><td>Claude / Codex</td><td>The meaning may live in code, docs, configuration, and history</td></tr>
-          <tr><td>Get the most complete answer</td><td>Combined</td><td>No single evidence source covers every dependency type</td></tr>
+          <tr><td>Rename a Java method</td><td>SCIP</td><td>It has compiler-level symbol identity</td><td>Confirmed on the address rename: the symbol index found every affected symbol in all three runs</td></tr>
+          <tr><td>Change a shared Java type</td><td>SCIP</td><td>It can find exact consumers across indexed repositories</td><td>Not yet measured</td></tr>
+          <tr><td>Rename a REST field</td><td>Gortex plus agent</td><td>The dependency crosses serialization and service boundaries</td><td>Partially overturned: the symbol index (0.88) beat the contract graph (0.67); finding the owning service mattered more than tracing consumers</td></tr>
+          <tr><td>Change a Kafka event</td><td>Gortex plus agent</td><td>Publishers and consumers may not share code symbols</td><td>Confirmed: contract graph 0.95 with perfect contract recall on the topic rename</td></tr>
+          <tr><td>Change a business rule</td><td>Claude / Codex</td><td>The meaning may live in code, docs, configuration, and history</td><td>Not yet measured</td></tr>
+          <tr><td>Get the most complete answer</td><td>Combined</td><td>No single evidence source covers every dependency type</td><td>Not yet measured</td></tr>
         </tbody>
       </table>
     </section>
