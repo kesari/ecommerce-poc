@@ -64,9 +64,10 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (score 0.91)</td><td>Found all four affected systems but missed one code component and one test.</td></tr>
-          <tr><td><strong>With a code directory</strong> (score 0.97)</td><td>Nearly perfect. Found every system, every contract, every test that matters.</td></tr>
-          <tr><td><strong>With a service map</strong> (score 0.95)</td><td>Nearly perfect too — events are exactly what the map is built for.</td></tr>
+          <tr><td><strong>Alone</strong> (3 tries, score 0.91)</td><td>Found all four affected systems in every run; every run missed the basket test, and two of three also missed one orchestrator component.</td></tr>
+          <tr><td><strong>With a code directory</strong> (3 tries, score 0.94)</td><td>Best of the three. Found every system and every contract that matters.</td></tr>
+          <tr><td><strong>With a service map</strong> (3 tries, score 0.93)</td><td>Nearly identical — events are exactly what the map was built for. This is its home turf.</td></tr>
+          <tr><td><strong>With a wiring list</strong> (1 try, score 0.70)</td><td>Found every system and every code component but missed the event contract entirely — the wiring list carries no topic edges, so on events it is genuinely blind.</td></tr>
         </tbody>
       </table>
     </section>
@@ -77,20 +78,22 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Alone</strong> (score 0.89)</td><td>Correct: one service affected, correctly identified.</td></tr>
-          <tr><td><strong>With a code directory</strong> (score 0.89)</td><td>Same correct answer, with exact file-and-line evidence.</td></tr>
-          <tr><td><strong>With a service map</strong> (score 0.89)</td><td>Same correct answer.</td></tr>
+          <tr><td><strong>With a code directory</strong> (score 0.89)</td><td>Same correct answer, with exact file-and-line evidence and zero misses.</td></tr>
+          <tr><td><strong>With a service map</strong> (score 0.89)</td><td>Same correct answer, with zero misses.</td></tr>
+          <tr><td><strong>With a wiring list</strong> (score 0.88)</td><td>Same correct answer. Cheap context is enough where nothing hides.</td></tr>
         </tbody>
       </table>
     </section>
     <section class="panel">
       <h2>Test 4: the renamed database column</h2>
-      <p>The account database renames its postcode column. Saving or reading a delivery address breaks — again inside one service. All three assistants found the service but named the column without its service prefix, so none matched the expected contract name. That was a flaw in our answer key's naming rules, now fixed — not a failure of searching.</p>
+      <p>The account database renames its postcode column. Saving or reading a delivery address breaks — again inside one service. Every assistant first named the column without its service prefix and missed the expected contract name; that was a flaw in our naming rules, now fixed, and the rerun below uses the fixed rules.</p>
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (score 0.60)</td><td>Right service, right area, wrong contract name.</td></tr>
-          <tr><td><strong>With a code directory</strong> (score 0.60)</td><td>Same — the directory lists code, not database columns.</td></tr>
-          <tr><td><strong>With a service map</strong> (score 0.64)</td><td>Same naming miss, slightly fewer extra guesses.</td></tr>
+          <tr><td><strong>Alone</strong> (score 0.83)</td><td>Right service and contract, but ten extra code guesses and a missed repository-critical symbol.</td></tr>
+          <tr><td><strong>With a code directory</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
+          <tr><td><strong>With a service map</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
+          <tr><td><strong>With a wiring list</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — the wiring list shows tables without service-qualified contract names.</td></tr>
         </tbody>
       </table>
     </section>
