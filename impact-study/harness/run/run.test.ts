@@ -11,17 +11,10 @@ import {
 	SessionManager,
 	SettingsManager,
 } from "@earendil-works/pi-coding-agent";
-import {
-	buildPrompt,
-	createRestrictedReadOnlyTools,
-	extractAnswer,
-	FIXED_THINKING,
-	FIXED_TOOLS,
-	isolate,
-	parseArgs,
-	validateFile,
-	withTimeout,
-} from "./run.ts";
+import { extractAnswer } from "./answer.ts";
+import { createRestrictedReadOnlyTools, isolate } from "./estate.ts";
+import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, withTimeout } from "./run.ts";
+import { validateFile } from "./scoring.ts";
 
 test("parseArgs accepts repeated records and positive numeric values", () => {
 	const args = parseArgs(["--record", "REST-001", "--record", "REST-002", "--runs", "2", "--timeout", "30"]);

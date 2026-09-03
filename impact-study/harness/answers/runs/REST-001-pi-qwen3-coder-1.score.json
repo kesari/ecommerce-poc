@@ -23,10 +23,30 @@
     "operational_cost"
   ],
   "counts": {
-    "gt_repos": 4,
-    "reported_repos": 3,
-    "matched_repos": 2,
-    "false_positive_repos": 1,
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 1
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0
+    },
     "missed_by_severity": {
       "contract_consumer": 6,
       "critical_runtime_dependency": 1,

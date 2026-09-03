@@ -73,10 +73,62 @@ def summarize(reports):
     return summary
 
 
+def render_scorecard(scorecard):
+    """Human-readable scorecard: score per cell, then the misses that repeat."""
+    lines = []
+    for change_id, runners in scorecard["cells"].items():
+        lines.append(change_id)
+        for runner, summary in runners.items():
+            lines += [f"  {runner}  ({summary['runs']} run(s))"]
+            lines += render_metrics(summary)
+            lines += render_misses(summary)
+        lines.append("")
+
+    if len(scorecard["by_contestant"]) > 1 or len(scorecard["cells"]) > 1:
+        lines.append("across all records")
+        for runner, summary in scorecard["by_contestant"].items():
+            lines.append(f"  {runner}  ({summary['runs']} run(s), {summary['records']} record(s))")
+            lines += render_metrics(summary)
+        lines.append("")
+
+    for entry in scorecard["rejected"]:
+        lines.append(f"rejected {entry['report']}: {entry['reason']}")
+    return "\n".join(lines).rstrip()
+
+
+def render_metrics(summary):
+    lines = []
+    for metric in METRICS:
+        if metric not in summary:
+            continue
+        value = summary[metric]
+        spread = (
+            f"   varies {value['min']:.2f}-{value['max']:.2f} across runs"
+            if value["spread"]
+            else ""
+        )
+        lines.append(f"    {metric:<20}{value['median']:.2f}{spread}")
+    return lines
+
+
+def render_misses(summary):
+    lines = []
+    for label, keys in (
+        ("blind spots, missed in every run", summary["missed_in_all_runs"]),
+        ("unstable, missed in some runs", summary["missed_in_some_runs"]),
+    ):
+        if not keys:
+            continue
+        lines.append(f"    {label}:")
+        lines += [f"      {key}" for key in keys]
+    return lines
+
+
 def main():
     parser = argparse.ArgumentParser(description="Corpus scorecard across runs.")
     parser.add_argument("--runs-dir", default=str(RUNS))
-    parser.add_argument("--output")
+    parser.add_argument("--output", help="write the full JSON scorecard here")
+    parser.add_argument("--json", action="store_true", help="print JSON instead of text")
     args = parser.parse_args()
 
     cells, rejected = collect(args.runs_dir)
@@ -96,10 +148,10 @@ def main():
         summary["records"] = len({r["change_id"] for r in reports})
         scorecard["by_contestant"][runner] = summary
 
-    text = json.dumps(scorecard, indent=2)
+    document = json.dumps(scorecard, indent=2)
     if args.output:
-        Path(args.output).write_text(text + "\n")
-    print(text)
+        Path(args.output).write_text(document + "\n")
+    print(document if args.json else render_scorecard(scorecard))
 
 
 if __name__ == "__main__":
