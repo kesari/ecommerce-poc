@@ -25,7 +25,7 @@ cross-repo-impact-study/
 │   ├── architecture/    # Study architecture and proposals
 │   ├── research/        # Tool and approach comparisons
 │   └── fixtures/        # Designs for synthetic systems under analysis
-└── harness/             # Ground truth, contestant answers, and scoring code
+└── harness/             # Ground truth, pi-based runner, answers, and scoring
 ```
 
 The e-commerce implementation repositories live in the sibling workspace:

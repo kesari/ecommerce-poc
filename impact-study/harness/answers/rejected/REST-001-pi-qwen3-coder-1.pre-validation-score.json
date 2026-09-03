@@ -1,0 +1,101 @@
+{
+  "change_id": "REST-001",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.5,
+    "test_recall": 0.3333,
+    "cross_repo_recall": 0.5,
+    "contract_recall": 0.3333,
+    "precision": 0.6667,
+    "evidence_quality": 1.0,
+    "latency": 0.7158,
+    "composite": 0.5617
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.4118,
+    "contract_recall": 0.2353,
+    "precision": 0.1765,
+    "evidence_quality": 0.1176,
+    "latency": 0.0588
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "gt_repos": 4,
+    "reported_repos": 3,
+    "matched_repos": 2,
+    "false_positive_repos": 1,
+    "missed_by_severity": {
+      "contract_consumer": 5,
+      "critical_runtime_dependency": 1,
+      "test_suite": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "commerce-web",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "repository",
+      "key": "shipment-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.addresssnapshot",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.infrastructure.client.accountclient",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "kafka order.confirmed.v1#/address/postalcode (value-level dependency)",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "rest post /api/v1/addresses",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "basket-service"
+    ],
+    "symbols": [
+      "com.poc.order.infrastructure.client.accountclient$addressresponse"
+    ],
+    "contracts": [
+      "asyncapi asyncapi:basket-service/asyncapi/schemas/order.confirmed.v1.json#/properties/address/properties/postalcode",
+      "openapi openapi:account.yaml#/components/schemas/addressrequest"
+    ],
+    "tests": [
+      "order-service contractvalidationtest"
+    ]
+  },
+  "provenance_distribution": {
+    "extracted": 4,
+    "contract_matched": 7
+  },
+  "raw": {
+    "elapsed_seconds": 419.1,
+    "tokens_consumed": 213517
+  }
+}

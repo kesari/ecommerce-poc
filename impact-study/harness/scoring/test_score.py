@@ -197,6 +197,25 @@ class ValidateTests(unittest.TestCase):
         self.assertFalse(report["valid"],
                          "contracts.evidence_tier must be enum-checked, not a bare string")
 
+    def test_scalar_types_patterns_and_ranges_are_checked(self):
+        bad = answer()
+        bad["change_id"] = "not a change id"
+        bad["elapsed_seconds"] = "fast"
+        bad["tokens_consumed"] = 1.5
+        bad["freshness_score"] = 2
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        errors = "\n".join(report["errors"]["bad.json"])
+        self.assertIn("does not match", errors)
+        self.assertIn("expected number", errors)
+        self.assertIn("expected integer", errors)
+        self.assertIn("exceeds maximum", errors)
+
+    def test_require_valid_rejects_invalid_input(self):
+        bad = answer()
+        bad["findings"]["contracts"][0]["type"] = "asyncapi"
+        with self.assertRaises(SystemExit):
+            score.require_valid("answer", [str(self.write("bad.json", bad))])
+
 
 if __name__ == "__main__":
     unittest.main()

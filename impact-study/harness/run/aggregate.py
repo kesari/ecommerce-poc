@@ -8,24 +8,40 @@ architecture proposal asks for.
 import argparse
 import json
 import statistics
+import sys
 from collections import defaultdict
 from pathlib import Path
 
 RUNS = Path(__file__).resolve().parent.parent / "answers" / "runs"
+SCORING = Path(__file__).resolve().parent.parent / "scoring"
+sys.path.insert(0, str(SCORING))
+import score
+
 METRICS = ["cross_repo_recall", "contract_recall", "precision",
            "symbol_recall", "test_recall", "composite"]
 
 
 def collect(runs_dir):
     cells = defaultdict(list)
+    rejected = []
     for report_file in sorted(Path(runs_dir).glob("*.score.json")):
         report = json.loads(report_file.read_text())
         answer_file = report_file.with_name(report_file.name.replace(".score", ""))
+        if not answer_file.exists():
+            rejected.append({"report": report_file.name, "reason": "answer file missing"})
+            continue
+        validation = score.validate_files("answer", [str(answer_file)])
+        if not validation["valid"]:
+            rejected.append({
+                "report": report_file.name,
+                "reason": "answer schema validation failed",
+                "errors": validation["errors"].get(answer_file.name, []),
+            })
+            continue
         runner = report.get("contestant", "unknown")
-        if answer_file.exists():
-            runner = json.loads(answer_file.read_text()).get("runner", runner)
+        runner = json.loads(answer_file.read_text()).get("runner", runner)
         cells[(report["change_id"], runner)].append(report)
-    return cells
+    return cells, rejected
 
 
 def summarize(reports):
@@ -63,11 +79,12 @@ def main():
     parser.add_argument("--output")
     args = parser.parse_args()
 
-    cells = collect(args.runs_dir)
+    cells, rejected = collect(args.runs_dir)
     if not cells:
-        raise SystemExit(f"no .score.json files under {args.runs_dir}")
+        reason = f"; rejected {len(rejected)} invalid report(s)" if rejected else ""
+        raise SystemExit(f"no valid .score.json files under {args.runs_dir}{reason}")
 
-    scorecard = {"cells": {}, "by_contestant": {}}
+    scorecard = {"cells": {}, "by_contestant": {}, "rejected": rejected}
     per_contestant = defaultdict(list)
     for (change_id, runner), reports in sorted(cells.items()):
         summary = summarize(reports)

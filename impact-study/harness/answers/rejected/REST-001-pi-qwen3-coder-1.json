@@ -1,0 +1,92 @@
+{
+  "change_id": "REST-001",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "postalCode field renamed in AddressRequest and AddressResponse DTOs"
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "AccountClient references AccountService's AddressResponse with postalCode"
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "AsyncAPI schema uses postalCode in order.confirmed.v1.json for address object"
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "postalCode field definition in AddressRequest.java line 13"
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "postalCode field definition in AddressResponse.java line 13"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient$AddressResponse",
+        "repo": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "AddressResponse record in AccountClient references postalCode field line 24"
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service's AccountClient consumes AddressRequest from account-service OpenAPI"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service's AccountClient consumes AddressResponse from account-service OpenAPI"
+      },
+      {
+        "type": "asyncapi",
+        "identifier": "asyncapi:basket-service/asyncapi/schemas/order.confirmed.v1.json#/properties/address/properties/postalCode",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service's asyncapi schema contains postalCode in address object definition line 19"
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "postalCode used in integration tests for requests and responses at lines 118 and 128"
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "contract_matched",
+        "evidence": "postalCode used in contract validation test for AddressResponse at line 109"
+      }
+    ]
+  },
+  "runner": "pi-qwen3-coder",
+  "run_index": 1,
+  "elapsed_seconds": 419.1,
+  "tokens_consumed": 213517,
+  "cost_usd": 0,
+  "model": "ollama/qwen3-coder:30b-a3b-q8_0"
+}
