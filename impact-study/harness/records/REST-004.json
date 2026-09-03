@@ -1,0 +1,75 @@
+{
+  "change_id": "REST-004",
+  "status": "frozen",
+  "category": "rest_contract",
+  "title": "Coupon discountPercent changed to discountMinor",
+  "query": "What breaks across repositories if the coupon discount changes from discountPercent to a minor-unit discountMinor amount?",
+  "proposed_change": {
+    "repo": "basket-service",
+    "diff": "-public record Coupon(String code, int discountPercent, boolean active) {}\n+public record Coupon(String code, long discountMinor, boolean active) {}"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "basket-service",
+        "criticality": "critical",
+        "evidence_note": "owns Coupon, CouponRow, and BasketPricing.discount percent math"
+      },
+      {
+        "name": "order-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "BasketClient snapshots couponCode; PriceBreakdown discountMinor semantics shift"
+      },
+      {
+        "name": "commerce-web",
+        "criticality": "contract_consumer",
+        "evidence_note": "BasketPage coupon form and PriceBreakdown discount rendering"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.basket.domain.model.Coupon",
+        "repo": "basket-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketPricing",
+        "repo": "basket-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.order.domain.model.PriceBreakdown",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "PUT /api/v1/basket/coupon",
+        "provider_repo": "basket-service",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderPricingTest",
+        "level": "unit"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Business-rule change disguised as a field change. Percent-to-amount is not a rename: every total computed from it shifts meaning, and the pricing math must be rewritten, not remapped."
+}

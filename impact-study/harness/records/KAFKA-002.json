@@ -1,0 +1,69 @@
+{
+  "change_id": "KAFKA-002",
+  "status": "frozen",
+  "category": "kafka_schema",
+  "title": "New inventory rejection reason added",
+  "query": "What breaks across repositories if inventory.reservation-rejected gains a new EXPIRED reason alongside OUT_OF_STOCK?",
+  "proposed_change": {
+    "repo": "inventory-service",
+    "diff": "-                        Map.of(\"orderId\", orderId.toString(), \"reason\", \"OUT_OF_STOCK\"));\n+                        Map.of(\"orderId\", orderId.toString(), \"reason\", \"EXPIRED\"));"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "inventory-service",
+        "criticality": "critical",
+        "evidence_note": "owns InventoryService.emit of inventory.reservation-rejected with the reason payload"
+      },
+      {
+        "name": "order-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "saga consumes the rejection to drive REJECTED_OUT_OF_STOCK; an unknown reason needs explicit handling"
+      },
+      {
+        "name": "commerce-web",
+        "criticality": "contract_consumer",
+        "evidence_note": "order status display renders the rejection reason to the user"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected",
+        "provider_repo": "inventory-service",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Schema addition, not a rename: the discriminator for tools that only detect breaking renames. Consumers that switch exhaustively on the reason need a new arm; consumers that ignore unknown reasons stay green and must not be reported."
+}

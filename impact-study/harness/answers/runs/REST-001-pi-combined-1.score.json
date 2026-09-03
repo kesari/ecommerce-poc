@@ -1,0 +1,122 @@
+{
+  "change_id": "REST-001",
+  "contestant": "combined",
+  "metrics": {
+    "symbol_recall": 0.5,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 0.7222,
+    "contract_recall": 0.6667,
+    "precision": 0.4286,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.7129
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 6,
+      "matched": 2,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 6,
+      "matched": 2,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1,
+      "contract_consumer": 3,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "account-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressrequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-platform"
+    ],
+    "symbols": [
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "openapi openapi:account-service/openapi/account.yaml#/components/schemas/addressrequest",
+      "openapi openapi:account-service/openapi/account.yaml#/components/schemas/addressresponse",
+      "rest get /api/v1/addresses/{addressid}"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "contract_matched": 7,
+    "extracted": 11,
+    "compiler": 3
+  },
+  "raw": {
+    "elapsed_seconds": 78.1,
+    "tokens_consumed": 273011
+  },
+  "answer_sha256": "0d030f36eea5976b36cea0d91682b287d8da0623ce3d5f489a79e24deee24fdb"
+}

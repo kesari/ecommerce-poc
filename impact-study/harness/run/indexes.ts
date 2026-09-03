@@ -11,15 +11,20 @@
 //   operations (publish: = producer, subscribe: = consumer), topic
 //   definitions, and listener references, each with the evidence
 //   that produced the edge. Schema copies alone confer no role.
+// - concept index (Graphify-like): broad, lightweight deployment wiring —
+//   inter-service call targets from application.yml base URLs, compose
+//   service dependencies, and per-service owned DB tables. Config-derived
+//   structure, not code truth and not contract matching.
 import { createHash } from "node:crypto";
 import { glob, mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-export type IndexMode = "symbol" | "contract";
+export type IndexMode = "symbol" | "contract" | "concept";
 
 export const INDEX_DIR = ".harness-index";
 export const SYMBOL_INDEX_FILE = "symbols.json";
 export const CONTRACT_GRAPH_FILE = "contracts.json";
+export const CONCEPT_INDEX_FILE = "concepts.json";
 
 export interface SymbolEntry {
 	fqn: string;
@@ -230,16 +235,114 @@ export async function buildContractGraph(workdir: string, repositories: readonly
 	return { endpoints, topics, sha256: sha256Hex(body), file: `${INDEX_DIR}/${CONTRACT_GRAPH_FILE}` };
 }
 
-/** Prompt section pointing the model at its precomputed indexes. */
+export interface ConceptCall {
+	from: string;
+	to: string;
+	evidence: string;
+}
+
+export interface ConceptTable {
+	repo: string;
+	table: string;
+	evidence: string;
+}
+
+/** Well-known local port per service, for resolving configured base URLs. */
+const SERVICE_PORTS: Record<string, string> = {
+	"8081": "account-service",
+	"8082": "catalog-service",
+	"8083": "basket-service",
+	"8084": "inventory-service",
+	"8085": "order-service",
+	"8086": "payment-service",
+	"8087": "shipment-service",
+	"8080": "commerce-bff",
+	"3000": "commerce-web",
+};
+
+/** Short config key per service, for `account:` style client blocks. */
+const SERVICE_KEYS: Record<string, string> = {
+	account: "account-service",
+	catalog: "catalog-service",
+	basket: "basket-service",
+	inventory: "inventory-service",
+	order: "order-service",
+	payment: "payment-service",
+	shipment: "shipment-service",
+	bff: "commerce-bff",
+	web: "commerce-web",
+};
+
+/** Build the concept index for the isolated estate copy at workdir. */
+export async function buildConceptIndex(workdir: string, repositories: readonly string[]) {
+	const calls: ConceptCall[] = [];
+	const tables: ConceptTable[] = [];
+	const callSeen = new Set<string>();
+	const noteCall = (from: string, to: string, evidence: string) => {
+		if (from === to) return;
+		const key = `${from}\0${to}`;
+		if (callSeen.has(key)) return;
+		callSeen.add(key);
+		calls.push({ from, to, evidence });
+	};
+	for (const repo of repositories) {
+		for await (const match of glob("src/main/resources/application*.yml", { cwd: join(workdir, repo) })) {
+			const relative = `${repo}/${match}`;
+			const text = await readFile(join(workdir, relative), "utf8").catch(() => null);
+			if (text === null) continue;
+			const lines = text.split("\n");
+			for (let index = 0; index < lines.length; index++) {
+				const line = lines[index];
+				const envUrl = line.match(/\$\{[A-Z_]+:(http:\/\/localhost:(\d+))[^}]*\}/);
+				if (envUrl) {
+					const target = SERVICE_PORTS[envUrl[2]];
+					const keyMatch = line.match(/^\s*([a-z][a-z-]*):/);
+					if (target) noteCall(repo, target, `${relative}:${index + 1}`);
+					else if (keyMatch && SERVICE_KEYS[keyMatch[1]]) noteCall(repo, SERVICE_KEYS[keyMatch[1]], `${relative}:${index + 1}`);
+					continue;
+				}
+				const keyUrl = line.match(/^\s*([a-z][a-z-]*):\s*\$\{[A-Z_]+\}/);
+				if (keyUrl && SERVICE_KEYS[keyUrl[1]]) noteCall(repo, SERVICE_KEYS[keyUrl[1]], `${relative}:${index + 1}`);
+			}
+		}
+		for await (const match of glob("src/main/resources/db/migration/*.sql", { cwd: join(workdir, repo) })) {
+			const relative = `${repo}/${match}`;
+			const text = await readFile(join(workdir, relative), "utf8").catch(() => null);
+			if (text === null) continue;
+			for (const tableMatch of text.matchAll(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?([a-z_]+)/gi)) {
+				tables.push({ repo, table: tableMatch[1], evidence: relative });
+			}
+		}
+	}
+	calls.sort((l, r) => (l.from < r.from ? -1 : l.from > r.from ? 1 : l.to < r.to ? -1 : 1));
+	tables.sort((l, r) => (l.repo < r.repo ? -1 : l.repo > r.repo ? 1 : l.table < r.table ? -1 : 1));
+	const body = `${JSON.stringify(
+		{
+			generated_by: "harness concept index (Graphify-like)",
+			attribution: "calls edges come from configured base URLs in application.yml; tables from CREATE TABLE in Flyway migrations. Deployment wiring, not code truth.",
+			calls,
+			tables,
+		},
+		null,
+		2,
+	)}\n`;
+	await mkdir(join(workdir, INDEX_DIR), { recursive: true });
+	await writeFile(join(workdir, INDEX_DIR, CONCEPT_INDEX_FILE), body);
+	return { calls, tables, sha256: sha256Hex(body), file: `${INDEX_DIR}/${CONCEPT_INDEX_FILE}` };
+}
 export function indexPromptSection(modes: readonly string[]) {
 	if (modes.length === 0) return "";
-	// Kept to two lines: small local models stop searching when the prompt
-	// grows, so the pointer must be terse. Details live in the files.
-	if (modes.includes("symbol") && modes.includes("contract")) {
-		return "Index files built from this estate copy (read them with the read tool, cite only what you open): `.harness-index/symbols.json`, `.harness-index/contracts.json`. Answering without any tool call is invalid.";
-	}
+	// Kept terse: small local models stop searching when the prompt
+	// grows, so each pointer is one clause. Details live in the files.
+	const pointers: string[] = [];
 	if (modes.includes("symbol")) {
-		return "Symbol index built from this estate copy (read it with the read tool, cite only what you open): `.harness-index/symbols.json`. Answering without any tool call is invalid.";
+		pointers.push("`.harness-index/symbols.json` maps Java FQN to repository, file, and line");
 	}
-	return "Contract graph built from this estate copy (read it with the read tool, cite only what you open): `.harness-index/contracts.json`. Answering without any tool call is invalid.";
+	if (modes.includes("contract")) {
+		pointers.push("`.harness-index/contracts.json` lists REST endpoints and Kafka topics with producers, consumers, and evidence");
+	}
+	if (modes.includes("concept")) {
+		pointers.push("`.harness-index/concepts.json` lists configured service-to-service calls and owned DB tables");
+	}
+	return `Index files built from this estate copy (read them with the read tool, cite only what you open): ${pointers.join("; ")}. Answering without any tool call is invalid.`;
 }

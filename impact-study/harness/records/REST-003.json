@@ -1,0 +1,87 @@
+{
+  "change_id": "REST-003",
+  "status": "frozen",
+  "category": "rest_contract",
+  "title": "basketVersion field renamed to version",
+  "query": "What breaks across repositories if the basketVersion field is renamed to version in the basket API?",
+  "proposed_change": {
+    "repo": "basket-service",
+    "diff": "-    long basketVersion,\n+    long version,"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "basket-service",
+        "criticality": "critical",
+        "evidence_note": "owns Basket.basketVersion, BasketResponse, BasketRow, and saveWithVersionGuard"
+      },
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "Quote/Order/BasketClient carry basketVersion; quote validation rejects changed versions"
+      },
+      {
+        "name": "commerce-web",
+        "criticality": "contract_consumer",
+        "evidence_note": "BasketPage and api/types.ts submit and render basketVersion"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.basket.domain.model.Basket",
+        "repo": "basket-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.basket.api.dto.BasketResponse",
+        "repo": "basket-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.domain.model.Quote",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.BasketClient",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "provider_repo": "basket-service",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "commerce-platform",
+        "suite": "e2e-bruno/01-signup-to-confirmed-order",
+        "level": "contract"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Optimistic-locking version as a contract field. The rename breaks quote creation and order placement: Order binds the version by name and rejects mismatches, so every checkout fails closed rather than silently."
+}

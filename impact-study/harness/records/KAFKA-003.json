@@ -1,0 +1,76 @@
+{
+  "change_id": "KAFKA-003",
+  "status": "frozen",
+  "category": "kafka_schema",
+  "title": "PaymentStatus DECLINED renamed to REJECTED",
+  "query": "What breaks across repositories if the payment result enum DECLINED is renamed to REJECTED?",
+  "proposed_change": {
+    "repo": "payment-service",
+    "diff": "-    DECLINED,\n+    REJECTED,"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "payment-service",
+        "criticality": "critical",
+        "evidence_note": "owns PaymentStatus, Payment, MyBatisPaymentStore.valueOf mapping, and PaymentCommandService topics"
+      },
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "SagaResultListener consumes payment.declined.v1 and SagaTransitions keys payment.declined for compensation"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.payment.domain.PaymentStatus",
+        "repo": "payment-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.payment.application.PaymentCommandService",
+        "repo": "payment-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "kafka",
+        "identifier": "payment.declined.v1",
+        "provider_repo": "payment-service",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "severity": "critical_runtime_dependency"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "payment-service",
+        "suite": "PaymentIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Enum rename across the saga compensation boundary. A declined payment that no consumer recognizes skips inventory release, leaking reservations: the blast radius is a state-machine defect, not a display bug."
+}

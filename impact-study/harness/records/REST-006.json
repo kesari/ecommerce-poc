@@ -1,0 +1,74 @@
+{
+  "change_id": "REST-006",
+  "status": "frozen",
+  "category": "rest_contract",
+  "title": "JWT subject reinterpreted from userId to email",
+  "query": "What breaks across repositories if the JWT subject changes from the user UUID to the user email?",
+  "proposed_change": {
+    "repo": "account-service",
+    "diff": "-                .subject(userId.toString())\n+                .subject(email)"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "account-service",
+        "criticality": "critical",
+        "evidence_note": "owns JwtSupport issuance and AddressController UUID.fromString(principal.getSubject())"
+      },
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "CheckoutController.userId parses principal.getSubject() as UUID for quotes, orders, and lookups"
+      },
+      {
+        "name": "commerce-bff",
+        "criticality": "contract_consumer",
+        "evidence_note": "SecurityConfig JwtDecoder trust boundary; forwards identity downstream"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.security.JwtSupport",
+        "repo": "account-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.order.api.CheckoutController",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/auth/login",
+        "provider_repo": "account-service",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "level": "integration"
+      },
+      {
+        "repo": "commerce-bff",
+        "suite": "BffIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "commerce-platform",
+        "suite": "e2e-bruno/01-signup-to-confirmed-order",
+        "level": "contract"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Security-contract change with no endpoint or schema diff. Every UUID.fromString(getSubject()) throws on an email subject, so authentication succeeds and every authorized call fails: the widest silent breakage in the corpus."
+}

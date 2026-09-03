@@ -1,0 +1,44 @@
+{
+  "change_id": "INT-002",
+  "status": "frozen",
+  "category": "internal_refactor",
+  "title": "Valkey estimate cache key format changed",
+  "query": "What breaks if the Valkey estimate cache key format changes in shipment-service?",
+  "proposed_change": {
+    "repo": "shipment-service",
+    "diff": "-        return \"shipment:estimate:\" + hash(postalCode + \"|\" + itemCount + \"|\" + subtotalMinor);\n+        return \"shipment:estimate:v2:\" + hash(postalCode + \"|\" + itemCount + \"|\" + subtotalMinor);"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "shipment-service",
+        "criticality": "informational",
+        "evidence_note": "ValkeyEstimateCache.key is referenced only by ShipmentService via EstimateCache; the cache is never authoritative, so the effect is a cold cache, not an error"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.shipment.infrastructure.cache.ValkeyEstimateCache",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "informational"
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "informational"
+      }
+    ],
+    "affected_contracts": [],
+    "required_tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Second single-repo control, and the lowest-severity record in the corpus. A cache-key change degrades to recomputation by design. Any contestant reporting other repositories or contracts here is hallucinating blast radius."
+}

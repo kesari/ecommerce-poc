@@ -29,7 +29,7 @@ import {
 	isolate,
 } from "./estate.ts";
 import type { EstateSnapshot } from "./estate.ts";
-import { buildContractGraph, buildSymbolIndex, indexPromptSection } from "./indexes.ts";
+import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection } from "./indexes.ts";
 import { RECORDS, RUN_DIR, RUNS } from "./paths.ts";
 import { aggregate, scoreAnswer, validateFile } from "./scoring.ts";
 
@@ -45,8 +45,8 @@ interface Contestant {
 	description?: string;
 	provider: string;
 	model: string;
-	/** Precomputed index support: "symbol" (SCIP-like), "contract" (Gortex-like). */
-	indexes?: ("symbol" | "contract")[];
+	/** Precomputed index support: "symbol" (SCIP-like), "contract" (Gortex-like), "concept" (Graphify-like). */
+	indexes?: ("symbol" | "contract" | "concept")[];
 }
 
 interface RunnerArgs {
@@ -172,7 +172,7 @@ async function ask(
 	modelRuntime: ModelRuntime,
 	estate: string,
 	timeoutSeconds: number,
-	indexes: readonly ("symbol" | "contract")[] = [],
+	indexes: readonly ("symbol" | "contract" | "concept")[] = [],
 ) {
 	const scratch = await mkdtemp(join(tmpdir(), "poc-run-"));
 	let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
@@ -188,6 +188,9 @@ async function ask(
 		}
 		if (indexes.includes("contract")) {
 			indexShas.push((await buildContractGraph(workdir, ESTATE_REPOSITORIES)).sha256);
+		}
+		if (indexes.includes("concept")) {
+			indexShas.push((await buildConceptIndex(workdir, ESTATE_REPOSITORIES)).sha256);
 		}
 		const tools = (await createRestrictedReadOnlyTools(workdir)) as any[];
 		const toolCalls = countToolCalls(tools);

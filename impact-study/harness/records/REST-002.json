@@ -1,0 +1,97 @@
+{
+  "change_id": "REST-002",
+  "status": "frozen",
+  "category": "rest_contract",
+  "title": "Money minor units changed to decimal",
+  "query": "What breaks across repositories if money amounts change from integer minor units to decimal in the catalog price API?",
+  "proposed_change": {
+    "repo": "catalog-service",
+    "diff": "-    long priceMinor,\n+    BigDecimal price,"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "catalog-service",
+        "criticality": "critical",
+        "evidence_note": "owns Product.priceMinor, ProductRow, and MyBatisProductRepository.updatePrice"
+      },
+      {
+        "name": "basket-service",
+        "criticality": "critical",
+        "evidence_note": "BasketPricing.Breakdown and discount() compute in minor units from catalog prices"
+      },
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "PriceBreakdown, Order.totalMinor, and BasketClient/ShipmentClient minor-unit fields"
+      },
+      {
+        "name": "payment-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "Payment/Refund amountMinor and PaymentMessageParser payload.amountMinor guard"
+      },
+      {
+        "name": "commerce-web",
+        "criticality": "contract_consumer",
+        "evidence_note": "api/types.ts subtotalMinor/discountMinor and PriceBreakdown component"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.catalog.domain.model.Product",
+        "repo": "catalog-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketPricing",
+        "repo": "basket-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.order.domain.model.PriceBreakdown",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.payment.domain.Payment",
+        "repo": "payment-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "provider_repo": "catalog-service",
+        "consumer_repos": [
+          "basket-service",
+          "commerce-web"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "catalog-service",
+        "suite": "CatalogComponentTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderPricingTest",
+        "level": "unit"
+      },
+      {
+        "repo": "commerce-platform",
+        "suite": "e2e-bruno/01-signup-to-confirmed-order",
+        "level": "contract"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Widest blast radius in the corpus. Minor-unit money is a cross-cutting semantic convention, not one field: catalog owns it, basket and order compute with it, payment persists and validates it, and the SPA renders it. A name-matcher finds the fields; only semantic tracing prices the breakage."
+}

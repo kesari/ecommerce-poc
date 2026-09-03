@@ -13,7 +13,7 @@ import {
 } from "@earendil-works/pi-coding-agent";
 import { extractAnswer } from "./answer.ts";
 import { countToolCalls, createRestrictedReadOnlyTools, isolate } from "./estate.ts";
-import { buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
+import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
 import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, withTimeout } from "./run.ts";
 import { validateFile } from "./scoring.ts";
 
@@ -260,6 +260,39 @@ test("indexPromptSection is empty for index-free contestants", () => {
 	assert.equal(indexPromptSection([]), "");
 	assert.match(indexPromptSection(["symbol"]), /symbols\.json/);
 	assert.match(indexPromptSection(["contract"]), /contracts\.json/);
+	assert.match(indexPromptSection(["concept"]), /concepts\.json/);
+	assert.match(indexPromptSection(["symbol", "contract"]), /symbols\.json.*contracts\.json/);
+});
+
+test("buildConceptIndex extracts configured calls and owned tables", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-concept-test-"));
+	try {
+		const workdir = join(root, "estate");
+		await mkdir(join(workdir, "order-service", "src", "main", "resources"), { recursive: true });
+		await mkdir(join(workdir, "order-service", "src", "main", "resources", "db", "migration"), { recursive: true });
+		await writeFile(
+			join(workdir, "order-service", "src", "main", "resources", "application.yml"),
+			"clients:\n  basket:\n    base-url: ${BASKET_BASE_URL:http://localhost:8083}\n",
+		);
+		await writeFile(
+			join(workdir, "order-service", "src", "main", "resources", "db", "migration", "V1__order.sql"),
+			"CREATE TABLE orders (id uuid PRIMARY KEY);\n",
+		);
+		const concept = await buildConceptIndex(workdir, ["order-service"]);
+		assert.deepEqual(concept.calls, [{
+			from: "order-service",
+			to: "basket-service",
+			evidence: "order-service/src/main/resources/application.yml:3",
+		}]);
+		assert.deepEqual(concept.tables, [{
+			repo: "order-service",
+			table: "orders",
+			evidence: "order-service/src/main/resources/db/migration/V1__order.sql",
+		}]);
+		assert.match(concept.sha256, /^[a-f0-9]{64}$/);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
 });
 
 test("countToolCalls counts every execute", async () => {
