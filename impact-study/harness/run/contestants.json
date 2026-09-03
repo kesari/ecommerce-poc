@@ -64,5 +64,19 @@
     "provider": "openai-codex",
     "model": "gpt-5.4",
     "indexes": ["contract"]
+  },
+  "pi-combined": {
+    "label": "combined",
+    "description": "pi SDK plus symbol index and contract graph together, GPT via Codex subscription (OAuth)",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "indexes": ["symbol", "contract"]
+  },
+  "pi-graphify": {
+    "label": "graphify",
+    "description": "pi SDK plus precomputed Graphify-like deployment wiring index, GPT via Codex subscription (OAuth)",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "indexes": ["concept"]
   }
 }

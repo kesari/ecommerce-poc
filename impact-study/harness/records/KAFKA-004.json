@@ -1,0 +1,86 @@
+{
+  "change_id": "KAFKA-004",
+  "status": "frozen",
+  "category": "kafka_schema",
+  "title": "Event envelope schemaVersion bumped to require v2",
+  "query": "What breaks across repositories if the event envelope schemaVersion is bumped and v1 envelopes are rejected?",
+  "proposed_change": {
+    "repo": "order-service",
+    "diff": "-public record EventEnvelope(UUID eventId, String eventType, int schemaVersion, Instant occurredAt,\n+public record EventEnvelope(UUID eventId, String eventType, int schemaVersion, Instant occurredAt,\n // schemaVersion must equal 2; v1 envelopes are rejected at the inbox"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "owns EventEnvelope and the inbox version gate"
+      },
+      {
+        "name": "shipment-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "OrderConfirmedListener deduplicates by envelope eventId and reads the envelope"
+      },
+      {
+        "name": "basket-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "OrderConfirmedListener consumes the same envelope for basket completion"
+      },
+      {
+        "name": "payment-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "PaymentCommandListener redacts and parses versioned command envelopes"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.order.application.EventEnvelope",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "basket-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1",
+        "provider_repo": "order-service",
+        "consumer_repos": [
+          "shipment-service",
+          "basket-service"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketCheckoutConsumerTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Envelope-level change: topic names stay identical while every message on them changes meaning. Tools matching on topic strings report no change at all, which is exactly wrong."
+}

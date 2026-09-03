@@ -1,0 +1,58 @@
+{
+  "change_id": "DB-002",
+  "status": "frozen",
+  "category": "db_schema",
+  "title": "Order address_snapshot widened with country column",
+  "query": "What breaks if the order address snapshot gains a separate country column alongside the jsonb snapshot?",
+  "proposed_change": {
+    "repo": "order-service",
+    "diff": "-    address_snapshot jsonb       NOT NULL,\n+    address_snapshot jsonb       NOT NULL,\n+    address_country  char(2),"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "order-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "V1__order_schema owns the snapshot tables; OrderRow and QuoteRow map the snapshot; snapshots are private history, never read cross-repo"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.row.OrderRow",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.row.QuoteRow",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.order.domain.model.Order",
+        "repo": "order-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "db",
+        "identifier": "order.orders.address_country",
+        "provider_repo": "order-service",
+        "consumer_repos": [],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Snapshot tables look like contract surface but are private history: no service reads another service's tables. A contestant reporting Kafka or REST impact here is confusing storage with contracts."
+}

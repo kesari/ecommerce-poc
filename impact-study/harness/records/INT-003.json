@@ -1,0 +1,44 @@
+{
+  "change_id": "INT-003",
+  "status": "frozen",
+  "category": "internal_refactor",
+  "title": "AddressDtoMapper null handling changed",
+  "query": "What breaks if AddressDtoMapper changes its null handling for optional address fields?",
+  "proposed_change": {
+    "repo": "account-service",
+    "diff": "-                address.line2(), address.city(), address.state(), address.postalCode(),\n+                nullToEmpty(address.line2()), address.city(), address.state(), address.postalCode(),"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "account-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "AddressDtoMapper is called by AddressController for responses; empty-string line2 shifts the API shape without changing its schema"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [],
+    "required_tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Mapper-level variant of the REST-001 family with no cross-repo effect: the schema is unchanged, only a value normalization. Distinguishes tools that report every touched file from tools that report actual blast radius."
+}

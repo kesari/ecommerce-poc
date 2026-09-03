@@ -1,0 +1,86 @@
+{
+  "change_id": "REST-005",
+  "status": "frozen",
+  "category": "rest_contract",
+  "title": "DeliveryWindow LocalDate range changed to Instant timestamp",
+  "query": "What breaks across repositories if the delivery window changes from LocalDate from/to dates to an Instant timestamp?",
+  "proposed_change": {
+    "repo": "shipment-service",
+    "diff": "-public record DeliveryWindow(LocalDate from, LocalDate to) {}\n+public record DeliveryWindow(Instant at) {}"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "shipment-service",
+        "criticality": "critical",
+        "evidence_note": "owns DeliveryWindow, DeliveryEstimate, DeliveryEstimator, Shipment, and MyBatisShipmentRepository mapping"
+      },
+      {
+        "name": "order-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "ShipmentClient consumes the estimate shape for checkout quotes"
+      },
+      {
+        "name": "commerce-web",
+        "criticality": "contract_consumer",
+        "evidence_note": "checkout preview renders the estimated delivery window"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.shipment.domain.model.DeliveryWindow",
+        "repo": "shipment-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.shipment.domain.model.DeliveryEstimate",
+        "repo": "shipment-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest",
+        "repo": "shipment-service",
+        "kind": "record",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "provider_repo": "shipment-service",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "severity": "contract_consumer"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "level": "unit"
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Domain-semantic change inside a shaped object. Date-range to instant is not serially compatible: Jackson binds by shape, and every reader of from/to breaks while the endpoint path stays identical."
+}
