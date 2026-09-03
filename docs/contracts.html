@@ -23,15 +23,16 @@
       <table>
         <thead><tr><th>Measure</th><th>Plain-English question</th></tr></thead>
         <tbody>
-          <tr><td><strong>Repository recall</strong></td><td>Did it find every affected repository?</td></tr>
-          <tr><td><strong>Contract recall</strong></td><td>Did it find the relevant REST, Kafka, schema, or API relationship?</td></tr>
-          <tr><td><strong>Precision</strong></td><td>How many reported repositories were actually affected?</td></tr>
-          <tr><td><strong>Evidence</strong></td><td>Can an engineer verify why each finding was included?</td></tr>
+          <tr><td><strong>Repository recall</strong></td><td>Did it find every affected repository? Weighted by severity, so a critical miss hurts more than a label miss.</td></tr>
+          <tr><td><strong>Contract recall</strong></td><td>Did it find the relevant REST, Kafka, schema, or API relationship? Also severity-weighted.</td></tr>
+          <tr><td><strong>Precision</strong></td><td>Across every finding kind, how much of what it reported was actually affected?</td></tr>
+          <tr><td><strong>Critical penalty</strong></td><td>Did it miss anything that breaks production? Each critical miss lowers the score directly.</td></tr>
+          <tr><td><strong>Evidence</strong></td><td>Can an engineer verify why each finding was included? Every finding carries a tier from compiler-proven to hypothesis, and malformed findings are counted, never silently dropped.</td></tr>
           <tr><td><strong>Freshness</strong></td><td>Can it see a change that has not been committed or fully indexed?</td></tr>
           <tr><td><strong>Cost</strong></td><td>How much infrastructure and maintenance does it require?</td></tr>
         </tbody>
       </table>
-      <p><strong>A missed critical dependency is worse than a few extra suggestions.</strong> That is why recall receives the most weight and critical misses are shown separately.</p>
+      <p><strong>A missed critical dependency is worse than a few extra suggestions.</strong> Recall is severity-weighted and every critical miss also lowers a dedicated penalty, so one critical blind spot costs more than several false positives.</p>
     </section>
     <section class="panel">
       <h2>How strong is the evidence?</h2>
@@ -45,16 +46,31 @@
         </tbody>
       </table>
     </section>
+    <section class="panel">
+      <h2>First measured results</h2>
+      <p>Same AI model (GPT-5.4), same read-only tools, same question — the only difference is the reference material. One run each, so treat this as an early signal, not a verdict.</p>
+      <table>
+        <thead><tr><th></th><th>Agent-only</th><th>Symbol index</th><th>Contract graph</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Score, address rename</strong></td><td>0.79</td><td><strong>0.92</strong></td><td>0.71</td></tr>
+          <tr><td><strong>Found the changed service itself</strong></td><td>No</td><td>Yes</td><td>No</td></tr>
+          <tr><td><strong>Critical blind spots</strong></td><td>1</td><td>0</td><td>1</td></tr>
+        </tbody>
+      </table>
+      <p>The symbol index found every affected repository and symbol; its only miss was one end-to-end test. The unaided agent found every downstream victim but missed the owning service. The contract-graph run shared that blind spot this round and needs a retest.</p>
+      <p>On a simpler single-service change, local, hosted, and index-assisted runs all reach about 0.87 by different routes — while the free local model swings from 0.39 to 0.74 on the hard scenario and sometimes answers without searching at all.</p>
+    </section>
     <section class="grid">
-      <article class="card"><h2>Today</h2><p>One deeply checked scenario, REST-001, with agent-only and Gortex example answers and a deterministic scorer.</p></article>
+      <article class="card"><h2>Today</h2><p>Four frozen scenarios — REST-001, KAFKA-001, INT-001, DB-001 — with real measured runs, rejection tracking for failed runs, and a deterministic scorer.</p></article>
       <article class="card"><h2>Target</h2><p>Thirty changes covering Java code, shared libraries, REST, Kafka, database schemas, configuration, and business rules.</p></article>
-      <article class="card"><h2>Next</h2><p>Connect SCIP, Gortex, Graphify, and hybrid retrieval to the same blind runner, then compare their results.</p></article>
+      <article class="card"><h2>Next</h2><p>Repeat each contestant twice more to confirm the symbol-index lead replicates, then expand the corpus toward the thirty-record target.</p></article>
     </section>
     <section class="panel">
       <h2>Files</h2>
       <ul>
         <li><a href="https://github.com/kesari/ecommerce-poc/blob/main/impact-study/harness/records/REST-001.json">The frozen REST-001 answer</a></li>
-        <li><a href="https://github.com/kesari/ecommerce-poc/tree/main/impact-study/harness/answers/examples">Example contestant answers</a></li>
+        <li><a href="https://github.com/kesari/ecommerce-poc/tree/main/impact-study/harness/records">All frozen records (REST-001, KAFKA-001, INT-001, DB-001)</a></li>
+        <li><a href="https://github.com/kesari/ecommerce-poc/tree/main/impact-study/harness/answers/runs">Measured runs and their scores</a></li>
         <li><a href="https://github.com/kesari/ecommerce-poc/tree/main/impact-study/harness/scoring">Scorer and tests</a></li>
         <li><a href="https://github.com/kesari/ecommerce-poc/blob/main/impact-study/docs/research/gortex-vs-graphify-vs-scip-vs-agent-cross-repo-change-impact.md">Original detailed Gortex / Graphify comparison</a></li>
       </ul>
