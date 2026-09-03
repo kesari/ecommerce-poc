@@ -23,11 +23,82 @@
         "combined"
       ]
     },
+    "runner": {
+      "type": "string"
+    },
+    "run_index": {
+      "type": "integer",
+      "minimum": 1
+    },
     "elapsed_seconds": {
-      "type": "number"
+      "type": "number",
+      "minimum": 0
     },
     "tokens_consumed": {
-      "type": "integer"
+      "type": "integer",
+      "minimum": 0
+    },
+    "cost_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "model": {
+      "type": "string"
+    },
+    "model_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pi_version": {
+      "type": "string"
+    },
+    "prompt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "contestant_config_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "estate_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "estate_repositories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "estate_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "commit",
+          "dirty"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "commit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dirty": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
     },
     "freshness_score": {
       "type": [

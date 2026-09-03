@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -109,16 +110,36 @@ def check(node, schema, path, errors):
     if not isinstance(schema, dict):
         return
     expected = schema.get("type")
-    if expected == "object" and not isinstance(node, dict):
-        errors.append(f"{path}: expected object, got {type(node).__name__}")
-        return
-    if expected == "array" and not isinstance(node, list):
-        errors.append(f"{path}: expected array, got {type(node).__name__}")
+
+    def matches_type(value, kind):
+        return {
+            "object": lambda: isinstance(value, dict),
+            "array": lambda: isinstance(value, list),
+            "string": lambda: isinstance(value, str),
+            "number": lambda: isinstance(value, (int, float)) and not isinstance(value, bool),
+            "integer": lambda: isinstance(value, int) and not isinstance(value, bool),
+            "boolean": lambda: isinstance(value, bool),
+            "null": lambda: value is None,
+        }.get(kind, lambda: True)()
+
+    allowed_types = expected if isinstance(expected, list) else [expected] if expected else []
+    if allowed_types and not any(matches_type(node, kind) for kind in allowed_types):
+        errors.append(
+            f"{path}: expected {' or '.join(allowed_types)}, got {type(node).__name__}"
+        )
         return
     if "enum" in schema and node not in schema["enum"]:
         errors.append(f"{path}: {node!r} is not one of {schema['enum']}")
     if "const" in schema and node != schema["const"]:
         errors.append(f"{path}: {node!r} must be {schema['const']!r}")
+    if isinstance(node, str) and "pattern" in schema:
+        if re.search(schema["pattern"], node) is None:
+            errors.append(f"{path}: {node!r} does not match {schema['pattern']!r}")
+    if isinstance(node, (int, float)) and not isinstance(node, bool):
+        if "minimum" in schema and node < schema["minimum"]:
+            errors.append(f"{path}: {node!r} is below minimum {schema['minimum']}")
+        if "maximum" in schema and node > schema["maximum"]:
+            errors.append(f"{path}: {node!r} exceeds maximum {schema['maximum']}")
     if isinstance(node, dict):
         for name in schema.get("required", []):
             if name not in node:
@@ -127,6 +148,8 @@ def check(node, schema, path, errors):
             child = schema.get("properties", {}).get(name)
             if child is not None:
                 check(value, child, f"{path}.{name}", errors)
+            elif schema.get("additionalProperties") is False:
+                errors.append(f"{path}: unexpected field '{name}'")
     if isinstance(node, list) and "items" in schema:
         for index, item in enumerate(node):
             check(item, schema["items"], f"{path}[{index}]", errors)
@@ -149,6 +172,13 @@ def validate_files(kind, paths):
             if errors:
                 report["errors"][file.name] = errors
     report["valid"] = not report["errors"]
+    return report
+
+
+def require_valid(kind, paths):
+    report = validate_files(kind, paths)
+    if not report["valid"]:
+        raise SystemExit(json.dumps(report, indent=2))
     return report
 
 
@@ -335,6 +365,8 @@ def main():
     args = parser.parse_args()
 
     if args.mode == "score":
+        require_valid("record", [args.ground_truth])
+        require_valid("answer", [args.answer])
         report = score_change(load(args.ground_truth), load(args.answer), args.target_latency_seconds)
     elif args.mode == "validate":
         report = validate_files(args.kind, args.paths)
