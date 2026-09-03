@@ -1,0 +1,8 @@
+{
+  "change_id": "INT-001",
+  "runner": "pi-codex-gortex",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T15:16:34.415Z",
+  "reason": "no answer object with a 'findings' key in the output; raw output saved to /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/INT-001-pi-codex-gortex-1.raw.txt",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

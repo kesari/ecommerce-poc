@@ -60,7 +60,8 @@ case-insensitive; `asyncapi` is accepted as an alias of `kafka`.
   `openapi:account.yaml#/components/schemas/AddressResponse`
 - `kafka` — `<topic>#<json-pointer>`, for example
   `order.confirmed.v1#/address/postalCode`
-- `grpc` / `db` — service or table qualified name as found in source.
+- `grpc` / `db` — fully qualified: `<service>.<table>.<column>`, for example
+  `account.addresses.postal_code`. Table-only names do not match.
 
 Report the declaring type for symbols: `com.example.Foo`, not
 `com.example.Foo.field`. A field reference still credits its type.
