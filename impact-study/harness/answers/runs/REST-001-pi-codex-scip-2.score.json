@@ -1,0 +1,99 @@
+{
+  "change_id": "REST-001",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.5,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.925
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 10,
+      "matched": 4,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 6,
+      "matched": 3,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 6,
+      "matched": 2,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.account.api.addresscontroller",
+      "com.poc.account.infrastructure.mapping.addressdtomapper",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest",
+      "rest get /api/v1/addresses/{addressid}"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 7,
+    "contract_matched": 9,
+    "compiler": 10
+  },
+  "raw": {
+    "elapsed_seconds": 95.2,
+    "tokens_consumed": 135862
+  },
+  "answer_sha256": "f84f61d03b19f36f0926a02b5febf1206a0b0f2565f70e61170170b42223862e"
+}

@@ -1,0 +1,122 @@
+{
+  "change_id": "REST-001",
+  "contestant": "gortex",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 0.7222,
+    "contract_recall": 0.3333,
+    "precision": 0.3704,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.6375
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 12,
+      "matched": 4,
+      "false_positives": 8,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 1,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 8,
+      "matched": 2,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1,
+      "contract_consumer": 2,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "account-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "contract",
+      "key": "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "rest post /api/v1/addresses",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-platform"
+    ],
+    "symbols": [
+      "com.poc.account.api.addresscontroller",
+      "com.poc.account.domain.model.address",
+      "com.poc.account.infrastructure.mapping.addressdtomapper",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.domain.model.deliveryaddress",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "openapi openapi:account-service/openapi/account.yaml#/components/schemas/addressrequest",
+      "openapi openapi:account-service/openapi/account.yaml#/components/schemas/addressresponse"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "order-service orderapimockedtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service openapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "contract_matched": 5,
+    "extracted": 15,
+    "compiler": 7
+  },
+  "raw": {
+    "elapsed_seconds": 79.9,
+    "tokens_consumed": 125174
+  },
+  "answer_sha256": "8974ef1d47e1467891a528f4b964ceae437b0432162c6bb21fe2791d6df136d8"
+}
