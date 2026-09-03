@@ -1,0 +1,93 @@
+{
+  "change_id": "INT-001",
+  "contestant": "gortex",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.2632,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8895
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 8,
+      "matched": 2,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 6,
+      "matched": 2,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "missed_by_severity": {}
+  },
+  "missed": [],
+  "false_positives": {
+    "repositories": [
+      "order-service"
+    ],
+    "symbols": [
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.order.infrastructure.client.accountclient",
+      "com.poc.order.infrastructure.client.shipmentclient",
+      "com.poc.shipment.api.dto.deliveryestimaterequest",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "kafka order.confirmed.v1#/address/postalcode",
+      "openapi openapi:shipment-service.yaml#/components/schemas/deliveryestimaterequest",
+      "rest post /api/v1/delivery-estimates"
+    ],
+    "tests": [
+      "order-service contractvalidationtest",
+      "order-service orderapimockedtest",
+      "order-service ordersagaintegrationtest",
+      "shipment-service asyncapicontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 15,
+    "contract_matched": 4
+  },
+  "raw": {
+    "elapsed_seconds": 52,
+    "tokens_consumed": 92934
+  },
+  "answer_sha256": "523a5b4100df8b8c4af545ae683ac2a833d5ac3b0cb4784fc7e84dbae10eda2c"
+}

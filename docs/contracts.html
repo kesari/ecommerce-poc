@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
+    <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="results.html">Results</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
     <h1>Test data and scores</h1>
     <p class="lead">We decide the correct answer first, hide it from the contestants, and score every result in the same way.</p>
   </header>
@@ -59,6 +59,7 @@
       </table>
       <p>The symbol index found every affected symbol in all three runs and never missed a critical repository; its misses are limited to single repo, contract, or test items. The unaided agent's best run nearly matches the index, but it misses a critical repository in two of three runs — consistency, not ceiling, is what the index buys. The contract-graph runs miss the owning service every time while finding downstream consumers: topology helps downstream, hurts upstream.</p>
       <p>On a simpler single-service change, local, hosted, and index-assisted runs all reach about 0.87 by different routes — while the free local model swings from 0.39 to 0.74 on the hard scenario and sometimes answers without searching at all.</p>
+      <p>Full tables across all four scenarios live on the <a href="results.html">results page</a>.</p>
     </section>
     <section class="grid">
       <article class="card"><h2>Today</h2><p>Four frozen scenarios — REST-001, KAFKA-001, INT-001, DB-001 — with real measured runs, rejection tracking for failed runs, and a deterministic scorer.</p></article>

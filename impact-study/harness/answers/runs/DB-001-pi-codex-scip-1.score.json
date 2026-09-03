@@ -1,0 +1,119 @@
+{
+  "change_id": "DB-001",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 0.6154,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.1333,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.5,
+    "composite": 0.595
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 13,
+      "matched": 2,
+      "false_positives": 11,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 7,
+      "matched": 0,
+      "false_positives": 7,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 6,
+      "matched": 1,
+      "false_positives": 5,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.infrastructure.persistence.repository.mybatisaddressrepository",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "contract",
+      "key": "db account.addresses.postal_code",
+      "severity": "critical_runtime_dependency"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-web",
+      "order-service",
+      "shipment-service"
+    ],
+    "symbols": [
+      "com.poc.account.api.addresscontroller",
+      "com.poc.account.api.dto.addressrequest",
+      "com.poc.account.api.dto.addressresponse",
+      "com.poc.account.domain.model.address",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.order.domain.model.addresssnapshot",
+      "com.poc.order.infrastructure.client.accountclient",
+      "com.poc.shipment.application.deliveryestimator",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "db account-service.addresses.postal_code",
+      "kafka order.confirmed.v1#/address/postalcode",
+      "openapi openapi:account.yaml#/components/schemas/addressrequest",
+      "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "rest get /api/v1/addresses",
+      "rest get /api/v1/addresses/{addressid}",
+      "rest post /api/v1/addresses"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "order-service ordersagaintegrationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 16,
+    "contract_matched": 9,
+    "compiler": 5
+  },
+  "raw": {
+    "elapsed_seconds": 89.3,
+    "tokens_consumed": 246835
+  },
+  "answer_sha256": "1f56d4a27ec512ef0b99b9f6ec3abc281bf717a83c0e7a358bb16c90aa45df55"
+}

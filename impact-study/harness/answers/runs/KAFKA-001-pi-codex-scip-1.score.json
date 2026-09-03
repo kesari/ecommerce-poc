@@ -1,0 +1,89 @@
+{
+  "change_id": "KAFKA-001",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.7692,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.9654
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 2,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "test",
+      "key": "basket-service basketcheckoutconsumertest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.shipment.application.shipmentservice"
+    ],
+    "contracts": [],
+    "tests": [
+      "order-service contractvalidationtest",
+      "shipment-service asyncapicontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 9,
+    "contract_matched": 3,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 37.4,
+    "tokens_consumed": 121433
+  },
+  "answer_sha256": "7870b26d1a44f005767b87bd326a3ad829341b8df3c8068908c94994a31cb6ea"
+}
