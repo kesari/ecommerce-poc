@@ -70,6 +70,15 @@
           <tr><td><strong>With a wiring list</strong> (1 try, score 0.70)</td><td>Found every system and every code component but missed the event contract entirely — the wiring list carries no topic edges, so on events it is genuinely blind.</td></tr>
         </tbody>
       </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Alone</strong> (3 answers)</td><td>28 – 36</td><td>81k – 212k tokens</td></tr>
+          <tr><td><strong>With a code directory</strong> (3 answers)</td><td>22 – 30</td><td>121k – 146k tokens</td></tr>
+          <tr><td><strong>With a service map</strong> (3 answers)</td><td>26 – 31</td><td>110k – 157k tokens</td></tr>
+          <tr><td><strong>With a wiring list</strong> (1 answer)</td><td>31</td><td>120k tokens</td></tr>
+        </tbody>
+      </table>
     </section>
     <section class="panel">
       <h2>Test 3: the stricter postcode rule</h2>
@@ -83,6 +92,15 @@
           <tr><td><strong>With a wiring list</strong> (score 0.88)</td><td>Same correct answer. Cheap context is enough where nothing hides.</td></tr>
         </tbody>
       </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Alone</strong> (2 answers)</td><td>38 – 39</td><td>113k – 183k tokens</td></tr>
+          <tr><td><strong>With a code directory</strong> (2 answers)</td><td>42 – 52</td><td>245k – 262k tokens</td></tr>
+          <tr><td><strong>With a service map</strong> (2 answers)</td><td>27 – 35</td><td>93k – 123k tokens</td></tr>
+          <tr><td><strong>With a wiring list</strong> (1 answer)</td><td>53</td><td>148k tokens</td></tr>
+        </tbody>
+      </table>
     </section>
     <section class="panel">
       <h2>Test 4: the renamed database column</h2>
@@ -94,6 +112,15 @@
           <tr><td><strong>With a code directory</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
           <tr><td><strong>With a service map</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
           <tr><td><strong>With a wiring list</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — the wiring list shows tables without service-qualified contract names.</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Alone</strong> (2 answers)</td><td>35 – 57</td><td>115k – 373k tokens</td></tr>
+          <tr><td><strong>With a code directory</strong> (2 answers)</td><td>32 – 49</td><td>190k – 247k tokens</td></tr>
+          <tr><td><strong>With a service map</strong> (2 answers)</td><td>42 – 46</td><td>128k – 175k tokens</td></tr>
+          <tr><td><strong>With a wiring list</strong> (1 answer)</td><td>32</td><td>124k tokens</td></tr>
         </tbody>
       </table>
     </section>
