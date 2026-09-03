@@ -11,7 +11,7 @@
   <header>
     <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="results.html">Results</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
     <h1>Results</h1>
-    <p class="lead">We gave three AI assistants the same four problems. Each assistant searched the same code with the same AI model — the only difference was its reference material. Here is what happened, in plain language.</p>
+    <p class="lead">We gave five AI assistants the same four problems. Each assistant searched the same code with the same AI model — the only difference was its reference material. Here is what happened, in plain language.</p>
   </header>
   <main>
     <section class="panel">
@@ -20,11 +20,11 @@
       <table>
         <thead><tr><th>Assistant</th><th>Harness name</th><th>What extra help it gets</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong></td><td><code>pi-codex</code> (agent-only)</td><td>Nothing. It searches the code file by file — the Claude / Codex investigator from the comparison page.</td></tr>
-          <tr><td><strong>With a code directory</strong></td><td><code>pi-codex-scip</code> (scip)</td><td>A precomputed list of every code component and where it lives — the SCIP idea: compiler-accurate truth.</td></tr>
-          <tr><td><strong>With a service map</strong></td><td><code>pi-codex-gortex</code> (gortex)</td><td>A precomputed diagram of which service talks to which, and over what contract — the Gortex idea: system topology.</td></tr>
-          <tr><td><strong>With both (combined)</strong></td><td><code>pi-combined</code> (combined)</td><td>The code directory <em>and</em> the service map together — the proposal's Candidate F: the full end-state stack in one assistant.</td></tr>
-          <tr><td><strong>With a wiring list</strong></td><td><code>pi-graphify</code> (graphify)</td><td>A lightweight list of which services are wired to which (from configuration files) and which database tables each owns — the Graphify idea: broad context, cheap to build.</td></tr>
+          <tr><td><strong>Agent-only</strong></td><td><code>pi-codex</code></td><td>Nothing. It searches the code file by file — the Claude / Codex investigator from the comparison page.</td></tr>
+          <tr><td><strong>SCIP</strong></td><td><code>pi-codex-scip</code></td><td>A precomputed list of every code component and where it lives — compiler-accurate truth.</td></tr>
+          <tr><td><strong>Gortex</strong></td><td><code>pi-codex-gortex</code></td><td>A precomputed diagram of which service talks to which, and over what contract — system topology.</td></tr>
+          <tr><td><strong>Combined</strong></td><td><code>pi-combined</code></td><td>The SCIP list <em>and</em> the Gortex diagram together — the proposal's Candidate F: the full end-state stack in one assistant.</td></tr>
+          <tr><td><strong>Graphify</strong></td><td><code>pi-graphify</code></td><td>A lightweight list of which services are wired to which (from configuration files) and which database tables each owns — broad context, cheap to build.</td></tr>
         </tbody>
       </table>
       <p>Every run is blind: each assistant works in an isolated copy of the code and never sees the frozen correct answer. Full run commands live on the <a href="running-locally.html">Run it</a> page.</p>
@@ -35,11 +35,11 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (3 tries, score 0.81)</td><td>Found every downstream victim but missed the account service where the change happened — in 2 of 3 tries, including a miss that breaks production.</td></tr>
-          <tr><td><strong>With a code directory</strong> (3 tries, score 0.88)</td><td>Found everything except one end-to-end test. Never missed anything that breaks production.</td></tr>
-          <tr><td><strong>With a service map</strong> (3 tries, score 0.67)</td><td>Found the downstream victims but missed the account service every single time. A map of who-talks-to-whom points away from the scene of the crime.</td></tr>
-          <tr><td><strong>With both</strong> (1 try, score 0.71)</td><td>Same blind spot as the map alone. More reference material did not stack — on this run it diluted focus instead.</td></tr>
-          <tr><td><strong>With a wiring list</strong> (1 try, score 0.85)</td><td>Full house on systems and code, zero production-breaking misses. The lightweight list guided without distracting.</td></tr>
+          <tr><td><strong>Agent-only</strong> (3 tries, score 0.81)</td><td>Found every downstream victim but missed the account service where the change happened — in 2 of 3 tries, including a miss that breaks production.</td></tr>
+          <tr><td><strong>SCIP</strong> (3 tries, score 0.88)</td><td>Found everything except one end-to-end test. Never missed anything that breaks production.</td></tr>
+          <tr><td><strong>Gortex</strong> (3 tries, score 0.67)</td><td>Found the downstream victims but missed the account service every single time. Gortex points downstream, away from the scene of the crime.</td></tr>
+          <tr><td><strong>Combined</strong> (1 try, score 0.71)</td><td>Same blind spot as Gortex alone. More reference material did not stack — on this run it diluted focus instead.</td></tr>
+          <tr><td><strong>Graphify</strong> (1 try, score 0.85)</td><td>Full house on systems and code, zero production-breaking misses. The lightweight list guided without distracting.</td></tr>
         </tbody>
       </table>
     </section>
@@ -49,14 +49,14 @@
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (3 answers)</td><td>46 – 51</td><td>138k – 476k tokens</td></tr>
-          <tr><td><strong>With a code directory</strong> (3 answers)</td><td>41 – 53</td><td>136k – 257k tokens</td></tr>
-          <tr><td><strong>With a service map</strong> (3 answers)</td><td>32 – 49</td><td>89k – 148k tokens</td></tr>
-          <tr><td><strong>With both</strong> (1 answer)</td><td>42</td><td>273k tokens</td></tr>
-          <tr><td><strong>With a wiring list</strong> (1 answer)</td><td>50</td><td>127k tokens</td></tr>
+          <tr><td><strong>Agent-only</strong> (3 answers)</td><td>46 – 51</td><td>138k – 476k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (3 answers)</td><td>41 – 53</td><td>136k – 257k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (3 answers)</td><td>32 – 49</td><td>89k – 148k tokens</td></tr>
+          <tr><td><strong>Combined</strong> (1 answer)</td><td>42</td><td>273k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (1 answer)</td><td>50</td><td>127k tokens</td></tr>
         </tbody>
       </table>
-      <p>Effort does not explain the scores: the winner and the loser both searched thoroughly. The wiring list is the cheapest good answer at 127k tokens; the free local model sometimes spends 500k tokens and still scores 0.39.</p>
+      <p>Effort does not explain the scores: the winner and the loser both searched thoroughly. Graphify is the cheapest good answer at 127k tokens; the free local model sometimes spends 500k tokens and still scores 0.39.</p>
     </section>
     <section class="panel">
       <h2>Test 2: the renamed delivery event</h2>
@@ -64,10 +64,10 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (3 tries, score 0.91)</td><td>Found all four affected systems in every run; every run missed the basket test, and two of three also missed one orchestrator component.</td></tr>
-          <tr><td><strong>With a code directory</strong> (3 tries, score 0.94)</td><td>Best of the three. Found every system and every contract that matters.</td></tr>
-          <tr><td><strong>With a service map</strong> (3 tries, score 0.93)</td><td>Nearly identical — events are exactly what the map was built for. This is its home turf.</td></tr>
-          <tr><td><strong>With a wiring list</strong> (1 try, score 0.70)</td><td>Found every system and every code component but missed the event contract entirely — the wiring list carries no topic edges, so on events it is genuinely blind.</td></tr>
+          <tr><td><strong>Agent-only</strong> (3 tries, score 0.91)</td><td>Found all four affected systems in every run; every run missed the basket test, and two of three also missed one orchestrator component.</td></tr>
+          <tr><td><strong>SCIP</strong> (3 tries, score 0.94)</td><td>Best of the three. Found every system and every contract that matters.</td></tr>
+          <tr><td><strong>Gortex</strong> (3 tries, score 0.93)</td><td>Nearly identical — events are exactly what the map was built for. This is its home turf.</td></tr>
+          <tr><td><strong>Graphify</strong> (1 try, score 0.70)</td><td>Found every system and every code component but missed the event contract entirely — Graphify's index carries no topic edges, so on events it is genuinely blind.</td></tr>
         </tbody>
       </table>
     </section>
@@ -77,10 +77,10 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (score 0.89)</td><td>Correct: one service affected, correctly identified.</td></tr>
-          <tr><td><strong>With a code directory</strong> (score 0.89)</td><td>Same correct answer, with exact file-and-line evidence and zero misses.</td></tr>
-          <tr><td><strong>With a service map</strong> (score 0.89)</td><td>Same correct answer, with zero misses.</td></tr>
-          <tr><td><strong>With a wiring list</strong> (score 0.88)</td><td>Same correct answer. Cheap context is enough where nothing hides.</td></tr>
+          <tr><td><strong>Agent-only</strong> (score 0.89)</td><td>Correct: one service affected, correctly identified.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.89)</td><td>Same correct answer, with exact file-and-line evidence and zero misses.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.89)</td><td>Same correct answer, with zero misses.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.88)</td><td>Same correct answer. Cheap context is enough where nothing hides.</td></tr>
         </tbody>
       </table>
     </section>
@@ -90,10 +90,10 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Alone</strong> (score 0.83)</td><td>Right service and contract, but ten extra code guesses and a missed repository-critical symbol.</td></tr>
-          <tr><td><strong>With a code directory</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
-          <tr><td><strong>With a service map</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
-          <tr><td><strong>With a wiring list</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — the wiring list shows tables without service-qualified contract names.</td></tr>
+          <tr><td><strong>Agent-only</strong> (score 0.83)</td><td>Right service and contract, but ten extra code guesses and a missed repository-critical symbol.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — Graphify's index shows tables without service-qualified contract names.</td></tr>
         </tbody>
       </table>
     </section>
@@ -102,10 +102,10 @@
       <table>
         <thead><tr><th>Decision</th><th>Reason in one line</th></tr></thead>
         <tbody>
-          <tr><td><strong>Adopt the code directory</strong></td><td>Best or tied score on all four tests, and the only assistant that never missed anything production-breaking (outside the shared naming miss).</td></tr>
-          <tr><td><strong>Retest the service map, don't reject it</strong></td><td>Excellent on events, the thing it was built for — but it repeatedly misses the service where a change originates.</td></tr>
-          <tr><td><strong>Replicate the wiring list before adopting it</strong></td><td>A strong 0.85 debut with zero production-breaking misses at the lowest reading cost — but a single run proves nothing yet.</td></tr>
-          <tr><td><strong>Don't assume combined is best</strong></td><td>Both indexes together scored 0.71 on the first run, below either index alone. More context diluted focus instead of stacking strengths.</td></tr>
+          <tr><td><strong>Adopt SCIP</strong></td><td>Best or tied score on all four tests, and the only assistant that never missed anything production-breaking (outside the shared naming miss).</td></tr>
+          <tr><td><strong>Retest Gortex, don't reject it</strong></td><td>Excellent on events, the thing it was built for — but it repeatedly misses the service where a change originates.</td></tr>
+          <tr><td><strong>Replicate Graphify before adopting it</strong></td><td>A strong 0.85 debut with zero production-breaking misses at the lowest reading cost — but a single run proves nothing yet.</td></tr>
+          <tr><td><strong>Don't assume Combined is best</strong></td><td>SCIP plus Gortex together scored 0.71 on the first run, below either index alone. More context diluted focus instead of stacking strengths.</td></tr>
           <tr><td><strong>Keep the free local model away from sign-offs</strong></td><td>Same question scores anywhere from 0.39 to 0.74 and it sometimes answers without searching. Fine for drafting.</td></tr>
         </tbody>
       </table>
