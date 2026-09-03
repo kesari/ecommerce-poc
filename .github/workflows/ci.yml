@@ -17,15 +17,16 @@ jobs:
         with:
           python-version: "3.13"
       - run: python3 -m unittest discover -s impact-study/harness/scoring -p 'test*.py'
+      - run: python3 -m unittest discover -s impact-study/harness/run -p 'test*.py'
       - run: >-
           python3 impact-study/harness/scoring/score.py score
           --ground-truth impact-study/harness/records/REST-001.json
-          --answer impact-study/harness/answers/examples/REST-001-agent-only.json
+          --answer impact-study/harness/answers/runs/REST-001-pi-qwen3-coder-3.json
       - run: >-
           python3 impact-study/harness/scoring/score.py marginal
           --ground-truth impact-study/harness/records/REST-001.json
-          --baseline impact-study/harness/answers/examples/REST-001-agent-only.json
-          --candidate impact-study/harness/answers/examples/REST-001-gortex.json
+          --baseline impact-study/harness/answers/runs/REST-001-pi-qwen3-coder-1.json
+          --candidate impact-study/harness/answers/runs/REST-001-pi-qwen3-coder-3.json
 
   java:
     name: ${{ matrix.service }}
