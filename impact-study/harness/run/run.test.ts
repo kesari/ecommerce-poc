@@ -12,7 +12,8 @@ import {
 	SettingsManager,
 } from "@earendil-works/pi-coding-agent";
 import { extractAnswer } from "./answer.ts";
-import { createRestrictedReadOnlyTools, isolate } from "./estate.ts";
+import { countToolCalls, createRestrictedReadOnlyTools, isolate } from "./estate.ts";
+import { buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
 import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, withTimeout } from "./run.ts";
 import { validateFile } from "./scoring.ts";
 
@@ -21,12 +22,27 @@ test("parseArgs accepts repeated records and positive numeric values", () => {
 	assert.deepEqual(args.record, ["REST-001", "REST-002"]);
 	assert.equal(args.runs, 2);
 	assert.equal(args.timeout, 30);
+	assert.equal(args.minToolCalls, 10);
+});
+
+test("parseArgs accepts --min-tool-calls and --contestant", () => {
+	const args = parseArgs(["--record", "REST-001", "--contestant", "pi-scip", "--min-tool-calls", "4"]);
+	assert.deepEqual(args.contestant, ["pi-scip"]);
+	assert.equal(args.minToolCalls, 4);
+	assert.equal(args.minTokens, 8000);
+});
+
+test("parseArgs accepts --min-tokens", () => {
+	const args = parseArgs(["--record", "REST-001", "--min-tokens", "100"]);
+	assert.equal(args.minTokens, 100);
 });
 
 for (const argv of [
 	["--record", "REST-001", "--runs", "0"],
 	["--record", "REST-001", "--runs", "nope"],
 	["--record", "REST-001", "--timeout", "-1"],
+	["--record", "REST-001", "--min-tool-calls", "0"],
+	["--record", "REST-001", "--min-tokens", "0"],
 	["--unknown", "value", "--record", "REST-001"],
 ]) {
 	test(`parseArgs rejects ${argv.join(" ")}`, () => {
@@ -151,17 +167,110 @@ test("withTimeout rejects at the deadline and invokes cancellation", async () =>
 	assert.equal(cancelled, true);
 });
 
-test("validateFile rejects a schema-invalid answer before scoring", async () => {
+test("validateFile rejects a structurally broken answer but tolerates one bad finding", async () => {
 	const root = await mkdtemp(join(tmpdir(), "harness-schema-test-"));
+	const write = async (name: string, body: unknown) => {
+		const path = join(root, name);
+		await writeFile(path, JSON.stringify(body));
+		return path;
+	};
 	try {
-		const answer = join(root, "answer.json");
-		await writeFile(answer, JSON.stringify({
+		const broken = await write("broken.json", {
+			change_id: "REST-001",
+			contestant: "not-a-contestant",
+			findings: {},
+		});
+		assert.throws(() => validateFile("answer", broken), /schema validation failed/);
+
+		// One unusable contract must not void the run; the scorer drops and charges for it.
+		const usable = await write("usable.json", {
 			change_id: "REST-001",
 			contestant: "agent-only",
-			findings: { contracts: [{ type: "asyncapi", identifier: "invalid" }] },
-		}));
-		assert.throws(() => validateFile("answer", answer), /schema validation failed/);
+			findings: { contracts: [{ type: "carrier-pigeon", identifier: "invalid" }] },
+		});
+		assert.doesNotThrow(() => validateFile("answer", usable));
 	} finally {
 		await rm(root, { recursive: true, force: true });
 	}
+});
+
+test("isolate refuses to copy a ground-truth leak", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-leak-test-"));
+	try {
+		const estate = join(root, "source");
+		const scratch = join(root, "scratch");
+		await mkdir(join(estate, "account-service"), { recursive: true });
+		await mkdir(scratch);
+		await writeFile(join(estate, "account-service", "REST-001.json"), "{}");
+		await assert.rejects(isolate(estate, scratch, ["account-service"]), /ground-truth leak/);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test("parseJavaSymbols maps declarations to FQNs", () => {
+	const entries = parseJavaSymbols(
+		"package com.poc.account.api.dto;\n\npublic record AddressResponse(\n    String postalCode) {}\n",
+		"account-service",
+		"account-service/AddressResponse.java",
+	);
+	assert.deepEqual(entries, [{
+		fqn: "com.poc.account.api.dto.AddressResponse",
+		repo: "account-service",
+		file: "account-service/AddressResponse.java",
+		line: 3,
+		kind: "record",
+	}]);
+});
+
+test("index builders stay deterministic on a fixture estate", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-index-test-"));
+	try {
+		const workdir = join(root, "estate");
+		await mkdir(join(workdir, "order-service", "src", "main", "java", "com", "poc"), { recursive: true });
+		await mkdir(join(workdir, "order-service", "asyncapi", "schemas"), { recursive: true });
+		await mkdir(join(workdir, "order-service", "openapi"), { recursive: true });
+		await mkdir(join(workdir, "shipment-service", "asyncapi"), { recursive: true });
+		await writeFile(
+			join(workdir, "order-service", "src", "main", "java", "com", "poc", "Saga.java"),
+			"package com.poc.order;\n\npublic class SagaOrchestrator {}\n",
+		);
+		await writeFile(join(workdir, "order-service", "asyncapi", "schemas", "order.confirmed.v1.json"), "{}\n");
+		await writeFile(join(workdir, "order-service", "asyncapi", "order-service.yaml"), "channels:\n  order.confirmed.v1:\n    publish:\n      operationId: emit\n");
+		await writeFile(join(workdir, "shipment-service", "asyncapi", "shipment-service.yaml"), "channels:\n  order.confirmed.v1:\n    subscribe:\n      operationId: consume\n");
+		await writeFile(join(workdir, "order-service", "openapi", "order-service.yaml"), "paths:\n  /api/v1/orders:\n    post: {}\n");
+		const symbols = await buildSymbolIndex(workdir, ["order-service"]);
+		assert.ok(symbols.entries.some((entry) => entry.fqn === "com.poc.order.SagaOrchestrator"));
+		assert.match(symbols.sha256, /^[a-f0-9]{64}$/);
+		const contracts = await buildContractGraph(workdir, ["order-service", "shipment-service"]);
+		const topic = contracts.topics.find((entry) => entry.topic === "order.confirmed.v1");
+		assert.ok(topic);
+		assert.deepEqual(topic.producers, ["order-service"]);
+		assert.deepEqual(topic.consumers, ["shipment-service"]);
+		assert.ok(contracts.endpoints.some((endpoint) => endpoint.path === "/api/v1/orders"));
+		assert.match(contracts.sha256, /^[a-f0-9]{64}$/);
+		const again = await buildSymbolIndex(workdir, ["order-service"]);
+		assert.equal(again.sha256, symbols.sha256);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test("indexPromptSection is empty for index-free contestants", () => {
+	assert.equal(indexPromptSection([]), "");
+	assert.match(indexPromptSection(["symbol"]), /symbols\.json/);
+	assert.match(indexPromptSection(["contract"]), /contracts\.json/);
+});
+
+test("countToolCalls counts every execute", async () => {
+	const calls: string[] = [];
+	const tools: any[] = [
+		{ name: "read", execute: async (...args: any[]) => { calls.push(args[0]); return "ok"; } },
+		{ name: "ls" },
+	];
+	const getCount = countToolCalls(tools);
+	await tools[0].execute("a", { path: "x" });
+	await tools[0].execute("b", { path: "y" });
+	assert.equal(getCount(), 2);
+	assert.deepEqual(calls, ["a", "b"]);
 });

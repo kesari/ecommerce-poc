@@ -1,0 +1,172 @@
+{
+  "change_id": "INT-001",
+  "contestant": "scip",
+  "findings": {
+    "repositories": [
+      {
+        "name": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:16"
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:16"
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "account-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:basket.yaml#/components/schemas/BasketResponse",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java:9"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/ProductResponse",
+        "consumer_repos": [
+          "catalog-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:5"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:inventory.yaml#/components/schemas/ReservationItem",
+        "consumer_repos": [
+          "inventory-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "inventory-service/src/main/java/com/poc/inventory/domain/model/ReservationItem.java:5"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:order.yaml#/components/schemas/AddressSnapshot",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:order.yaml#/components/schemas/OrderResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/api/dto/OrderResponse.java:8"
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:shipment.yaml#/components/schemas/DeliveryEstimate",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:23:10"
+      }
+    ],
+    "tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "evidence_tier": "compiler",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java:20"
+      }
+    ]
+  },
+  "runner": "pi-scip",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T08:58:37.899Z",
+  "elapsed_seconds": 50.2,
+  "tool_calls": 3,
+  "index_sha256": "d858db37744c7d2005d78271e7849afb2dcf9891b8547f78a6499bfb65bf4c40",
+  "tokens_consumed": 20148,
+  "cost_usd": 0,
+  "model": "ollama/qwen3-coder:30b-a3b-q8_0",
+  "model_digest": "7b438a19895a",
+  "pi_version": "0.84.4",
+  "prompt_sha256": "ffe94a62513d3aa91ea82ee51a8eb362db868e7bfc6ea9c1ae354a3816d3945b",
+  "contestant_config_sha256": "b2a21af1a5b3c3b88aae8cece784322fcfa39e06d13aa69ccf5b87f4c337cdd3",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

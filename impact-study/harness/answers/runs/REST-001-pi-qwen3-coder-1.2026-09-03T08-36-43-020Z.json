@@ -4,69 +4,72 @@
   "findings": {
     "repositories": [
       {
-        "name": "order-service",
-        "evidence_tier": "contract_matched",
-        "evidence": "Order service consumes AccountService address and has a contract for order.confirmed.v1 event with postalCode field"
+        "name": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "Field 'postalCode' renamed to 'postcode' in Account.java line 25"
       }
     ],
     "symbols": [
       {
-        "fqn": "com.poc.order.domain.model.AddressSnapshot",
-        "repo": "order-service",
-        "evidence_tier": "contract_matched",
-        "evidence": "AddressSnapshot in order-service has postalCode field and is created from AccountService response"
+        "fqn": "com.example.account.Address",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "Class Address defined with postalCode field in Account.java line 15"
       },
       {
-        "fqn": "com.poc.order.infrastructure.client.AccountClient$AddressResponse",
-        "repo": "order-service",
+        "fqn": "com.example.account.AccountService",
+        "repo": "account-service",
         "evidence_tier": "contract_matched",
-        "evidence": "AccountClient reads postalCode from AccountService responses, line 40 accesses response.postalCode()"
+        "evidence": "REST endpoint POST /api/v1/accounts uses Address object in AccountController.java line 30"
       }
     ],
     "contracts": [
       {
-        "type": "openapi",
-        "identifier": "http://localhost:8080/api/v1/addresses",
+        "type": "rest",
+        "identifier": "POST /api/v1/accounts",
         "consumer_repos": [
-          "order-service"
+          "order-service",
+          "customer-service"
         ],
         "evidence_tier": "contract_matched",
-        "evidence": "Order service has account port which calls /api/v1/addresses endpoint, contract defines postalCode field"
+        "evidence": "Order and customer services consume account-service POST /api/v1/accounts endpoint"
       },
       {
-        "type": "kafka",
-        "identifier": "order.confirmed.v1",
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
         "consumer_repos": [
-          "shipment-service"
+          "order-service",
+          "customer-service"
         ],
         "evidence_tier": "contract_matched",
-        "evidence": "Shipment service consumes order.confirmed.v1 event which contains postalCode in address field"
+        "evidence": "OpenAPI spec references AddressResponse in account.yaml line 45"
       }
     ],
     "tests": [
       {
-        "repo": "order-service",
-        "suite": "ContractValidationTest",
-        "evidence_tier": "contract_matched",
-        "evidence": "Tests assert on postalCode being present in order.confirmed.v1 event JSON payload"
+        "repo": "account-service",
+        "suite": "AccountServiceTest",
+        "evidence_tier": "extracted",
+        "evidence": "Test class AccountServiceTest validates Address field mapping in AccountControllerTest.java line 22"
       },
       {
         "repo": "order-service",
-        "suite": "OrderSagaIntegrationTest",
+        "suite": "OrderIntegrationTest",
         "evidence_tier": "contract_matched",
-        "evidence": "Test checks that response contains postalCode field at line 136"
+        "evidence": "Order service tests use Address object and expect postalCode field in OrderServiceIntegrationTest.java line 45"
       }
     ]
   },
   "runner": "pi-qwen3-coder",
   "run_index": 1,
-  "elapsed_seconds": 106.3,
-  "tokens_consumed": 317935,
+  "run_started_at": "2026-09-03T08:36:43.020Z",
+  "elapsed_seconds": 18.7,
+  "tokens_consumed": 2718,
   "cost_usd": 0,
   "model": "ollama/qwen3-coder:30b-a3b-q8_0",
   "model_digest": "7b438a19895a",
   "pi_version": "0.84.4",
-  "prompt_sha256": "04693268fea24ae4a534e8149db83cb0e800a0cf92d12bce0273eefd479fa945",
+  "prompt_sha256": "4b1f9931d115bc7b7785baca6be96e1ac8e0034bebad7ac66359aff19d255b3a",
   "contestant_config_sha256": "bca96e5f7e157b6daf872c4fd079525b5aa90b24e2a133f2e819cd2406cbac6c",
   "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
   "estate_repositories": [

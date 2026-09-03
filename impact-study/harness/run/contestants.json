@@ -4,5 +4,65 @@
     "description": "pi SDK, read-only tools, local qwen3-coder via ollama",
     "provider": "ollama",
     "model": "qwen3-coder:30b-a3b-q8_0"
+  },
+  "pi-scip": {
+    "label": "scip",
+    "description": "pi SDK plus precomputed SCIP-like Java symbol index, same model and read-only tools",
+    "provider": "ollama",
+    "model": "qwen3-coder:30b-a3b-q8_0",
+    "indexes": ["symbol"]
+  },
+  "pi-gortex": {
+    "label": "gortex",
+    "description": "pi SDK plus precomputed Gortex-like REST/Kafka contract graph, same model and read-only tools",
+    "provider": "ollama",
+    "model": "qwen3-coder:30b-a3b-q8_0",
+    "indexes": ["contract"]
+  },
+  "pi-haiku": {
+    "label": "agent-only",
+    "description": "pi SDK, read-only tools, Claude Haiku via Anthropic subscription (OAuth)",
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5"
+  },
+  "pi-haiku-scip": {
+    "label": "scip",
+    "description": "pi SDK plus precomputed SCIP-like Java symbol index, Claude Haiku via Anthropic subscription (OAuth)",
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "indexes": ["symbol"]
+  },
+  "pi-haiku-gortex": {
+    "label": "gortex",
+    "description": "pi SDK plus precomputed Gortex-like REST/Kafka contract graph, Claude Haiku via Anthropic subscription (OAuth)",
+    "provider": "anthropic",
+    "model": "claude-haiku-4-5",
+    "indexes": ["contract"]
+  },
+  "pi-codex": {
+    "label": "agent-only",
+    "description": "pi SDK, read-only tools, GPT via Codex subscription (OAuth)",
+    "provider": "openai-codex",
+    "model": "gpt-5.4"
+  },
+  "pi-luna": {
+    "label": "agent-only",
+    "description": "pi SDK, read-only tools, Luna via Codex subscription (OAuth)",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-luna"
+  },
+  "pi-codex-scip": {
+    "label": "scip",
+    "description": "pi SDK plus precomputed SCIP-like Java symbol index, GPT via Codex subscription (OAuth)",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "indexes": ["symbol"]
+  },
+  "pi-codex-gortex": {
+    "label": "gortex",
+    "description": "pi SDK plus precomputed Gortex-like REST/Kafka contract graph, GPT via Codex subscription (OAuth)",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "indexes": ["contract"]
   }
 }

@@ -7,6 +7,17 @@ from pathlib import Path
 
 EVIDENCE_TIERS = {"compiler", "extracted", "contract_matched", "inferred", "hypothesis"}
 
+FINDING_KINDS = ("repositories", "symbols", "contracts", "tests")
+
+TYPE_ALIASES = {"asyncapi": "kafka"}
+
+SEVERITY_WEIGHTS = {
+    "critical_runtime_dependency": 1.0,
+    "contract_consumer": 0.6,
+    "test_suite": 0.3,
+    "informational": 0.1,
+}
+
 CRITICALITY_TO_SEVERITY = {
     "critical": "critical_runtime_dependency",
     "contract_consumer": "contract_consumer",
@@ -22,11 +33,23 @@ WEIGHTS = {
     "freshness": 0.10,
     "latency": 0.05,
     "operational_cost": 0.05,
+    "critical_penalty": 0.15,
 }
 
 
 def norm(value):
     return " ".join(str(value).lower().split())
+
+
+def norm_type(value):
+    """Normalize a contract type before validation and matching.
+
+    Lowercase and trim, then apply the harness synonym map. asyncapi is
+    unambiguously event-side, so it maps to kafka. openapi stays distinct
+    from rest: the ground truth uses both for the same provider on purpose.
+    """
+    key = " ".join(str(value).lower().split())
+    return TYPE_ALIASES.get(key, key)
 
 
 def load(path):
@@ -47,8 +70,13 @@ def gt_index(gt):
     root = require(gt, "ground_truth", gt.get("change_id", "ground truth"))
     repos = {}
     for item in root.get("affected_repositories", []):
+        criticality = require(item, "criticality", "affected_repositories")
+        if criticality not in CRITICALITY_TO_SEVERITY:
+            raise SystemExit(
+                f"affected_repositories: unknown criticality {criticality!r}"
+            )
         repos[norm(require(item, "name", "affected_repositories"))] = CRITICALITY_TO_SEVERITY[
-            require(item, "criticality", "affected_repositories")
+            criticality
         ]
     symbols = {}
     for item in root.get("affected_symbols", []):
@@ -71,9 +99,46 @@ def gt_index(gt):
 
 def contract_key(item):
     return (
-        norm(require(item, "type", "contract")),
+        norm_type(require(item, "type", "contract")),
         norm(require(item, "identifier", "contract")),
     )
+
+
+def normalize_contract_item(item):
+    """Return a copy with the contract type normalized for validation."""
+    if isinstance(item, dict) and isinstance(item.get("type"), str):
+        return {**item, "type": norm_type(item["type"])}
+    return item
+
+
+def symbol_prefix_match(reported, ground_truth):
+    """Match symbols on declaring-type prefix in either direction.
+
+    A field or method reference credits its declaring type, so
+    com.foo.Bar.postalCode matches com.foo.Bar and vice versa.
+    Returns (gt_matched, reported_matched).
+    """
+    gt_matched = set()
+    reported_matched = set()
+    for gt in ground_truth:
+        for rep in reported:
+            if rep == gt or rep.startswith(gt + ".") or gt.startswith(rep + "."):
+                gt_matched.add(gt)
+                reported_matched.add(rep)
+    return gt_matched, reported_matched
+
+
+def weighted_recall(gt_weights, matched):
+    """Sum of matched severity weights over sum of all weights."""
+    total = sum(gt_weights.values())
+    if not total:
+        return 1.0
+    hit = sum(weight for key, weight in gt_weights.items() if key in matched)
+    return hit / total
+
+
+def severity_weight(severity):
+    return SEVERITY_WEIGHTS.get(severity, 0.1)
 
 
 def test_key(item):
@@ -84,11 +149,11 @@ def findings(answer):
     return require(answer, "findings", answer.get("contestant", "answer"))
 
 
-def evidence_quality(answer):
-    total = 0
+def evidence_quality(valid_findings, invalid_count):
+    total = invalid_count
     evidenced = 0
-    distribution = {}
-    for items in findings(answer).values():
+    distribution = {"schema_invalid": invalid_count} if invalid_count else {}
+    for items in valid_findings.values():
         for item in items:
             total += 1
             tier = item.get("evidence_tier")
@@ -155,6 +220,66 @@ def check(node, schema, path, errors):
             check(item, schema["items"], f"{path}[{index}]", errors)
 
 
+def answer_schema():
+    return load(SCHEMA_DIR / "contestant-answer.schema.json")
+
+
+def split_findings(answer, schema):
+    """Separate the findings that satisfy the schema from the ones that do not.
+
+    One malformed finding must not void an otherwise usable answer: the valid
+    findings are scored and the invalid ones are counted against the contestant.
+    Contract types are normalized before validation so case differences and
+    the asyncapi->kafka alias do not void a run.
+    """
+    item_schemas = schema["properties"]["findings"]["properties"]
+    container = answer.get("findings")
+    if not isinstance(container, dict):
+        return {}, []
+    valid = {}
+    invalid = []
+    for kind, items in container.items():
+        item_schema = item_schemas.get(kind, {}).get("items")
+        if item_schema is None:
+            invalid.append({
+                "kind": kind,
+                "index": -1,
+                "errors": [f"findings.{kind}: unknown finding kind, expected one of {list(FINDING_KINDS)}"],
+            })
+            continue
+        if not isinstance(items, list):
+            continue
+        kept = []
+        for index, item in enumerate(items):
+            candidate = normalize_contract_item(item) if kind == "contracts" else item
+            errors = []
+            check(candidate, item_schema, f"findings.{kind}[{index}]", errors)
+            if errors:
+                invalid.append({"kind": kind, "index": index, "errors": errors})
+            else:
+                kept.append(candidate)
+        valid[kind] = kept
+    for kind in FINDING_KINDS:
+        valid.setdefault(kind, [])
+    return valid, invalid
+
+
+def answer_errors(answer, schema, name):
+    """Structural errors only. Individual bad findings are split out, not fatal."""
+    errors = []
+    container = answer.get("findings")
+    if not isinstance(container, dict):
+        check(answer, schema, name, errors)
+        return errors
+    for kind, items in container.items():
+        if kind in FINDING_KINDS and not isinstance(items, list):
+            errors.append(f"{name}.findings.{kind}: expected array, got {type(items).__name__}")
+        elif kind not in FINDING_KINDS:
+            errors.append(f"{name}.findings.{kind}: unknown finding kind")
+    check({**answer, "findings": {}}, schema, name, errors)
+    return errors
+
+
 def validate_files(kind, paths):
     schema_file = {
         "record": "change-ground-truth.schema.json",
@@ -162,12 +287,21 @@ def validate_files(kind, paths):
     }[kind]
     schema = load(SCHEMA_DIR / schema_file)
     report = {"kind": kind, "schema": schema_file, "checked": [], "errors": {}}
+    if kind == "answer":
+        report["invalid_findings"] = {}
     for raw in paths:
         target = Path(raw)
         files = sorted(target.glob("*.json")) if target.is_dir() else [target]
         for file in files:
-            errors = []
-            check(load(file), schema, file.name, errors)
+            document = load(file)
+            if kind == "answer":
+                errors = answer_errors(document, schema, file.name)
+                invalid = split_findings(document, schema)[1]
+                if invalid:
+                    report["invalid_findings"][file.name] = invalid
+            else:
+                errors = []
+                check(document, schema, file.name, errors)
             report["checked"].append(file.name)
             if errors:
                 report["errors"][file.name] = errors
@@ -183,13 +317,19 @@ def require_valid(kind, paths):
 
 
 def score_change(gt, answer, target_latency_seconds):
+    if answer.get("synthetic") is True:
+        raise SystemExit("synthetic example must never be scored as a result")
     change_id = require(gt, "change_id", "ground truth")
     if answer.get("change_id") != change_id:
         raise SystemExit(
             f"change_id mismatch: ground truth {change_id}, answer {answer.get('change_id')}"
         )
     index = gt_index(gt)
-    found = findings(answer)
+    findings(answer)  # required field; the split below decides what is usable
+    found, invalid_findings = split_findings(answer, answer_schema())
+    invalid = {kind: 0 for kind in FINDING_KINDS}
+    for item in invalid_findings:
+        invalid[item["kind"]] = invalid.get(item["kind"], 0) + 1
 
     reported_repos = {norm(r["name"]) for r in found.get("repositories", []) if "name" in r}
     matched_repos = reported_repos & set(index["repos"])
@@ -200,13 +340,18 @@ def score_change(gt, answer, target_latency_seconds):
     ]
     fp_repos = sorted(reported_repos - set(index["repos"]))
 
-    reported_symbols = {norm(s["fqn"]) for s in found.get("symbols", []) if "fqn" in s}
-    matched_symbols = reported_symbols & set(index["symbols"])
+    reported_symbols_raw = [norm(s["fqn"]) for s in found.get("symbols", []) if "fqn" in s]
+    reported_symbols = set(reported_symbols_raw)
+    gt_symbols = set(index["symbols"])
+    gt_matched_symbols, reported_matched_symbols = symbol_prefix_match(
+        reported_symbols, gt_symbols
+    )
+    matched_symbols = gt_matched_symbols
     missed_symbols = [
         {"kind": "symbol", "key": key, "severity": index["symbols"][key]}
-        for key in sorted(set(index["symbols"]) - matched_symbols)
+        for key in sorted(gt_symbols - matched_symbols)
     ]
-    fp_symbols = sorted(reported_symbols - set(index["symbols"]))
+    fp_symbols = sorted(reported_symbols - reported_matched_symbols)
 
     reported_contracts = {contract_key(c) for c in found.get("contracts", [])}
     matched_contracts = reported_contracts & set(index["contracts"])
@@ -224,12 +369,36 @@ def score_change(gt, answer, target_latency_seconds):
     ]
     fp_tests = [" ".join(k) for k in sorted(reported_tests - set(index["tests"]))]
 
-    repo_recall = len(matched_repos) / len(index["repos"]) if index["repos"] else 1.0
-    symbol_recall = len(matched_symbols) / len(index["symbols"]) if index["symbols"] else 1.0
-    contract_recall = len(matched_contracts) / len(index["contracts"]) if index["contracts"] else 1.0
+    repo_weights = {k: severity_weight(v) for k, v in index["repos"].items()}
+    contract_weights = {k: severity_weight(v) for k, v in index["contracts"].items()}
+    symbol_weights = {k: severity_weight(v) for k, v in index["symbols"].items()}
+    repo_recall = weighted_recall(repo_weights, matched_repos)
+    contract_recall = weighted_recall(contract_weights, matched_contracts)
+    symbol_recall = weighted_recall(symbol_weights, matched_symbols)
     test_recall = len(matched_tests) / len(index["tests"]) if index["tests"] else 1.0
-    precision = len(matched_repos) / len(reported_repos) if reported_repos else 0.0
-    eq_ratio, provenance = evidence_quality(answer)
+    # Overall precision across every finding kind. An invalid finding was
+    # still reported, so every invalid item costs precision once.
+    raw_reported = (
+        len(found.get("repositories", []))
+        + len(found.get("symbols", []))
+        + len(found.get("contracts", []))
+        + len(found.get("tests", []))
+        + len(invalid_findings)
+    )
+    total_matched = (
+        len(matched_repos)
+        + len(reported_matched_symbols)
+        + len(matched_contracts)
+        + len(matched_tests)
+    )
+    precision = total_matched / raw_reported if raw_reported else 0.0
+    eq_ratio, provenance = evidence_quality(found, len(invalid_findings))
+
+    missed_all = missed_repos + missed_symbols + missed_contracts + missed_tests
+    critical_misses = sum(
+        1 for miss in missed_all if miss["severity"] == "critical_runtime_dependency"
+    )
+    critical_penalty = max(0.0, 1.0 - 0.25 * critical_misses)
 
     elapsed = answer.get("elapsed_seconds")
     latency_score = min(1.0, target_latency_seconds / elapsed) if elapsed else None
@@ -242,6 +411,7 @@ def score_change(gt, answer, target_latency_seconds):
         "freshness": answer.get("freshness_score"),
         "latency": latency_score,
         "operational_cost": answer.get("operational_cost_score"),
+        "critical_penalty": critical_penalty,
     }
     excluded = [name for name, value in components.items() if value is None]
     applied_weights = {
@@ -263,10 +433,10 @@ def score_change(gt, answer, target_latency_seconds):
         "weights_applied": {name: round(w, 4) for name, w in applied_weights.items()},
         "excluded_components": excluded,
         "counts": {
-            "repositories": tally(index["repos"], reported_repos, matched_repos, fp_repos),
-            "symbols": tally(index["symbols"], reported_symbols, matched_symbols, fp_symbols),
-            "contracts": tally(index["contracts"], reported_contracts, matched_contracts, fp_contracts),
-            "tests": tally(index["tests"], reported_tests, matched_tests, fp_tests),
+            "repositories": tally(len(index["repos"]), len(found.get("repositories", [])), len(matched_repos), len(fp_repos), invalid["repositories"]),
+            "symbols": tally(len(index["symbols"]), len(found.get("symbols", [])), len(reported_matched_symbols), len(fp_symbols), invalid["symbols"]),
+            "contracts": tally(len(index["contracts"]), len(found.get("contracts", [])), len(matched_contracts), len(fp_contracts), invalid["contracts"]),
+            "tests": tally(len(index["tests"]), len(found.get("tests", [])), len(matched_tests), len(fp_tests), invalid["tests"]),
             "missed_by_severity": count_by_severity(
                 missed_repos + missed_symbols + missed_contracts + missed_tests
             ),
@@ -278,6 +448,7 @@ def score_change(gt, answer, target_latency_seconds):
             "contracts": fp_contracts,
             "tests": fp_tests,
         },
+        "invalid_findings": invalid_findings,
         "provenance_distribution": provenance,
         "raw": {
             "elapsed_seconds": elapsed,
@@ -286,12 +457,13 @@ def score_change(gt, answer, target_latency_seconds):
     }
 
 
-def tally(ground_truth, reported, matched, false_positives):
+def tally(ground_truth_count, reported_raw, matched_count, false_positives_count, invalid=0):
     return {
-        "ground_truth": len(ground_truth),
-        "reported": len(reported),
-        "matched": len(matched),
-        "false_positives": len(false_positives),
+        "ground_truth": ground_truth_count,
+        "reported": reported_raw + invalid,
+        "matched": matched_count,
+        "false_positives": false_positives_count,
+        "invalid": invalid,
     }
 
 
@@ -354,6 +526,15 @@ def render_score(report):
     if false_positives:
         lines += ["", f"  reported but not in ground truth ({len(false_positives)}):"]
         lines += [f"    {kind:<14}{key}" for kind, key in false_positives]
+
+    invalid = report["invalid_findings"]
+    if invalid:
+        lines += ["", f"  discarded, not valid against the schema ({len(invalid)}):"]
+        lines += [
+            f"    {item['kind']}[{item['index']}]  {error}"
+            for item in invalid
+            for error in item["errors"]
+        ]
 
     provenance = ", ".join(
         f"{tier} {count}" for tier, count in sorted(report["provenance_distribution"].items())
@@ -429,6 +610,7 @@ def main():
     score_parser.add_argument("--target-latency-seconds", type=float, default=300.0)
     score_parser.add_argument("--output", help="write the full JSON report here")
     score_parser.add_argument("--json", action="store_true", help="print JSON instead of text")
+    score_parser.add_argument("--allow-draft", action="store_true", help="score a non-frozen record")
 
     validate_parser = sub.add_parser("validate", help="check records or answers against their JSON schema")
     validate_parser.add_argument("--kind", choices=["record", "answer"], required=True)
@@ -446,7 +628,16 @@ def main():
     if args.mode == "score":
         require_valid("record", [args.ground_truth])
         require_valid("answer", [args.answer])
-        report = score_change(load(args.ground_truth), load(args.answer), args.target_latency_seconds)
+        gt_document = load(args.ground_truth)
+        if gt_document.get("status") != "frozen" and not args.allow_draft:
+            raise SystemExit(
+                f"record {gt_document.get('change_id')} status is {gt_document.get('status')!r}: only frozen records may be scored (use --allow-draft to override)"
+            )
+        answer_bytes = Path(args.answer).read_bytes()
+        import hashlib
+
+        report = score_change(gt_document, load(args.answer), args.target_latency_seconds)
+        report["answer_sha256"] = hashlib.sha256(answer_bytes).hexdigest()
     elif args.mode == "validate":
         report = validate_files(args.kind, args.paths)
     else:

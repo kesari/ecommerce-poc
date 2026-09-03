@@ -1,0 +1,86 @@
+{
+  "change_id": "KAFKA-001",
+  "status": "frozen",
+  "category": "kafka_schema",
+  "title": "order.confirmed.v1 topic renamed to order.confirmed.v2",
+  "query": "What breaks across repositories if the Kafka topic order.confirmed.v1 is renamed to order.confirmed.v2?",
+  "proposed_change": {
+    "repo": "order-service",
+    "diff": "-    kafkaTemplate.send(\"order.confirmed.v1\", orderId.toString(),\n+    kafkaTemplate.send(\"order.confirmed.v2\", orderId.toString(),"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "order-service",
+        "criticality": "critical",
+        "evidence_note": "produces order.confirmed.v1; OrderSagaIntegrationTest awaits the topic by name"
+      },
+      {
+        "name": "shipment-service",
+        "criticality": "critical",
+        "evidence_note": "OrderConfirmedListener subscribes with @KafkaListener topics order.confirmed.v1; no shipment is created after the rename"
+      },
+      {
+        "name": "basket-service",
+        "criticality": "contract_consumer",
+        "evidence_note": "OrderConfirmedListener subscribes with @KafkaListener topics order.confirmed.v1; baskets never complete after the rename"
+      },
+      {
+        "name": "commerce-platform",
+        "criticality": "test_only",
+        "evidence_note": "kafka/topic-definitions.yaml declares order.confirmed.v1; platform contract coverage references it"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "basket-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1",
+        "provider_repo": "order-service",
+        "consumer_repos": [
+          "shipment-service",
+          "basket-service"
+        ],
+        "severity": "critical_runtime_dependency"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "level": "integration"
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketCheckoutConsumerTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Topic rename with no dual-publish window. Both consumers subscribe by literal topic string, so a producer-side rename silently orphans them. commerce-platform is test_only: it owns topic definitions, not runtime behavior."
+}

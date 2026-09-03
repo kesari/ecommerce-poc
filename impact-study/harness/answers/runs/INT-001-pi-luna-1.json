@@ -1,0 +1,222 @@
+{
+  "change_id": "INT-001",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "DeliveryEstimator is called by ShipmentService and shipment REST/event paths."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "ShipmentClient posts postalCode to shipment-service at ShipmentClient.java:34-37."
+      },
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "AddressRequest accepts postalCode values from length 3 through 12 at AddressRequest.java:13."
+      },
+      {
+        "name": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "CheckoutProxyController relays checkout quotes verbatim at CheckoutProxyController.java:35-38."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "inferred",
+        "evidence": "CheckoutPage submits selected addresses to createQuote and displays the resulting quote at CheckoutPage.tsx:102-107."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "The changed PIN guard is in DeliveryEstimator.estimate at DeliveryEstimator.java:20-23."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "ShipmentService invokes DeliveryEstimator.estimate for REST estimates and confirmed orders at ShipmentService.java:45-51."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "The listener binds payload.address.postalCode and passes it to shipment creation at OrderConfirmedListener.java:27-38."
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "The REST DTO currently permits four-to-ten digit postal codes at DeliveryEstimateRequest.java:8."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "ShipmentClient sends the address postalCode to POST /api/v1/delivery-estimates at ShipmentClient.java:30-37."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "CheckoutService obtains address.postalCode and requests the shipment estimate at CheckoutService.java:50-52."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "SagaOrchestrator copies order.address().postalCode into order.confirmed payload at SagaOrchestrator.java:104-112."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "Account address creation accepts three-to-twelve character postal codes at AddressRequest.java:13."
+      },
+      {
+        "fqn": "com.poc.bff.api.CheckoutProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "The BFF forwards checkout quote requests as untyped JSON to order-service at CheckoutProxyController.java:35-38."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "Shipment OpenAPI declares the endpoint at shipment-service.yaml:10-29 and ShipmentClient calls it at ShipmentClient.java:34."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:shipment-service.yaml#/components/schemas/DeliveryEstimateRequest",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "The schema permits postalCode pattern [0-9]{4,10} at shipment-service.yaml:54-58 while runtime now rejects four- and five-digit values."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "Order schema allows four-to-ten digits at order.confirmed.v1.json:19 and shipment listener consumes that field at OrderConfirmedListener.java:27-38."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "com.poc.shipment.DeliveryEstimatorTest",
+        "evidence_tier": "compiler",
+        "evidence": "The suite directly calls DeliveryEstimator.estimate throughout DeliveryEstimatorTest.java:17-55."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "com.poc.shipment.ShipmentIntegrationTest",
+        "evidence_tier": "compiler",
+        "evidence": "The suite covers REST estimates and order.confirmed shipment creation at ShipmentIntegrationTest.java:65-79 and 141-180."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "com.poc.shipment.OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "The suite compares generated REST documentation with shipment-service.yaml at OpenApiContractTest.java:48-63."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "com.poc.shipment.AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "The suite validates the order.confirmed schema sample at AsyncApiContractTest.java:46-62."
+      }
+    ]
+  },
+  "runner": "pi-luna",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T10:42:41.946Z",
+  "elapsed_seconds": 116.2,
+  "tool_calls": 45,
+  "index_sha256": "none",
+  "tokens_consumed": 229269,
+  "cost_usd": 0.020781799999999996,
+  "model": "openai-codex/gpt-5.6-luna",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "7550dddf051873de196fb1c31942392215000a1ed4a407b8154fcd4116835700",
+  "contestant_config_sha256": "c3dbd504e764405a8c1d5a1c9ee1af4b315c847d0e9e84448e8ebca02a262033",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

@@ -22,6 +22,8 @@ METRICS = ["cross_repo_recall", "contract_recall", "precision",
 
 
 def collect(runs_dir):
+    import hashlib
+
     cells = defaultdict(list)
     rejected = []
     for report_file in sorted(Path(runs_dir).glob("*.score.json")):
@@ -29,6 +31,11 @@ def collect(runs_dir):
         answer_file = report_file.with_name(report_file.name.replace(".score", ""))
         if not answer_file.exists():
             rejected.append({"report": report_file.name, "reason": "answer file missing"})
+            continue
+        answer_text = answer_file.read_bytes()
+        answer_doc = json.loads(answer_text.decode("utf-8"))
+        if answer_doc.get("synthetic") is True:
+            rejected.append({"report": report_file.name, "reason": "synthetic example must never enter a scorecard"})
             continue
         validation = score.validate_files("answer", [str(answer_file)])
         if not validation["valid"]:
@@ -38,9 +45,27 @@ def collect(runs_dir):
                 "errors": validation["errors"].get(answer_file.name, []),
             })
             continue
+        expected_sha = report.get("answer_sha256")
+        if expected_sha:
+            actual_sha = hashlib.sha256(answer_text).hexdigest()
+            if actual_sha != expected_sha:
+                rejected.append({"report": report_file.name, "reason": "stale score: answer hash mismatch"})
+                continue
         runner = report.get("contestant", "unknown")
-        runner = json.loads(answer_file.read_text()).get("runner", runner)
+        runner = answer_doc.get("runner", runner)
         cells[(report["change_id"], runner)].append(report)
+    for stub_file in sorted(Path(runs_dir).glob("*.rejected.json")):
+        try:
+            stub = json.loads(stub_file.read_text())
+        except Exception as exc:
+            rejected.append({"report": stub_file.name, "reason": f"unreadable rejection stub: {exc}"})
+            continue
+        rejected.append({
+            "report": stub_file.name,
+            "reason": stub.get("reason", "run failed"),
+            "change_id": stub.get("change_id"),
+            "runner": stub.get("runner"),
+        })
     return cells, rejected
 
 
@@ -50,12 +75,15 @@ def summarize(reports):
         values = [r["metrics"][metric] for r in reports if metric in r["metrics"]]
         if not values:
             continue
-        summary[metric] = {
+        entry = {
             "median": round(statistics.median(values), 4),
             "min": round(min(values), 4),
             "max": round(max(values), 4),
             "spread": round(max(values) - min(values), 4),
         }
+        if len(reports) <= 3:
+            entry["values"] = [round(v, 4) for v in values]
+        summary[metric] = entry
     severities = defaultdict(int)
     for report in reports:
         for severity, count in report["counts"]["missed_by_severity"].items():
@@ -65,11 +93,11 @@ def summarize(reports):
     unstable = defaultdict(int)
     for report in reports:
         for miss in report["missed"]:
-            unstable[miss["key"]] += 1
+            unstable[(miss["kind"], miss["key"])] += 1
     summary["missed_in_all_runs"] = sorted(
-        key for key, count in unstable.items() if count == len(reports))
+        f"{kind} {key}" for (kind, key), count in unstable.items() if count == len(reports))
     summary["missed_in_some_runs"] = sorted(
-        key for key, count in unstable.items() if 0 < count < len(reports))
+        f"{kind} {key}" for (kind, key), count in unstable.items() if 0 < count < len(reports))
     return summary
 
 
@@ -102,17 +130,27 @@ def render_metrics(summary):
         if metric not in summary:
             continue
         value = summary[metric]
-        spread = (
-            f"   varies {value['min']:.2f}-{value['max']:.2f} across runs"
-            if value["spread"]
-            else ""
-        )
-        lines.append(f"    {metric:<20}{value['median']:.2f}{spread}")
+        if summary["runs"] <= 3 and "values" in value:
+            rendered = ",".join(f"{v:.2f}" for v in value["values"])
+            lines.append(f"    {metric:<20}{value['median']:.2f}   runs [{rendered}]")
+        else:
+            spread = (
+                f"   varies {value['min']:.2f}-{value['max']:.2f} across runs"
+                if value["spread"]
+                else ""
+            )
+            lines.append(f"    {metric:<20}{value['median']:.2f}{spread}")
     return lines
 
 
 def render_misses(summary):
     lines = []
+    if summary["runs"] < 3:
+        keys = summary["missed_in_all_runs"]
+        if keys:
+            lines.append("    missed:")
+            lines += [f"      {key}" for key in keys]
+        return lines
     for label, keys in (
         ("blind spots, missed in every run", summary["missed_in_all_runs"]),
         ("unstable, missed in some runs", summary["missed_in_some_runs"]),

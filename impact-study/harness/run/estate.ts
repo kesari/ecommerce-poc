@@ -19,7 +19,7 @@ import { basename, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { createReadOnlyTools } from "@earendil-works/pi-coding-agent";
 import { HARNESS } from "./paths.ts";
 
-const IGNORED = new Set(["target", "node_modules", ".git", "dist", "build"]);
+const IGNORED = new Set(["target", "node_modules", ".git", "dist", "build", "__pycache__", ".venv", ".gradle", ".next"]);
 
 export const ESTATE_REPOSITORIES = [
 	"account-service",
@@ -79,6 +79,14 @@ export async function isolate(
 			recursive: true,
 			filter: (source) => !IGNORED.has(basename(source)),
 		});
+	}
+	// Self-enforcing blindness: no ground-truth file may survive into the
+	// scratch copy, even if ESTATE_REPOSITORIES ever gains a new entry.
+	for await (const match of glob("**/REST-*.json", { cwd: target })) {
+		throw new Error(`ground-truth leak in isolated estate: ${match}`);
+	}
+	for await (const match of glob("**/records/*.json", { cwd: target })) {
+		throw new Error(`ground-truth leak in isolated estate: ${match}`);
 	}
 	return target;
 }
@@ -143,6 +151,24 @@ export async function createRestrictedReadOnlyTools(root: string) {
 			},
 		},
 	});
+}
+
+/** Wrap restricted tools with a call counter for the thin-run guard.
+ *
+ * Returns a getter for the count so far. The tools array itself is
+ * returned unchanged in shape, so existing callers keep working.
+ */
+export function countToolCalls(tools: any[]) {
+	let calls = 0;
+	for (const tool of tools) {
+		const original = tool.execute?.bind(tool);
+		if (!original) continue;
+		tool.execute = async (...args: any[]) => {
+			calls++;
+			return original(...args);
+		};
+	}
+	return () => calls;
 }
 
 async function fingerprintDirectory(root: string, hash: ReturnType<typeof createHash>, prefix = "") {

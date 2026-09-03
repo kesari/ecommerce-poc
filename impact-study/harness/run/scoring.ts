@@ -10,6 +10,10 @@ function python(script: string, args: string[]) {
 	return result;
 }
 
+/**
+ * Structural validation only. A single malformed finding is not fatal: the scorer
+ * drops it and charges the contestant for it, rather than voiding the whole run.
+ */
 export function validateFile(kind: "record" | "answer", path: string) {
 	const result = python(SCORER, ["validate", "--kind", kind, path]);
 	if (result.status !== 0) {

@@ -1,0 +1,177 @@
+{
+  "change_id": "REST-001",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "AddressRequest.java and AddressResponse.java define postalCode field"
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "AsyncAPI contract order.confirmed.v1.json has postalCode in address schema"
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "AsyncAPI contract order.confirmed.v1.json requires postalCode in address"
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "AsyncAPI contract references order.confirmed.v1.json which has postalCode in address"
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "evidence": "Frontend types.ts defines Address type with postalCode field"
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest.postalCode",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "AddressRequest.java line 13 defines postalCode field"
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse.postalCode",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "AddressResponse.java line 13 defines postalCode field"
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.address",
+        "repo": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "Method uses postalCode from AccountService response in client interface"
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener.handle",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "evidence": "Handles order.confirmed.v1 messages that contain postalCode"
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "account.yaml",
+        "consumer_repos": [
+          "order-service",
+          "basket-service",
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "OpenAPI spec defines address schema with postalCode field used by consumers"
+      },
+      {
+        "type": "asyncapi",
+        "identifier": "order.confirmed.v1.json",
+        "consumer_repos": [
+          "shipment-service",
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "Order confirmed async event specifies postalCode in address field"
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "Tests verify postalCode field presence in responses"
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "Tests send and receive messages with postalCode field"
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "Integration tests assert existence of postalCode in order confirmed events"
+      }
+    ]
+  },
+  "runner": "pi-qwen3-coder",
+  "run_index": 3,
+  "elapsed_seconds": 81.9,
+  "tokens_consumed": 375444,
+  "cost_usd": 0,
+  "model": "ollama/qwen3-coder:30b-a3b-q8_0",
+  "model_digest": "7b438a19895a",
+  "pi_version": "0.84.4",
+  "prompt_sha256": "04693268fea24ae4a534e8149db83cb0e800a0cf92d12bce0273eefd479fa945",
+  "contestant_config_sha256": "bca96e5f7e157b6daf872c4fd079525b5aa90b24e2a133f2e819cd2406cbac6c",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}
