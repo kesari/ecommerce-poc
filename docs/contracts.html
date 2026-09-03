@@ -48,16 +48,16 @@
     </section>
     <section class="panel">
       <h2>First measured results</h2>
-      <p>Same AI model (GPT-5.4), same read-only tools, same question — the only difference is the reference material. One run each, so treat this as an early signal, not a verdict.</p>
+      <p>Same AI model (GPT-5.4), same read-only tools, same question — the only difference is the reference material. Three runs each, so the pattern below has replicated.</p>
       <table>
         <thead><tr><th></th><th>Agent-only</th><th>Symbol index</th><th>Contract graph</th></tr></thead>
         <tbody>
-          <tr><td><strong>Score, address rename</strong></td><td>0.79</td><td><strong>0.92</strong></td><td>0.71</td></tr>
-          <tr><td><strong>Found the changed service itself</strong></td><td>No</td><td>Yes</td><td>No</td></tr>
-          <tr><td><strong>Critical blind spots</strong></td><td>1</td><td>0</td><td>1</td></tr>
+          <tr><td><strong>Score, address rename (mean of 3)</strong></td><td>0.81</td><td><strong>0.88</strong></td><td>0.67</td></tr>
+          <tr><td><strong>Runs that found the changed service itself</strong></td><td>1 of 3</td><td>3 of 3</td><td>0 of 3</td></tr>
+          <tr><td><strong>Runs with a critical blind spot</strong></td><td>2 of 3</td><td>0 of 3</td><td>3 of 3</td></tr>
         </tbody>
       </table>
-      <p>The symbol index found every affected repository and symbol; its only miss was one end-to-end test. The unaided agent found every downstream victim but missed the owning service. The contract-graph run shared that blind spot this round and needs a retest.</p>
+      <p>The symbol index found every affected symbol in all three runs and never missed a critical repository; its misses are limited to single repo, contract, or test items. The unaided agent's best run nearly matches the index, but it misses a critical repository in two of three runs — consistency, not ceiling, is what the index buys. The contract-graph runs miss the owning service every time while finding downstream consumers: topology helps downstream, hurts upstream.</p>
       <p>On a simpler single-service change, local, hosted, and index-assisted runs all reach about 0.87 by different routes — while the free local model swings from 0.39 to 0.74 on the hard scenario and sometimes answers without searching at all.</p>
     </section>
     <section class="grid">
