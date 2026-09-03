@@ -6,7 +6,7 @@
 // After every run, the corpus scorecard is printed.
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,11 +22,14 @@ import { extractAnswer } from "./answer.ts";
 import {
 	assertDirectory,
 	captureEstateSnapshot,
+	countToolCalls,
 	createRestrictedReadOnlyTools,
 	DEFAULT_ESTATE,
+	ESTATE_REPOSITORIES,
 	isolate,
 } from "./estate.ts";
 import type { EstateSnapshot } from "./estate.ts";
+import { buildContractGraph, buildSymbolIndex, indexPromptSection } from "./indexes.ts";
 import { RECORDS, RUN_DIR, RUNS } from "./paths.ts";
 import { aggregate, scoreAnswer, validateFile } from "./scoring.ts";
 
@@ -42,6 +45,8 @@ interface Contestant {
 	description?: string;
 	provider: string;
 	model: string;
+	/** Precomputed index support: "symbol" (SCIP-like), "contract" (Gortex-like). */
+	indexes?: ("symbol" | "contract")[];
 }
 
 interface RunnerArgs {
@@ -50,6 +55,8 @@ interface RunnerArgs {
 	runs: number;
 	estate: string;
 	timeout: number;
+	minToolCalls: number;
+	minTokens: number;
 }
 
 interface RunContext {
@@ -74,10 +81,12 @@ export function parseArgs(argv: string[]): RunnerArgs {
 		runs: 3,
 		estate: DEFAULT_ESTATE,
 		timeout: 1800,
+		minToolCalls: 10,
+		minTokens: 8000,
 	};
 	for (let index = 0; index < argv.length; index++) {
 		const flag = argv[index];
-		if (!["--record", "--contestant", "--runs", "--estate", "--timeout"].includes(flag)) {
+		if (!["--record", "--contestant", "--runs", "--estate", "--timeout", "--min-tool-calls", "--min-tokens"].includes(flag)) {
 			throw new Error(`unknown flag ${flag}`);
 		}
 		const value = argv[++index];
@@ -86,6 +95,8 @@ export function parseArgs(argv: string[]): RunnerArgs {
 		else if (flag === "--contestant") args.contestant.push(value);
 		else if (flag === "--runs") args.runs = positiveInteger(value, flag);
 		else if (flag === "--estate") args.estate = value;
+		else if (flag === "--min-tool-calls") args.minToolCalls = positiveInteger(value, flag);
+		else if (flag === "--min-tokens") args.minTokens = positiveInteger(value, flag);
 		else args.timeout = positiveInteger(value, flag);
 	}
 	if (args.record.length === 0) throw new Error("--record is required (change id, or 'all')");
@@ -155,19 +166,37 @@ export function withTimeout<T>(operation: Promise<T>, timeoutSeconds: number, on
 }
 
 /** Prompt the model inside a throwaway copy of the estate; return its raw output. */
-async function ask(prompt: string, model: any, modelRuntime: ModelRuntime, estate: string, timeoutSeconds: number) {
+async function ask(
+	prompt: string,
+	model: any,
+	modelRuntime: ModelRuntime,
+	estate: string,
+	timeoutSeconds: number,
+	indexes: readonly ("symbol" | "contract")[] = [],
+) {
 	const scratch = await mkdtemp(join(tmpdir(), "poc-run-"));
 	let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
 	let unsubscribe: (() => void) | undefined;
 	let raw = "";
 	try {
 		const workdir = await isolate(estate, scratch);
+		// Deterministic indexes are built from the isolated copy, so an
+		// index-backed contestant sees the same blind estate as the baseline.
+		const indexShas: string[] = [];
+		if (indexes.includes("symbol")) {
+			indexShas.push((await buildSymbolIndex(workdir, ESTATE_REPOSITORIES)).sha256);
+		}
+		if (indexes.includes("contract")) {
+			indexShas.push((await buildContractGraph(workdir, ESTATE_REPOSITORIES)).sha256);
+		}
+		const tools = (await createRestrictedReadOnlyTools(workdir)) as any[];
+		const toolCalls = countToolCalls(tools);
 		({ session } = await createAgentSession({
 			cwd: workdir,
 			model,
 			thinkingLevel: FIXED_THINKING,
 			tools: [...FIXED_TOOLS],
-			customTools: (await createRestrictedReadOnlyTools(workdir)) as any,
+			customTools: tools as any,
 			modelRuntime,
 			sessionManager: SessionManager.inMemory(workdir),
 			settingsManager: SettingsManager.inMemory({}),
@@ -193,7 +222,7 @@ async function ask(prompt: string, model: any, modelRuntime: ModelRuntime, estat
 			void session?.abort().catch(() => undefined);
 		});
 		const elapsed = Math.round((performance.now() - started) / 100) / 10;
-		return { raw, elapsed, stats: session.getSessionStats() };
+		return { raw, elapsed, stats: session.getSessionStats(), toolCalls: toolCalls(), indexSha: indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none" };
 	} finally {
 		unsubscribe?.();
 		session?.dispose();
@@ -211,14 +240,25 @@ function stampProvenance(answer: any, options: {
 	elapsed: number;
 	stats: any;
 	context: RunContext;
+	runStartedAt: string;
+	toolCalls?: number;
+	indexSha?: string;
 }) {
-	const { record, name, contestant, index, prompt, elapsed, stats, context } = options;
+	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha } = options;
+	// Manual rubric scores must come from an out-of-band rubric file, never
+	// from the model. Drop any model-supplied values so they cannot grade
+	// their own composite or suppress weight renormalization.
+	delete answer.freshness_score;
+	delete answer.operational_cost_score;
 	return Object.assign(answer, {
 		change_id: record.change_id,
 		contestant: contestant.label,
 		runner: name,
 		run_index: index,
+		run_started_at: runStartedAt,
 		elapsed_seconds: elapsed,
+		tool_calls: toolCalls ?? null,
+		index_sha256: indexSha ?? "none",
 		tokens_consumed: stats?.tokens.total,
 		cost_usd: stats?.cost,
 		model: `${contestant.provider}/${contestant.model}`,
@@ -245,8 +285,13 @@ async function runOnce(
 ) {
 	const model = modelRuntime.getModel(contestant.provider, contestant.model);
 	if (!model) throw new Error(`model not in pi registry: ${contestant.provider}/${contestant.model}`);
-	const prompt = buildPrompt(record, await readFile(join(RUN_DIR, "prompt-template.md"), "utf8"));
-	const { raw, elapsed, stats } = await ask(prompt, model, modelRuntime, estate, timeoutSeconds);
+	const template = await readFile(join(RUN_DIR, "prompt-template.md"), "utf8");
+	const section = indexPromptSection(contestant.indexes ?? []);
+	const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
+	const { raw, elapsed, stats, toolCalls, indexSha } = await ask(
+		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [],
+	);
+	const runStartedAt = new Date().toISOString();
 
 	let answer: any;
 	try {
@@ -257,7 +302,7 @@ async function runOnce(
 		await writeFile(rawPath, raw);
 		throw new Error(`${(error as Error).message}; raw output saved to ${rawPath}`);
 	}
-	return stampProvenance(answer, { record, name, contestant, index, prompt, elapsed, stats, context });
+	return stampProvenance(answer, { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha });
 }
 
 export async function main(argv = process.argv.slice(2)) {
@@ -297,7 +342,40 @@ export async function main(argv = process.argv.slice(2)) {
 					const answer = await runOnce(
 						record, name, contestants[name], modelRuntime, estate, index, args.timeout, context,
 					);
-					const answerPath = join(RUNS, `${stem}.json`);
+					if ((answer.tool_calls ?? 0) < args.minToolCalls && (answer.tokens_consumed ?? 0) < args.minTokens) {
+						failures++;
+						const reason = `thin run: ${answer.tool_calls ?? 0} tool calls and ${answer.tokens_consumed ?? 0} tokens below minimums ${args.minToolCalls}/${args.minTokens}; answer kept for diagnosis but not scored`;
+						console.log(`  FAILED: ${reason}`);
+						const stamp = (answer.run_started_at ?? new Date().toISOString()).replace(/[:.]/g, "-");
+						await writeFile(join(RUNS, `${stem}.${stamp}.json`), `${JSON.stringify(answer, null, 2)}\n`);
+						let thinStub = join(RUNS, `${stem}.rejected.json`);
+						try {
+							await stat(thinStub);
+							thinStub = join(RUNS, `${stem}.${stamp}.rejected.json`);
+						} catch {
+							// No previous stub: use the canonical name.
+						}
+						await writeFile(thinStub, `${JSON.stringify({
+							change_id: record.change_id,
+							runner: name,
+							run_index: index,
+							run_started_at: answer.run_started_at ?? new Date().toISOString(),
+							tool_calls: answer.tool_calls ?? 0,
+							reason,
+							estate_sha256: context.estate.sha256,
+						}, null, 2)}\n`);
+						continue;
+					}
+					let answerPath = join(RUNS, `${stem}.json`);
+					// Never overwrite a previous measurement undetectably. If the
+					// stem already exists, suffix with the run timestamp instead.
+					try {
+						await stat(answerPath);
+						const stamp = (answer.run_started_at ?? new Date().toISOString()).replace(/[:.]/g, "-");
+						answerPath = join(RUNS, `${stem}.${stamp}.json`);
+					} catch {
+						// No previous file: use the canonical stem.
+					}
 					// Drop any score from a previous run of this stem before writing the new answer,
 					// so a failure below cannot leave a stale score paired with a fresh answer.
 					await rm(answerPath.replace(/\.json$/, ".score.json"), { force: true });
@@ -306,7 +384,29 @@ export async function main(argv = process.argv.slice(2)) {
 					console.log((await scoreAnswer(answerPath, recordPath)).text);
 				} catch (error) {
 					failures++;
-					console.log(`  FAILED: ${(error as Error).message}`);
+					const reason = (error as Error).message;
+					console.log(`  FAILED: ${reason}`);
+					try {
+						const stub = {
+							change_id: record.change_id,
+							runner: name,
+							run_index: index,
+							run_started_at: new Date().toISOString(),
+							reason,
+							estate_sha256: context.estate.sha256,
+						};
+						let stubPath = join(RUNS, `${stem}.rejected.json`);
+						try {
+							await stat(stubPath);
+							const stamp = (stub.run_started_at as string).replace(/[:.]/g, "-");
+							stubPath = join(RUNS, `${stem}.${stamp}.rejected.json`);
+						} catch {
+							// No previous stub: use the canonical name.
+						}
+						await writeFile(stubPath, `${JSON.stringify(stub, null, 2)}\n`);
+					} catch {
+						// Rejection stub is best-effort; the failure above is what matters.
+					}
 				}
 			}
 		}

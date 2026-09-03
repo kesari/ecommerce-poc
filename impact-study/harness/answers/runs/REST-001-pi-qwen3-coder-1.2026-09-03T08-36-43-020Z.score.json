@@ -2,15 +2,15 @@
   "change_id": "REST-001",
   "contestant": "agent-only",
   "metrics": {
-    "symbol_recall": 0.25,
-    "test_recall": 0.3333,
+    "symbol_recall": 0.0,
+    "test_recall": 0.0,
     "cross_repo_recall": 0.2778,
-    "contract_recall": 0.0,
-    "precision": 0.4286,
+    "contract_recall": 0.3333,
+    "precision": 0.2857,
     "evidence_quality": 1.0,
     "latency": 1.0,
     "critical_penalty": 0.5,
-    "composite": 0.3865
+    "composite": 0.4317
   },
   "weights_applied": {
     "cross_repo_recall": 0.35,
@@ -35,40 +35,40 @@
     "symbols": {
       "ground_truth": 4,
       "reported": 2,
+      "matched": 0,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 2,
       "matched": 1,
       "false_positives": 1,
       "invalid": 0
     },
-    "contracts": {
+    "tests": {
       "ground_truth": 3,
       "reported": 2,
       "matched": 0,
       "false_positives": 2,
       "invalid": 0
     },
-    "tests": {
-      "ground_truth": 3,
-      "reported": 2,
-      "matched": 1,
-      "false_positives": 1,
-      "invalid": 0
-    },
     "missed_by_severity": {
-      "critical_runtime_dependency": 2,
       "contract_consumer": 7,
-      "test_suite": 2
+      "critical_runtime_dependency": 2,
+      "test_suite": 3
     }
   },
   "missed": [
     {
       "kind": "repository",
-      "key": "account-service",
-      "severity": "critical_runtime_dependency"
+      "key": "commerce-web",
+      "severity": "contract_consumer"
     },
     {
       "kind": "repository",
-      "key": "commerce-web",
-      "severity": "contract_consumer"
+      "key": "order-service",
+      "severity": "critical_runtime_dependency"
     },
     {
       "kind": "repository",
@@ -87,17 +87,17 @@
     },
     {
       "kind": "symbol",
+      "key": "com.poc.order.domain.model.addresssnapshot",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
       "key": "com.poc.order.infrastructure.client.accountclient",
       "severity": "contract_consumer"
     },
     {
       "kind": "contract",
       "key": "kafka order.confirmed.v1#/address/postalcode",
-      "severity": "contract_consumer"
-    },
-    {
-      "kind": "contract",
-      "key": "openapi openapi:account.yaml#/components/schemas/addressresponse",
       "severity": "contract_consumer"
     },
     {
@@ -114,28 +114,36 @@
       "kind": "test",
       "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
       "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
     }
   ],
   "false_positives": {
     "repositories": [],
     "symbols": [
-      "com.poc.order.infrastructure.client.accountclient$addressresponse"
+      "com.example.account.accountservice",
+      "com.example.account.address"
     ],
     "contracts": [
-      "kafka order.confirmed.v1",
-      "openapi http://localhost:8080/api/v1/addresses"
+      "rest post /api/v1/accounts"
     ],
     "tests": [
-      "order-service contractvalidationtest"
+      "account-service accountservicetest",
+      "order-service orderintegrationtest"
     ]
   },
   "invalid_findings": [],
   "provenance_distribution": {
-    "contract_matched": 7
+    "compiler": 1,
+    "extracted": 2,
+    "contract_matched": 4
   },
   "raw": {
-    "elapsed_seconds": 106.3,
-    "tokens_consumed": 317935
+    "elapsed_seconds": 18.7,
+    "tokens_consumed": 2718
   },
-  "answer_sha256": "f5242a4e83f069f269843ed68b21351a1172c32cbec196662c7c002dc5259391"
+  "answer_sha256": "8f9fa1f8e1e9bebc21cdb6a0922ecdfe0926583fc70095ade7f696156d7c9995"
 }

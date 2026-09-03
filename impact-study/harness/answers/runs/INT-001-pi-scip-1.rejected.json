@@ -1,0 +1,9 @@
+{
+  "change_id": "INT-001",
+  "runner": "pi-scip",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T08:58:37.899Z",
+  "tool_calls": 3,
+  "reason": "thin run: 3 tool calls below minimum 10; answer kept for diagnosis but not scored",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

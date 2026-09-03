@@ -78,7 +78,7 @@
       },
       {
         "type": "kafka",
-        "identifier": "order.confirmed.v1#/address/postalCode (value-level dependency)",
+        "identifier": "order.confirmed.v1#/address/postalCode",
         "provider_repo": "order-service",
         "consumer_repos": [
           "shipment-service"

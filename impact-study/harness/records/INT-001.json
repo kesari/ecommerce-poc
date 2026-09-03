@@ -1,0 +1,49 @@
+{
+  "change_id": "INT-001",
+  "status": "frozen",
+  "category": "internal_refactor",
+  "title": "DeliveryEstimator PIN validation narrowed to six digits",
+  "query": "What breaks if DeliveryEstimator.estimate narrows its PIN guard from [0-9]{4,10} to [0-9]{6,10} inside shipment-service?",
+  "proposed_change": {
+    "repo": "shipment-service",
+    "diff": "-        if (!digits.matches(\"[0-9]{4,10}\")) {\n+        if (!digits.matches(\"[0-9]{6,10}\")) {"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "shipment-service",
+        "criticality": "critical",
+        "evidence_note": "DeliveryEstimator is called by ShipmentService for estimates and confirmed orders; 4-5 digit PINs now throw UnsupportedDestinationException"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      }
+    ],
+    "affected_contracts": [],
+    "required_tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "level": "unit"
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Single-repo control record. DeliveryEstimator is referenced only inside shipment-service (ShipmentService plus DeliveryEstimatorTest), so a strong contestant reports exactly one repository and no contracts. This checks the precision side of the thesis."
+}

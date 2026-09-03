@@ -29,8 +29,15 @@ cd run
 npm ci --ignore-scripts             # once
 node run.ts --record REST-001 --runs 1
 node run.ts --record all --contestant pi-qwen3-coder --runs 3
+node run.ts --record all --runs 3   # every contestant in contestants.json
 python3 aggregate.py                # the scorecard again, without re-running
 ```
+
+Runs below both floors — fewer than `--min-tool-calls` guarded tool calls
+(default 10) and fewer than `--min-tokens` tokens consumed (default 8000) —
+are rejected as thin runs: the answer is kept for diagnosis with a
+`.rejected.json` stub but never scored. Both floors must fail together, so an
+efficient index-assisted run with few calls but deep reads still counts.
 
 Scoring is automatic. Each run prints its own score breakdown, and the corpus
 scorecard prints once at the end — `aggregate.py` is only needed to re-read it
@@ -64,10 +71,26 @@ the [pi coding agent](https://pi.dev) SDK:
                "model": "claude-sonnet-4-5" }
 ```
 
-Everything else is harness policy and cannot vary: identical prompt, read-only
-tools, no thinking, no local PI configuration, and an isolated copy of the ten
-fixture repositories that the tools refuse to read outside of. Each valid
-answer records the PI version, model, prompt and estate hashes, and the commit
+Index-backed contestants add an `indexes` array:
+
+```json
+"pi-scip":   { "label": "scip",   "provider": "ollama",
+               "model": "qwen3-coder:30b-a3b-q8_0", "indexes": ["symbol"] },
+"pi-gortex": { "label": "gortex", "provider": "ollama",
+               "model": "qwen3-coder:30b-a3b-q8_0", "indexes": ["contract"] }
+```
+
+Indexes are built at run time from the isolated estate copy (`run/indexes.ts`):
+a SCIP-like Java symbol table and a Gortex-like REST/Kafka contract graph with
+publish/subscribe attribution from AsyncAPI channel operations. Same model,
+same read-only tools, same thinking policy — only the precomputed topology
+varies, so the scorecard measures its marginal value.
+
+Everything else is harness policy and cannot vary: identical prompt apart from
+the index pointer section, read-only tools, no thinking, no local PI
+configuration, and an isolated copy of the ten fixture repositories that the
+tools refuse to read outside of. Each valid answer records the PI version,
+model, prompt and estate hashes, index hash, tool-call count, and the commit
 state of every fixture repo.
 
 ## Scoring
@@ -77,25 +100,40 @@ missing:
 
 | Component | Weight | Source |
 |---|---|---|
-| cross_repo_recall | 35% | repos matched vs ground truth |
-| contract_recall | 20% | contracts matched vs ground truth |
-| precision | 15% | matched / reported repos |
+| cross_repo_recall | 35% | severity-weighted repos matched vs ground truth |
+| contract_recall | 20% | severity-weighted contracts matched vs ground truth |
+| precision | 15% | overall matched / reported items across all kinds |
 | evidence_quality | 10% | findings with a valid tier and evidence string |
-| freshness | 10% | manual rubric 0–1 |
+| freshness | 10% | manual rubric 0–1, never model-supplied |
 | latency | 5% | min(1, target_seconds / elapsed) |
-| operational_cost | 5% | manual rubric 0–1 |
+| operational_cost | 5% | manual rubric 0–1, never model-supplied |
+| critical_penalty | 15% | 1 - 0.25 per critical_runtime_dependency miss, floor 0 |
 
-`symbol_recall` and `test_recall` are reported unweighted, for diagnostics.
+`symbol_recall` (severity-weighted, prefix-matched) and `test_recall` are
+reported unweighted in the composite, for diagnostics.
 
-False negatives outrank precision: one critical miss is worse than several
-false positives. Ground truth therefore assigns each item a criticality, which
-scoring maps to a miss severity — see `schema/change-ground-truth.schema.json`.
+False negatives outrank precision: recall is severity-weighted and every
+critical miss also lowers `critical_penalty`. Ground truth assigns each item
+a criticality, which scoring maps to a miss severity — see
+`schema/change-ground-truth.schema.json`.
 
 Each finding also declares an evidence tier: `compiler` (very high),
 `extracted` and `contract_matched` (high), `inferred` (medium), `hypothesis`
-(investigate). An invalid tier counts as `unclassified` and lowers
-`evidence_quality`.
+(investigate). A structurally invalid finding is split out, counted as
+`schema_invalid` in `evidence_quality` and in the precision denominator, and
+listed in `invalid_findings`. It never voids the whole run.
 
-Matching is case-insensitive and whitespace-normalized; contract keys are
-`(type, identifier)`. An answer whose `change_id` differs from the ground
-truth aborts scoring.
+Matching is case-insensitive and whitespace-normalized; contract types are
+normalized (`asyncapi` → `kafka`, `openapi` stays distinct from `rest`) and
+contract keys are `(type, identifier)`. See the Identifier Convention in
+`run/prompt-template.md` for canonical forms. Symbols match on
+declaring-type prefix, so a field reference credits its type.
+
+An answer with `synthetic: true` is never scored. An answer whose `change_id`
+differs from the ground truth aborts scoring. Only `frozen` records may be
+scored (`--allow-draft` overrides for debugging).
+
+Failed runs emit `<stem>.rejected.json` so the scorecard counts them.
+Answers are never overwritten: a repeated stem is suffixed with its
+`run_started_at` timestamp. Score reports carry `answer_sha256`, which
+aggregation verifies to reject stale pairings.

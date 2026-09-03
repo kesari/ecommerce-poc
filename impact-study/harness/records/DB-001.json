@@ -1,0 +1,58 @@
+{
+  "change_id": "DB-001",
+  "status": "frozen",
+  "category": "db_schema",
+  "title": "addresses.postal_code column renamed to postcode",
+  "query": "What breaks if the postal_code column of the account-service addresses table is renamed to postcode?",
+  "proposed_change": {
+    "repo": "account-service",
+    "diff": "-    postal_code  text        NOT NULL,\n+    postcode     text        NOT NULL,"
+  },
+  "ground_truth": {
+    "affected_repositories": [
+      {
+        "name": "account-service",
+        "criticality": "critical",
+        "evidence_note": "V1__identity_schema.sql owns the column; AddressRow, MyBatisAddressRepository, and AddressDtoMapper bind postalCode by constructor and column mapping"
+      }
+    ],
+    "affected_symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.persistence.row.AddressRow",
+        "repo": "account-service",
+        "kind": "record",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.account.infrastructure.persistence.repository.MyBatisAddressRepository",
+        "repo": "account-service",
+        "kind": "class",
+        "severity": "critical_runtime_dependency"
+      },
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "kind": "class",
+        "severity": "contract_consumer"
+      }
+    ],
+    "affected_contracts": [
+      {
+        "type": "db",
+        "identifier": "account.addresses.postal_code",
+        "provider_repo": "account-service",
+        "consumer_repos": [],
+        "severity": "critical_runtime_dependency"
+      }
+    ],
+    "required_tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "level": "integration"
+      }
+    ],
+    "known_incidents": []
+  },
+  "notes": "Single-repo DB record. No service reads another service's tables, so the blast radius stays inside account-service. The db contract has no cross-repo consumers; it exercises the db type in scoring without crediting phantom consumers."
+}

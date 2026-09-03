@@ -76,11 +76,14 @@ class ScoreTests(unittest.TestCase):
 
     def test_perfect_on_reported_items(self):
         m = self.report["metrics"]
-        self.assertEqual(m["cross_repo_recall"], 0.4)
+        # Weighted by severity: (1.0 + 0.6) / (1.0 + 0.6 + 0.6 + 0.3 + 0.1) = 1.6/2.6.
+        self.assertAlmostEqual(m["cross_repo_recall"], 1.6 / 2.6, places=4)
         self.assertEqual(m["contract_recall"], 0.5)
-        self.assertEqual(m["precision"], 2 / 4)
+        # Overall precision across all kinds: 5 matched out of 7 reported.
+        self.assertAlmostEqual(m["precision"], 5 / 7, places=4)
         self.assertEqual(m["symbol_recall"], 1.0)
         self.assertEqual(m["test_recall"], 1.0)
+        self.assertEqual(m["critical_penalty"], 1.0)
 
     def test_miss_severity_mapping(self):
         severities = {miss["key"]: miss["severity"] for miss in self.report["missed"]}
@@ -111,13 +114,40 @@ class ScoreTests(unittest.TestCase):
     def test_composite_matches_hand_computed_value(self):
         composite = self.report["metrics"]["composite"]
         expected = (
-            (0.35 / 0.85) * 0.4
-            + (0.20 / 0.85) * 0.5
-            + (0.15 / 0.85) * 0.5
-            + (0.10 / 0.85) * (6 / 7)
-            + (0.05 / 0.85) * 1.0
+            0.35 * (1.6 / 2.6)
+            + 0.20 * 0.5
+            + 0.15 * (5 / 7)
+            + 0.10 * (6 / 7)
+            + 0.05 * 1.0
+            + 0.15 * 1.0
         )
         self.assertAlmostEqual(composite, round(expected, 4), places=3)
+
+    def test_critical_miss_lowers_composite_more_than_label_miss(self):
+        base = answer()
+        # Drop the critical repo; keep the label-only repo.
+        miss_critical = answer(findings={"repositories": [
+            {"name": "checkout-service", "evidence_tier": "compiler", "evidence": "x"},
+        ]})
+        miss_label = answer(findings={"repositories": [
+            {"name": "payment-service", "evidence_tier": "compiler", "evidence": "x"},
+        ]})
+        c_critical = score.score_change(GT, miss_critical, 300)["metrics"]["composite"]
+        c_label = score.score_change(GT, miss_label, 300)["metrics"]["composite"]
+        self.assertLess(c_critical, c_label)
+
+    def test_symbol_prefix_credits_declaring_type(self):
+        field_ref = answer(findings={"symbols": [
+            {"fqn": "com.acme.PaymentRequest.amount", "evidence_tier": "compiler", "evidence": "field"},
+        ]})
+        report = score.score_change(GT, field_ref, 300)
+        self.assertEqual(report["metrics"]["symbol_recall"], 1.0)
+
+    def test_synthetic_answer_is_never_scored(self):
+        bad = answer()
+        bad["synthetic"] = True
+        with self.assertRaises(SystemExit):
+            score.score_change(GT, bad, 300)
 
     def test_latency_score_caps_at_one(self):
         report = score.score_change(GT, answer(elapsed_seconds=30), 300)
@@ -134,7 +164,8 @@ class RenderTests(unittest.TestCase):
 
     def test_shows_counts_weights_and_worst_miss_first(self):
         self.assertIn("repositories  2/5 matched", self.text)
-        self.assertIn("x 0.41   cross_repo_recall", self.text)
+        self.assertIn("cross_repo_recall", self.text)
+        self.assertIn("critical_penalty", self.text)
         self.assertIn("= composite", self.text)
     def test_worst_miss_is_listed_first(self):
         blind = score.render_score(score.score_change(GT, answer(findings={"repositories": []}), 300))
@@ -213,8 +244,13 @@ class ValidateTests(unittest.TestCase):
         bad = answer()
         bad["findings"]["contracts"][0]["evidence_tier"] = "guesswork"
         report = score.validate_files("answer", [str(self.write("A-001.json", bad))])
-        self.assertFalse(report["valid"],
-                         "contracts.evidence_tier must be enum-checked, not a bare string")
+        # A single bad finding no longer voids the run; it is tolerated
+        # structurally and reported as an invalid finding for scoring.
+        self.assertTrue(report["valid"], report["errors"])
+        self.assertIn("A-001.json", report["invalid_findings"])
+        valid, invalid = score.split_findings(bad, score.answer_schema())
+        self.assertEqual(len(invalid), 1)
+        self.assertEqual(valid["contracts"], [])
 
     def test_scalar_types_patterns_and_ranges_are_checked(self):
         bad = answer()
@@ -229,11 +265,34 @@ class ValidateTests(unittest.TestCase):
         self.assertIn("expected integer", errors)
         self.assertIn("exceeds maximum", errors)
 
+    def test_type_normalization_accepts_alias_and_case(self):
+        upper = answer()
+        upper["findings"]["contracts"][0]["type"] = "REST"
+        report = score.validate_files("answer", [str(self.write("ok.json", upper))])
+        self.assertTrue(report["valid"], report["errors"])
+        alias = answer()
+        alias["findings"]["contracts"][0]["type"] = "asyncapi"
+        report = score.validate_files("answer", [str(self.write("ok2.json", alias))])
+        self.assertTrue(report["valid"], report["errors"])
+
     def test_require_valid_rejects_invalid_input(self):
         bad = answer()
-        bad["findings"]["contracts"][0]["type"] = "asyncapi"
+        bad["contestant"] = "not-a-contestant"
         with self.assertRaises(SystemExit):
             score.require_valid("answer", [str(self.write("bad.json", bad))])
+
+    def test_unknown_contract_type_is_tolerated_but_invalid(self):
+        bad = answer()
+        bad["findings"]["contracts"][0]["type"] = "carrier-pigeon"
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        self.assertTrue(report["valid"])
+        self.assertIn("bad.json", report["invalid_findings"])
+
+    def test_unknown_criticality_is_a_clean_error(self):
+        broken = json.loads(json.dumps(GT))
+        broken["ground_truth"]["affected_repositories"][0]["criticality"] = "made-up"
+        with self.assertRaises(SystemExit):
+            score.gt_index(broken)
 
 
 if __name__ == "__main__":
