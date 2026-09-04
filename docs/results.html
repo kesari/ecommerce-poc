@@ -35,10 +35,10 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Agent-only</strong> (3 tries, score 0.81)</td><td>Found every downstream victim but missed the account service where the change happened — in 2 of 3 tries, including a miss that breaks production.</td></tr>
+          <tr><td><strong>Agent-only</strong> (3 tries, score 0.81)</td><td>Found every affected downstream service but missed the account service where the change happened — in 2 of 3 tries, including a miss that breaks production.</td></tr>
           <tr><td><strong>SCIP</strong> (3 tries, score 0.88)</td><td>Found everything except one end-to-end test. Never missed anything that breaks production.</td></tr>
-          <tr><td><strong>Gortex</strong> (3 tries, score 0.67)</td><td>Found the downstream victims but missed the account service every single time. Gortex points downstream, away from the scene of the crime.</td></tr>
-          <tr><td><strong>Combined</strong> (1 try, score 0.71)</td><td>Same blind spot as Gortex alone. More reference material did not stack — on this run it diluted focus instead.</td></tr>
+          <tr><td><strong>Gortex</strong> (3 tries, score 0.67)</td><td>Found the affected downstream services but missed the account service every single time. Gortex points downstream, away from where the change happened.</td></tr>
+          <tr><td><strong>Combined</strong> (1 try, score 0.71)</td><td>Same blind spot as the Gortex-only run. More reference material did not stack — on this run it diluted focus instead.</td></tr>
           <tr><td><strong>Graphify</strong> (1 try, score 0.85)</td><td>Full house on systems and code, zero production-breaking misses. The lightweight list guided without distracting.</td></tr>
         </tbody>
       </table>
@@ -82,7 +82,7 @@
     </section>
     <section class="panel">
       <h2>Test 3: the stricter postcode rule</h2>
-      <p>Shipment tightens its postcode check to require at least 6 digits. Customers with shorter postcodes can no longer get a delivery estimate — and it all happens inside one service, so this test checks whether assistants cry wolf about other services.</p>
+      <p>Shipment tightens its postcode check to require at least 6 digits. Customers with shorter postcodes can no longer get a delivery estimate — and it all happens inside one service, so this test checks whether assistants incorrectly implicate other services.</p>
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
@@ -177,7 +177,7 @@
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.71)</td><td>Right services and tests, but missed the coupon contract itself.</td></tr>
           <tr><td><strong>SCIP</strong> (score 0.72)</td><td>Same missed contract. The symbol list does not encode what the number means.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.91)</td><td>Only contract match in the test. First outright win for the service map.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.91)</td><td>Only contract match in the test. First outright win for Gortex.</td></tr>
           <tr><td><strong>Graphify</strong> (score 0.61)</td><td>Missed the storefront and the coupon contract; wiring edges skip UI consumers.</td></tr>
         </tbody>
       </table>
@@ -193,7 +193,7 @@
     </section>
     <section class="panel">
       <h2>Test 8: delivery dates become a timestamp</h2>
-      <p>The delivery window changes from a from/to date range to a single instant. Same endpoint, incompatible shape — every reader of the old fields breaks. The unaided agent wins at 0.89; SCIP collapses to 0.54, missing the shipment service itself despite the most searching of any run in the study (61 file checks).</p>
+      <p>The delivery window changes from a from/to date range to a single instant. Same endpoint, incompatible shape — every reader of the old fields breaks. Agent-only wins at 0.89; SCIP collapses to 0.54, missing the shipment service itself despite the most searching of any run in the study (61 file checks).</p>
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
@@ -261,7 +261,7 @@
     </section>
     <section class="panel">
       <h2>The bottom line</h2>
-      <p>Fifteen tests, one shared model, five reference setups. No assistant wins everywhere: SCIP leads where the owning service hides, Gortex wins coupons and events, the unaided agent wins the timestamp reshape, and Graphify ties the easy ground cheaply while going blind on events and contracts. The free local model is disqualified on consistency long before quality is debated. The decision from the first four tests stands, and the eleven new tests sharpen it rather than overturning it: buy the code directory, keep the service map for events, and never let an unsearched answer near sign-off.</p>
+      <p>Fifteen tests, one shared model, five reference setups. No assistant wins everywhere: SCIP leads where the owning service hides, Gortex wins coupons and events, Agent-only wins the timestamp reshape, and Graphify ties the easy ground cheaply while going blind on events and contracts. The free local model is disqualified on consistency long before quality is debated. The decision from the first four tests stands, and the eleven new tests sharpen it rather than overturning it: buy SCIP, keep Gortex for events, and never let an unsearched answer near sign-off.</p>
     </section>
     <section class="panel">
       <h2>What we recommend</h2>
