@@ -237,25 +237,45 @@
     </section>
     <section class="panel">
       <h2>Tests 10–12: three more event changes</h2>
-      <p>A new expiry reason on inventory rejections, a renamed payment outcome, and a required event-envelope version. Graphify ran all three; the trio has not run them yet, so these rows measure the control, not the comparison.</p>
+      <p>A new expiry reason on inventory rejections, a renamed payment outcome, and a required event-envelope version. All four assistants ran all three.</p>
       <table>
-        <thead><tr><th>Test</th><th>Graphify score</th><th>Result</th><th>Effort</th></tr></thead>
+        <thead><tr><th>Assistant</th><th>Expiry reason (0.61–0.71)</th><th>Payment outcome (0.69–0.93)</th><th>Envelope version (0.69–0.71)</th></tr></thead>
         <tbody>
-          <tr><td><strong>New expiry reason</strong> (0.63)</td><td>0.63</td><td>Missed the storefront; no production-breaking miss. An addition, not a rename — correctly treated as smaller blast radius.</td><td>22 checks, 70k tokens</td></tr>
-          <tr><td><strong>Renamed payment outcome</strong> (0.69)</td><td>0.69</td><td>Missed the payment event contract that carries the renamed value — one production-breaking miss.</td><td>27 checks, 108k tokens</td></tr>
-          <tr><td><strong>Required envelope version</strong> (0.69)</td><td>0.69</td><td>Missed the event contract and one consumer test, no production-breaking miss. Topic names are identical — only meaning changed.</td></tr>
+          <tr><td><strong>Agent-only</strong></td><td>0.61 — missed the storefront and the event contract</td><td>0.70 — missed the payment event contract</td><td>0.71 — same two misses as everyone</td></tr>
+          <tr><td><strong>SCIP</strong></td><td>0.62 — same misses as the baseline</td><td>0.71 — same missed contract</td><td>0.69 — same two misses as everyone</td></tr>
+          <tr><td><strong>Gortex</strong></td><td>0.71 — the only full repo recall of the three</td><td>0.93 — zero misses, the best event score in the study</td><td>0.69 — same two misses as everyone</td></tr>
+          <tr><td><strong>Graphify</strong></td><td>0.63 — no production-breaking miss; correctly treated as smaller break</td><td>0.69 — missed the payment event contract</td><td>0.69 — same two misses as everyone</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (3 answers)</td><td>22 – 42</td><td>88k – 194k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (3 answers)</td><td>26 – 44</td><td>67k – 152k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (3 answers)</td><td>23 – 36</td><td>83k – 140k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (3 answers)</td><td>22 – 42</td><td>70k – 209k tokens</td></tr>
         </tbody>
       </table>
     </section>
     <section class="panel">
       <h2>Tests 13–15: three more single-service controls</h2>
-      <p>A cache-key change (cold cache, not an error), a mapper null-handling tweak (schema unchanged), and a snapshot table addition (private history, not a contract). All scored by Graphify so far.</p>
+      <p>A cache-key change (cold cache, not an error), a mapper null-handling tweak (schema unchanged), and a snapshot table addition (private history, not a contract). All four assistants ran all three — including the study's first perfect score.</p>
       <table>
-        <thead><tr><th>Test</th><th>Graphify score</th><th>Result</th><th>Effort</th></tr></thead>
+        <thead><tr><th>Assistant</th><th>Cache key</th><th>Mapper nulls</th><th>Snapshot column</th></tr></thead>
         <tbody>
-          <tr><td><strong>Cache key change</strong> (0.91)</td><td>0.91</td><td>Zero misses — correctly confined to one service.</td><td>31 checks, 72k tokens</td></tr>
-          <tr><td><strong>Mapper null handling</strong> (0.87)</td><td>0.87</td><td>One missed test; correctly reported no cross-service impact.</td><td>34 checks, 143k tokens</td></tr>
-          <tr><td><strong>Snapshot column</strong> (0.67)</td><td>0.67</td><td>Right service, missed the database contract naming — same qualifier gap as Test 4.</td><td>49 checks, 231k tokens</td></tr>
+          <tr><td><strong>Agent-only</strong></td><td>1.00 — perfect: exact match, zero misses, 26 checks</td><td>0.88 — one symbol missed</td><td>0.68 — same contract-naming miss as everyone</td></tr>
+          <tr><td><strong>SCIP</strong></td><td>0.97 — zero misses</td><td>0.90 — zero misses</td><td>0.68 — same contract-naming miss as everyone</td></tr>
+          <tr><td><strong>Gortex</strong></td><td>0.93 — one symbol missed</td><td>0.88 — zero misses</td><td>0.68 — same contract-naming miss as everyone</td></tr>
+          <tr><td><strong>Graphify</strong></td><td>0.91 — zero misses</td><td>0.87 — one test missed</td><td>0.67 — same contract-naming miss as everyone</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (3 answers)</td><td>26 – 44</td><td>77k – 176k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (3 answers)</td><td>30 – 40</td><td>180k – 268k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (3 answers)</td><td>29 – 54</td><td>127k – 271k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (3 answers)</td><td>31 – 49</td><td>72k – 231k tokens</td></tr>
         </tbody>
       </table>
     </section>

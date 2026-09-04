@@ -1,0 +1,179 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "inventory-service",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java:58 emits inventory.reservation-rejected with reason OUT_OF_STOCK."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/asyncapi/order-service.yaml:43 subscribes to inventory.reservation-rejected.v1 from inventory-service."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-platform/e2e-bruno/run-e2e.sh:163 expects terminal status REJECTED_OUT_OF_STOCK for the out-of-stock flow."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java:58 builds the rejected payload reason."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/messaging/SagaResultListener.java:34 consumes inventory.reservation-rejected.v1."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaTransitions.java:33 maps inventory.reservation-rejected to REJECTED_OUT_OF_STOCK."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.OrderStatus",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java:11 declares REJECTED_OUT_OF_STOCK as the rejection state."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1#/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "inventory-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6 and order-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6 both freeze reason to OUT_OF_STOCK."
+      },
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "inventory-service/asyncapi/inventory-service.yaml:31 publishes and order-service/asyncapi/order-service.yaml:43 subscribes."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/test/java/com/poc/inventory/InventoryIntegrationTest.java:135 asserts reason OUT_OF_STOCK."
+      },
+      {
+        "repo": "inventory-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/test/java/com/poc/inventory/ContractValidationTest.java:66 validates inventory.reservation-rejected.v1 with reason OUT_OF_STOCK."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:150 publishes inventory.reservation-rejected with reason OUT_OF_STOCK."
+      },
+      {
+        "repo": "order-service",
+        "suite": "SagaTransitionsTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/SagaTransitionsTest.java:37 expects inventory.reservation-rejected to end in REJECTED_OUT_OF_STOCK."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:31 lists inventory.reservation-rejected.v1 as a consumed contract."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T04:18:34.916Z",
+  "elapsed_seconds": 49.2,
+  "tool_calls": 22,
+  "index_sha256": "none",
+  "tokens_consumed": 88002,
+  "cost_usd": 0.1181825,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "a6ed5bbd115a6f697917933b815e418dba47c0fdaf5a8c32be67fc0d45778d46",
+  "contestant_config_sha256": "71c885b48816acd172dcee5c5ebfe2f152ef6c3b11195a5e51e08d6b8979fbd5",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

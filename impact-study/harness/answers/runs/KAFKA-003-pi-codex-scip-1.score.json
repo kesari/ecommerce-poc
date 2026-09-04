@@ -1,0 +1,89 @@
+{
+  "change_id": "KAFKA-003",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.6667,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.7125
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 2,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "kafka payment.declined.v1",
+      "severity": "critical_runtime_dependency"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [],
+    "contracts": [
+      "db payment-service.payments.status",
+      "kafka payment.declined.v1#/paymentid",
+      "kafka payment.declined.v1#/reason"
+    ],
+    "tests": [
+      "order-service contractvalidationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 9,
+    "contract_matched": 3
+  },
+  "raw": {
+    "elapsed_seconds": 57.3,
+    "tokens_consumed": 67357
+  },
+  "answer_sha256": "46da2adfae19be4a9ac2c59b4ad2f1728d9a7f6fd77963a00c8b1f1782cf3190"
+}
