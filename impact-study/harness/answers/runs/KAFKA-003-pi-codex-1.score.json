@@ -1,0 +1,92 @@
+{
+  "change_id": "KAFKA-003",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.6154,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.7048
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 2,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 5,
+      "matched": 4,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "kafka payment.declined.v1",
+      "severity": "critical_runtime_dependency"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.payment.infrastructure.persistence.repository.mybatispaymentstore"
+    ],
+    "contracts": [
+      "kafka payment.declined.v1#/reason"
+    ],
+    "tests": [
+      "order-service contractvalidationtest",
+      "order-service sagatransitionstest",
+      "payment-service paymentcontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 10,
+    "contract_matched": 2,
+    "compiler": 1
+  },
+  "raw": {
+    "elapsed_seconds": 58.1,
+    "tokens_consumed": 96815
+  },
+  "answer_sha256": "6addb3cffbce23bcb034085fe98df8489baab72e30f7436edc9df93efe5bd7fd"
+}
