@@ -1,0 +1,312 @@
+{
+  "change_id": "REST-006",
+  "contestant": "gortex",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:96 parses JWT subject as UUID."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/BasketController.java:122 parses JWT subject as UUID."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/api/CheckoutController.java:106 parses JWT subject as UUID."
+      },
+      {
+        "name": "commerce-bff",
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:39 forwards bearer tokens to order-service unchanged."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.security.JwtSupport",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/security/JwtSupport.java:32 sets JWT subject from userId."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:96 converts principal subject with UUID.fromString."
+      },
+      {
+        "fqn": "com.poc.basket.api.BasketController",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/BasketController.java:122 converts principal subject with UUID.fromString."
+      },
+      {
+        "fqn": "com.poc.order.api.CheckoutController",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/api/CheckoutController.java:106 converts principal subject with UUID.fromString."
+      },
+      {
+        "fqn": "com.poc.bff.api.CheckoutProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:39 relays Authorization header to order-service."
+      },
+      {
+        "fqn": "com.poc.bff.api.AddressProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:68 relays Authorization header to account-service."
+      },
+      {
+        "fqn": "com.poc.bff.infrastructure.client.DownstreamRelay",
+        "repo": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:66 forwards bearer token when present."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-bff",
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff proxies it; order-service AccountClient calls /api/v1/addresses/{addressId} with bearer."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:38 forwards bearer to account-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "PUT /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:48 forwards bearer to account-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "DELETE /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:57 forwards bearer to account-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:33 calls account address endpoint with bearer."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "consumer_repos": [
+          "commerce-bff",
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service BasketClient and commerce-bff basket proxy both forward bearer tokens."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/basket/items",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/openapi/bff.yaml proxies basket item creation as JsonNode pass-through."
+      },
+      {
+        "type": "rest",
+        "identifier": "PATCH /api/v1/basket/items/{productId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/openapi/bff.yaml proxies basket quantity updates as JsonNode pass-through."
+      },
+      {
+        "type": "rest",
+        "identifier": "DELETE /api/v1/basket/items/{productId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/openapi/bff.yaml proxies basket line deletion as JsonNode pass-through."
+      },
+      {
+        "type": "rest",
+        "identifier": "PUT /api/v1/basket/coupon",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/openapi/bff.yaml proxies coupon application as JsonNode pass-through."
+      },
+      {
+        "type": "rest",
+        "identifier": "DELETE /api/v1/basket/coupon",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/openapi/bff.yaml proxies coupon removal as JsonNode pass-through."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/checkout/quotes",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:39 forwards bearer to order-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/orders",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:58 forwards bearer to order-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/orders/{orderId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:70 forwards bearer to order-service."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:124 uses issued accessToken on /api/v1/addresses."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:98 builds JWT subject from userId UUID."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:334 test Jwt principal subject is USER_ID UUID."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:369 test Jwt principal subject is USER UUID."
+      },
+      {
+        "repo": "commerce-bff",
+        "suite": "BffIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/test/java/com/poc/bff/BffIntegrationTest.java:256 builds JWT with UUID subject for relayed bearer."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T17:27:37.984Z",
+  "elapsed_seconds": 81.4,
+  "tool_calls": 48,
+  "index_sha256": "206d524ec46312b3ce3607a8357aff617912ade4c1a7c2813bcea02506570cf6",
+  "tokens_consumed": 347582,
+  "cost_usd": 0.271672,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "e8703d67eab287663c0d9d2220e67be6585ad8e44b859c9eeb7e1c4e875fc889",
+  "contestant_config_sha256": "6346c31d0e47e7ab45945e9d13eb1974e4e3b4bf29b46c7850a69a6585f6d7c8",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

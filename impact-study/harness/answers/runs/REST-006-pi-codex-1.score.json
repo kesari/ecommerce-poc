@@ -1,0 +1,114 @@
+{
+  "change_id": "REST-006",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.2593,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.6889
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 13,
+      "matched": 0,
+      "false_positives": 13,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "rest post /api/v1/auth/login",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "basket-service"
+    ],
+    "symbols": [
+      "com.poc.account.api.addresscontroller",
+      "com.poc.basket.api.basketcontroller",
+      "com.poc.bff.infrastructure.client.downstreamrelay"
+    ],
+    "contracts": [
+      "rest delete /api/v1/addresses/{addressid}",
+      "rest delete /api/v1/basket/coupon",
+      "rest delete /api/v1/basket/items/{productid}",
+      "rest get /api/v1/addresses",
+      "rest get /api/v1/basket",
+      "rest get /api/v1/orders/{orderid}",
+      "rest patch /api/v1/basket/items/{productid}",
+      "rest post /api/v1/addresses",
+      "rest post /api/v1/basket/items",
+      "rest post /api/v1/checkout/quotes",
+      "rest post /api/v1/orders",
+      "rest put /api/v1/addresses/{addressid}",
+      "rest put /api/v1/basket/coupon"
+    ],
+    "tests": [
+      "basket-service basketapimockedtest",
+      "basket-service basketintegrationtest",
+      "order-service orderapimockedtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 11,
+    "contract_matched": 15,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 80,
+    "tokens_consumed": 471823
+  },
+  "answer_sha256": "0c2c54b038e3fde2c2492b394f56a10afd3f64baeb30ec1998645868d753c010"
+}

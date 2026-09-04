@@ -1,0 +1,87 @@
+{
+  "change_id": "INT-002",
+  "contestant": "gortex",
+  "metrics": {
+    "symbol_recall": 0.5,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.5,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.925
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "informational": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.shipment.application.shipmentservice",
+      "severity": "informational"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [],
+    "contracts": [
+      "openapi openapi:shipment-service.yaml#/components/schemas/deliveryestimaterequest",
+      "openapi openapi:shipment-service.yaml#/components/schemas/deliveryestimateresponse",
+      "rest post /api/v1/delivery-estimates"
+    ],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 3,
+    "contract_matched": 3
+  },
+  "raw": {
+    "elapsed_seconds": 61.5,
+    "tokens_consumed": 127342
+  },
+  "answer_sha256": "10ddfd74cd1ae0b1f718be742060b325ccfd502c56f89c92e974618c3044027a"
+}

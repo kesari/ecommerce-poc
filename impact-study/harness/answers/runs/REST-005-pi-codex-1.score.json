@@ -1,0 +1,122 @@
+{
+  "change_id": "REST-005",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.5714,
+    "test_recall": 0.3333,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.2593,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8889
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 3,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 12,
+      "matched": 2,
+      "false_positives": 10,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 7,
+      "matched": 1,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 5,
+      "matched": 1,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 2,
+      "test_suite": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.shipment.api.dto.deliveryestimaterequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.shipment.domain.model.deliveryestimate",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "order-service contractvalidationtest",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "shipment-service deliveryestimatortest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.api.dto.quoteresponse",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.domain.model.deliverywindow",
+      "com.poc.order.infrastructure.client.shipmentclient",
+      "com.poc.order.infrastructure.persistence.repository.mybatisquoterepository",
+      "com.poc.order.infrastructure.persistence.row.quoterow",
+      "com.poc.shipment.api.dto.deliveryestimateresponse",
+      "com.poc.shipment.api.dto.shipmentresponse",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.domain.model.shipment"
+    ],
+    "contracts": [
+      "kafka shipment.created.v1#/promisedfrom",
+      "kafka shipment.created.v1#/promisedto",
+      "openapi openapi:order-service.yaml#/components/schemas/estimateddelivery",
+      "openapi openapi:shipment-service.yaml#/components/schemas/deliveryestimateresponse",
+      "openapi openapi:shipment-service.yaml#/components/schemas/shipmentresponse",
+      "rest post /api/v1/checkout/quotes"
+    ],
+    "tests": [
+      "order-service orderapimockedtest",
+      "order-service ordersagaintegrationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentpersistencecomponenttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 20,
+    "contract_matched": 7
+  },
+  "raw": {
+    "elapsed_seconds": 80,
+    "tokens_consumed": 270959
+  },
+  "answer_sha256": "d44c7e59f53d64e18ce42741793e97901b84768a78694a021ed40199cc0f2e74"
+}

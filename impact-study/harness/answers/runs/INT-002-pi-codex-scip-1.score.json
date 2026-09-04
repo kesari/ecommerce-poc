@@ -1,0 +1,77 @@
+{
+  "change_id": "INT-002",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.8,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.97
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 0,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {}
+  },
+  "missed": [],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.shipment.application.estimatecache"
+    ],
+    "contracts": [],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 3,
+    "compiler": 2
+  },
+  "raw": {
+    "elapsed_seconds": 53.8,
+    "tokens_consumed": 179887
+  },
+  "answer_sha256": "33305c120c6c2f965ad0951b54713b88fb21f63bb72ea6b24ffde9393c0563ba"
+}

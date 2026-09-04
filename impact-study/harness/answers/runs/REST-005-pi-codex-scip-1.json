@@ -1,0 +1,252 @@
+{
+  "change_id": "REST-005",
+  "contestant": "scip",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:34 binds POST /api/v1/delivery-estimates response fields fromDate/toDate."
+      },
+      {
+        "name": "commerce-bff",
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:35 relays order quote JSON, so changed order quote shape propagates through BFF."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:23 defines EstimateResponse(LocalDate fromDate, LocalDate toDate...)."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.DeliveryWindow",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/DeliveryWindow.java:5 is LocalDate fromDate/toDate consumed from shipment."
+      },
+      {
+        "fqn": "com.poc.order.application.port.ShipmentPort",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/port/ShipmentPort.java:10 returns DeliveryEstimate carrying DeliveryWindow."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:56 stores estimate.window() in quotes as promised delivery."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.Quote",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/Quote.java:7 stores promised as DeliveryWindow in persisted quote."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisQuoteRepository.java:29 writes promised fromDate/toDate columns."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.row.QuoteRow",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java:9 defines LocalDate promisedFrom and promisedTo."
+      },
+      {
+        "fqn": "com.poc.order.api.dto.QuoteResponse",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java:13 exposes EstimatedDelivery(LocalDate from, LocalDate to)."
+      },
+      {
+        "fqn": "com.poc.order.api.CheckoutController",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/api/CheckoutController.java:49 returns QuoteResponse from checkout.createQuote()."
+      },
+      {
+        "fqn": "com.poc.bff.api.CheckoutProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:35 relays /api/v1/checkout/quotes body as JsonNode."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:11 defines POST /api/v1/delivery-estimates used by order-service ShipmentClient.java:34."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:shipment-service.yaml#/components/schemas/DeliveryEstimateResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:62 defines fromDate/toDate matched by order-service ShipmentClient.java:23."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/checkout/quotes",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/openapi/order-service.yaml:10 returns QuoteResponse and commerce-bff CheckoutProxyController.java:35 relays it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:order-service.yaml#/components/schemas/EstimatedDelivery",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/openapi/order-service.yaml:132 defines estimatedDelivery from/to and commerce-bff relays quote JSON at CheckoutProxyController.java:35."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:105 asserts $.estimatedDelivery.from in quote response."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:218 seeds Quote with DeliveryWindow(LocalDate,LocalDate)."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OpenApiContractTest.java:58 compares generated spec to openapi/order-service.yaml."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java:21 asserts estimate.window().from() and .to()."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:92 asserts JSON fields fromDate and toDate."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentPersistenceComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java:138 builds DeliveryWindow(LocalDate,LocalDate)."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/OpenApiContractTest.java:65 compares generated spec to openapi/shipment-service.yaml."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:59 validates shipment.created.v1 with promisedFrom/promisedTo."
+      },
+      {
+        "repo": "commerce-bff",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/test/java/com/poc/bff/OpenApiContractTest.java:56 compares generated spec to openapi/bff.yaml."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T17:22:16.683Z",
+  "elapsed_seconds": 86.7,
+  "tool_calls": 61,
+  "index_sha256": "d858db37744c7d2005d78271e7849afb2dcf9891b8547f78a6499bfb65bf4c40",
+  "tokens_consumed": 341633,
+  "cost_usd": 0.262116,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "e6b50b3f57f9da4d871a07546506b4e33d8d15346380829be1f2b11d5a0ca8ad",
+  "contestant_config_sha256": "ff51fc7a8baae088757fcb8e4c265e26a4cea0b5515eda0770c1a1e1ecb1e278",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

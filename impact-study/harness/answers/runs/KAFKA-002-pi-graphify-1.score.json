@@ -1,0 +1,98 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "graphify",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 0.7273,
+    "contract_recall": 0.0,
+    "precision": 0.5,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.6295
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 4,
+      "matched": 2,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "commerce-web",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "kafka inventory.reservation-rejected",
+      "severity": "contract_consumer"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.application.sagatransitions",
+      "com.poc.order.domain.model.orderstatus",
+      "com.poc.order.infrastructure.messaging.sagaresultlistener"
+    ],
+    "contracts": [
+      "kafka inventory.reservation-rejected.v1#/reason"
+    ],
+    "tests": [
+      "inventory-service contractvalidationtest",
+      "order-service sagatransitionstest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 9,
+    "contract_matched": 2,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 48.8,
+    "tokens_consumed": 70200
+  },
+  "answer_sha256": "c723e705e58dfcd5b67f0e6c42fd140b90cdc92ebe1c02986230f3db8fe1d29b"
+}

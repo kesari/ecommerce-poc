@@ -1,0 +1,86 @@
+{
+  "change_id": "INT-002",
+  "contestant": "graphify",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.4,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.91
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 4,
+      "matched": 2,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 2,
+      "matched": 0,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "missed_by_severity": {}
+  },
+  "missed": [],
+  "false_positives": {
+    "repositories": [
+      "order-service"
+    ],
+    "symbols": [
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.infrastructure.client.shipmentclient"
+    ],
+    "contracts": [
+      "openapi openapi:shipment-service.yaml#/components/schemas/deliveryestimateresponse",
+      "rest post /api/v1/delivery-estimates"
+    ],
+    "tests": [
+      "order-service orderapimockedtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 6,
+    "contract_matched": 3,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 49.8,
+    "tokens_consumed": 71968
+  },
+  "answer_sha256": "cc2752982e0464b64df259cb67ab8be51aef620762fe95298f18048ccc18770d"
+}

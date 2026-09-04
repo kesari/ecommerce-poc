@@ -1,0 +1,177 @@
+{
+  "change_id": "INT-003",
+  "contestant": "scip",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:14 maps Address.line2 into API response."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32 fetches /api/v1/addresses/{addressId} and binds line2."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-web/src/api/checkout.ts:5 calls /addresses and CheckoutPage.tsx:112 renders address.line2 conditionally."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": ".harness-index/symbols.json:159 maps AddressDtoMapper to account-service."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": ".harness-index/symbols.json:75 maps AddressResponse to account-service."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": ".harness-index/symbols.json:33 maps AddressController to account-service."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24 binds line2 from account response."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": ".harness-index/symbols.json:1697 maps AddressSnapshot to order-service."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/openapi/account.yaml:10 defines list addresses; commerce-web/src/api/checkout.ts:5 consumes it."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/openapi/account.yaml:41 defines address detail; order-service/AccountClient.java:33 calls it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/openapi/account.yaml:225 defines AddressResponse with line2 at line 242."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:123 exercises address create/list/update flow."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-web/src/test/app.test.tsx:43 mocks address.line2 as null for /api/v1/addresses."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T02:16:52.904Z",
+  "elapsed_seconds": 62.7,
+  "tool_calls": 38,
+  "index_sha256": "d858db37744c7d2005d78271e7849afb2dcf9891b8547f78a6499bfb65bf4c40",
+  "tokens_consumed": 267761,
+  "cost_usd": 0.2523595,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "7a4d7d6fe7650c45dd85f609e3a51d8b474f78e0cac7e0906da719ea4d1ceb1e",
+  "contestant_config_sha256": "ff51fc7a8baae088757fcb8e4c265e26a4cea0b5515eda0770c1a1e1ecb1e278",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "change_id": "INT-003",
+  "contestant": "gortex",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.1818,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8773
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 8,
+      "matched": 2,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 7,
+      "matched": 1,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "missed_by_severity": {}
+  },
+  "missed": [],
+  "false_positives": {
+    "repositories": [
+      "commerce-web",
+      "order-service",
+      "shipment-service"
+    ],
+    "symbols": [
+      "com.poc.account.api.dto.addressresponse",
+      "com.poc.bff.api.addressproxycontroller",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.order.domain.model.addresssnapshot",
+      "com.poc.order.infrastructure.client.accountclient",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "kafka order.confirmed.v1#/address/line2",
+      "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "rest get /api/v1/addresses/{addressid}"
+    ],
+    "tests": [
+      "account-service openapicontracttest",
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "order-service ordersagaintegrationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 16,
+    "contract_matched": 6
+  },
+  "raw": {
+    "elapsed_seconds": 89.9,
+    "tokens_consumed": 271295
+  },
+  "answer_sha256": "b904607537ac3dfbca517ef1b9f452e1d58660c4e5f4de9ac1b449b4b2d9dfdf"
+}

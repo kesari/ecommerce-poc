@@ -1,0 +1,206 @@
+{
+  "change_id": "INT-003",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:14 maps address.line2() into AddressResponse."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41 binds Account /api/v1/addresses/{addressId} line2 into AddressSnapshot."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:33-38 consumes order.confirmed.v1 address fields from order-service."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-web/src/api/types.ts:47-60 defines Address with line2 string|null from /api/v1/addresses responses."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:10-15 returns AddressResponse with line2."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6-17 declares line2 in the REST DTO."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41 deserializes line2 and copies it to AddressSnapshot."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3-4 stores line2 for downstream order data."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:104-108 writes order.address().line2() into event payload."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:30-38 reads address payload fields from order.confirmed.v1."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:30-36 calls /api/v1/addresses/{addressId} and binds body."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "account-service/openapi/account.yaml:225-250 declares AddressResponse.line2 as a string property."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/line2",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/asyncapi/schemas/order.confirmed.v1.json:13-18 allows address.line2 and SagaOrchestrator emits it."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:104-132 exercises address CRUD via /api/v1/addresses."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:84-91 validates order.confirmed.v1 with address.line2 null."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:163-192 sends order.confirmed.v1 with address.line2 null."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:52-56 validates consumed order.confirmed.v1 sample with address.line2 null."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-web/src/test/app.test.tsx:34-47 fixtures an Address with line2 null for checkout rendering."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T02:15:49.813Z",
+  "elapsed_seconds": 67.3,
+  "tool_calls": 32,
+  "index_sha256": "none",
+  "tokens_consumed": 176312,
+  "cost_usd": 0.15080700000000002,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "8de81110a412871f1ce904a389bb34700b01dceb89b9b157fee1a9379e51f897",
+  "contestant_config_sha256": "71c885b48816acd172dcee5c5ebfe2f152ef6c3b11195a5e51e08d6b8979fbd5",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

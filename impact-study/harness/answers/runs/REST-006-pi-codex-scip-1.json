@@ -1,0 +1,308 @@
+{
+  "change_id": "REST-006",
+  "contestant": "scip",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/security/JwtSupport.java:31 sets JWT subject from userId."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/BasketController.java:121 parses principal.getSubject() as UUID."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/api/CheckoutController.java:105 parses principal.getSubject() as UUID."
+      },
+      {
+        "name": "commerce-bff",
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/BasketProxyController.java:83 forwards bearer token to basket-service unchanged."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.security.JwtSupport",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps JwtSupport to account-service at account-service/src/main/java/com/poc/account/infrastructure/security/JwtSupport.java:18."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps AddressController to account-service at account-service/src/main/java/com/poc/account/api/AddressController.java:33."
+      },
+      {
+        "fqn": "com.poc.basket.api.BasketController",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps BasketController to basket-service at basket-service/src/main/java/com/poc/basket/api/BasketController.java:31."
+      },
+      {
+        "fqn": "com.poc.order.api.CheckoutController",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps CheckoutController to order-service at order-service/src/main/java/com/poc/order/api/CheckoutController.java:33."
+      },
+      {
+        "fqn": "com.poc.bff.api.BasketProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps BasketProxyController to commerce-bff at commerce-bff/src/main/java/com/poc/bff/api/BasketProxyController.java:24."
+      },
+      {
+        "fqn": "com.poc.bff.api.CheckoutProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps CheckoutProxyController to commerce-bff at commerce-bff/src/main/java/com/poc/bff/api/CheckoutProxyController.java:22."
+      },
+      {
+        "fqn": "com.poc.bff.api.AddressProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps AddressProxyController to commerce-bff at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:23."
+      },
+      {
+        "fqn": "com.poc.bff.infrastructure.client.DownstreamRelay",
+        "repo": "commerce-bff",
+        "evidence_tier": "compiler",
+        "evidence": "symbols.json maps DownstreamRelay to commerce-bff at commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:20."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "AddressProxyController.java:31 relays GET /api/v1/addresses to account-service using caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "AddressProxyController.java:37 relays POST /api/v1/addresses to account-service using caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "PUT /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "AddressProxyController.java:46 relays PUT /api/v1/addresses/{addressId} to account-service using caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "DELETE /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "AddressProxyController.java:56 relays DELETE /api/v1/addresses/{addressId} to account-service using caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "consumer_repos": [
+          "commerce-bff",
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "BasketClient.java:32 calls /api/v1/basket with Authorization; BasketController.java:121 parses sub as UUID."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/basket/items",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "BasketProxyController.java:43 relays POST /api/v1/basket/items with caller bearer token to basket-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "PATCH /api/v1/basket/items/{productId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "BasketProxyController.java:53 relays PATCH /api/v1/basket/items/{productId} with caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "DELETE /api/v1/basket/items/{productId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "BasketProxyController.java:61 relays DELETE /api/v1/basket/items/{productId} with caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "PUT /api/v1/basket/coupon",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "BasketProxyController.java:70 relays PUT /api/v1/basket/coupon with caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "DELETE /api/v1/basket/coupon",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "BasketProxyController.java:77 relays DELETE /api/v1/basket/coupon with caller bearer token."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/checkout/quotes",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "CheckoutProxyController.java:33 relays POST /api/v1/checkout/quotes with caller bearer token to order-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/orders",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "CheckoutProxyController.java:54 relays POST /api/v1/orders with caller bearer token to order-service."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/orders/{orderId}",
+        "consumer_repos": [
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "CheckoutProxyController.java:64 relays GET /api/v1/orders/{orderId} with caller bearer token to order-service."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:124 uses issued accessToken on /api/v1/addresses."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:98 builds JWT with subject(userId.toString())."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:334 sets Jwt subject to userId.toString()."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:369 sets Jwt subject to USER.toString()."
+      },
+      {
+        "repo": "commerce-bff",
+        "suite": "BffIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/test/java/com/poc/bff/BffIntegrationTest.java:256 builds JWT with subject(USER.toString())."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T17:26:16.073Z",
+  "elapsed_seconds": 100,
+  "tool_calls": 59,
+  "index_sha256": "d858db37744c7d2005d78271e7849afb2dcf9891b8547f78a6499bfb65bf4c40",
+  "tokens_consumed": 477526,
+  "cost_usd": 0.31851500000000005,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "b4174d8a6c577c5c2bfa9803db8a09906b892f95ad55a122e2dc8ed83fe990b3",
+  "contestant_config_sha256": "ff51fc7a8baae088757fcb8e4c265e26a4cea0b5515eda0770c1a1e1ecb1e278",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

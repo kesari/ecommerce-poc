@@ -1,0 +1,131 @@
+{
+  "change_id": "REST-003",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.2143,
+    "test_recall": 0.0,
+    "cross_repo_recall": 0.6154,
+    "contract_recall": 1.0,
+    "precision": 0.2667,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.5,
+    "composite": 0.6804
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 5,
+      "matched": 1,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 2,
+      "contract_consumer": 2,
+      "test_suite": 3
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "basket-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.basket.api.dto.basketresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.basket.domain.model.basket",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.quote",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "basket-service basketintegrationtest",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-bff"
+    ],
+    "symbols": [
+      "com.poc.order.api.dto.quoteresponse",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.orderservice",
+      "com.poc.order.application.port.basketport"
+    ],
+    "contracts": [
+      "openapi openapi:basket.yaml#/components/schemas/basketresponse",
+      "openapi openapi:order-service.yaml#/components/schemas/quoteresponse",
+      "rest post /api/v1/checkout/quotes"
+    ],
+    "tests": [
+      "commerce-bff bffintegrationtest",
+      "commerce-web app.test",
+      "order-service orderapimockedtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "contract_matched": 5,
+    "extracted": 9,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 68.3,
+    "tokens_consumed": 182074
+  },
+  "answer_sha256": "f759caf6333bdc4f9486bfc2b76fd1306fc77c64f91311adfa81efa9cd44d2c8"
+}
