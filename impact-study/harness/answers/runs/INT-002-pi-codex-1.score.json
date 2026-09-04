@@ -1,0 +1,74 @@
+{
+  "change_id": "INT-002",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 1.0,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 1.0
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 0,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {}
+  },
+  "missed": [],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [],
+    "contracts": [],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 4
+  },
+  "raw": {
+    "elapsed_seconds": 38.4,
+    "tokens_consumed": 77316
+  },
+  "answer_sha256": "474beb81eac0c3894aa28ad3ef0f6034efc329e87abdb4c0ce73befe11e95b82"
+}

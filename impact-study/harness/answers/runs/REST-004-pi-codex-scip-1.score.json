@@ -1,0 +1,105 @@
+{
+  "change_id": "REST-004",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 0.7692,
+    "test_recall": 0.5,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.4615,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.7192
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 3,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 2,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 0,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 2,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.pricebreakdown",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "rest put /api/v1/basket/coupon",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "order-service orderpricingtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.basket.infrastructure.persistence.repository.mybatisbasketrepository",
+      "com.poc.basket.infrastructure.persistence.row.couponrow"
+    ],
+    "contracts": [
+      "db basket-service.coupons.discount_percent",
+      "openapi openapi:basket.yaml#/components/schemas/basketresponse"
+    ],
+    "tests": [
+      "basket-service basketrepositorycomponenttest",
+      "basket-service openapicontracttest",
+      "commerce-web app.test.tsx"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 8,
+    "contract_matched": 3,
+    "compiler": 2
+  },
+  "raw": {
+    "elapsed_seconds": 71.8,
+    "tokens_consumed": 374973
+  },
+  "answer_sha256": "10ed1ae1da61ea6a2f39c10b42de5c74436b4718c250b727239c825d8811612a"
+}

@@ -1,0 +1,195 @@
+{
+  "change_id": "REST-003",
+  "contestant": "gortex",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:24 binds basketVersion from GET /api/v1/basket."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-web/src/api/types.ts:38 types Basket with basketVersion from the BFF basket JSON."
+      },
+      {
+        "name": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/test/java/com/poc/bff/BffIntegrationTest.java:138 stubs basket JSON with basketVersion on proxied GET /api/v1/basket."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.order.infrastructure.client.BasketClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:24 defines BasketResponse.basketVersion."
+      },
+      {
+        "fqn": "com.poc.order.application.port.BasketPort",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:43 copies response.basketVersion() into BasketSnapshot."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:58 stores basket.basketVersion() in Quote."
+      },
+      {
+        "fqn": "com.poc.order.application.OrderService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/OrderService.java:79 compares currentBasket(...).basketVersion() with quote.basketVersion()."
+      },
+      {
+        "fqn": "com.poc.order.api.dto.QuoteResponse",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java:8 exposes basketVersion in quote REST responses."
+      },
+      {
+        "fqn": "com.poc.bff.BffIntegrationTest",
+        "repo": "commerce-bff",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/test/java/com/poc/bff/BffIntegrationTest.java:138 asserts proxied basket payload containing basketVersion."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:basket.yaml#/components/schemas/BasketResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service/openapi/basket.yaml:217 defines basketVersion; order-service BasketClient.java:24 binds it."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "consumer_repos": [
+          "order-service",
+          "commerce-bff"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service BasketClient.java:36 and commerce-bff BasketProxyController.java:84 both call /api/v1/basket."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:order-service.yaml#/components/schemas/QuoteResponse",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/openapi/order-service.yaml:233 and commerce-web/src/api/types.ts:66 both name basketVersion."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:98 expects $.basketVersion in quote response."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OpenApiContractTest.java:56 checks openapi/order-service.yaml matches generated spec."
+      },
+      {
+        "repo": "commerce-bff",
+        "suite": "BffIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-bff/src/test/java/com/poc/bff/BffIntegrationTest.java:138 stubs basket-service with basketVersion JSON."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "evidence": "commerce-web/src/test/app.test.tsx:23 seeds Basket test data with basketVersion."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T17:15:59.958Z",
+  "elapsed_seconds": 63.9,
+  "tool_calls": 37,
+  "index_sha256": "206d524ec46312b3ce3607a8357aff617912ade4c1a7c2813bcea02506570cf6",
+  "tokens_consumed": 254754,
+  "cost_usd": 0.1921295,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "943334a087480ea545c2eb85e6d603b93ad0c65e95b931e02cb9244eb6c5880a",
+  "contestant_config_sha256": "6346c31d0e47e7ab45945e9d13eb1974e4e3b4bf29b46c7850a69a6585f6d7c8",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

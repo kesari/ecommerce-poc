@@ -1,0 +1,187 @@
+{
+  "change_id": "KAFKA-003",
+  "contestant": "graphify",
+  "findings": {
+    "repositories": [
+      {
+        "name": "payment-service",
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java:5 declares DECLINED."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/asyncapi/order-service.yaml:63 subscribes to payment.declined.v1 from payment-service."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.payment.domain.PaymentStatus",
+        "repo": "payment-service",
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java:3 defines enum with DECLINED."
+      },
+      {
+        "fqn": "com.poc.payment.application.PaymentCommandService",
+        "repo": "payment-service",
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java:52 maps failed charge to PaymentStatus.DECLINED."
+      },
+      {
+        "fqn": "com.poc.payment.infrastructure.persistence.repository.MyBatisPaymentStore",
+        "repo": "payment-service",
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/main/java/com/poc/payment/infrastructure/persistence/repository/MyBatisPaymentStore.java:78 uses PaymentStatus.valueOf(row.status())."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/messaging/SagaResultListener.java:39 listens to payment.declined.v1."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaTransitions.java:39 handles eventType payment.declined."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "payment.declined.v1#/payload/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "payment-service/asyncapi/schemas/payment-declined.schema.json:15 and order-service/asyncapi/schemas/payment.declined.v1.json:3 match."
+      },
+      {
+        "type": "kafka",
+        "identifier": "payment.declined.v1#/payload/paymentId",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "payment-service/asyncapi/schemas/payment-declined.schema.json:14 and order-service/asyncapi/schemas/payment.declined.v1.json:3 match."
+      },
+      {
+        "type": "db",
+        "identifier": "payment-service.payments.status",
+        "consumer_repos": [],
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/main/resources/db/migration/V1__payment_schema.sql:6 constrains status to include DECLINED."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "payment-service",
+        "suite": "PaymentIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/test/java/com/poc/payment/PaymentIntegrationTest.java:126 asserts DB status DECLINED."
+      },
+      {
+        "repo": "payment-service",
+        "suite": "PaymentContractTest",
+        "evidence_tier": "extracted",
+        "evidence": "payment-service/src/test/java/com/poc/payment/PaymentContractTest.java:31 lists payment.declined.v1."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:161 publishes payment.declined.v1."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:33 includes payment.declined.v1 schema."
+      },
+      {
+        "repo": "order-service",
+        "suite": "SagaTransitionsTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/SagaTransitionsTest.java:44 asserts payment.declined transition."
+      }
+    ]
+  },
+  "runner": "pi-graphify",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T02:02:10.462Z",
+  "elapsed_seconds": 51.5,
+  "tool_calls": 27,
+  "index_sha256": "032b23ecec7adb0da25d89dbcb5f47ca092c2804689d5b743075c77bbc347149",
+  "tokens_consumed": 107962,
+  "cost_usd": 0.11761749999999999,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "b9d520d1e0573498cb9b5ab2a4fcc6fbc2e14e0f1f6f1774727ef75eed32cfe6",
+  "contestant_config_sha256": "67ca97fc4f4d6d71053382b6bd9bf7b46e4450065f8bc693cddf6f3f340ab3ab",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

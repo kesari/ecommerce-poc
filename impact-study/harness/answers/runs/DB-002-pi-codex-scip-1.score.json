@@ -1,0 +1,113 @@
+{
+  "change_id": "DB-002",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 0.6667,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.1739,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.6761
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 9,
+      "matched": 2,
+      "false_positives": 7,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 6,
+      "matched": 0,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 6,
+      "matched": 1,
+      "false_positives": 5,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.order",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "db order.orders.address_country",
+      "severity": "contract_consumer"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "shipment-service"
+    ],
+    "symbols": [
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.order.domain.model.addresssnapshot",
+      "com.poc.order.infrastructure.client.accountclient",
+      "com.poc.order.infrastructure.persistence.repository.mybatisorderrepository",
+      "com.poc.order.infrastructure.persistence.repository.mybatisquoterepository",
+      "com.poc.shipment.domain.model.deliveryaddress",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "db order-service.orders.address_country",
+      "db order-service.orders.address_snapshot",
+      "db order-service.quotes.address_country",
+      "db order-service.quotes.address_snapshot",
+      "kafka order.confirmed.v1#/address/country",
+      "openapi openapi:account.yaml#/components/schemas/addressresponse"
+    ],
+    "tests": [
+      "order-service contractvalidationtest",
+      "order-service orderapimockedtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentintegrationtest",
+      "shipment-service shipmentpersistencecomponenttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 15,
+    "contract_matched": 5,
+    "compiler": 1,
+    "inferred": 2
+  },
+  "raw": {
+    "elapsed_seconds": 80.3,
+    "tokens_consumed": 212558
+  },
+  "answer_sha256": "c7b3e8a56c1e1cec4875ea0c9bd0a54dcf2e51c6c8d6f5bb3b173922c3d8de62"
+}

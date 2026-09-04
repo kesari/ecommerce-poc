@@ -1,0 +1,165 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "graphify",
+  "findings": {
+    "repositories": [
+      {
+        "name": "inventory-service",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java:58 emits inventory.reservation-rejected with reason OUT_OF_STOCK."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/asyncapi/order-service.yaml:43 subscribes to inventory.reservation-rejected.v1 from inventory-service."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java:58 builds the rejected payload reason."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/messaging/SagaResultListener.java:34 listens to inventory.reservation-rejected.v1."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaTransitions.java:33 maps inventory.reservation-rejected to REJECTED_OUT_OF_STOCK."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:43 applies SagaTransitions for every result event."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.OrderStatus",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java:10 defines REJECTED_OUT_OF_STOCK as the terminal outcome."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1#/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "inventory-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6 and order-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6 freeze reason to OUT_OF_STOCK."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/test/java/com/poc/inventory/ContractValidationTest.java:66 validates reason OUT_OF_STOCK for inventory.reservation-rejected.v1."
+      },
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "inventory-service/src/test/java/com/poc/inventory/InventoryIntegrationTest.java:135 asserts rejected reason equals OUT_OF_STOCK."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:151 publishes OUT_OF_STOCK rejection to drive saga."
+      },
+      {
+        "repo": "order-service",
+        "suite": "SagaTransitionsTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/SagaTransitionsTest.java:37 expects inventory.reservation-rejected to end as REJECTED_OUT_OF_STOCK."
+      }
+    ]
+  },
+  "runner": "pi-graphify",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T02:01:18.502Z",
+  "elapsed_seconds": 48.8,
+  "tool_calls": 22,
+  "index_sha256": "032b23ecec7adb0da25d89dbcb5f47ca092c2804689d5b743075c77bbc347149",
+  "tokens_consumed": 70200,
+  "cost_usd": 0.10556049999999999,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "44bba08dce62488addd969afaa6cd6bdafb4a96ee1a0c6e14dae2c77ed83c7a5",
+  "contestant_config_sha256": "67ca97fc4f4d6d71053382b6bd9bf7b46e4450065f8bc693cddf6f3f340ab3ab",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

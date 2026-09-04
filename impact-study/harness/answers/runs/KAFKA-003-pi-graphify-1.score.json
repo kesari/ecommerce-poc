@@ -1,0 +1,93 @@
+{
+  "change_id": "KAFKA-003",
+  "contestant": "graphify",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.5333,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.6925
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 2,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 5,
+      "matched": 4,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "kafka payment.declined.v1",
+      "severity": "critical_runtime_dependency"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.payment.infrastructure.persistence.repository.mybatispaymentstore"
+    ],
+    "contracts": [
+      "db payment-service.payments.status",
+      "kafka payment.declined.v1#/payload/paymentid",
+      "kafka payment.declined.v1#/payload/reason"
+    ],
+    "tests": [
+      "order-service contractvalidationtest",
+      "order-service sagatransitionstest",
+      "payment-service paymentcontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 12,
+    "contract_matched": 3
+  },
+  "raw": {
+    "elapsed_seconds": 51.5,
+    "tokens_consumed": 107962
+  },
+  "answer_sha256": "0e5442f9bec789609de4b83a0af74739abc32f2e2265a131aa0a093df7be92da"
+}

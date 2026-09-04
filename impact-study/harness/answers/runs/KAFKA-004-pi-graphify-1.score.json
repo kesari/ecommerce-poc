@@ -1,0 +1,122 @@
+{
+  "change_id": "KAFKA-004",
+  "contestant": "graphify",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.2368,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.6855
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 5,
+      "matched": 4,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 11,
+      "matched": 3,
+      "false_positives": 8,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 14,
+      "matched": 0,
+      "false_positives": 14,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 8,
+      "matched": 2,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "kafka order.confirmed.v1",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "basket-service basketcheckoutconsumertest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "inventory-service"
+    ],
+    "symbols": [
+      "com.poc.inventory.application.eventenvelope",
+      "com.poc.inventory.infrastructure.messaging.inventorycommandlistener",
+      "com.poc.order.application.orderservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.payment.application.paymentcommandservice",
+      "com.poc.payment.application.paymentmessageparser",
+      "com.poc.shipment.application.eventenvelope",
+      "com.poc.shipment.application.shipmentservice"
+    ],
+    "contracts": [
+      "kafka inventory.commit-failed.v1#/schemaversion",
+      "kafka inventory.commit.requested.v1#/schemaversion",
+      "kafka inventory.committed.v1#/schemaversion",
+      "kafka inventory.release.requested.v1#/schemaversion",
+      "kafka inventory.released.v1#/schemaversion",
+      "kafka inventory.reservation-rejected.v1#/schemaversion",
+      "kafka inventory.reserve.requested.v1#/schemaversion",
+      "kafka inventory.reserved.v1#/schemaversion",
+      "kafka order.confirmed.v1#/schemaversion",
+      "kafka payment.charge.requested.v1#/schemaversion",
+      "kafka payment.charged.v1#/schemaversion",
+      "kafka payment.declined.v1#/schemaversion",
+      "kafka payment.refund.requested.v1#/schemaversion",
+      "kafka payment.refunded.v1#/schemaversion"
+    ],
+    "tests": [
+      "inventory-service contractvalidationtest",
+      "inventory-service inventoryintegrationtest",
+      "order-service contractvalidationtest",
+      "payment-service paymentcontracttest",
+      "payment-service paymentintegrationtest",
+      "shipment-service asyncapicontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 20,
+    "contract_matched": 18
+  },
+  "raw": {
+    "elapsed_seconds": 103.5,
+    "tokens_consumed": 208608
+  },
+  "answer_sha256": "afc3066f978c11e18887a3de936a8fa79bbc869246febfc1f333f68c94818d98"
+}

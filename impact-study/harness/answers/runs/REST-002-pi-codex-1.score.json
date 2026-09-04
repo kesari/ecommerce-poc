@@ -1,0 +1,131 @@
+{
+  "change_id": "REST-002",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.2778,
+    "test_recall": 0.3333,
+    "cross_repo_recall": 0.619,
+    "contract_recall": 1.0,
+    "precision": 0.3333,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.25,
+    "composite": 0.6542
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 5,
+      "reported": 3,
+      "matched": 3,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 9,
+      "matched": 1,
+      "false_positives": 8,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 3,
+      "contract_consumer": 2,
+      "test_suite": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "order-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "repository",
+      "key": "payment-service",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.basket.application.basketpricing",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.pricebreakdown",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.payment.domain.payment",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service orderpricingtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.basket.application.basketservice",
+      "com.poc.basket.application.port.catalogport",
+      "com.poc.basket.infrastructure.catalog.catalogclient",
+      "com.poc.basket.infrastructure.catalog.catalogproductresponse",
+      "com.poc.catalog.api.dto.priceupdaterequest",
+      "com.poc.catalog.api.dto.productresponse",
+      "com.poc.catalog.api.productcontroller",
+      "com.poc.catalog.application.catalogservice"
+    ],
+    "contracts": [
+      "openapi openapi:catalog.yaml#/components/schemas/priceupdaterequest",
+      "openapi openapi:catalog.yaml#/components/schemas/productresponse",
+      "rest put /api/v1/products/{productid}/price"
+    ],
+    "tests": [
+      "basket-service basketintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 12,
+    "contract_matched": 5,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 57.1,
+    "tokens_consumed": 142233
+  },
+  "answer_sha256": "d7cae468bc2e276b937ae353bfe1eedc36e281a5553546429532e015152b6d06"
+}

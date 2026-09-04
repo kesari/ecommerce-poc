@@ -1,0 +1,117 @@
+{
+  "change_id": "REST-003",
+  "contestant": "graphify",
+  "metrics": {
+    "symbol_recall": 0.4286,
+    "test_recall": 0.3333,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.35,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.865
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 6,
+      "matched": 2,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 3,
+      "matched": 1,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 7,
+      "matched": 1,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1,
+      "contract_consumer": 1,
+      "test_suite": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.basket.domain.model.basket",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.quote",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-bff"
+    ],
+    "symbols": [
+      "com.poc.order.api.dto.quoteresponse",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.orderservice",
+      "com.poc.order.application.port.basketport"
+    ],
+    "contracts": [
+      "openapi openapi:basket.yaml#/components/schemas/basketresponse",
+      "openapi openapi:order-service.yaml#/components/schemas/quoteresponse"
+    ],
+    "tests": [
+      "basket-service basketapimockedtest",
+      "basket-service openapicontracttest",
+      "commerce-bff bffintegrationtest",
+      "commerce-web app.test.tsx",
+      "order-service openapicontracttest",
+      "order-service orderapimockedtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 15,
+    "contract_matched": 5
+  },
+  "raw": {
+    "elapsed_seconds": 76.1,
+    "tokens_consumed": 171901
+  },
+  "answer_sha256": "b9e880ad9d1a1c8c76e314127b72c13f686c5530fafdb873780806aa1202d839"
+}

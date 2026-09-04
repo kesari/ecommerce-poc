@@ -1,0 +1,207 @@
+{
+  "change_id": "REST-002",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "catalog-service",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/openapi/catalog.yaml:130 defines ProductResponse.priceMinor in the catalog REST contract."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:61 reads response.priceMinor from GET /api/v1/products/{productId}."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "contract_matched",
+        "evidence": "commerce-web/src/api/types.ts:22 binds Product.priceMinor from the BFF product payload used by the UI."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.catalog.api.dto.ProductResponse",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:5 declares long priceMinor on the REST DTO."
+      },
+      {
+        "fqn": "com.poc.catalog.api.dto.PriceUpdateRequest",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java:5 declares long priceMinor for PUT price updates."
+      },
+      {
+        "fqn": "com.poc.catalog.api.ProductController",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/ProductController.java:67 calls request.priceMinor() in updatePrice."
+      },
+      {
+        "fqn": "com.poc.catalog.application.CatalogService",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java:64 updates and returns product priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.domain.model.Product",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java:11 stores priceMinor and withPrice(long)."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java:5 declares long priceMinor from catalog JSON."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogClient",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:61 maps response.priceMinor() into ProductInfo."
+      },
+      {
+        "fqn": "com.poc.basket.application.port.CatalogPort",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java:8 defines ProductInfo with long priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketService",
+        "repo": "basket-service",
+        "evidence_tier": "inferred",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketService.java:130 copies product.priceMinor() into BasketItem."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "consumer_repos": [
+          "basket-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "catalog-service/openapi/catalog.yaml:52 returns ProductResponse, consumed by basket client and BFF-backed web types."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/ProductResponse",
+        "consumer_repos": [
+          "basket-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "catalog-service/openapi/catalog.yaml:161 defines ProductResponse.priceMinor used by basket and web consumers."
+      },
+      {
+        "type": "rest",
+        "identifier": "PUT /api/v1/products/{productId}/price",
+        "consumer_repos": [],
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/openapi/catalog.yaml:84 defines the changed provider endpoint with PriceUpdateRequest.priceMinor."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/PriceUpdateRequest",
+        "consumer_repos": [],
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/openapi/catalog.yaml:127 defines priceMinor on the catalog price update request."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "catalog-service",
+        "suite": "CatalogComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java:112 posts {\"priceMinor\":67500} and asserts $.priceMinor."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:128 stubs catalog JSON with priceMinor for add-item flow."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 1,
+  "run_started_at": "2026-09-03T17:10:40.792Z",
+  "elapsed_seconds": 57.1,
+  "tool_calls": 35,
+  "index_sha256": "none",
+  "tokens_consumed": 142233,
+  "cost_usd": 0.14023750000000001,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "634c663bb2a1f9848fe4f00699f26f44399d3a7a7952c94db6573635a35fe265",
+  "contestant_config_sha256": "71c885b48816acd172dcee5c5ebfe2f152ef6c3b11195a5e51e08d6b8979fbd5",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

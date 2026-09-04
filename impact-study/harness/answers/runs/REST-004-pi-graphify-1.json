@@ -1,0 +1,187 @@
+{
+  "change_id": "REST-004",
+  "contestant": "graphify",
+  "findings": {
+    "repositories": [
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java:3 defines discountPercent on Coupon."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:21 binds BasketResponse from basket-service GET /api/v1/basket."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.basket.domain.model.Coupon",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java:3 declares Coupon(String code, int discountPercent, boolean active)."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.persistence.row.CouponRow",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java:3 declares int discountPercent."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.persistence.repository.MyBatisBasketRepository",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/persistence/repository/MyBatisBasketRepository.java:95 maps row.discountPercent() into Coupon."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketPricing",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketPricing.java:35 computes discount from coupon.discountPercent()."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.BasketClient",
+        "repo": "order-service",
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:21 consumes basket-service BasketResponse only via discountMinor."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:54 prices quotes from basket.discountMinor()."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "db",
+        "identifier": "basket-service.coupons.discount_percent",
+        "consumer_repos": [],
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/main/resources/db/migration/V1__basket_schema.sql:3 creates coupons.discount_percent."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:basket.yaml#/components/schemas/BasketResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "basket-service/openapi/basket.yaml:226 includes discountMinor; order-service BasketClient.java:21 binds that response."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:35 calls /api/v1/basket and reads discountMinor."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:181 seeds new Coupon(\"SAVE10\", 10, true)."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketRepositoryComponentTest",
+        "evidence_tier": "extracted",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketRepositoryComponentTest.java:130 asserts coupon.discountPercent().isEqualTo(20)."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:100 asserts quote price uses basket discountMinor."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderPricingTest",
+        "evidence_tier": "extracted",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderPricingTest.java:28 asserts composed discountMinor math."
+      }
+    ]
+  },
+  "runner": "pi-graphify",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T01:56:55.821Z",
+  "elapsed_seconds": 87.3,
+  "tool_calls": 52,
+  "index_sha256": "032b23ecec7adb0da25d89dbcb5f47ca092c2804689d5b743075c77bbc347149",
+  "tokens_consumed": 229529,
+  "cost_usd": 0.17780350000000003,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "c39d883f96a089b676c38293b0d7d90eb3f7bab6ea26ebe2c73aa1db153e443e",
+  "contestant_config_sha256": "67ca97fc4f4d6d71053382b6bd9bf7b46e4450065f8bc693cddf6f3f340ab3ab",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}
