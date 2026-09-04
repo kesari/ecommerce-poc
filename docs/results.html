@@ -11,12 +11,12 @@
   <header>
     <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="results.html">Results</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
     <h1>Results</h1>
-    <p class="lead">We gave five AI assistants the same four problems. Each assistant searched the same code with the same AI model — the only difference was its reference material. Here is what happened, in plain language.</p>
+    <p class="lead">We gave five AI assistants the same problems. Each assistant searched the same code with the same AI model — the only difference was the extra files each one could read. Here is what happened.</p>
   </header>
   <main>
     <section class="panel">
       <h2>The five assistants</h2>
-      <p>All five are the same AI model (GPT-5.4) searching the same code with the same read-only file tools. The only difference is the reference material each one gets.</p>
+      <p>All five are the same AI model (GPT-5.4) searching the same code with the same read-only file tools. The only difference is the extra files each one gets.</p>
       <table>
         <thead><tr><th>Assistant</th><th>Harness name</th><th>What extra help it gets</th></tr></thead>
         <tbody>
@@ -27,7 +27,7 @@
           <tr><td><strong>Graphify</strong></td><td><code>pi-graphify</code></td><td>A lightweight list of which services are wired to which (from configuration files) and which database tables each owns — broad context, cheap to build.</td></tr>
         </tbody>
       </table>
-      <p>Every run is blind: each assistant works in an isolated copy of the code and never sees the frozen correct answer. Full run commands live on the <a href="running-locally.html">Run it</a> page.</p>
+      <p>Every run is blind: each assistant works in an isolated copy of the code and never sees the correct answer, which we wrote down before testing. Full run commands live on the <a href="running-locally.html">Run it</a> page.</p>
     </section>
     <section class="panel">
       <h2>Test 1: the renamed address field</h2>
@@ -38,8 +38,8 @@
           <tr><td><strong>Agent-only</strong> (3 tries, score 0.81)</td><td>Found every affected downstream service but missed the account service where the change happened — in 2 of 3 tries, including a miss that breaks production.</td></tr>
           <tr><td><strong>SCIP</strong> (3 tries, score 0.88)</td><td>Found everything except one end-to-end test. Never missed anything that breaks production.</td></tr>
           <tr><td><strong>Gortex</strong> (3 tries, score 0.67)</td><td>Found the affected downstream services but missed the account service every single time. Gortex points downstream, away from where the change happened.</td></tr>
-          <tr><td><strong>Combined</strong> (1 try, score 0.71)</td><td>Same blind spot as the Gortex-only run. More reference material did not stack — on this run it diluted focus instead.</td></tr>
-          <tr><td><strong>Graphify</strong> (1 try, score 0.85)</td><td>Full house on systems and code, zero production-breaking misses. The lightweight list guided without distracting.</td></tr>
+          <tr><td><strong>Combined</strong> (1 try, score 0.71)</td><td>Same blind spot as the Gortex-only run. More extra files did not help — on this run it diluted focus instead.</td></tr>
+          <tr><td><strong>Graphify</strong> (1 try, score 0.85)</td><td>Found every affected service and code item, with nothing missed that breaks production. The lightweight list guided without distracting.</td></tr>
         </tbody>
       </table>
     </section>
@@ -108,7 +108,7 @@
       <table>
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
-          <tr><td><strong>Agent-only</strong> (score 0.83)</td><td>Right service and contract, but ten extra code guesses and a missed repository-critical symbol.</td></tr>
+          <tr><td><strong>Agent-only</strong> (score 0.83)</td><td>Right service and contract, but ten extra code guesses and a missed symbol that breaks production.</td></tr>
           <tr><td><strong>SCIP</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
           <tr><td><strong>Gortex</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
           <tr><td><strong>Graphify</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — Graphify's index shows tables without service-qualified contract names.</td></tr>
@@ -133,7 +133,7 @@
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.65)</td><td>Joint best. Found catalog, basket, and storefront; missed order, payment, and the pricing code.</td></tr>
           <tr><td><strong>SCIP</strong> (score 0.64)</td><td>Same misses with the most searching (53 file checks). The index lists the symbols; the model still skipped them.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.61)</td><td>Same misses, plus zero symbol recall. Topology edges don't carry pricing semantics.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.61)</td><td>Same misses, plus zero symbol recall. A service map says who talks to whom — it says nothing about what a number means.</td></tr>
           <tr><td><strong>Graphify</strong> (score 0.61)</td><td>Same misses. Wiring knows who calls whom, not what a number means.</td></tr>
         </tbody>
       </table>
@@ -241,7 +241,7 @@
       <table>
         <thead><tr><th>Test</th><th>Graphify score</th><th>Result</th><th>Effort</th></tr></thead>
         <tbody>
-          <tr><td><strong>New expiry reason</strong> (0.63)</td><td>0.63</td><td>Missed the storefront; no production-breaking miss. An addition, not a rename — correctly treated as smaller blast radius.</td><td>22 checks, 70k tokens</td></tr>
+          <tr><td><strong>New expiry reason</strong> (0.63)</td><td>0.63</td><td>Missed the storefront; no production-breaking miss. An addition, not a rename — correctly treated as a smaller break.</td><td>22 checks, 70k tokens</td></tr>
           <tr><td><strong>Renamed payment outcome</strong> (0.69)</td><td>0.69</td><td>Missed the payment event contract that carries the renamed value — one production-breaking miss.</td><td>27 checks, 108k tokens</td></tr>
           <tr><td><strong>Required envelope version</strong> (0.69)</td><td>0.69</td><td>Missed the event contract and one consumer test, no production-breaking miss. Topic names are identical — only meaning changed.</td></tr>
         </tbody>
@@ -276,7 +276,7 @@
         </tbody>
       </table>
       <p>One caution: only the address rename and the topic rename have been repeated three times; the rest are single runs. Repeat each test twice more before spending budget on the strength of these numbers.</p>
-      <p>All fifteen frozen scenarios now have at least Graphify coverage, and the trio has run nine of them. The remaining gap is trio replication on the six newest event, internal, and database tests.</p>
+      <p>All fifteen locked-in scenarios now have at least Graphify coverage, and the trio has run nine of them. The remaining gap is trio replication on the six newest event, internal, and database tests.</p>
     </section>
   </main>
   <footer><a href="index.html">Back to the overview</a></footer>
