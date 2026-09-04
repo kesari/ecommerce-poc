@@ -1,0 +1,12 @@
+{
+  "product": "graphify",
+  "command": "graphify path AddressResponse DeliveryEstimator --graph graphify/merged-graph.json",
+  "native_output_sha256": "ae7832352de267016508b79bc0ce2345c02183fcd516d09e0e8fabd33ab1f6bf",
+  "native_output_bytes": 134,
+  "observations": {
+    "source_match": "ambiguous",
+    "target_match": "ambiguous",
+    "directed_path": false
+  },
+  "interpretation": "Graphify reports no directed path from AddressResponse to DeliveryEstimator in the effective merged graph."
+}

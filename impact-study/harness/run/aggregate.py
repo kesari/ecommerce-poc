@@ -14,6 +14,7 @@ from pathlib import Path
 
 RUNS = Path(__file__).resolve().parent.parent / "answers" / "runs"
 SCORING = Path(__file__).resolve().parent.parent / "scoring"
+HARNESS = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(SCORING))
 import score
 
@@ -51,9 +52,41 @@ def collect(runs_dir):
             if actual_sha != expected_sha:
                 rejected.append({"report": report_file.name, "reason": "stale score: answer hash mismatch"})
                 continue
+        integrity_targets = {
+            "ground_truth_sha256": HARNESS / "records" / f"{report['change_id']}.json",
+            "scorer_sha256": HARNESS / "scoring" / "score.py",
+            "answer_schema_sha256": HARNESS / "schema" / "contestant-answer.schema.json",
+        }
+        integrity_failed = False
+        for field, target in integrity_targets.items():
+            expected = report.get(field)
+            if expected is None:
+                if str(answer_doc.get("runner", "")).endswith("-real"):
+                    rejected.append({"report": report_file.name, "reason": f"missing integrity hash: {field}"})
+                    integrity_failed = True
+                    break
+                continue
+            if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != expected:
+                rejected.append({"report": report_file.name, "reason": f"stale score: {field} mismatch"})
+                integrity_failed = True
+                break
+        if integrity_failed:
+            continue
         runner = report.get("contestant", "unknown")
         runner = answer_doc.get("runner", runner)
-        cells[(report["change_id"], runner)].append(report)
+        cohort_fields = {
+            "prompt_sha256": answer_doc.get("prompt_sha256"),
+            "contestant_config_sha256": answer_doc.get("contestant_config_sha256"),
+            "estate_sha256": answer_doc.get("estate_sha256"),
+            "index_sha256": answer_doc.get("index_sha256"),
+            "harness_sha256": answer_doc.get("harness_sha256"),
+            "model": answer_doc.get("model"),
+            "model_digest": answer_doc.get("model_digest"),
+            "pi_version": answer_doc.get("pi_version"),
+            **{field: report.get(field) for field in integrity_targets},
+        }
+        cohort = hashlib.sha256(json.dumps(cohort_fields, sort_keys=True).encode()).hexdigest()
+        cells[(report["change_id"], runner, cohort)].append(report)
     for stub_file in sorted(Path(runs_dir).glob("*.rejected.json")):
         try:
             stub = json.loads(stub_file.read_text())
@@ -67,6 +100,27 @@ def collect(runs_dir):
             "runner": stub.get("runner"),
         })
     return cells, rejected
+
+
+def outcome_summary(cells, rejected):
+    scored = defaultdict(int)
+    failed = defaultdict(int)
+    for (_change_id, runner, _cohort), reports in cells.items():
+        scored[runner] += len(reports)
+    for item in rejected:
+        runner = item.get("runner")
+        if runner:
+            failed[runner] += 1
+    result = {}
+    for runner in sorted(set(scored) | set(failed)):
+        total = scored[runner] + failed[runner]
+        result[runner] = {
+            "scored": scored[runner],
+            "rejected": failed[runner],
+            "attempts": total,
+            "success_rate": round(scored[runner] / total, 4) if total else 0.0,
+        }
+    return result
 
 
 def summarize(reports):
@@ -121,6 +175,14 @@ def render_scorecard(scorecard):
 
     for entry in scorecard["rejected"]:
         lines.append(f"rejected {entry['report']}: {entry['reason']}")
+    if scorecard.get("outcomes"):
+        lines.append("")
+        lines.append("run outcomes")
+        for runner, outcome in scorecard["outcomes"].items():
+            lines.append(
+                f"  {runner}  {outcome['scored']}/{outcome['attempts']} scored; "
+                f"{outcome['rejected']} rejected; success {outcome['success_rate']:.0%}"
+            )
     return "\n".join(lines).rstrip()
 
 
@@ -174,17 +236,27 @@ def main():
         reason = f"; rejected {len(rejected)} invalid report(s)" if rejected else ""
         raise SystemExit(f"no valid .score.json files under {args.runs_dir}{reason}")
 
-    scorecard = {"cells": {}, "by_contestant": {}, "rejected": rejected}
+    scorecard = {"cells": {}, "by_contestant": {}, "rejected": rejected, "outcomes": outcome_summary(cells, rejected)}
     per_contestant = defaultdict(list)
-    for (change_id, runner), reports in sorted(cells.items()):
+    cohort_counts = defaultdict(int)
+    for change_id, runner, _cohort in cells:
+        cohort_counts[(change_id, runner)] += 1
+    for (change_id, runner, cohort), reports in sorted(cells.items()):
         summary = summarize(reports)
-        scorecard["cells"].setdefault(change_id, {})[runner] = summary
-        per_contestant[runner].extend(reports)
+        summary["cohort_sha256"] = cohort
+        display_runner = runner if cohort_counts[(change_id, runner)] == 1 else f"{runner}@{cohort[:8]}"
+        scorecard["cells"].setdefault(change_id, {})[display_runner] = summary
+        per_contestant[(runner, cohort)].extend(reports)
 
-    for runner, reports in sorted(per_contestant.items()):
+    runner_cohorts = defaultdict(int)
+    for runner, _cohort in per_contestant:
+        runner_cohorts[runner] += 1
+    for (runner, cohort), reports in sorted(per_contestant.items()):
         summary = summarize(reports)
         summary["records"] = len({r["change_id"] for r in reports})
-        scorecard["by_contestant"][runner] = summary
+        summary["cohort_sha256"] = cohort
+        display_runner = runner if runner_cohorts[runner] == 1 else f"{runner}@{cohort[:8]}"
+        scorecard["by_contestant"][display_runner] = summary
 
     document = json.dumps(scorecard, indent=2)
     if args.output:

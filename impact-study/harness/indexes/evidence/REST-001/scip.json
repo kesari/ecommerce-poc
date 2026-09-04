@@ -1,0 +1,14 @@
+{
+  "product": "scip-java+scip-search",
+  "command": "scip-search references --index scip/estate.scip --name AddressResponse --json",
+  "native_output_sha256": "c19012067aa72ded1f099f752fd0a8bb176c016880d8ea46d1e8328f6540450e",
+  "native_output_bytes": 8655,
+  "observations": {
+    "provider_symbol": "semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#",
+    "provider_references": 7,
+    "provider_reference_repositories": ["account-service"],
+    "same_name_consumer_type_found_as_separate_symbol": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java",
+    "cross_root_references_to_provider_symbol": 0
+  },
+  "interpretation": "SCIP directly proves the provider references, but the account-to-order bridge is agent inference because the Maven modules emit different symbols."
+}

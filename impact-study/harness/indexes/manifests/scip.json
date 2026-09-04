@@ -1,0 +1,82 @@
+{
+  "artifacts": [
+    {
+      "bytes": 456975,
+      "name": "account-service",
+      "path": "scip/account-service/index.scip",
+      "sha256": "52d5e0aa7946811fec0bcc7f5dc54f6c4391f917d77a19d934b553559ced81ce"
+    },
+    {
+      "bytes": 660199,
+      "name": "basket-service",
+      "path": "scip/basket-service/index.scip",
+      "sha256": "7e5bb28081b735af7656b36ead3e7c78b9c706fef1b340b7a7d2ca315218b0ef"
+    },
+    {
+      "bytes": 233445,
+      "name": "catalog-service",
+      "path": "scip/catalog-service/index.scip",
+      "sha256": "0d7b76b1c9743530d186fcc9ce822621c1c89325a3fc6c39761bfac1f1e7314d"
+    },
+    {
+      "bytes": 337614,
+      "name": "commerce-bff",
+      "path": "scip/commerce-bff/index.scip",
+      "sha256": "a1fc11aabc457ab7ba96e12c9c7505da205c3751e159bdcbbe880eeb43ec0d7d"
+    },
+    {
+      "bytes": 381732,
+      "name": "inventory-service",
+      "path": "scip/inventory-service/index.scip",
+      "sha256": "d41b371db764eb34ee02827b37ab2e48a0dd0017e528562ececae65400f4ab3f"
+    },
+    {
+      "bytes": 904291,
+      "name": "order-service",
+      "path": "scip/order-service/index.scip",
+      "sha256": "50ee5c318317cb35509c9943b1fcb44e671fc94e38da252c9b856dcccb0a77a6"
+    },
+    {
+      "bytes": 343015,
+      "name": "payment-service",
+      "path": "scip/payment-service/index.scip",
+      "sha256": "32e51df4d4d9bde869d51141c56ab0bc2a6230f541701a0f1fb2ed798ea11e18"
+    },
+    {
+      "bytes": 473122,
+      "name": "shipment-service",
+      "path": "scip/shipment-service/index.scip",
+      "sha256": "78eb7ed73238a9c3a33f26448f6e8f5414d84b5dbfe6097aebed7af6b0fdbad4"
+    },
+    {
+      "bytes": 3794206,
+      "name": "estate",
+      "path": "scip/estate.scip",
+      "sha256": "0dda390e3500812dfd5b3315214c17ee21d76238329cba62bc352963613b0196"
+    }
+  ],
+  "metadata": {
+    "aggregate_project_root": "ephemeral pinned-revision mirror",
+    "built_at": "2026-09-04T07:26:41.649476+00:00",
+    "built_with": "Temurin 21.0.10+7 via SCIP_JAVA_HOME enforcement",
+    "excluded_repositories": [
+      "commerce-web",
+      "commerce-platform"
+    ]
+  },
+  "pins_sha256": "41de6a1bb2b837afef3a64b762daae1daf04693337ed4b5744d6390b2e5eb049",
+  "product": "scip-java+scip-search",
+  "repository_revisions": {
+    "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+    "basket-service": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+    "catalog-service": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+    "commerce-bff": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+    "commerce-platform": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+    "commerce-web": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+    "inventory-service": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+    "order-service": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+    "payment-service": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+    "shipment-service": "a7a8a067559b5e62a6c53699939cf9ec31686f25"
+  },
+  "schema_version": 1
+}

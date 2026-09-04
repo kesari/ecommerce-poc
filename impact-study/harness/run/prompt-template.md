@@ -50,6 +50,11 @@ Classify the evidence for every finding:
 - `inferred` — reasoned from surrounding context
 - `hypothesis` — a guess worth investigating
 
+When a real product query tool is available, also set `attribution` on each
+finding: `product_direct` only when the product output contains the fact,
+`agent_inferred` when you bridge or reason beyond that output, and `file_search`
+when the read/grep/find/ls tools establish it.
+
 ## Identifier convention
 
 Use these canonical forms so answers can be matched. Matching is
@@ -79,11 +84,11 @@ Reply with ONE JSON object and nothing else. No prose, no markdown fence.
   "change_id": "{{CHANGE_ID}}",
   "contestant": "agent-only",
   "findings": {
-    "repositories": [ {"name": "...", "evidence_tier": "...", "evidence": "..."} ],
-    "symbols":      [ {"fqn": "...", "repo": "...", "evidence_tier": "...", "evidence": "..."} ],
+    "repositories": [ {"name": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ],
+    "symbols":      [ {"fqn": "...", "repo": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ],
     "contracts":    [ {"type": "rest|kafka|grpc|openapi|db", "identifier": "...",
-                       "consumer_repos": ["..."], "evidence_tier": "...", "evidence": "..."} ],
-    "tests":        [ {"repo": "...", "suite": "...", "evidence_tier": "...", "evidence": "..."} ]
+                       "consumer_repos": ["..."], "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ],
+    "tests":        [ {"repo": "...", "suite": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ]
   }
 }
 ```

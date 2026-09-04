@@ -1,0 +1,15 @@
+{
+  "product": "gortex",
+  "command": "gortex call api_impact --arg route=/api/v1/addresses --arg repo=account-service --format json",
+  "native_output_sha256": "e5c740862594c4acc13d3e77edc9f708f75608f0cb99b7940452d3eadef5d4e8",
+  "native_output_bytes": 506,
+  "observations": {
+    "route": "http::ANY::/api/v1/addresses",
+    "direct_consumers": 0,
+    "affected_callers": 0,
+    "affected_flows": 0,
+    "risk_level": "LOW",
+    "response_shape": "not extracted"
+  },
+  "interpretation": "The real product does not bridge this account route through the BFF path rewrite; this is negative product evidence, not a setup claim."
+}

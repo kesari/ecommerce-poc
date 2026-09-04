@@ -33,11 +33,11 @@ node run.ts --record all --runs 3   # every contestant in contestants.json
 python3 aggregate.py                # the scorecard again, without re-running
 ```
 
-Runs below both floors — fewer than `--min-tool-calls` guarded tool calls
-(default 10) and fewer than `--min-tokens` tokens consumed (default 8000) —
-are rejected as thin runs: the answer is kept for diagnosis with a
-`.rejected.json` stub but never scored. Both floors must fail together, so an
-efficient index-assisted run with few calls but deep reads still counts.
+Runs below either floor — fewer than `--min-tool-calls` guarded tool calls
+(default 10) or fewer than `--min-tokens` tokens consumed (default 8000) — are
+rejected as thin runs. The answer is kept for diagnosis with a `.rejected.json`
+stub but never scored. This prevents a zero-search answer from passing merely
+because it was verbose.
 
 Scoring is automatic. Each run prints its own score breakdown, and the corpus
 scorecard prints once at the end — `aggregate.py` is only needed to re-read it
@@ -71,20 +71,25 @@ the [pi coding agent](https://pi.dev) SDK:
                "model": "claude-sonnet-4-5" }
 ```
 
-Index-backed contestants add an `indexes` array:
+The active product-backed contestants add a `product` entry:
 
 ```json
-"pi-scip":   { "label": "scip",   "provider": "ollama",
-               "model": "qwen3-coder:30b-a3b-q8_0", "indexes": ["symbol"] },
-"pi-gortex": { "label": "gortex", "provider": "ollama",
-               "model": "qwen3-coder:30b-a3b-q8_0", "indexes": ["contract"] }
+"pi-codex-scip-real": { "label": "scip", "provider": "openai-codex",
+                         "model": "gpt-5.4", "product": {"kind": "scip"} },
+"pi-codex-gortex-real": { "label": "gortex", "provider": "openai-codex",
+                           "model": "gpt-5.4", "product": {"kind": "gortex"} }
 ```
 
-Indexes are built at run time from the isolated estate copy (`run/indexes.ts`):
-a SCIP-like Java symbol table and a Gortex-like REST/Kafka contract graph with
-publish/subscribe attribution from AsyncAPI channel operations. Same model,
-same read-only tools, same thinking policy — only the precomputed topology
-varies, so the scorecard measures its marginal value.
+The real integrations query pinned open-source scip-java plus scip-search,
+Gortex, and Graphify artifacts described in `indexes/README.md`. Before a model
+can run, the harness verifies repository revisions, dirty state, product binary
+or package identity, artifact hashes, and Gortex freshness. Each answer carries
+a `product_provenance` receipt. Product-backed findings also distinguish
+`product_direct`, `agent_inferred`, and `file_search` attribution.
+
+`run/indexes.ts` contains the old harness-built simulations. They are disabled
+by default and their contestant descriptions say `LEGACY SIMULATION`. Historical
+scores from those indexes must not be presented as product benchmarks.
 
 Everything else is harness policy and cannot vary: identical prompt apart from
 the index pointer section, read-only tools, no thinking, no local PI
