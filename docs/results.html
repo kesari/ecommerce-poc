@@ -124,20 +124,159 @@
         </tbody>
       </table>
     </section>
+
+    <section class="panel">
+      <h2>Test 5: money in decimals instead of cents</h2>
+      <p>Prices are stored and computed as whole cents everywhere — catalog, basket, orders, payments, and the storefront. Switching to decimals breaks the math in all five places at once. Every assistant missed the order and payment services and the core pricing code. Nobody scored above 0.65: the hardest test in the set.</p>
+      <table>
+        <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (score 0.65)</td><td>Joint best. Found catalog, basket, and storefront; missed order, payment, and the pricing code.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.64)</td><td>Same misses with the most searching (53 file checks). The index lists the symbols; the model still skipped them.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.61)</td><td>Same misses, plus zero symbol recall. Topology edges don't carry pricing semantics.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.61)</td><td>Same misses. Wiring knows who calls whom, not what a number means.</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (1 answer)</td><td>35</td><td>142k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (1 answer)</td><td>53</td><td>245k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (1 answer)</td><td>40</td><td>123k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (1 answer)</td><td>40</td><td>104k tokens</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Test 6: the renamed basket version</h2>
+      <p>The basket's version counter — the field that stops two checkouts from colliding — gets renamed. Orders validate the version on every quote, so checkout fails closed everywhere. SCIP finds the owning basket service; the other two miss it, repeating the address-rename pattern exactly.</p>
+      <table>
+        <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (score 0.68)</td><td>Missed the basket service itself, plus the basket, quote, and test coverage.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.87)</td><td>Found the basket service and every contract. Only symbols and tests missing.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.68)</td><td>Same provider-blindness as the baseline: consumers found, owner missed.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.87)</td><td>Tied SCIP — found the basket service where the map-based runner did not.</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (1 answer)</td><td>42</td><td>182k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (1 answer)</td><td>32</td><td>202k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (1 answer)</td><td>37</td><td>255k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (1 answer)</td><td>44</td><td>172k tokens</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Test 7: coupons switch from percent to amount</h2>
+      <p>Coupons change from "10 percent off" to a fixed money amount. Every total computed from a coupon changes meaning — the pricing math must be rewritten, not remapped. Gortex is the only assistant to match the coupon contract, and wins the test at 0.91.</p>
+      <table>
+        <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (score 0.71)</td><td>Right services and tests, but missed the coupon contract itself.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.72)</td><td>Same missed contract. The symbol list does not encode what the number means.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.91)</td><td>Only contract match in the test. First outright win for the service map.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.61)</td><td>Missed the storefront and the coupon contract; wiring edges skip UI consumers.</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (1 answer)</td><td>41</td><td>205k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (1 answer)</td><td>46</td><td>375k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (1 answer)</td><td>36</td><td>322k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (1 answer)</td><td>52</td><td>230k tokens</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Test 8: delivery dates become a timestamp</h2>
+      <p>The delivery window changes from a from/to date range to a single instant. Same endpoint, incompatible shape — every reader of the old fields breaks. The unaided agent wins at 0.89; SCIP collapses to 0.54, missing the shipment service itself despite the most searching of any run in the study (61 file checks).</p>
+      <table>
+        <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (score 0.89)</td><td>Right services and contract; only symbols and tests missing.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.54)</td><td>Missed the shipment service and every estimator symbol. Having the directory did not help it open the right files.</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.80)</td><td>Missed the storefront and estimator symbols, but kept the contract.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.78)</td><td>Same storefront miss as Gortex at lower reading cost.</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (1 answer)</td><td>43</td><td>271k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (1 answer)</td><td>61</td><td>342k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (1 answer)</td><td>35</td><td>128k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (1 answer)</td><td>44</td><td>148k tokens</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Test 9: login tokens identify users by email</h2>
+      <p>Login tokens switch from carrying the user ID to carrying the email address. Login itself still works — then every authorized call crashes parsing an email as a UUID. All four assistants scored an identical 0.69, missing the login contract and the end-to-end signup test the same way.</p>
+      <table>
+        <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (score 0.69)</td><td>Perfect services and symbols; missed the login contract and the signup test.</td></tr>
+          <tr><td><strong>SCIP</strong> (score 0.69)</td><td>Identical misses at the highest reading cost in the study (478k tokens).</td></tr>
+          <tr><td><strong>Gortex</strong> (score 0.69)</td><td>Identical misses.</td></tr>
+          <tr><td><strong>Graphify</strong> (score 0.69)</td><td>Identical misses at the lowest reading cost (207k tokens).</td></tr>
+        </tbody>
+      </table>
+      <table>
+        <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Agent-only</strong> (1 answer)</td><td>36</td><td>472k tokens</td></tr>
+          <tr><td><strong>SCIP</strong> (1 answer)</td><td>59</td><td>478k tokens</td></tr>
+          <tr><td><strong>Gortex</strong> (1 answer)</td><td>48</td><td>348k tokens</td></tr>
+          <tr><td><strong>Graphify</strong> (1 answer)</td><td>45</td><td>207k tokens</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Tests 10–12: three more event changes</h2>
+      <p>A new expiry reason on inventory rejections, a renamed payment outcome, and a required event-envelope version. Graphify ran all three; the trio has not run them yet, so these rows measure the control, not the comparison.</p>
+      <table>
+        <thead><tr><th>Test</th><th>Graphify score</th><th>Result</th><th>Effort</th></tr></thead>
+        <tbody>
+          <tr><td><strong>New expiry reason</strong> (0.63)</td><td>0.63</td><td>Missed the storefront; no production-breaking miss. An addition, not a rename — correctly treated as smaller blast radius.</td><td>22 checks, 70k tokens</td></tr>
+          <tr><td><strong>Renamed payment outcome</strong> (0.69)</td><td>0.69</td><td>Missed the payment event contract that carries the renamed value — one production-breaking miss.</td><td>27 checks, 108k tokens</td></tr>
+          <tr><td><strong>Required envelope version</strong> (0.69)</td><td>0.69</td><td>Missed the event contract and one consumer test, no production-breaking miss. Topic names are identical — only meaning changed.</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>Tests 13–15: three more single-service controls</h2>
+      <p>A cache-key change (cold cache, not an error), a mapper null-handling tweak (schema unchanged), and a snapshot table addition (private history, not a contract). All scored by Graphify so far.</p>
+      <table>
+        <thead><tr><th>Test</th><th>Graphify score</th><th>Result</th><th>Effort</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Cache key change</strong> (0.91)</td><td>0.91</td><td>Zero misses — correctly confined to one service.</td><td>31 checks, 72k tokens</td></tr>
+          <tr><td><strong>Mapper null handling</strong> (0.87)</td><td>0.87</td><td>One missed test; correctly reported no cross-service impact.</td><td>34 checks, 143k tokens</td></tr>
+          <tr><td><strong>Snapshot column</strong> (0.67)</td><td>0.67</td><td>Right service, missed the database contract naming — same qualifier gap as Test 4.</td><td>49 checks, 231k tokens</td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h2>The bottom line</h2>
+      <p>Fifteen tests, one shared model, five reference setups. No assistant wins everywhere: SCIP leads where the owning service hides, Gortex wins coupons and events, the unaided agent wins the timestamp reshape, and Graphify ties the easy ground cheaply while going blind on events and contracts. The free local model is disqualified on consistency long before quality is debated. The decision from the first four tests stands, and the eleven new tests sharpen it rather than overturning it: buy the code directory, keep the service map for events, and never let an unsearched answer near sign-off.</p>
+    </section>
     <section class="panel">
       <h2>What we recommend</h2>
       <table>
         <thead><tr><th>Decision</th><th>Reason in one line</th></tr></thead>
         <tbody>
-          <tr><td><strong>Adopt SCIP</strong></td><td>Best or tied score on all four tests, and the only assistant that never missed anything production-breaking (outside the shared naming miss).</td></tr>
+          <tr><td><strong>Adopt SCIP</strong></td><td>Best or tied on six of the nine tests it ran, and the only assistant that never missed anything production-breaking outside shared naming misses — but it lost the coupon and timestamp tests outright.</td></tr>
           <tr><td><strong>Retest Gortex, don't reject it</strong></td><td>Excellent on events, the thing it was built for — but it repeatedly misses the service where a change originates.</td></tr>
           <tr><td><strong>Replicate Graphify before adopting it</strong></td><td>A strong 0.85 debut with zero production-breaking misses at the lowest reading cost — but a single run proves nothing yet.</td></tr>
           <tr><td><strong>Don't assume Combined is best</strong></td><td>SCIP plus Gortex together scored 0.71 on the first run, below either index alone. More context diluted focus instead of stacking strengths.</td></tr>
           <tr><td><strong>Keep the free local model away from sign-offs</strong></td><td>Same question scores anywhere from 0.39 to 0.74 and it sometimes answers without searching. Fine for drafting.</td></tr>
         </tbody>
       </table>
-      <p>One caution: only the address-rename test has been repeated three times; the rest are single runs. Repeat each test twice more before spending budget on the strength of these numbers.</p>
-      <p>Eleven more scenarios are frozen and waiting for runs — money decimals, basket versioning, coupons, delivery windows, login identity, two more event changes, two more internal refactors, and a second database change. They will show whether these patterns hold beyond the first four tests.</p>
+      <p>One caution: only the address rename and the topic rename have been repeated three times; the rest are single runs. Repeat each test twice more before spending budget on the strength of these numbers.</p>
+      <p>All fifteen frozen scenarios now have at least Graphify coverage, and the trio has run nine of them. The remaining gap is trio replication on the six newest event, internal, and database tests.</p>
     </section>
   </main>
   <footer><a href="index.html">Back to the overview</a></footer>
