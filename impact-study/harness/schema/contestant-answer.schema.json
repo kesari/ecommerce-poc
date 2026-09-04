@@ -88,6 +88,54 @@
       "minimum": 0,
       "description": "Guarded read-only tool calls made during the run. Stamped by the runner for the thin-run guard."
     },
+    "tool_calls_by_name": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Runner-stamped per-tool call counts with success/failure split. Distinguishes product-never-called from called-but-failed from called-and-answered."
+    },
+    "product_tool_calls": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "attempted": {"type": "integer", "minimum": 0},
+        "succeeded": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0}
+      },
+      "required": ["attempted", "succeeded", "failed"],
+      "description": "Runner-stamped summary over product-tool receipts. Null when the contestant has no product."
+    },
+    "product_tool_receipts": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "required": ["id", "tool", "operation", "success"],
+        "properties": {
+          "id": {"type": "string"},
+          "tool": {"type": "string"},
+          "operation": {"type": "string"},
+          "parameters": {"type": "object"},
+          "success": {"type": "boolean"},
+          "output_sha256": {"type": ["string", "null"]},
+          "duration_ms": {"type": "number"},
+          "error": {"type": ["string", "null"]}
+        }
+      },
+      "description": "Runner-generated receipt per product invocation. A product_direct finding must reference one of these IDs."
+    },
+    "product_assisted_eligible": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "True when a product contestant has at least one successful product call. False means keep the run for adoption-rate analysis but exclude it from product-assisted comparisons. Null for non-product contestants."
+    },
     "index_sha256": {
       "type": "string",
       "description": "SHA-256 over the precomputed index payloads served to this run, or 'none' for index-free contestants."
@@ -197,6 +245,10 @@
               "attribution": {
                 "type": "string",
                 "enum": ["product_direct", "agent_inferred", "file_search"]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
               }
             }
           }
@@ -232,6 +284,10 @@
               "attribution": {
                 "type": "string",
                 "enum": ["product_direct", "agent_inferred", "file_search"]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
               }
             }
           }
@@ -281,6 +337,10 @@
               "attribution": {
                 "type": "string",
                 "enum": ["product_direct", "agent_inferred", "file_search"]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
               }
             }
           }
@@ -317,6 +377,10 @@
               "attribution": {
                 "type": "string",
                 "enum": ["product_direct", "agent_inferred", "file_search"]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
               }
             }
           }

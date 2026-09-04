@@ -322,6 +322,56 @@ class ValidateTests(unittest.TestCase):
         self.assertIn("requires attribution", errors)
         self.assertIn("must be an object", errors)
 
+    def test_product_direct_without_receipt_is_rejected(self):
+        bad = answer()
+        bad["runner"] = "pi-codex-scip-real"
+        bad["product_provenance"] = {"mode": "real_product"}
+        bad["product_tool_receipts"] = []
+        bad["findings"]["repositories"].append(
+            {"name": "claimed-service", "attribution": "product_direct"})
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("receipt_id" in e for e in report["errors"]["bad.json"]))
+
+    def test_product_direct_with_unknown_receipt_id_is_rejected(self):
+        bad = answer()
+        bad["runner"] = "pi-codex-scip-real"
+        bad["product_provenance"] = {"mode": "real_product"}
+        bad["product_tool_receipts"] = [{"id": "r1", "tool": "scip_search",
+                                         "operation": "symbols", "success": True}]
+        bad["findings"]["repositories"].append(
+            {"name": "claimed-service", "attribution": "product_direct",
+             "receipt_id": "r999"})
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("receipt_id" in e for e in report["errors"]["bad.json"]))
+
+    def test_product_direct_with_matching_receipt_passes(self):
+        good = answer()
+        good["runner"] = "pi-codex-scip-real"
+        good["product_provenance"] = {
+            "mode": "real_product", "product": "scip-java+scip-search",
+            "version": "0.10.4+v0.2.0", "commit": "e476c4a",
+            "binary_sha256": "0" * 64, "artifact_sha256": "1" * 64,
+            "manifest_sha256": "2" * 64, "query_surface": ["symbols"],
+            "freshness": "verified", "adapter_version": "1.0.0",
+            "config_sha256": "3" * 64, "index_built_at": None,
+            "index_duration_seconds": None, "indexed_estate_sha256": None,
+        }
+        good["product_tool_receipts"] = [{"id": "r1", "tool": "scip_search",
+                                          "operation": "symbols", "success": True}]
+        good["product_tool_receipts"] = [{"id": "r1", "tool": "scip_search",
+                                          "operation": "symbols", "success": True}]
+        for items in good["findings"].values():
+            for item in items:
+                if isinstance(item, dict):
+                    item.setdefault("attribution", "agent_inferred")
+        good["findings"]["repositories"].append(
+            {"name": "claimed-service", "attribution": "product_direct",
+             "receipt_id": "r1"})
+        report = score.validate_files("answer", [str(self.write("good.json", good))])
+        self.assertTrue(report["valid"], report["errors"])
+
 
 if __name__ == "__main__":
     unittest.main()

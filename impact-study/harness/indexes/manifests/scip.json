@@ -4,67 +4,65 @@
       "bytes": 456975,
       "name": "account-service",
       "path": "scip/account-service/index.scip",
-      "sha256": "52d5e0aa7946811fec0bcc7f5dc54f6c4391f917d77a19d934b553559ced81ce"
+      "sha256": "43e6d0f4061e62c0a14d995b396323d156d11ea8e6aada74aac366a6875e913c"
     },
     {
       "bytes": 660199,
       "name": "basket-service",
       "path": "scip/basket-service/index.scip",
-      "sha256": "7e5bb28081b735af7656b36ead3e7c78b9c706fef1b340b7a7d2ca315218b0ef"
+      "sha256": "a5c380ebd46db0282bcde42a7495432bda63912ae694967eef78bc8b23e6542b"
     },
     {
       "bytes": 233445,
       "name": "catalog-service",
       "path": "scip/catalog-service/index.scip",
-      "sha256": "0d7b76b1c9743530d186fcc9ce822621c1c89325a3fc6c39761bfac1f1e7314d"
+      "sha256": "b3d5c0d861588a5664f745392905b8606c21b9ec3d355d89df78c07a9824ce3a"
     },
     {
       "bytes": 337614,
       "name": "commerce-bff",
       "path": "scip/commerce-bff/index.scip",
-      "sha256": "a1fc11aabc457ab7ba96e12c9c7505da205c3751e159bdcbbe880eeb43ec0d7d"
+      "sha256": "0e3e163da5adda2005bd4dbd4582b1cbe9e7adb2ae149a2b66569d0575a41807"
     },
     {
       "bytes": 381732,
       "name": "inventory-service",
       "path": "scip/inventory-service/index.scip",
-      "sha256": "d41b371db764eb34ee02827b37ab2e48a0dd0017e528562ececae65400f4ab3f"
+      "sha256": "fea5255c7efc17cdffdbda0ee13afeb08cda3c7d42478f9dcd8b4f9ac0c8c805"
     },
     {
       "bytes": 904291,
       "name": "order-service",
       "path": "scip/order-service/index.scip",
-      "sha256": "50ee5c318317cb35509c9943b1fcb44e671fc94e38da252c9b856dcccb0a77a6"
+      "sha256": "d430d3673f0e7bc9d1c369ac608c53ef1acdbff1e802ab070c9655a8c9aff2d4"
     },
     {
       "bytes": 343015,
       "name": "payment-service",
       "path": "scip/payment-service/index.scip",
-      "sha256": "32e51df4d4d9bde869d51141c56ab0bc2a6230f541701a0f1fb2ed798ea11e18"
+      "sha256": "d7b638689441e003fdc92365b8304fbfddb7c2ece13f42d3deab4b277bff228b"
     },
     {
       "bytes": 473122,
       "name": "shipment-service",
       "path": "scip/shipment-service/index.scip",
-      "sha256": "78eb7ed73238a9c3a33f26448f6e8f5414d84b5dbfe6097aebed7af6b0fdbad4"
+      "sha256": "ba1d065747628d84409ed2195ffab5dcc58a1ea0ed2ac63e3f694c30621a02c3"
     },
     {
       "bytes": 3794206,
       "name": "estate",
       "path": "scip/estate.scip",
-      "sha256": "0dda390e3500812dfd5b3315214c17ee21d76238329cba62bc352963613b0196"
+      "sha256": "952b0948131a0b3397b6cbf359ce574d352c52f452f0bcc605480559a2fdd82b"
     }
   ],
   "metadata": {
     "aggregate_project_root": "ephemeral pinned-revision mirror",
-    "built_at": "2026-09-04T07:26:41.649476+00:00",
-    "built_with": "Temurin 21.0.10+7 via SCIP_JAVA_HOME enforcement",
     "excluded_repositories": [
       "commerce-web",
       "commerce-platform"
     ]
   },
-  "pins_sha256": "41de6a1bb2b837afef3a64b762daae1daf04693337ed4b5744d6390b2e5eb049",
+  "pins_sha256": "a77b2fa1caef1d81b1aaacbdf3788915807aaf18f0496f916843f37473304c93",
   "product": "scip-java+scip-search",
   "repository_revisions": {
     "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",

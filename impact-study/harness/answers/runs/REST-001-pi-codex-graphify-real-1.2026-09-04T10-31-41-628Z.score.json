@@ -1,0 +1,111 @@
+{
+  "change_id": "REST-001",
+  "contestant": "graphify",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.6667,
+    "precision": 0.4444,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.85
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 13,
+      "matched": 4,
+      "false_positives": 9,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 7,
+      "matched": 2,
+      "false_positives": 5,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "rest post /api/v1/addresses",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.account.api.addresscontroller",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.domain.model.deliveryaddress",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener",
+      "commerce-web src/api/types.ts address",
+      "commerce-web src/api/types.ts addressinput",
+      "commerce-web src/pages/checkoutpage.tsx checkoutpage"
+    ],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "order-service orderapimockedtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 19,
+    "contract_matched": 6,
+    "inferred": 2
+  },
+  "raw": {
+    "elapsed_seconds": 82.1,
+    "tokens_consumed": 111815
+  },
+  "answer_sha256": "591ba69647741c04784b57e32a18d3ab79a2048154a777f964c90cf5d188751a",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "910e8d1c56116268d63eac4827a9063b798bc76746a7a81a52c9ee1ac1d80d92",
+  "answer_schema_sha256": "49220b505a8adc0804410600810362e782d5db7b33413aed8dad13609b31d84e"
+}

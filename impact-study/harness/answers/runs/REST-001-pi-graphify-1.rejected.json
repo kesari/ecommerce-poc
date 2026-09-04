@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-001",
+  "runner": "pi-graphify",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T11:03:38.259Z",
+  "reason": "receipts.filter is not a function",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

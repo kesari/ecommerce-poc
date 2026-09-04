@@ -1,0 +1,107 @@
+{
+  "change_id": "REST-001",
+  "contestant": "synthetic-symbol-index",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.6667,
+    "precision": 0.5217,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8616
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 11,
+      "matched": 4,
+      "false_positives": 7,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "contract",
+      "key": "rest post /api/v1/addresses",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.account.domain.model.address",
+      "com.poc.account.infrastructure.mapping.addressdtomapper",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.domain.model.deliveryaddress",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service contractvalidationtest",
+      "shipment-service asyncapicontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 15,
+    "contract_matched": 6,
+    "inferred": 2
+  },
+  "raw": {
+    "elapsed_seconds": 87,
+    "tokens_consumed": 259907
+  },
+  "answer_sha256": "ebb0853f165d738e8c5d239b26aba722571130ee62ff474dca1894f395d41392",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "73bbf78236f193ed07486b7a959e7175a9f966cfcc41473333444f5dc555d015"
+}

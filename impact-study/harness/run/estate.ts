@@ -153,22 +153,60 @@ export async function createRestrictedReadOnlyTools(root: string) {
 	});
 }
 
-/** Wrap restricted tools with a call counter for the thin-run guard.
+/** Per-tool call telemetry, recorded by the runner — never by the model.
  *
- * Returns a getter for the count so far. The tools array itself is
- * returned unchanged in shape, so existing callers keep working.
+ * Distinguishes calls that succeeded from calls that threw, so a later
+ * reader can tell "product never called" apart from "product called but
+ * failed" and "product called and answered".
+ */
+export interface ToolCallTelemetry {
+	total: number;
+	succeeded: number;
+	failed: number;
+	byName: Record<string, { calls: number; succeeded: number; failed: number }>;
+}
+
+function emptyTelemetry(): ToolCallTelemetry {
+	return { total: 0, succeeded: 0, failed: 0, byName: {} };
+}
+
+/** Wrap tools with a call counter for the thin-run guard plus per-tool telemetry.
+ *
+ * Returns the total count getter (unchanged shape for existing callers) with
+ * an attached telemetry getter. The tools array itself is returned unchanged
+ * in shape, so existing callers keep working. Failures are recorded and
+ * rethrown so tool behavior is unchanged.
  */
 export function countToolCalls(tools: any[]) {
-	let calls = 0;
+	const telemetry = emptyTelemetry();
+	const record = (name: string, succeeded: boolean) => {
+		telemetry.total++;
+		if (succeeded) telemetry.succeeded++;
+		else telemetry.failed++;
+		const entry = telemetry.byName[name] ?? { calls: 0, succeeded: 0, failed: 0 };
+		entry.calls++;
+		if (succeeded) entry.succeeded++;
+		else entry.failed++;
+		telemetry.byName[name] = entry;
+	};
 	for (const tool of tools) {
 		const original = tool.execute?.bind(tool);
 		if (!original) continue;
+		const name = tool.name ?? "unknown";
 		tool.execute = async (...args: any[]) => {
-			calls++;
-			return original(...args);
+			try {
+				const value = await original(...args);
+				record(name, true);
+				return value;
+			} catch (error) {
+				record(name, false);
+				throw error;
+			}
 		};
 	}
-	return () => calls;
+	const calls = () => telemetry.total;
+	(calls as any).telemetry = (): ToolCallTelemetry => JSON.parse(JSON.stringify(telemetry));
+	return calls as (() => number) & { telemetry: () => ToolCallTelemetry };
 }
 
 async function fingerprintDirectory(root: string, hash: ReturnType<typeof createHash>, prefix = "") {
