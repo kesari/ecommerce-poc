@@ -14,23 +14,23 @@
   </header>
   <main>
     <section class="grid">
-      <article class="card"><h2>SCIP tells you what is statically true.</h2><p>The compiler knows that two references point to the same Java symbol. This is the strongest evidence for code-level relationships.</p></article>
-      <article class="card"><h2>Gortex tells you what may be affected.</h2><p>It joins service-level relationships such as HTTP consumers, endpoint providers, topic publishers, and topic subscribers.</p></article>
-      <article class="card"><h2>Graphify gives an agent a graph to explore.</h2><p>It creates broad structural context from code, documents, configuration, and concepts, with a relatively simple setup.</p></article>
-      <article class="card"><h2>Claude and Codex investigate.</h2><p>They search, connect evidence, understand business meaning, and explain the result—but their completeness depends on where they searched.</p></article>
+      <article class="card"><h2>SCIP proves what the code says.</h2><p>The compiler knows that two references point to the same Java name. That is the strongest proof for anything inside the code.</p></article>
+      <article class="card"><h2>Gortex maps how services connect.</h2><p>It joins who-calls-whom relationships: web clients, endpoints, event senders, and event receivers.</p></article>
+      <article class="card"><h2>Graphify sketches the big picture.</h2><p>It builds broad background context from code, documents, settings, and ideas, with a relatively simple setup.</p></article>
+      <article class="card"><h2>Claude and Codex do the detective work.</h2><p>They search, connect clues, understand business meaning, and explain the result — but they can only report what they actually looked at.</p></article>
     </section>
     <section class="panel">
       <h2>Gortex / Graphify comparison</h2>
       <table>
         <thead><tr><th>Question</th><th>Gortex</th><th>Graphify</th></tr></thead>
         <tbody>
-          <tr><td>What is it?</td><td>A specialized code and system dependency graph</td><td>A broad graph that gives an agent persistent context</td></tr>
-          <tr><td>What does it model best?</td><td>Calls, REST, Kafka, schemas, and service dependencies</td><td>Code structure, docs, config, concepts, and communities</td></tr>
-          <tr><td>How is impact found?</td><td>Blast radius is a core operation</td><td>The agent traverses the graph and reasons</td></tr>
-          <tr><td>REST and Kafka?</td><td>First-class provider and consumer edges</td><td>Usually extracted context or inference</td></tr>
-          <tr><td>Main advantage</td><td>Stronger cross-service topology</td><td>Simple, portable, transparent, and easy to visualize</td></tr>
-          <tr><td>Main risk</td><td>Indexing, freshness, operational cost, and platform maturity</td><td>May not be authoritative enough for exhaustive blast radius</td></tr>
-          <tr><td>Role in this POC</td><td>Main graph candidate</td><td>Lightweight graph control</td></tr>
+          <tr><td>What is it?</td><td>A focused map of code and service connections</td><td>A broad background map for the assistant to explore</td></tr>
+          <tr><td>What does it cover best?</td><td>Function calls, REST, Kafka, schemas, and service connections</td><td>Code layout, docs, settings, ideas, and groupings</td></tr>
+          <tr><td>How is impact found?</td><td>Finding everything a change touches is its main job</td><td>The assistant walks the map and reasons</td></tr>
+          <tr><td>REST and Kafka?</td><td>Senders and receivers linked directly</td><td>Usually picked up from context or guesswork</td></tr>
+          <tr><td>Main advantage</td><td>Stronger map across services</td><td>Simple, portable, transparent, and easy to picture</td></tr>
+          <tr><td>Main risk</td><td>Keeping it fresh, running it, and the extra platform to maintain</td><td>May not be careful enough for complete change lists</td></tr>
+          <tr><td>Role in this study</td><td>Main graph candidate</td><td>Simple comparison point</td></tr>
         </tbody>
       </table>
     </section>
@@ -49,9 +49,9 @@
       </table>
     </section>
     <section class="panel">
-      <h2>The architecture we are testing</h2>
-      <div class="flow"><span class="node">SCIP</span><span class="arrow">+</span><span class="node">Gortex</span><span class="arrow">+</span><span class="node">Git, docs, tests</span><span class="arrow">→</span><span class="node">Claude / Codex</span><span class="arrow">→</span><span class="node">Evidence-backed change report</span></div>
-      <p>The agent is the reasoner, not the source of truth. Exact code evidence, service topology, and semantic reasoning stay distinguishable in the final answer.</p>
+      <h2>The setup we are testing</h2>
+      <div class="flow"><span class="node">SCIP</span><span class="arrow">+</span><span class="node">Gortex</span><span class="arrow">+</span><span class="node">Git, docs, tests</span><span class="arrow">→</span><span class="node">Claude / Codex</span><span class="arrow">→</span><span class="node">Change report with proof</span></div>
+      <p>The assistant reasons; it is not the source of truth. Exact code proof, service connections, and business reasoning stay visibly separate in the final answer.</p>
     </section>
     <section class="panel">
       <h2>What would justify Gortex?</h2>
