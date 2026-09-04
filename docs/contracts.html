@@ -10,12 +10,12 @@
   <header>
     <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="results.html">Results</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
     <h1>Test data and scores</h1>
-    <p class="lead">We decide the correct answer first, hide it from the contestants, and score every result in the same way.</p>
+    <p class="lead">We write down the correct answer first, keep it hidden from the assistants, and score every result by the same rules.</p>
   </header>
   <main>
     <section class="panel">
       <h2>The process</h2>
-      <div class="flow"><span class="node">Write the correct blast radius</span><span class="arrow">→</span><span class="node">Freeze it</span><span class="arrow">→</span><span class="node">Run each tool</span><span class="arrow">→</span><span class="node">Compare answers</span></div>
+      <div class="flow"><span class="node">Write down what breaks</span><span class="arrow">→</span><span class="node">Lock it in</span><span class="arrow">→</span><span class="node">Test each assistant</span><span class="arrow">→</span><span class="node">Compare answers</span></div>
       <p>This prevents us from changing the definition of success after seeing which tool performed best.</p>
     </section>
     <section class="panel">
@@ -23,16 +23,16 @@
       <table>
         <thead><tr><th>Measure</th><th>Plain-English question</th></tr></thead>
         <tbody>
-          <tr><td><strong>Repository recall</strong></td><td>Did it find every affected repository? Weighted by severity, so a critical miss hurts more than a label miss.</td></tr>
-          <tr><td><strong>Contract recall</strong></td><td>Did it find the relevant REST, Kafka, schema, or API relationship? Also severity-weighted.</td></tr>
-          <tr><td><strong>Precision</strong></td><td>Across every finding kind, how much of what it reported was actually affected?</td></tr>
-          <tr><td><strong>Critical penalty</strong></td><td>Did it miss anything that breaks production? Each critical miss lowers the score directly.</td></tr>
-          <tr><td><strong>Evidence</strong></td><td>Can an engineer verify why each finding was included? Every finding carries a tier from compiler-proven to hypothesis, and malformed findings are counted, never silently dropped.</td></tr>
+          <tr><td><strong>Did it find every affected service?</strong></td><td>Missing a service that breaks production counts far more than missing a minor one.</td></tr>
+          <tr><td><strong>Did it find the connections?</strong></td><td>REST calls, Kafka events, and API links between services — same rule: production-breaking misses count most.</td></tr>
+          <tr><td><strong>How much of what it reported was actually affected?</strong></td><td>Extra guesses lower the score, but never as much as a miss.</td></tr>
+          <tr><td><strong>Did it miss anything that breaks production?</strong></td><td>Each such miss lowers the score directly, on top of everything else.</td></tr>
+          <tr><td><strong>Can an engineer check its work?</strong></td><td>Every finding must say what proves it, from compiler proof down to an educated guess. Brokenly formatted findings count against the score instead of vanishing quietly.</td></tr>
           <tr><td><strong>Freshness</strong></td><td>Can it see a change that has not been committed or fully indexed?</td></tr>
           <tr><td><strong>Cost</strong></td><td>How much infrastructure and maintenance does it require?</td></tr>
         </tbody>
       </table>
-      <p><strong>A missed critical dependency is worse than a few extra suggestions.</strong> Recall is severity-weighted and every critical miss also lowers a dedicated penalty, so one critical blind spot costs more than several false positives.</p>
+      <p><strong>Missing something that breaks production is worse than a few extra guesses.</strong> That is the whole scoring philosophy: finds count most, production-breaking misses cost extra, and extra guesses cost least.</p>
     </section>
     <section class="panel">
       <h2>How strong is the evidence?</h2>
@@ -62,9 +62,9 @@
       <p>Full tables across all four scenarios live on the <a href="results.html">results page</a>.</p>
     </section>
     <section class="grid">
-      <article class="card"><h2>Today</h2><p>Fifteen frozen scenarios — six REST, four Kafka, three internal, two database — with measured runs on four of them, rejection tracking for failed runs, and a deterministic scorer.</p></article>
+      <article class="card"><h2>Today</h2><p>Fifteen locked-in scenarios — six REST, four Kafka, three internal, two database — with measured runs on all of them, failed runs kept and counted, and the same scoring rules every time.</p></article>
       <article class="card"><h2>Target</h2><p>Thirty changes covering Java code, shared libraries, REST, Kafka, database schemas, configuration, and business rules.</p></article>
-      <article class="card"><h2>Next</h2><p>Run the trio on the eleven new scenarios, starting with the Kafka records where the contract graph should shine, plus a database rerun under the fixed naming convention.</p></article>
+      <article class="card"><h2>Next</h2><p>Repeat the single-run scenarios twice more so every number rests on three runs, then grow the set toward the thirty-record target.</p></article>
     </section>
     <section class="panel">
       <h2>Files</h2>

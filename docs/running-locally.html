@@ -10,7 +10,7 @@
   <header>
     <nav><a href="index.html">Overview</a><a href="architecture.html">The comparison</a><a href="results.html">Results</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
     <h1>Run the worked example</h1>
-    <p class="lead">Scoring uses only Python's standard library. The blind runner needs Node 22 and the pi coding-agent SDK.</p>
+    <p class="lead">Scoring needs only Python. Running an assistant needs Node 22 and the pi coding helper.</p>
   </header>
   <main>
     <section class="panel">
@@ -33,15 +33,15 @@ python3 -m unittest discover -s run -p 'test*.py'</code></pre>
   --ground-truth records/REST-001.json \
   --baseline answers/runs/REST-001-pi-qwen3-coder-1.json \
   --candidate answers/runs/REST-001-pi-qwen3-coder-3.json</code></pre>
-      <p>Each discovery unique to the candidate is labeled a true or false positive against the frozen answer — the marginal-value comparison the study exists to make.</p>
+      <p>Each finding unique to the candidate is marked right or wrong against the locked-in answer — the comparison this whole study exists to make: what does each assistant add that the others miss?</p>
     </section>
     <section class="panel">
-      <h2>Optional: run an agent blind</h2>
-      <p>The runner isolates the estate, gives the model read-only tools plus optional precomputed indexes, and scores the result. Contestants cover local Ollama models and Claude/Codex subscriptions. Fifteen frozen scenarios live under <code>records/</code>.</p>
+      <h2>Optional: test an assistant yourself</h2>
+      <p>The runner gives the assistant a private copy of the code, read-only search tools plus optional ready-made reference files, and scores the result. Assistants cover local Ollama models and Claude/Codex subscriptions. Fifteen locked-in scenarios live under <code>records/</code>.</p>
       <pre><code>cd impact-study/harness/run
 npm ci --ignore-scripts
 node run.ts --record REST-001 --runs 1</code></pre>
-      <p>Run everything with <code>node run.ts --record all --runs 1</code>, or pick a contestant with <code>--contestant pi-codex-scip</code>. Thin runs that answer without searching are rejected automatically.</p>
+      <p>Run everything with <code>node run.ts --record all --runs 1</code>, or pick one assistant with <code>--contestant pi-codex-scip</code>. Answers written without searching are thrown out automatically.</p>
     </section>
     <section class="panel">
       <h2>Optional: start the e-commerce fixture</h2>
