@@ -13,6 +13,12 @@
     <h1>Results</h1>
     <p class="lead">We gave five AI assistants the same problems. Each assistant searched the same code with the same AI model — the only difference was the extra files each one could read. Here is what happened.</p>
   </header>
+  <div class="notice" style="border:2px solid #b45309;background:#fffbeb;padding:1em;margin:1em 0;">
+    <strong>All results on this page are simulations.</strong> Every assistant below used a lightweight
+    experimental index built for this study — not the real SCIP, Gortex, or Graphify products.
+    Real-product integrations are in progress; their results will appear in a separate section.
+    Nothing here supports a buy/adopt decision for any product.
+  </div>
   <main>
     <section class="panel">
       <h2>The five assistants</h2>
@@ -21,10 +27,10 @@
         <thead><tr><th>Assistant</th><th>Harness name</th><th>What extra help it gets</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong></td><td><code>pi-codex</code></td><td>Nothing. It searches the code file by file — the Claude / Codex investigator from the comparison page.</td></tr>
-          <tr><td><strong>SCIP</strong></td><td><code>pi-codex-scip</code></td><td>A precomputed list of every code component and where it lives — compiler-accurate truth.</td></tr>
-          <tr><td><strong>Gortex</strong></td><td><code>pi-codex-gortex</code></td><td>A precomputed diagram of which service talks to which, and over what contract — system topology.</td></tr>
-          <tr><td><strong>Combined</strong></td><td><code>pi-combined</code></td><td>The SCIP list <em>and</em> the Gortex diagram together — the proposal's Candidate F: the full end-state stack in one assistant.</td></tr>
-          <tr><td><strong>Graphify</strong></td><td><code>pi-graphify</code></td><td>A lightweight list of which services are wired to which (from configuration files) and which database tables each owns — broad context, cheap to build.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong></td><td><code>pi-codex-scip</code></td><td>A precomputed list of every code component and where it lives — compiler-accurate truth.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong></td><td><code>pi-codex-gortex</code></td><td>A precomputed diagram of which service talks to which, and over what contract — system topology.</td></tr>
+          <tr><td><strong>Synthetic combined</strong></td><td><code>pi-combined</code></td><td>The SCIP list <em>and</em> the Gortex diagram together — the proposal's Candidate F: the full end-state stack in one assistant.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong></td><td><code>pi-graphify</code></td><td>A lightweight list of which services are wired to which (from configuration files) and which database tables each owns — broad context, cheap to build.</td></tr>
         </tbody>
       </table>
       <p>Every run is blind: each assistant works in an isolated copy of the code and never sees the correct answer, which we wrote down before testing. Full run commands live on the <a href="running-locally.html">Run it</a> page.</p>
@@ -36,10 +42,10 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (3 tries, score 0.81)</td><td>Found every affected downstream service but missed the account service where the change happened — in 2 of 3 tries, including a miss that breaks production.</td></tr>
-          <tr><td><strong>SCIP</strong> (3 tries, score 0.88)</td><td>Found everything except one end-to-end test. Never missed anything that breaks production.</td></tr>
-          <tr><td><strong>Gortex</strong> (3 tries, score 0.67)</td><td>Found the affected downstream services but missed the account service every single time. Gortex points downstream, away from where the change happened.</td></tr>
-          <tr><td><strong>Combined</strong> (1 try, score 0.71)</td><td>Same blind spot as the Gortex-only run. More extra files did not help — on this run it diluted focus instead.</td></tr>
-          <tr><td><strong>Graphify</strong> (1 try, score 0.85)</td><td>Found every affected service and code item, with nothing missed that breaks production. The lightweight list guided without distracting.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (3 tries, score 0.88)</td><td>Found everything except one end-to-end test. Never missed anything that breaks production.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (3 tries, score 0.67)</td><td>Found the affected downstream services but missed the account service every single time. Gortex points downstream, away from where the change happened.</td></tr>
+          <tr><td><strong>Synthetic combined</strong> (1 try, score 0.71)</td><td>Same blind spot as the Gortex-only run. More extra files did not help — on this run it diluted focus instead.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 try, score 0.85)</td><td>Found every affected service and code item, with nothing missed that breaks production. The lightweight list guided without distracting.</td></tr>
         </tbody>
       </table>
     </section>
@@ -50,10 +56,10 @@
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (3 answers)</td><td>46 – 51</td><td>138k – 476k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (3 answers)</td><td>41 – 53</td><td>136k – 257k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (3 answers)</td><td>32 – 49</td><td>89k – 148k tokens</td></tr>
-          <tr><td><strong>Combined</strong> (1 answer)</td><td>42</td><td>273k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>50</td><td>127k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (3 answers)</td><td>41 – 53</td><td>136k – 257k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (3 answers)</td><td>32 – 49</td><td>89k – 148k tokens</td></tr>
+          <tr><td><strong>Synthetic combined</strong> (1 answer)</td><td>42</td><td>273k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>50</td><td>127k tokens</td></tr>
         </tbody>
       </table>
       <p>Effort does not explain the scores: the winner and the loser both searched thoroughly. Graphify is the cheapest good answer at 127k tokens; the free local model sometimes spends 500k tokens and still scores 0.39.</p>
@@ -65,18 +71,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (3 tries, score 0.91)</td><td>Found all four affected systems in every run; every run missed the basket test, and two of three also missed one orchestrator component.</td></tr>
-          <tr><td><strong>SCIP</strong> (3 tries, score 0.94)</td><td>Best of the three. Found every system and every contract that matters.</td></tr>
-          <tr><td><strong>Gortex</strong> (3 tries, score 0.93)</td><td>Nearly identical — events are exactly what the map was built for. This is its home turf.</td></tr>
-          <tr><td><strong>Graphify</strong> (1 try, score 0.70)</td><td>Found every system and every code component but missed the event contract entirely — Graphify's index carries no topic edges, so on events it is genuinely blind.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (3 tries, score 0.94)</td><td>Best of the three. Found every system and every contract that matters.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (3 tries, score 0.93)</td><td>Nearly identical — events are exactly what the map was built for. This is its home turf.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 try, score 0.70)</td><td>Found every system and every code component but missed the event contract entirely — Graphify's index carries no topic edges, so on events it is genuinely blind.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (3 answers)</td><td>28 – 36</td><td>81k – 212k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (3 answers)</td><td>22 – 30</td><td>121k – 146k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (3 answers)</td><td>26 – 31</td><td>110k – 157k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>31</td><td>120k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (3 answers)</td><td>22 – 30</td><td>121k – 146k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (3 answers)</td><td>26 – 31</td><td>110k – 157k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>31</td><td>120k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -87,18 +93,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.89)</td><td>Correct: one service affected, correctly identified.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.89)</td><td>Same correct answer, with exact file-and-line evidence and zero misses.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.89)</td><td>Same correct answer, with zero misses.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.88)</td><td>Same correct answer. Cheap context is enough where nothing hides.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.89)</td><td>Same correct answer, with exact file-and-line evidence and zero misses.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.89)</td><td>Same correct answer, with zero misses.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.88)</td><td>Same correct answer. Cheap context is enough where nothing hides.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (2 answers)</td><td>38 – 39</td><td>113k – 183k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (2 answers)</td><td>42 – 52</td><td>245k – 262k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (2 answers)</td><td>27 – 35</td><td>93k – 123k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>53</td><td>148k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (2 answers)</td><td>42 – 52</td><td>245k – 262k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (2 answers)</td><td>27 – 35</td><td>93k – 123k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>53</td><td>148k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -109,18 +115,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.83)</td><td>Right service and contract, but ten extra code guesses and a missed symbol that breaks production.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — Graphify's index shows tables without service-qualified contract names.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.88)</td><td>Best of the three with a clean sheet — no production-breaking misses.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.84)</td><td>Right service and contract, same extra-guess noise as the baseline.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.64)</td><td>Right service, but missed the contract and a mapping symbol — Graphify's index shows tables without service-qualified contract names.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (2 answers)</td><td>35 – 57</td><td>115k – 373k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (2 answers)</td><td>32 – 49</td><td>190k – 247k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (2 answers)</td><td>42 – 46</td><td>128k – 175k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>32</td><td>124k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (2 answers)</td><td>32 – 49</td><td>190k – 247k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (2 answers)</td><td>42 – 46</td><td>128k – 175k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>32</td><td>124k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -132,18 +138,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.65)</td><td>Joint best. Found catalog, basket, and storefront; missed order, payment, and the pricing code.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.64)</td><td>Same misses with the most searching (53 file checks). The index lists the symbols; the model still skipped them.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.61)</td><td>Same misses, plus zero symbol recall. A service map says who talks to whom — it says nothing about what a number means.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.61)</td><td>Same misses. Wiring knows who calls whom, not what a number means.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.64)</td><td>Same misses with the most searching (53 file checks). The index lists the symbols; the model still skipped them.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.61)</td><td>Same misses, plus zero symbol recall. A service map says who talks to whom — it says nothing about what a number means.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.61)</td><td>Same misses. Wiring knows who calls whom, not what a number means.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (1 answer)</td><td>35</td><td>142k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (1 answer)</td><td>53</td><td>245k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (1 answer)</td><td>40</td><td>123k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>40</td><td>104k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (1 answer)</td><td>53</td><td>245k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (1 answer)</td><td>40</td><td>123k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>40</td><td>104k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -154,18 +160,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.68)</td><td>Missed the basket service itself, plus the basket, quote, and test coverage.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.87)</td><td>Found the basket service and every contract. Only symbols and tests missing.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.68)</td><td>Same provider-blindness as the baseline: consumers found, owner missed.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.87)</td><td>Tied SCIP — found the basket service where the map-based runner did not.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.87)</td><td>Found the basket service and every contract. Only symbols and tests missing.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.68)</td><td>Same provider-blindness as the baseline: consumers found, owner missed.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.87)</td><td>Tied SCIP — found the basket service where the map-based runner did not.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (1 answer)</td><td>42</td><td>182k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (1 answer)</td><td>32</td><td>202k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (1 answer)</td><td>37</td><td>255k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>44</td><td>172k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (1 answer)</td><td>32</td><td>202k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (1 answer)</td><td>37</td><td>255k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>44</td><td>172k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -176,18 +182,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.71)</td><td>Right services and tests, but missed the coupon contract itself.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.72)</td><td>Same missed contract. The symbol list does not encode what the number means.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.91)</td><td>Only contract match in the test. First outright win for Gortex.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.61)</td><td>Missed the storefront and the coupon contract; wiring edges skip UI consumers.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.72)</td><td>Same missed contract. The symbol list does not encode what the number means.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.91)</td><td>Only contract match in the test. First outright win for Gortex.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.61)</td><td>Missed the storefront and the coupon contract; wiring edges skip UI consumers.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (1 answer)</td><td>41</td><td>205k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (1 answer)</td><td>46</td><td>375k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (1 answer)</td><td>36</td><td>322k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>52</td><td>230k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (1 answer)</td><td>46</td><td>375k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (1 answer)</td><td>36</td><td>322k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>52</td><td>230k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -198,18 +204,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.89)</td><td>Right services and contract; only symbols and tests missing.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.54)</td><td>Missed the shipment service and every estimator symbol. Having the directory did not help it open the right files.</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.80)</td><td>Missed the storefront and estimator symbols, but kept the contract.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.78)</td><td>Same storefront miss as Gortex at lower reading cost.</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.54)</td><td>Missed the shipment service and every estimator symbol. Having the directory did not help it open the right files.</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.80)</td><td>Missed the storefront and estimator symbols, but kept the contract.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.78)</td><td>Same storefront miss as Gortex at lower reading cost.</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (1 answer)</td><td>43</td><td>271k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (1 answer)</td><td>61</td><td>342k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (1 answer)</td><td>35</td><td>128k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>44</td><td>148k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (1 answer)</td><td>61</td><td>342k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (1 answer)</td><td>35</td><td>128k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>44</td><td>148k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -220,18 +226,18 @@
         <thead><tr><th>Assistant</th><th>Result</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (score 0.69)</td><td>Perfect services and symbols; missed the login contract and the signup test.</td></tr>
-          <tr><td><strong>SCIP</strong> (score 0.69)</td><td>Identical misses at the highest reading cost in the study (478k tokens).</td></tr>
-          <tr><td><strong>Gortex</strong> (score 0.69)</td><td>Identical misses.</td></tr>
-          <tr><td><strong>Graphify</strong> (score 0.69)</td><td>Identical misses at the lowest reading cost (207k tokens).</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (score 0.69)</td><td>Identical misses at the highest reading cost in the study (478k tokens).</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (score 0.69)</td><td>Identical misses.</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (score 0.69)</td><td>Identical misses at the lowest reading cost (207k tokens).</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (1 answer)</td><td>36</td><td>472k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (1 answer)</td><td>59</td><td>478k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (1 answer)</td><td>48</td><td>348k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (1 answer)</td><td>45</td><td>207k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (1 answer)</td><td>59</td><td>478k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (1 answer)</td><td>48</td><td>348k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (1 answer)</td><td>45</td><td>207k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -242,18 +248,18 @@
         <thead><tr><th>Assistant</th><th>Expiry reason (0.61–0.71)</th><th>Payment outcome (0.69–0.93)</th><th>Envelope version (0.69–0.71)</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong></td><td>0.61 — missed the storefront and the event contract</td><td>0.70 — missed the payment event contract</td><td>0.71 — same two misses as everyone</td></tr>
-          <tr><td><strong>SCIP</strong></td><td>0.62 — same misses as the baseline</td><td>0.71 — same missed contract</td><td>0.69 — same two misses as everyone</td></tr>
-          <tr><td><strong>Gortex</strong></td><td>0.71 — the only full repo recall of the three</td><td>0.93 — zero misses, the best event score in the study</td><td>0.69 — same two misses as everyone</td></tr>
-          <tr><td><strong>Graphify</strong></td><td>0.63 — no production-breaking miss; correctly treated as smaller break</td><td>0.69 — missed the payment event contract</td><td>0.69 — same two misses as everyone</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong></td><td>0.62 — same misses as the baseline</td><td>0.71 — same missed contract</td><td>0.69 — same two misses as everyone</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong></td><td>0.71 — the only full repo recall of the three</td><td>0.93 — zero misses, the best event score in the study</td><td>0.69 — same two misses as everyone</td></tr>
+          <tr><td><strong>Synthetic concept index</strong></td><td>0.63 — no production-breaking miss; correctly treated as smaller break</td><td>0.69 — missed the payment event contract</td><td>0.69 — same two misses as everyone</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (3 answers)</td><td>22 – 42</td><td>88k – 194k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (3 answers)</td><td>26 – 44</td><td>67k – 152k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (3 answers)</td><td>23 – 36</td><td>83k – 140k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (3 answers)</td><td>22 – 42</td><td>70k – 209k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (3 answers)</td><td>26 – 44</td><td>67k – 152k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (3 answers)</td><td>23 – 36</td><td>83k – 140k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (3 answers)</td><td>22 – 42</td><td>70k – 209k tokens</td></tr>
           <tr><td><strong>New expiry reason</strong> (0.63)</td><td>0.63</td><td>Missed the storefront; no production-breaking miss. An addition, not a rename — correctly treated as a smaller break.</td><td>22 checks, 70k tokens</td></tr>
           <tr><td><strong>Renamed payment outcome</strong> (0.69)</td><td>0.69</td><td>Missed the payment event contract that carries the renamed value — one production-breaking miss.</td><td>27 checks, 108k tokens</td></tr>
           <tr><td><strong>Required envelope version</strong> (0.69)</td><td>0.69</td><td>Missed the event contract and one consumer test, no production-breaking miss. Topic names are identical — only meaning changed.</td></tr>
@@ -267,18 +273,18 @@
         <thead><tr><th>Assistant</th><th>Cache key</th><th>Mapper nulls</th><th>Snapshot column</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong></td><td>1.00 — perfect: exact match, zero misses, 26 checks</td><td>0.88 — one symbol missed</td><td>0.68 — same contract-naming miss as everyone</td></tr>
-          <tr><td><strong>SCIP</strong></td><td>0.97 — zero misses</td><td>0.90 — zero misses</td><td>0.68 — same contract-naming miss as everyone</td></tr>
-          <tr><td><strong>Gortex</strong></td><td>0.93 — one symbol missed</td><td>0.88 — zero misses</td><td>0.68 — same contract-naming miss as everyone</td></tr>
-          <tr><td><strong>Graphify</strong></td><td>0.91 — zero misses</td><td>0.87 — one test missed</td><td>0.67 — same contract-naming miss as everyone</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong></td><td>0.97 — zero misses</td><td>0.90 — zero misses</td><td>0.68 — same contract-naming miss as everyone</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong></td><td>0.93 — one symbol missed</td><td>0.88 — zero misses</td><td>0.68 — same contract-naming miss as everyone</td></tr>
+          <tr><td><strong>Synthetic concept index</strong></td><td>0.91 — zero misses</td><td>0.87 — one test missed</td><td>0.67 — same contract-naming miss as everyone</td></tr>
         </tbody>
       </table>
       <table>
         <thead><tr><th>Assistant</th><th>File checks per answer</th><th>Reading per answer</th></tr></thead>
         <tbody>
           <tr><td><strong>Agent-only</strong> (3 answers)</td><td>26 – 44</td><td>77k – 176k tokens</td></tr>
-          <tr><td><strong>SCIP</strong> (3 answers)</td><td>30 – 40</td><td>180k – 268k tokens</td></tr>
-          <tr><td><strong>Gortex</strong> (3 answers)</td><td>29 – 54</td><td>127k – 271k tokens</td></tr>
-          <tr><td><strong>Graphify</strong> (3 answers)</td><td>31 – 49</td><td>72k – 231k tokens</td></tr>
+          <tr><td><strong>Synthetic symbol index</strong> (3 answers)</td><td>30 – 40</td><td>180k – 268k tokens</td></tr>
+          <tr><td><strong>Synthetic contract graph</strong> (3 answers)</td><td>29 – 54</td><td>127k – 271k tokens</td></tr>
+          <tr><td><strong>Synthetic concept index</strong> (3 answers)</td><td>31 – 49</td><td>72k – 231k tokens</td></tr>
         </tbody>
       </table>
     </section>
@@ -287,14 +293,15 @@
       <p>Fifteen tests, one shared model, five reference setups. No assistant wins everywhere: SCIP leads where the owning service hides, Gortex wins coupons and events, Agent-only wins the timestamp reshape, and Graphify ties the easy ground cheaply while going blind on events and contracts. The free local model is disqualified on consistency long before quality is debated. The decision from the first four tests stands, and the eleven new tests sharpen it rather than overturning it: buy SCIP, keep Gortex for events, and never let an unsearched answer near sign-off.</p>
     </section>
     <section class="panel">
-      <h2>What we recommend</h2>
+      <h2>What we recommend — so far</h2>
+      <p>These are working hypotheses from simulation runs, not buying advice. No product decision follows until the real-product integrations have run.</p>
       <table>
-        <thead><tr><th>Decision</th><th>Reason in one line</th></tr></thead>
+        <thead><tr><th>Lean</th><th>Reason in one line</th></tr></thead>
         <tbody>
-          <tr><td><strong>Adopt SCIP</strong></td><td>Best or tied on six of the nine tests it ran, and the only assistant that never missed anything production-breaking outside shared naming misses — but it lost the coupon and timestamp tests outright.</td></tr>
-          <tr><td><strong>Retest Gortex, don't reject it</strong></td><td>Excellent on events, the thing it was built for — but it repeatedly misses the service where a change originates.</td></tr>
-          <tr><td><strong>Replicate Graphify before adopting it</strong></td><td>A strong 0.85 debut with zero production-breaking misses at the lowest reading cost — but a single run proves nothing yet.</td></tr>
-          <tr><td><strong>Don't assume Combined is best</strong></td><td>SCIP plus Gortex together scored 0.71 on the first run, below either index alone. More context diluted focus instead of stacking strengths.</td></tr>
+          <tr><td><strong>Lean toward the symbol index</strong></td><td>Best or tied on six of the nine tests it ran, and the only assistant that never missed anything production-breaking outside shared naming misses — but it lost the coupon and timestamp tests outright.</td></tr>
+          <tr><td><strong>Keep testing the contract graph</strong></td><td>Excellent on events, the thing it was built for — but it repeatedly misses the service where a change originates.</td></tr>
+          <tr><td><strong>Replicate the concept index before trusting it</strong></td><td>A strong 0.85 debut with zero production-breaking misses at the lowest reading cost — but a single run proves nothing yet.</td></tr>
+          <tr><td><strong>Don't assume combined is best</strong></td><td>The two synthetic indexes together scored 0.71 on the first run, below either index alone. More context diluted focus instead of stacking strengths.</td></tr>
           <tr><td><strong>Keep the free local model away from sign-offs</strong></td><td>Same question scores anywhere from 0.39 to 0.74 and it sometimes answers without searching. Fine for drafting.</td></tr>
         </tbody>
       </table>
