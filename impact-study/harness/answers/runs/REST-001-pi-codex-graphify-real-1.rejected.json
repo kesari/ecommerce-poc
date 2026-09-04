@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-001",
+  "runner": "pi-codex-graphify-real",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T10:08:53.164Z",
+  "reason": "ENOENT: no such file or directory, access '/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json'",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

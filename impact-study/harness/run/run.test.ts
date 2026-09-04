@@ -14,7 +14,7 @@ import {
 import { extractAnswer } from "./answer.ts";
 import { countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
-import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, withTimeout } from "./run.ts";
+import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, productEligible, productSummary, withTimeout } from "./run.ts";
 import { createRealProduct } from "./products.ts";
 import { verifyHeads } from "./products.ts";
 import { validateFile } from "./scoring.ts";
@@ -165,8 +165,84 @@ test("a session serves the restricted tools, not PI's built-ins", async (context
 	}
 });
 
-test("withTimeout rejects at the deadline and invokes cancellation", async () => {
-	let cancelled = false;
+// A product tool the allowlist omits never reaches the agent: PI filters
+// custom tools against the tools list, so the run must name every tool.
+test("a session exposes product tools only when allowlisted", async (context) => {
+	const root = await mkdtemp(join(tmpdir(), "harness-product-tool-test-"));
+	try {
+		const modelRuntime = await ModelRuntime.create({
+			authPath: join(root, "auth.json"),
+			modelsPath: null,
+			modelsStorePath: join(root, "models-store.json"),
+			refreshOnCreate: false,
+		});
+		const model = modelRuntime.getModels()[0];
+		if (!model) return context.skip("PI has no built-in model definitions");
+		const estate = join(root, "estate");
+		await mkdir(estate);
+		const fakeProductTool: any = {
+			name: "scip_search",
+			label: "SCIP search",
+			description: "Stand-in for the real product tool.",
+			parameters: { type: "object", properties: {}, required: [] },
+			execute: async () => ({ content: [{ type: "text", text: "ok" }], details: {} }),
+		};
+		const base = {
+			cwd: estate,
+			model,
+			thinkingLevel: FIXED_THINKING,
+			customTools: [fakeProductTool],
+			modelRuntime,
+			sessionManager: SessionManager.inMemory(estate),
+			settingsManager: SettingsManager.inMemory({}),
+			resourceLoader: new DefaultResourceLoader({
+				cwd: estate,
+				agentDir: root,
+				noExtensions: true,
+				noSkills: true,
+				noPromptTemplates: true,
+				noThemes: true,
+				noContextFiles: true,
+			}),
+		} as any;
+		const visibleNames = async (tools: string[]) => {
+			const { session } = await createAgentSession({ ...base, tools });
+			try {
+				return (session as any).agent.state.tools.map((tool: any) => tool.name).sort();
+			} finally {
+				session.dispose();
+			}
+		};
+		assert.deepEqual(await visibleNames([...FIXED_TOOLS]), [...FIXED_TOOLS].sort());
+		assert.deepEqual(
+			await visibleNames([...FIXED_TOOLS, "scip_search"]),
+			[...FIXED_TOOLS, "scip_search"].sort(),
+		);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test("productSummary counts attempts, successes, and failures", () => {
+	assert.deepEqual(productSummary(undefined), null);
+	assert.deepEqual(productSummary([]), { attempted: 0, succeeded: 0, failed: 0 });
+	assert.deepEqual(
+		productSummary([{ success: true }, { success: false }]),
+		{ attempted: 2, succeeded: 1, failed: 1 },
+	);
+});
+
+test("productEligible is null off-product and success-gated on-product", () => {
+	const agent = { label: "agent-only", provider: "x", model: "y" } as any;
+	const real = { label: "scip", provider: "x", model: "y", product: { kind: "scip" } } as any;
+	assert.equal(productEligible(agent, []), null);
+	assert.equal(productEligible(agent, undefined), null);
+	assert.equal(productEligible(real, []), false);
+	assert.equal(productEligible(real, [{ success: false }]), false);
+	assert.equal(productEligible(real, [{ success: true }]), true);
+});
+
+test("withTimeout rejects at the deadline and invokes cancellation", async () => {	let cancelled = false;
 	await assert.rejects(
 		withTimeout(new Promise(() => undefined), 0.01, () => { cancelled = true; }),
 		/timed out/,
@@ -315,6 +391,23 @@ test("countToolCalls counts every execute", async () => {
 	assert.deepEqual(calls, ["a", "b"]);
 });
 
+test("countToolCalls records per-tool success and failure telemetry", async () => {
+	const tools: any[] = [
+		{ name: "read", execute: async () => "ok" },
+		{ name: "grep", execute: async () => { throw new Error("boom"); } },
+	];
+	const getCount = countToolCalls(tools);
+	await tools[0].execute("a", {});
+	await assert.rejects(tools[1].execute("b", {}), /boom/);
+	assert.equal(getCount(), 2);
+	const telemetry = (getCount as any).telemetry();
+	assert.deepEqual(telemetry.byName.read, { calls: 1, succeeded: 1, failed: 0 });
+	assert.deepEqual(telemetry.byName.grep, { calls: 1, succeeded: 0, failed: 1 });
+	assert.equal(telemetry.total, 2);
+	assert.equal(telemetry.succeeded, 1);
+	assert.equal(telemetry.failed, 1);
+});
+
 test("real SCIP integration verifies pins and invokes scip-search", async () => {
 	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
 	const snapshot = {
@@ -331,6 +424,31 @@ test("real SCIP integration verifies pins and invokes scip-search", async () => 
 	assert.equal(integration.receipt.product, "scip-java+scip-search");
 	const output = await integration.tools[0].execute("test", { operation: "symbols", name: "AddressResponse" });
 	assert.match(output.content[0].text, /AddressResponse/);
+});
+
+test("real product invocations leave runner-generated receipts", async () => {
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	const snapshot = {
+		sha256: "0".repeat(64),
+		repositories: Object.keys(pins.repositories),
+		revisions: Object.entries(pins.repositories).map(([name, value]: [string, any]) => ({
+			name,
+			commit: value.commit,
+			dirty: value.dirty,
+		})),
+	};
+	const integration = await createRealProduct({ kind: "scip" }, "unused", snapshot);
+	assert.deepEqual(integration.receipts, []);
+	await integration.tools[0].execute("test", { operation: "symbols", name: "AddressResponse" });
+	assert.equal(integration.receipts.length, 1);
+	const receipt = integration.receipts[0];
+	assert.equal(receipt.tool, "scip_search");
+	assert.equal(receipt.operation, "symbols");
+	assert.deepEqual(receipt.parameters, { operation: "symbols", name: "AddressResponse" });
+	assert.equal(receipt.success, true);
+	assert.match(receipt.output_sha256, /^[a-f0-9]{64}$/);
+	assert.equal(typeof receipt.duration_ms, "number");
+	assert.match(receipt.id, /^r\d+$/);
 });
 
 test("real product refuses a snapshot that does not match pins", async () => {

@@ -19,7 +19,7 @@
     "repository_artifacts": false,
     "workspace": "poc-estate"
   },
-  "pins_sha256": "41de6a1bb2b837afef3a64b762daae1daf04693337ed4b5744d6390b2e5eb049",
+  "pins_sha256": "a77b2fa1caef1d81b1aaacbdf3788915807aaf18f0496f916843f37473304c93",
   "product": "gortex",
   "repository_revisions": {
     "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",

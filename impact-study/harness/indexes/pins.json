@@ -125,10 +125,10 @@
     "graphify-package-tree-sha256": "5201bbf13d9959ab9ce913c2adb891be75fee0d9454ab3d93208625257e90b2f",
     "graphify-python": "3.14.7",
     "graphify-networkx": "3.6.1",
-    "graphify-raw-nodes": 4645,
-    "graphify-raw-edges": 12908,
-    "graphify-query-nodes": 4488,
-    "graphify-query-edges": 12660,
+    "graphify-raw-nodes": 4028,
+    "graphify-raw-edges": 7967,
+    "graphify-query-nodes": 4028,
+    "graphify-query-edges": 7960,
     "gortex-tag": null,
     "gortex-tag-note": "reviewed commit 5b29907 kept deliberately; upgrading to a newer release would invalidate all recorded query evidence",
     "gortex-version-string": "gortex v0.63.10 commit (none) built (unknown) go go1.27.0 os/arch darwin/arm64",
@@ -140,6 +140,7 @@
     "graphify-commit-note": "installed from PyPI sdist; no git commit available",
     "graphify-binary-sha256": "6e6feea91bc0def9cae04cc49f86fe9deb87b700b8f57f69932f0ffbdb7c4331",
     "graphify-license": "Apache-2.0",
-    "graphify-version-string": "graphify 0.9.53"
+    "graphify-version-string": "graphify 0.9.53",
+    "graphify-count-note": "archive-built per-repo graphs sum to 3367 nodes; merge prefixes repo-scoped ids to 4028; query loader drops 7 edges. Prior 4645/12908 pins described working-copy builds with unknown extra files and were unreproducible."
   }
 }

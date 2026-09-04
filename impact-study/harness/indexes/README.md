@@ -41,9 +41,12 @@ services do not emit matching cross-root symbol identities in this estate. Any
 service-to-service bridge inferred after a SCIP query is agent reasoning and must
 be attributed as `agent_inferred`, not `product_direct`.
 
-Graphify stores 4,645 nodes and 12,908 links. Its query loader reconciles 157
-AST/semantic ghost nodes and 248 links, so the effective query graph contains
-4,488 nodes and 12,660 edges. Both counts are pinned and checked.
+Graphify stores 4,028 nodes and 7,967 links. Its query loader drops 7 edges
+with no node loss, so the effective query graph contains 4,028 nodes and
+7,960 edges. Both counts are pinned and checked. An earlier 4,645-node
+figure came from working-copy builds with unknown extra files and proved
+unreproducible; archive-built graphs are the canonical source and merge
+deterministically (verified by rebuilding).
 
 Gortex keys contract nodes by workspace at index time. All ten repositories must
 be tracked in `poc-estate`; changing the declaration requires a reload/reindex.

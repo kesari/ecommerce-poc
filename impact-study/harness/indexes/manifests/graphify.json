@@ -1,31 +1,27 @@
 {
   "artifacts": [
     {
-      "bytes": 7253003,
+      "bytes": 5173919,
       "name": "merged_graph",
       "path": "graphify/merged-graph.json",
-      "sha256": "a5bce2cd60867de2958c6cf0e2d660836309db6cb5d19c13e89962d06ed38328"
+      "sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f"
     },
     {
-      "bytes": 3142,
+      "bytes": 3181,
       "name": "diagnostics",
       "path": "graphify/diagnose.json",
-      "sha256": "67f751e7052d505673e7a28f6874042e67cd98f629e8a101c8197de12fa80daf"
+      "sha256": "33382b2a8b74717b6260ca0e70e208f0697e58d465a028eb3209ef32d3c094e0"
     }
   ],
   "metadata": {
-    "built_at": "2026-09-04T05:28:33.210561+00:00",
-    "duration_note": "not recorded at build time; re-recorded on next rebuild",
-    "duration_seconds": null,
-    "normalization_note": "Graphify's query loader reconciles AST/semantic ghost nodes after loading the saved merge",
-    "normalized_edges": 248,
-    "normalized_nodes": 157,
-    "query_edges": 12660,
-    "query_nodes": 4488,
-    "raw_edges": 12908,
-    "raw_nodes": 4645
+    "normalized_edges": 7,
+    "normalized_nodes": 0,
+    "query_edges": 7960,
+    "query_nodes": 4028,
+    "raw_edges": 7967,
+    "raw_nodes": 4028
   },
-  "pins_sha256": "41de6a1bb2b837afef3a64b762daae1daf04693337ed4b5744d6390b2e5eb049",
+  "pins_sha256": "a77b2fa1caef1d81b1aaacbdf3788915807aaf18f0496f916843f37473304c93",
   "product": "graphify",
   "repository_revisions": {
     "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",

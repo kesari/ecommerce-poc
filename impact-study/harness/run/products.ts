@@ -94,7 +94,19 @@ function assertRepo(value: unknown) {
 	return value;
 }
 
-function scipTool(binary: string, index: string) {
+export interface ProductInvocationReceipt {
+	id: string;
+	tool: string;
+	operation: string;
+	// Normalized arguments as validated by the wrapper — not raw model text.
+	parameters: Record<string, unknown>;
+	success: boolean;
+	output_sha256: string | null;
+	duration_ms: number;
+	error: string | null;
+}
+
+function scipTool(binary: string, index: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
 	const operations = ["symbols", "references", "implementations", "graph", "callers", "callees", "impact"];
 	return {
 		name: "scip_search",
@@ -108,12 +120,48 @@ function scipTool(binary: string, index: string) {
 			const operation = assertQuery(params.operation, "operation");
 			if (!operations.includes(operation)) throw new Error("unsupported SCIP operation");
 			const name = assertQuery(params.name, "name");
-			return result(run(binary, [operation, "--index", index, "--name", name, "--json"]));
+			return invokeWithReceipt(receipts, takeId, "scip_search", operation, { operation, name }, () =>
+				result(run(binary, [operation, "--index", index, "--name", name, "--json"])));
 		},
 	};
 }
 
-function graphifyTool(binary: string, graph: string) {
+/** Run a product invocation, recording a runner-generated receipt.
+ *
+ * The receipt — not the model's later claims — is what ties a
+ * product_direct finding to evidence. Failures are recorded with the
+ * error message and rethrown so tool behavior is unchanged.
+ */
+async function invokeWithReceipt(
+	receipts: ProductInvocationReceipt[],
+	takeId: () => string,
+	tool: string,
+	operation: string,
+	parameters: Record<string, unknown>,
+	invoke: () => unknown,
+) {
+	const started = performance.now();
+	const id = takeId();
+	try {
+		const value = await invoke();
+		receipts.push({
+			id, tool, operation, parameters, success: true,
+			output_sha256: sha256(JSON.stringify(value) ?? ""),
+			duration_ms: Math.round((performance.now() - started) * 10) / 10,
+			error: null,
+		});
+		return value;
+	} catch (error) {
+		receipts.push({
+			id, tool, operation, parameters, success: false, output_sha256: null,
+			duration_ms: Math.round((performance.now() - started) * 10) / 10,
+			error: String((error as Error)?.message ?? error).slice(0, 500),
+		});
+		throw error;
+	}
+}
+
+function graphifyTool(binary: string, graph: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
 	const operations = ["query", "explain", "path", "affected"];
 	return {
 		name: "graphify_query",
@@ -131,7 +179,8 @@ function graphifyTool(binary: string, graph: string) {
 			const args = operation === "path"
 				? [operation, query, assertQuery(params.target, "target"), "--graph", graph]
 				: [operation, query, "--graph", graph];
-			return result(run(binary, args));
+			const parameters = operation === "path" ? { operation, query, target: params.target } : { operation, query };
+			return invokeWithReceipt(receipts, takeId, "graphify_query", operation, parameters, () => result(run(binary, args)));
 		},
 	};
 }
@@ -149,7 +198,7 @@ export function verifyHeads(estate: string, pins: any) {
 	}
 }
 
-function gortexTool(binary: string, estate: string, pins: any) {
+function gortexTool(binary: string, estate: string, pins: any, receipts: ProductInvocationReceipt[], takeId: () => string) {
 	const operations = ["symbol", "usages", "callers", "calls", "dependents", "deps", "implementations"];
 	return {
 		name: "gortex_query",
@@ -166,12 +215,13 @@ function gortexTool(binary: string, estate: string, pins: any) {
 			if (!operations.includes(operation)) throw new Error("unsupported Gortex operation");
 			const query = assertQuery(params.query, "query");
 			const repo = assertRepo(params.repo);
-			return result(run(binary, ["query", operation, query, "--format", "json", "--limit", "100", "--index", join(estate, repo)]));
+			return invokeWithReceipt(receipts, takeId, "gortex_query", operation, { operation, query, repo }, () =>
+				result(run(binary, ["query", operation, query, "--format", "json", "--limit", "100", "--index", join(estate, repo)])));
 		},
 	};
 }
 
-function gortexContractsTool(binary: string, estate: string, pins: any) {
+function gortexContractsTool(binary: string, estate: string, pins: any, receipts: ProductInvocationReceipt[], takeId: () => string) {
 	const actions = ["list", "check", "validate", "bridge_rank", "bridge_impact", "api_impact"];
 	return {
 		name: "gortex_contracts",
@@ -188,20 +238,27 @@ function gortexContractsTool(binary: string, estate: string, pins: any) {
 			if (!actions.includes(action)) throw new Error("unsupported Gortex contract operation");
 			const repo = assertRepo(params.repo);
 			const indexArgs = ["--index", join(estate, repo), "--format", "json"];
-			if (action === "api_impact") {
-				const query = assertQuery(params.query, "query");
-				return result(run(binary, ["call", "api_impact", "--arg", `route=${query}`, "--arg", `repo=${repo}`, ...indexArgs]));
-			}
-			const contractAction = action.startsWith("bridge_") ? "bridge" : action;
-			const args = ["call", "contracts", "--arg", `action=${contractAction}`];
-			if (action === "bridge_rank") {
-				args.push("--arg", "mode=rank", "--arg", `query=${assertQuery(params.query, "query")}`);
-			} else if (action === "bridge_impact") {
-				args.push("--arg", "mode=impact", "--arg", `symbol=${assertQuery(params.query, "query")}`);
-			} else {
-				args.push("--arg", `repo=${repo}`);
-			}
-			return result(run(binary, [...args, ...indexArgs]));
+			const parameters: Record<string, unknown> = { action, repo };
+			const invoke = () => {
+				if (action === "api_impact") {
+					const query = assertQuery(params.query, "query");
+					parameters.query = query;
+					return result(run(binary, ["call", "api_impact", "--arg", `route=${query}`, "--arg", `repo=${repo}`, ...indexArgs]));
+				}
+				const contractAction = action.startsWith("bridge_") ? "bridge" : action;
+				const args = ["call", "contracts", "--arg", `action=${contractAction}`];
+				if (action === "bridge_rank") {
+					args.push("--arg", "mode=rank", "--arg", `query=${assertQuery(params.query, "query")}`);
+					parameters.query = params.query;
+				} else if (action === "bridge_impact") {
+					args.push("--arg", "mode=impact", "--arg", `symbol=${assertQuery(params.query, "query")}`);
+					parameters.query = params.query;
+				} else {
+					args.push("--arg", `repo=${repo}`);
+				}
+				return result(run(binary, [...args, ...indexArgs]));
+			};
+			return invokeWithReceipt(receipts, takeId, "gortex_contracts", action, parameters, invoke);
 		},
 	};
 }
@@ -236,10 +293,13 @@ export async function createRealProduct(
 	config: ProductConfig,
 	estate: string,
 	snapshot: EstateSnapshot,
-): Promise<{ tools: any[]; receipt: ProductReceipt; prompt: string }> {
+): Promise<{ tools: any[]; receipt: ProductReceipt; prompt: string; receipts: ProductInvocationReceipt[] }> {
 	const pinsBytes = await readFile(PINS);
 	const pins = JSON.parse(pinsBytes.toString("utf8"));
 	verifyEstate(snapshot, pins);
+	const receipts: ProductInvocationReceipt[] = [];
+	let receiptSeq = 0;
+	const takeId = () => `r${++receiptSeq}`;
 	if (config.kind === "scip") {
 		const binary = executable("scip-search", "SCIP_SEARCH_BIN");
 		if (await fileSha(binary) !== pins.toolchain["scip-search-sha256"]) throw new Error("scip-search binary SHA-256 differs from pins");
@@ -247,7 +307,7 @@ export async function createRealProduct(
 		const verified = await verifyManifest(path, "scip-java+scip-search");
 		const index = join(INDEXES, "scip", "estate.scip");
 		return {
-			tools: [scipTool(binary, index)],
+			tools: [scipTool(binary, index, receipts, takeId)],
 			receipt: {
 				mode: "real_product", product: "scip-java+scip-search", version: `${pins.toolchain["scip-java"]}+${pins.toolchain["scip-search"]}`,
 				commit: pins.toolchain["scip-search-commit"], binary_sha256: pins.toolchain["scip-search-sha256"],
@@ -260,6 +320,7 @@ export async function createRealProduct(
 				indexed_estate_sha256: snapshot.sha256 ?? null,
 			},
 			prompt: "Use scip_search for compiler-index facts. Attribute only facts present in its output as product_direct; bridge across services as agent_inferred.",
+			receipts,
 		};
 	}
 	if (config.kind === "graphify") {
@@ -270,7 +331,7 @@ export async function createRealProduct(
 		const verified = await verifyManifest(path, "graphify");
 		const graph = join(INDEXES, "graphify", "merged-graph.json");
 		return {
-			tools: [graphifyTool(binary, graph)],
+			tools: [graphifyTool(binary, graph, receipts, takeId)],
 			receipt: {
 				mode: "real_product", product: "graphify", version: pins.toolchain.graphify, commit: null,
 				binary_sha256: pins.toolchain["graphify-package-tree-sha256"],
@@ -283,6 +344,7 @@ export async function createRealProduct(
 				indexed_estate_sha256: snapshot.sha256 ?? null,
 			},
 			prompt: "Use graphify_query for graph facts. Attribute only nodes and paths in its output as product_direct; conclusions you derive are agent_inferred.",
+			receipts,
 		};
 	}
 	const binary = executable("gortex", "GORTEX_BIN");
@@ -291,7 +353,7 @@ export async function createRealProduct(
 	run("python3", [admin, "verify-gortex", "--estate", estate, "--binary", binary, "--require-daemon"]);
 	const artifactSha = sha256(JSON.stringify({ repositories: pins.repositories, workspace: pins.toolchain["gortex-workspace"] }));
 	return {
-		tools: [gortexTool(binary, estate, pins), gortexContractsTool(binary, estate, pins)],
+		tools: [gortexTool(binary, estate, pins, receipts, takeId), gortexContractsTool(binary, estate, pins, receipts, takeId)],
 		receipt: {
 			mode: "real_product", product: "gortex", version: pins.toolchain.gortex,
 			commit: pins.toolchain["gortex-commit"], binary_sha256: pins.toolchain["gortex-sha256"],
@@ -303,6 +365,7 @@ export async function createRealProduct(
 			index_duration_seconds: null,
 			indexed_estate_sha256: snapshot.sha256 ?? null,
 		},
-		prompt: "Use gortex_query for graph facts. Attribute only returned nodes and edges as product_direct; conclusions you derive are agent_inferred.",
-	};
-}
+			prompt: "Use gortex_query for graph facts. Attribute only returned nodes and edges as product_direct; conclusions you derive are agent_inferred.",
+			receipts,
+		};
+	}

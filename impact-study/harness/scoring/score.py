@@ -281,8 +281,13 @@ def answer_errors(answer, schema, name):
         # Shape gate only: this proves every finding carries an attribution
         # label, not that the label is true or the finding is correct.
         # Truth is the scorer's job; fabrication with a valid label passes here.
+        # A product_direct claim additionally needs a receipt_id matching a
+        # runner-generated invocation receipt; without it the claim is
+        # unaudited, because the harness retains no product response for it.
         if not isinstance(answer.get("product_provenance"), dict):
             errors.append(f"{name}: real-product runner requires product_provenance")
+        receipts = answer.get("product_tool_receipts") or []
+        receipt_ids = {receipt.get("id") for receipt in receipts if isinstance(receipt, dict)}
         if not isinstance(container, dict):
             errors.append(f"{name}: real-product runner requires a findings object")
         else:
@@ -299,6 +304,10 @@ def answer_errors(answer, schema, name):
                     }:
                         errors.append(
                             f"{name}.findings.{kind}[{index}]: real-product finding requires attribution"
+                        )
+                    elif item.get("attribution") == "product_direct" and item.get("receipt_id") not in receipt_ids:
+                        errors.append(
+                            f"{name}.findings.{kind}[{index}]: product_direct requires a receipt_id matching a runner-generated product invocation receipt"
                         )
     return errors
 

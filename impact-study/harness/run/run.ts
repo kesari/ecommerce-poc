@@ -121,6 +121,22 @@ function sha256(value: string | Buffer) {
 	return createHash("sha256").update(value).digest("hex");
 }
 
+/** Runner-stamped product-use summary, computed from receipts — never from model claims. */
+export function productSummary(receipts: any[] | undefined) {
+	if (!receipts) return null;
+	const succeeded = receipts.filter((receipt: any) => receipt.success).length;
+	return { attempted: receipts.length, succeeded, failed: receipts.length - succeeded };
+}
+
+/** A product run counts as product-assisted only with at least one
+ * successful product call. Zero-use runs are kept and scored but marked
+ * ineligible, so they feed adoption-rate analysis without polluting
+ * product-assisted comparisons. Non-product contestants get null (N/A). */
+export function productEligible(contestant: Contestant, receipts: any[] | undefined) {
+	if (!contestant.product) return null;
+	return (receipts ?? []).some((receipt: any) => receipt.success);
+}
+
 function stableValue(value: any): any {
 	if (Array.isArray(value)) return value.map(stableValue);
 	if (value && typeof value === "object") {
@@ -213,22 +229,28 @@ async function ask(
 			indexShas.push((await buildConceptIndex(workdir, ESTATE_REPOSITORIES)).sha256);
 		}
 		let productReceipt: ProductReceipt | undefined;
+		let productReceipts: any[] = [];
 		let productPrompt = "";
 		let productTools: any[] = [];
 		if (product) {
 			if (!snapshot) throw new Error("estate snapshot is required for a real product");
 			const integration = await createRealProduct(product, estate, snapshot);
 			productReceipt = integration.receipt;
+			productReceipts = integration.receipts;
 			productPrompt = integration.prompt;
 			productTools = integration.tools;
 		}
 		const tools = [...(await createRestrictedReadOnlyTools(workdir)) as any[], ...productTools];
 		const toolCalls = countToolCalls(tools);
+		// Product tools must be named in the allowlist or PI filters them
+		// out and the agent never sees them; a run that silently drops
+		// them scores agent/file-search work as product evidence.
+		const allowedTools = [...FIXED_TOOLS, ...productTools.map((tool: any) => tool.name)];
 		({ session } = await createAgentSession({
 			cwd: workdir,
 			model,
 			thinkingLevel: FIXED_THINKING,
-			tools: [...FIXED_TOOLS],
+			tools: allowedTools,
 			customTools: tools as any,
 			modelRuntime,
 			sessionManager: SessionManager.inMemory(workdir),
@@ -256,7 +278,7 @@ async function ask(
 			await session?.abort().catch(() => undefined);
 		});
 		const elapsed = Math.round((performance.now() - started) / 100) / 10;
-		return { raw, elapsed, stats: session.getSessionStats(), toolCalls: toolCalls(), indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none"), productReceipt, effectivePrompt };
+		return { raw, elapsed, stats: session.getSessionStats(), toolCalls: toolCalls(), toolTelemetry: (toolCalls as any).telemetry(), indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none"), productReceipt, productReceipts, effectivePrompt, allowedTools };
 	} finally {
 		unsubscribe?.();
 		session?.dispose();
@@ -276,10 +298,13 @@ function stampProvenance(answer: any, options: {
 	context: RunContext;
 	runStartedAt: string;
 	toolCalls?: number;
+	toolTelemetry?: any;
 	indexSha?: string;
 	productReceipt?: ProductReceipt;
+	productReceipts?: any[];
+	allowedTools?: string[];
 }) {
-	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha, productReceipt } = options;
+	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools } = options;
 	// Manual rubric scores must come from an out-of-band rubric file, never
 	// from the model. Drop any model-supplied values so they cannot grade
 	// their own composite or suppress weight renormalization.
@@ -293,6 +318,10 @@ function stampProvenance(answer: any, options: {
 		run_started_at: runStartedAt,
 		elapsed_seconds: elapsed,
 		tool_calls: toolCalls ?? null,
+		tool_calls_by_name: toolTelemetry?.byName ?? null,
+		product_tool_calls: productSummary(productReceipts),
+		product_tool_receipts: productReceipts ?? null,
+		product_assisted_eligible: productEligible(contestant, productReceipts),
 		index_sha256: indexSha ?? "none",
 		product_provenance: productReceipt ?? null,
 		tokens_consumed: stats?.tokens.total,
@@ -301,7 +330,7 @@ function stampProvenance(answer: any, options: {
 		model_digest: modelDigest(contestant),
 		pi_version: context.piVersion,
 		prompt_sha256: sha256(prompt),
-		contestant_config_sha256: stableHash({ contestant, tools: FIXED_TOOLS, thinking: FIXED_THINKING }),
+		contestant_config_sha256: stableHash({ contestant, tools: allowedTools ?? [...FIXED_TOOLS], thinking: FIXED_THINKING }),
 		estate_sha256: context.estate.sha256,
 		harness_sha256: context.harnessSha256,
 		estate_repositories: context.estate.repositories,
@@ -326,7 +355,7 @@ async function runOnce(
 	const section = indexPromptSection(contestant.indexes ?? []);
 	const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
 	const runStartedAt = new Date().toISOString();
-	const { raw, elapsed, stats, toolCalls, indexSha, productReceipt, effectivePrompt } = await ask(
+	const { raw, elapsed, stats, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, effectivePrompt, allowedTools } = await ask(
 		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [], contestant.product, context.estate,
 	);
 
@@ -340,7 +369,7 @@ async function runOnce(
 		await writeFile(rawPath, raw);
 		throw new Error(`${(error as Error).message}; raw output saved to ${rawPath}`);
 	}
-	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha, productReceipt });
+	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools });
 }
 
 export async function main(argv = process.argv.slice(2)) {
