@@ -6,7 +6,6 @@ import test from "node:test";
 import {
 	createAgentSession,
 	DefaultResourceLoader,
-	getAgentDir,
 	ModelRuntime,
 	SessionManager,
 	SettingsManager,
@@ -116,11 +115,16 @@ test("restricted PI tools work inside the estate and reject outside paths", asyn
 // The guard only protects a run if the session hands the model the restricted
 // tools instead of PI's unrestricted built-ins of the same name.
 test("a session serves the restricted tools, not PI's built-ins", async (context) => {
-	const modelRuntime = await ModelRuntime.create();
-	const model = (await modelRuntime.getAvailable())[0];
-	if (!model) return context.skip("no provider credentials configured");
 	const root = await mkdtemp(join(tmpdir(), "harness-session-test-"));
 	try {
+		const modelRuntime = await ModelRuntime.create({
+			authPath: join(root, "auth.json"),
+			modelsPath: null,
+			modelsStorePath: join(root, "models-store.json"),
+			refreshOnCreate: false,
+		});
+		const model = modelRuntime.getModels()[0];
+		if (!model) return context.skip("PI has no built-in model definitions");
 		const estate = join(root, "estate");
 		await mkdir(estate);
 		await writeFile(join(estate, "inside.txt"), "inside marker");
@@ -136,7 +140,7 @@ test("a session serves the restricted tools, not PI's built-ins", async (context
 			settingsManager: SettingsManager.inMemory({}),
 			resourceLoader: new DefaultResourceLoader({
 				cwd: estate,
-				agentDir: getAgentDir(),
+				agentDir: root,
 				noExtensions: true,
 				noSkills: true,
 				noPromptTemplates: true,
