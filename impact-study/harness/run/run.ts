@@ -31,6 +31,8 @@ import {
 import type { EstateSnapshot } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection } from "./indexes.ts";
 import { RECORDS, RUN_DIR, RUNS } from "./paths.ts";
+import { createRealProduct } from "./products.ts";
+import type { ProductConfig, ProductReceipt } from "./products.ts";
 import { aggregate, scoreAnswer, validateFile } from "./scoring.ts";
 
 const PI_ENTRY = fileURLToPath(import.meta.resolve("@earendil-works/pi-coding-agent"));
@@ -47,6 +49,8 @@ interface Contestant {
 	model: string;
 	/** Precomputed index support: "symbol" (SCIP-like), "contract" (Gortex-like), "concept" (Graphify-like). */
 	indexes?: ("symbol" | "contract" | "concept")[];
+	product?: ProductConfig;
+	enabled?: boolean;
 }
 
 interface RunnerArgs {
@@ -62,6 +66,7 @@ interface RunnerArgs {
 interface RunContext {
 	estate: EstateSnapshot;
 	piVersion: string;
+	harnessSha256: string;
 }
 
 const readJson = async (path: string) => JSON.parse(await readFile(path, "utf8"));
@@ -128,6 +133,19 @@ function stableHash(value: any) {
 	return sha256(JSON.stringify(stableValue(value)));
 }
 
+async function harnessHash() {
+	const files = [
+		"answer.ts", "estate.ts", "indexes.ts", "products.ts", "run.ts", "scoring.ts",
+		"contestants.json", "prompt-template.md", "../scoring/score.py",
+		"../schema/contestant-answer.schema.json", "../schema/change-ground-truth.schema.json",
+	];
+	const hash = createHash("sha256");
+	for (const file of files.sort()) {
+		hash.update(file).update("\0").update(await readFile(join(RUN_DIR, file))).update("\0");
+	}
+	return hash.digest("hex");
+}
+
 function modelDigest(contestant: Contestant) {
 	if (contestant.provider !== "ollama") return null;
 	const result = spawnSync("ollama", ["list"], { encoding: "utf8" });
@@ -139,13 +157,13 @@ function modelDigest(contestant: Contestant) {
 	return null;
 }
 
-export function withTimeout<T>(operation: Promise<T>, timeoutSeconds: number, onTimeout: () => void) {
+export function withTimeout<T>(operation: Promise<T>, timeoutSeconds: number, onTimeout: () => void | Promise<void>) {
 	return new Promise<T>((resolvePromise, rejectPromise) => {
 		let settled = false;
-		const timer = setTimeout(() => {
+		const timer = setTimeout(async () => {
 			if (settled) return;
 			settled = true;
-			onTimeout();
+			await onTimeout();
 			rejectPromise(new Error(`timed out after ${timeoutSeconds}s`));
 		}, timeoutSeconds * 1000);
 		operation.then(
@@ -173,6 +191,8 @@ async function ask(
 	estate: string,
 	timeoutSeconds: number,
 	indexes: readonly ("symbol" | "contract" | "concept")[] = [],
+	product?: ProductConfig,
+	snapshot?: EstateSnapshot,
 ) {
 	const scratch = await mkdtemp(join(tmpdir(), "poc-run-"));
 	let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
@@ -192,7 +212,17 @@ async function ask(
 		if (indexes.includes("concept")) {
 			indexShas.push((await buildConceptIndex(workdir, ESTATE_REPOSITORIES)).sha256);
 		}
-		const tools = (await createRestrictedReadOnlyTools(workdir)) as any[];
+		let productReceipt: ProductReceipt | undefined;
+		let productPrompt = "";
+		let productTools: any[] = [];
+		if (product) {
+			if (!snapshot) throw new Error("estate snapshot is required for a real product");
+			const integration = await createRealProduct(product, estate, snapshot);
+			productReceipt = integration.receipt;
+			productPrompt = integration.prompt;
+			productTools = integration.tools;
+		}
+		const tools = [...(await createRestrictedReadOnlyTools(workdir)) as any[], ...productTools];
 		const toolCalls = countToolCalls(tools);
 		({ session } = await createAgentSession({
 			cwd: workdir,
@@ -221,11 +251,12 @@ async function ask(
 			}
 		});
 		const started = performance.now();
-		await withTimeout(session.prompt(prompt), timeoutSeconds, () => {
-			void session?.abort().catch(() => undefined);
+		const effectivePrompt = productPrompt ? `${prompt}\n\n${productPrompt}` : prompt;
+		await withTimeout(session.prompt(effectivePrompt), timeoutSeconds, async () => {
+			await session?.abort().catch(() => undefined);
 		});
 		const elapsed = Math.round((performance.now() - started) / 100) / 10;
-		return { raw, elapsed, stats: session.getSessionStats(), toolCalls: toolCalls(), indexSha: indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none" };
+		return { raw, elapsed, stats: session.getSessionStats(), toolCalls: toolCalls(), indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none"), productReceipt, effectivePrompt };
 	} finally {
 		unsubscribe?.();
 		session?.dispose();
@@ -246,8 +277,9 @@ function stampProvenance(answer: any, options: {
 	runStartedAt: string;
 	toolCalls?: number;
 	indexSha?: string;
+	productReceipt?: ProductReceipt;
 }) {
-	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha } = options;
+	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha, productReceipt } = options;
 	// Manual rubric scores must come from an out-of-band rubric file, never
 	// from the model. Drop any model-supplied values so they cannot grade
 	// their own composite or suppress weight renormalization.
@@ -262,6 +294,7 @@ function stampProvenance(answer: any, options: {
 		elapsed_seconds: elapsed,
 		tool_calls: toolCalls ?? null,
 		index_sha256: indexSha ?? "none",
+		product_provenance: productReceipt ?? null,
 		tokens_consumed: stats?.tokens.total,
 		cost_usd: stats?.cost,
 		model: `${contestant.provider}/${contestant.model}`,
@@ -270,6 +303,7 @@ function stampProvenance(answer: any, options: {
 		prompt_sha256: sha256(prompt),
 		contestant_config_sha256: stableHash({ contestant, tools: FIXED_TOOLS, thinking: FIXED_THINKING }),
 		estate_sha256: context.estate.sha256,
+		harness_sha256: context.harnessSha256,
 		estate_repositories: context.estate.repositories,
 		estate_revisions: context.estate.revisions,
 		findings: answer.findings ?? {},
@@ -291,27 +325,28 @@ async function runOnce(
 	const template = await readFile(join(RUN_DIR, "prompt-template.md"), "utf8");
 	const section = indexPromptSection(contestant.indexes ?? []);
 	const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
-	const { raw, elapsed, stats, toolCalls, indexSha } = await ask(
-		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [],
-	);
 	const runStartedAt = new Date().toISOString();
+	const { raw, elapsed, stats, toolCalls, indexSha, productReceipt, effectivePrompt } = await ask(
+		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [], contestant.product, context.estate,
+	);
 
 	let answer: any;
 	try {
 		answer = extractAnswer(raw);
 	} catch (error) {
 		await mkdir(RUNS, { recursive: true });
-		const rawPath = join(RUNS, `${record.change_id}-${name}-${index}.raw.txt`);
+		const stamp = runStartedAt.replace(/[:.]/g, "-");
+		const rawPath = join(RUNS, `${record.change_id}-${name}-${index}.${stamp}.raw.txt`);
 		await writeFile(rawPath, raw);
 		throw new Error(`${(error as Error).message}; raw output saved to ${rawPath}`);
 	}
-	return stampProvenance(answer, { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha });
+	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, indexSha, productReceipt });
 }
 
 export async function main(argv = process.argv.slice(2)) {
 	const args = parseArgs(argv);
 	const contestants: Record<string, Contestant> = await readJson(join(RUN_DIR, "contestants.json"));
-	const chosen = args.contestant.length > 0 ? args.contestant : Object.keys(contestants);
+	const chosen = args.contestant.length > 0 ? args.contestant : Object.keys(contestants).filter((name) => contestants[name].enabled !== false);
 	const unknown = chosen.filter((name) => !(name in contestants));
 	if (unknown.length > 0) throw new Error(`unknown contestant(s): ${unknown.join(", ")}`);
 
@@ -324,6 +359,7 @@ export async function main(argv = process.argv.slice(2)) {
 	const context: RunContext = {
 		estate: await captureEstateSnapshot(estate),
 		piVersion: (await readJson(PI_PACKAGE)).version,
+		harnessSha256: await harnessHash(),
 	};
 	await mkdir(RUNS, { recursive: true });
 	console.log(`estate ${context.estate.sha256.slice(0, 12)} (${context.estate.repositories.length} repositories)`);
@@ -345,9 +381,9 @@ export async function main(argv = process.argv.slice(2)) {
 					const answer = await runOnce(
 						record, name, contestants[name], modelRuntime, estate, index, args.timeout, context,
 					);
-					if ((answer.tool_calls ?? 0) < args.minToolCalls && (answer.tokens_consumed ?? 0) < args.minTokens) {
+					if ((answer.tool_calls ?? 0) < args.minToolCalls || (answer.tokens_consumed ?? 0) < args.minTokens) {
 						failures++;
-						const reason = `thin run: ${answer.tool_calls ?? 0} tool calls and ${answer.tokens_consumed ?? 0} tokens below minimums ${args.minToolCalls}/${args.minTokens}; answer kept for diagnosis but not scored`;
+						const reason = `thin run: ${answer.tool_calls ?? 0} tool calls or ${answer.tokens_consumed ?? 0} tokens below minimums ${args.minToolCalls}/${args.minTokens}; answer kept for diagnosis but not scored`;
 						console.log(`  FAILED: ${reason}`);
 						const stamp = (answer.run_started_at ?? new Date().toISOString()).replace(/[:.]/g, "-");
 						await writeFile(join(RUNS, `${stem}.${stamp}.json`), `${JSON.stringify(answer, null, 2)}\n`);

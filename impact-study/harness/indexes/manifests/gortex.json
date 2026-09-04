@@ -1,0 +1,37 @@
+{
+  "artifacts": [
+    {
+      "bytes": 326187346,
+      "name": "binary",
+      "path": "/Users/rajmohan/.local/bin/gortex",
+      "sha256": "30566ec81f2b4335b7e84e5664f508ae43238f0f037be7d2100543e211a05532"
+    }
+  ],
+  "metadata": {
+    "build_features": [
+      "no-llama",
+      "no-embeddings"
+    ],
+    "built_at": null,
+    "built_at_note": "daemon-backed live index; built_at is the daemon query time recorded per run",
+    "duration_note": "incremental daemon indexing has no single build duration; re-recorded on full rebuild",
+    "duration_seconds": null,
+    "repository_artifacts": false,
+    "workspace": "poc-estate"
+  },
+  "pins_sha256": "41de6a1bb2b837afef3a64b762daae1daf04693337ed4b5744d6390b2e5eb049",
+  "product": "gortex",
+  "repository_revisions": {
+    "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+    "basket-service": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+    "catalog-service": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+    "commerce-bff": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+    "commerce-platform": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+    "commerce-web": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+    "inventory-service": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+    "order-service": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+    "payment-service": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+    "shipment-service": "a7a8a067559b5e62a6c53699939cf9ec31686f25"
+  },
+  "schema_version": 1
+}

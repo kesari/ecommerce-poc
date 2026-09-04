@@ -2,3 +2,7 @@ __pycache__/
 *.pyc
 .DS_Store
 node_modules/
+*.scip
+harness/indexes/scip/
+harness/indexes/graphify/merged-graph.json
+harness/indexes/graphify/diagnose.json

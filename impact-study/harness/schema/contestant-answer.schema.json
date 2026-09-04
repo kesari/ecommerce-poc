@@ -20,8 +20,13 @@
         "scip",
         "gortex",
         "graphify",
-        "combined"
-      ]
+        "combined",
+        "synthetic-symbol-index",
+        "synthetic-contract-graph",
+        "synthetic-config-graph",
+        "synthetic-combined"
+      ],
+      "description": "scip/gortex/graphify/combined name real-product runs; synthetic-* names experimental controls. Older answers keep their original labels."
     },
     "runner": {
       "type": "string"
@@ -70,6 +75,11 @@
       "type": "string",
       "pattern": "^[a-f0-9]{64}$"
     },
+    "harness_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Content hash of the runner, prompt, schemas, scorer, and contestant configuration."
+    },
     "tool_calls": {
       "type": [
         "integer",
@@ -81,6 +91,28 @@
     "index_sha256": {
       "type": "string",
       "description": "SHA-256 over the precomputed index payloads served to this run, or 'none' for index-free contestants."
+    },
+    "product_provenance": {
+      "type": ["object", "null"],
+      "properties": {
+        "mode": {"type": "string", "const": "real_product"},
+        "product": {"type": "string"},
+        "version": {"type": "string"},
+        "commit": {"type": ["string", "null"]},
+        "binary_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "manifest_sha256": {"type": ["string", "null"]},
+        "query_surface": {"type": "array", "items": {"type": "string"}},
+        "freshness": {"type": "string", "const": "verified"},
+        "adapter_version": {"type": "string"},
+        "config_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "index_built_at": {"type": ["string", "null"]},
+        "index_duration_seconds": {"type": ["number", "null"]},
+        "indexed_estate_sha256": {"type": ["string", "null"], "pattern": "^([a-f0-9]{64})?$"}
+      },
+      "required": ["mode", "product", "version", "commit", "binary_sha256", "artifact_sha256", "manifest_sha256", "query_surface", "freshness", "adapter_version", "config_sha256", "index_built_at", "index_duration_seconds", "indexed_estate_sha256"],
+      "additionalProperties": false,
+      "description": "Runner-stamped identity and freshness receipt for a real open-source product integration."
     },
     "estate_repositories": {
       "type": "array",
@@ -161,6 +193,10 @@
               },
               "evidence": {
                 "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": ["product_direct", "agent_inferred", "file_search"]
               }
             }
           }
@@ -192,6 +228,10 @@
               },
               "evidence": {
                 "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": ["product_direct", "agent_inferred", "file_search"]
               }
             }
           }
@@ -237,6 +277,10 @@
               },
               "evidence": {
                 "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": ["product_direct", "agent_inferred", "file_search"]
               }
             }
           }
@@ -269,6 +313,10 @@
               },
               "evidence": {
                 "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": ["product_direct", "agent_inferred", "file_search"]
               }
             }
           }

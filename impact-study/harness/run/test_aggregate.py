@@ -152,6 +152,17 @@ class RenderScorecardTests(unittest.TestCase):
         self.assertNotIn("blind spots", text)
         self.assertIn("missed:", text)
 
+    def test_outcomes_include_rejected_attempts(self):
+        cells = {("REST-001", "pi", "a" * 64): [{}, {}]}
+        outcomes = aggregate.outcome_summary(cells, [
+            {"runner": "pi", "reason": "timeout"},
+            {"runner": "other", "reason": "thin"},
+        ])
+        self.assertEqual(outcomes["pi"], {
+            "scored": 2, "rejected": 1, "attempts": 3, "success_rate": 0.6667,
+        })
+        self.assertEqual(outcomes["other"]["success_rate"], 0.0)
+
 
 if __name__ == "__main__":
     unittest.main()

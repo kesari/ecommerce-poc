@@ -294,6 +294,34 @@ class ValidateTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             score.gt_index(broken)
 
+    def test_real_runner_without_provenance_is_rejected(self):
+        bad = answer()
+        bad["runner"] = "pi-codex-scip-real"
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("product_provenance" in e for e in report["errors"]["bad.json"]))
+
+    def test_real_runner_without_findings_is_rejected(self):
+        bad = answer()
+        bad["runner"] = "pi-codex-scip-real"
+        bad["product_provenance"] = {"mode": "real_product"}
+        del bad["findings"]
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        self.assertFalse(report["valid"])
+        self.assertTrue(any("findings object" in e for e in report["errors"]["bad.json"]))
+
+    def test_real_runner_rejects_unattributed_and_non_object_findings(self):
+        bad = answer()
+        bad["runner"] = "pi-codex-scip-real"
+        bad["product_provenance"] = {"mode": "real_product"}
+        bad["findings"]["repositories"].append({"name": "no-attribution-service"})
+        bad["findings"]["symbols"].append("not-an-object")
+        report = score.validate_files("answer", [str(self.write("bad.json", bad))])
+        self.assertFalse(report["valid"])
+        errors = "\n".join(report["errors"]["bad.json"])
+        self.assertIn("requires attribution", errors)
+        self.assertIn("must be an object", errors)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,43 @@
+{
+  "artifacts": [
+    {
+      "bytes": 7253003,
+      "name": "merged_graph",
+      "path": "graphify/merged-graph.json",
+      "sha256": "a5bce2cd60867de2958c6cf0e2d660836309db6cb5d19c13e89962d06ed38328"
+    },
+    {
+      "bytes": 3142,
+      "name": "diagnostics",
+      "path": "graphify/diagnose.json",
+      "sha256": "67f751e7052d505673e7a28f6874042e67cd98f629e8a101c8197de12fa80daf"
+    }
+  ],
+  "metadata": {
+    "built_at": "2026-09-04T05:28:33.210561+00:00",
+    "duration_note": "not recorded at build time; re-recorded on next rebuild",
+    "duration_seconds": null,
+    "normalization_note": "Graphify's query loader reconciles AST/semantic ghost nodes after loading the saved merge",
+    "normalized_edges": 248,
+    "normalized_nodes": 157,
+    "query_edges": 12660,
+    "query_nodes": 4488,
+    "raw_edges": 12908,
+    "raw_nodes": 4645
+  },
+  "pins_sha256": "41de6a1bb2b837afef3a64b762daae1daf04693337ed4b5744d6390b2e5eb049",
+  "product": "graphify",
+  "repository_revisions": {
+    "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+    "basket-service": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+    "catalog-service": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+    "commerce-bff": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+    "commerce-platform": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+    "commerce-web": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+    "inventory-service": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+    "order-service": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+    "payment-service": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+    "shipment-service": "a7a8a067559b5e62a6c53699939cf9ec31686f25"
+  },
+  "schema_version": 1
+}

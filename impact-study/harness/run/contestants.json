@@ -6,18 +6,20 @@
     "model": "qwen3-coder:30b-a3b-q8_0"
   },
   "pi-scip": {
-    "label": "scip",
-    "description": "pi SDK plus precomputed SCIP-like Java symbol index, same model and read-only tools",
+    "label": "synthetic-symbol-index",
+    "description": "LEGACY SIMULATION: pi SDK plus the harness Java symbol table; not scip-java/scip-search",
     "provider": "ollama",
     "model": "qwen3-coder:30b-a3b-q8_0",
-    "indexes": ["symbol"]
+    "indexes": ["symbol"],
+    "enabled": false
   },
   "pi-gortex": {
-    "label": "gortex",
-    "description": "pi SDK plus precomputed Gortex-like REST/Kafka contract graph, same model and read-only tools",
+    "label": "synthetic-contract-graph",
+    "description": "LEGACY SIMULATION: pi SDK plus the harness contract graph; not Gortex",
     "provider": "ollama",
     "model": "qwen3-coder:30b-a3b-q8_0",
-    "indexes": ["contract"]
+    "indexes": ["contract"],
+    "enabled": false
   },
   "pi-haiku": {
     "label": "agent-only",
@@ -26,18 +28,20 @@
     "model": "claude-haiku-4-5"
   },
   "pi-haiku-scip": {
-    "label": "scip",
-    "description": "pi SDK plus precomputed SCIP-like Java symbol index, Claude Haiku via Anthropic subscription (OAuth)",
+    "label": "synthetic-symbol-index",
+    "description": "LEGACY SIMULATION: harness Java symbol table; not scip-java/scip-search",
     "provider": "anthropic",
     "model": "claude-haiku-4-5",
-    "indexes": ["symbol"]
+    "indexes": ["symbol"],
+    "enabled": false
   },
   "pi-haiku-gortex": {
-    "label": "gortex",
-    "description": "pi SDK plus precomputed Gortex-like REST/Kafka contract graph, Claude Haiku via Anthropic subscription (OAuth)",
+    "label": "synthetic-contract-graph",
+    "description": "LEGACY SIMULATION: harness contract graph; not Gortex",
     "provider": "anthropic",
     "model": "claude-haiku-4-5",
-    "indexes": ["contract"]
+    "indexes": ["contract"],
+    "enabled": false
   },
   "pi-codex": {
     "label": "agent-only",
@@ -52,31 +56,56 @@
     "model": "gpt-5.6-luna"
   },
   "pi-codex-scip": {
-    "label": "scip",
-    "description": "pi SDK plus precomputed SCIP-like Java symbol index, GPT via Codex subscription (OAuth)",
+    "label": "synthetic-symbol-index",
+    "description": "LEGACY SIMULATION: harness Java symbol table; not scip-java/scip-search",
     "provider": "openai-codex",
     "model": "gpt-5.4",
-    "indexes": ["symbol"]
+    "indexes": ["symbol"],
+    "enabled": false
   },
   "pi-codex-gortex": {
-    "label": "gortex",
-    "description": "pi SDK plus precomputed Gortex-like REST/Kafka contract graph, GPT via Codex subscription (OAuth)",
+    "label": "synthetic-contract-graph",
+    "description": "LEGACY SIMULATION: harness contract graph; not Gortex",
     "provider": "openai-codex",
     "model": "gpt-5.4",
-    "indexes": ["contract"]
+    "indexes": ["contract"],
+    "enabled": false
   },
   "pi-combined": {
-    "label": "combined",
-    "description": "pi SDK plus symbol index and contract graph together, GPT via Codex subscription (OAuth)",
+    "label": "synthetic-combined",
+    "description": "LEGACY SIMULATION: two harness-built indexes; not a product combination",
     "provider": "openai-codex",
     "model": "gpt-5.4",
-    "indexes": ["symbol", "contract"]
+    "indexes": ["symbol", "contract"],
+    "enabled": false
   },
   "pi-graphify": {
-    "label": "graphify",
-    "description": "pi SDK plus precomputed Graphify-like deployment wiring index, GPT via Codex subscription (OAuth)",
+    "label": "synthetic-config-graph",
+    "description": "LEGACY SIMULATION: harness deployment-wiring index; not Graphify",
     "provider": "openai-codex",
     "model": "gpt-5.4",
-    "indexes": ["concept"]
+    "indexes": ["concept"],
+    "enabled": false
+  },
+  "pi-codex-scip-real": {
+    "label": "scip",
+    "description": "pi SDK plus real scip-java 0.10.4 and scip-search v0.2.0 over the pinned estate",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "product": {"kind": "scip"}
+  },
+  "pi-codex-gortex-real": {
+    "label": "gortex",
+    "description": "pi SDK plus real Gortex v0.63.10 over the pinned poc-estate workspace",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "product": {"kind": "gortex"}
+  },
+  "pi-codex-graphify-real": {
+    "label": "graphify",
+    "description": "pi SDK plus real Graphify 0.9.53 over the pinned merged graph",
+    "provider": "openai-codex",
+    "model": "gpt-5.4",
+    "product": {"kind": "graphify"}
   }
 }

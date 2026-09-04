@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { spawnSync } from "node:child_process";
+import { cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
@@ -11,9 +12,11 @@ import {
 	SettingsManager,
 } from "@earendil-works/pi-coding-agent";
 import { extractAnswer } from "./answer.ts";
-import { countToolCalls, createRestrictedReadOnlyTools, isolate } from "./estate.ts";
+import { countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
 import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, withTimeout } from "./run.ts";
+import { createRealProduct } from "./products.ts";
+import { verifyHeads } from "./products.ts";
 import { validateFile } from "./scoring.ts";
 
 test("parseArgs accepts repeated records and positive numeric values", () => {
@@ -310,4 +313,143 @@ test("countToolCalls counts every execute", async () => {
 	await tools[0].execute("b", { path: "y" });
 	assert.equal(getCount(), 2);
 	assert.deepEqual(calls, ["a", "b"]);
+});
+
+test("real SCIP integration verifies pins and invokes scip-search", async () => {
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	const snapshot = {
+		sha256: "0".repeat(64),
+		repositories: Object.keys(pins.repositories),
+		revisions: Object.entries(pins.repositories).map(([name, value]: [string, any]) => ({
+			name,
+			commit: value.commit,
+			dirty: value.dirty,
+		})),
+	};
+	const integration = await createRealProduct({ kind: "scip" }, "unused", snapshot);
+	assert.equal(integration.receipt.mode, "real_product");
+	assert.equal(integration.receipt.product, "scip-java+scip-search");
+	const output = await integration.tools[0].execute("test", { operation: "symbols", name: "AddressResponse" });
+	assert.match(output.content[0].text, /AddressResponse/);
+});
+
+test("real product refuses a snapshot that does not match pins", async () => {
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	const names = Object.keys(pins.repositories);
+	const snapshot = {
+		sha256: "0".repeat(64),
+		repositories: names,
+		revisions: names.map((name, index) => ({
+			name,
+			commit: index === 0 ? "f".repeat(40) : pins.repositories[name].commit,
+			dirty: false,
+		})),
+	};
+	await assert.rejects(createRealProduct({ kind: "scip" }, "unused", snapshot), /freshness check failed/);
+});
+
+test("verifyHeads passes on the pinned estate and fails on drift", async (context) => {
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	const probe = spawnSync("git", ["-C", join(DEFAULT_ESTATE, "account-service"), "rev-parse", "HEAD"], { encoding: "utf8" });
+	if (probe.status !== 0) return context.skip("estate repositories are not git checkouts here");
+	const estate = DEFAULT_ESTATE;
+	assert.doesNotThrow(() => verifyHeads(estate, pins));
+	const drifted = JSON.parse(JSON.stringify(pins));
+	drifted.repositories["account-service"].commit = "0".repeat(40);
+	assert.throws(() => verifyHeads(estate, drifted), /drifted mid-run/);
+});
+
+function shell(binary: string, args: string[], cwd: string) {
+	const result = spawnSync(binary, args, { cwd, encoding: "utf8", maxBuffer: 4 * 1024 * 1024 });
+	if (result.error) throw result.error;
+	if (result.status !== 0) throw new Error(`${binary} ${args[0]} failed: ${(result.stderr || result.stdout).slice(0, 500)}`);
+	return `${result.stdout ?? ""}`;
+}
+
+function which(binary: string) {
+	const found = spawnSync("which", [binary], { encoding: "utf8" });
+	if (found.status !== 0 || !found.stdout.trim()) throw new Error(`${binary} is not installed; skipping test`);
+	return found.stdout.trim();
+}
+
+test("scip freshness: touch, stale query, re-index, fresh query", async (context) => {
+	let cs: string;
+	try {
+		cs = which("cs");
+		which("scip-search");
+	} catch {
+		return context.skip("scip toolchain not installed");
+	}
+	const root = await mkdtemp(join(tmpdir(), "harness-fresh-scip-"));
+	try {
+		const repo = join(root, "account-service");
+		await cp(join(import.meta.dirname, "..", "..", "..", "POC-order-microservices", "account-service"), repo, { recursive: true });
+		const index = join(root, "index.scip");
+		shell(cs, ["launch", "com.sourcegraph:scip-java_2.13:0.10.4", "--", "index"], repo);
+		await cp(join(repo, "index.scip"), index);
+		const query = () => shell("scip-search", ["symbols", "--index", index, "--name", "FreshnessProbe"], root);
+		assert.doesNotMatch(query(), /FreshnessProbe/);
+		await writeFile(
+			join(repo, "src", "main", "java", "com", "poc", "account", "api", "dto", "FreshnessProbe.java"),
+			"package com.poc.account.api.dto;\n\npublic record FreshnessProbe(String marker) {}\n",
+		);
+		assert.doesNotMatch(query(), /FreshnessProbe/);
+		const rebuildStarted = performance.now();
+		shell(cs, ["launch", "com.sourcegraph:scip-java_2.13:0.10.4", "--", "index"], repo);
+		await cp(join(repo, "index.scip"), index);
+		console.info(`scip re-index latency ms: ${Math.round(performance.now() - rebuildStarted)}`);
+		assert.match(query(), /FreshnessProbe/);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test("graphify freshness: touch, stale query, re-extract, fresh query", async (context) => {
+	let graphify: string;
+	try {
+		graphify = which("graphify");
+	} catch {
+		return context.skip("graphify is not installed");
+	}
+	const root = await mkdtemp(join(tmpdir(), "harness-fresh-graphify-"));
+	try {
+		const repo = join(root, "account-service");
+		await cp(join(import.meta.dirname, "..", "..", "..", "POC-order-microservices", "account-service"), repo, { recursive: true });
+		const graph = join(root, "graph.json");
+		shell(graphify, ["update", repo, "--no-cluster"], root);
+		await cp(join(repo, "graphify-out", "graph.json"), graph);
+		const query = () => shell(graphify, ["query", "FreshnessProbe", "--graph", graph], root);
+		assert.doesNotMatch(query(), /FreshnessProbe/);
+		await writeFile(
+			join(repo, "src", "main", "java", "com", "poc", "account", "api", "dto", "FreshnessProbe.java"),
+			"package com.poc.account.api.dto;\n\npublic record FreshnessProbe(String marker) {}\n",
+		);
+		assert.doesNotMatch(query(), /FreshnessProbe/);
+		const rebuildStarted = performance.now();
+		shell(graphify, ["update", repo, "--no-cluster"], root);
+		await cp(join(repo, "graphify-out", "graph.json"), graph);
+		console.info(`graphify re-extract latency ms: ${Math.round(performance.now() - rebuildStarted)}`);
+		assert.match(query(), /FreshnessProbe/);
+	} finally {
+		await rm(root, { recursive: true, force: true });
+	}
+});
+
+test("gortex freshness: daemon reports pinned HEADs as fresh", async (context) => {
+	let gortex: string;
+	try {
+		gortex = which("gortex");
+	} catch {
+		return context.skip("gortex is not installed");
+	}
+	let status: string;
+	try {
+		status = shell(gortex, ["repos"], import.meta.dirname);
+	} catch {
+		return context.skip("gortex daemon unreachable");
+	}
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	for (const [name, value] of Object.entries(pins.repositories) as [string, any][]) {
+		assert.match(status, new RegExp(`${name}.*${value.commit.slice(0, 12)}`), `${name} not indexed at its pin`);
+	}
 });

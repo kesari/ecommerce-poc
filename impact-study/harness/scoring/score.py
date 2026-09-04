@@ -270,13 +270,36 @@ def answer_errors(answer, schema, name):
     container = answer.get("findings")
     if not isinstance(container, dict):
         check(answer, schema, name, errors)
-        return errors
-    for kind, items in container.items():
-        if kind in FINDING_KINDS and not isinstance(items, list):
-            errors.append(f"{name}.findings.{kind}: expected array, got {type(items).__name__}")
-        elif kind not in FINDING_KINDS:
-            errors.append(f"{name}.findings.{kind}: unknown finding kind")
-    check({**answer, "findings": {}}, schema, name, errors)
+    else:
+        for kind, items in container.items():
+            if kind in FINDING_KINDS and not isinstance(items, list):
+                errors.append(f"{name}.findings.{kind}: expected array, got {type(items).__name__}")
+            elif kind not in FINDING_KINDS:
+                errors.append(f"{name}.findings.{kind}: unknown finding kind")
+        check({**answer, "findings": {}}, schema, name, errors)
+    if str(answer.get("runner", "")).endswith("-real"):
+        # Shape gate only: this proves every finding carries an attribution
+        # label, not that the label is true or the finding is correct.
+        # Truth is the scorer's job; fabrication with a valid label passes here.
+        if not isinstance(answer.get("product_provenance"), dict):
+            errors.append(f"{name}: real-product runner requires product_provenance")
+        if not isinstance(container, dict):
+            errors.append(f"{name}: real-product runner requires a findings object")
+        else:
+            for kind, items in container.items():
+                if kind not in FINDING_KINDS or not isinstance(items, list):
+                    continue
+                for index, item in enumerate(items):
+                    if not isinstance(item, dict):
+                        errors.append(
+                            f"{name}.findings.{kind}[{index}]: real-product finding must be an object with attribution"
+                        )
+                    elif item.get("attribution") not in {
+                        "product_direct", "agent_inferred", "file_search"
+                    }:
+                        errors.append(
+                            f"{name}.findings.{kind}[{index}]: real-product finding requires attribution"
+                        )
     return errors
 
 
@@ -634,10 +657,16 @@ def main():
                 f"record {gt_document.get('change_id')} status is {gt_document.get('status')!r}: only frozen records may be scored (use --allow-draft to override)"
             )
         answer_bytes = Path(args.answer).read_bytes()
+        ground_truth_bytes = Path(args.ground_truth).read_bytes()
+        scorer_bytes = Path(__file__).read_bytes()
+        schema_bytes = (SCHEMA_DIR / "contestant-answer.schema.json").read_bytes()
         import hashlib
 
         report = score_change(gt_document, load(args.answer), args.target_latency_seconds)
         report["answer_sha256"] = hashlib.sha256(answer_bytes).hexdigest()
+        report["ground_truth_sha256"] = hashlib.sha256(ground_truth_bytes).hexdigest()
+        report["scorer_sha256"] = hashlib.sha256(scorer_bytes).hexdigest()
+        report["answer_schema_sha256"] = hashlib.sha256(schema_bytes).hexdigest()
     elif args.mode == "validate":
         report = validate_files(args.kind, args.paths)
     else:
