@@ -24,9 +24,12 @@
         "synthetic-symbol-index",
         "synthetic-contract-graph",
         "synthetic-config-graph",
-        "synthetic-combined"
+        "synthetic-combined",
+        "scip-first",
+        "gortex-first",
+        "graphify-first"
       ],
-      "description": "scip/gortex/graphify/combined name real-product runs; synthetic-* names experimental controls. Older answers keep their original labels."
+      "description": "scip/gortex/graphify/combined name real-product natural-adoption runs; *-first name Track C product-first runs; synthetic-* names experimental controls. Older answers keep their original labels."
     },
     "runner": {
       "type": "string"
@@ -101,11 +104,24 @@
         "null"
       ],
       "properties": {
-        "attempted": {"type": "integer", "minimum": 0},
-        "succeeded": {"type": "integer", "minimum": 0},
-        "failed": {"type": "integer", "minimum": 0}
+        "attempted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "succeeded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
       },
-      "required": ["attempted", "succeeded", "failed"],
+      "required": [
+        "attempted",
+        "succeeded",
+        "failed"
+      ],
       "description": "Runner-stamped summary over product-tool receipts. Null when the contestant has no product."
     },
     "product_tool_receipts": {
@@ -115,19 +131,136 @@
       ],
       "items": {
         "type": "object",
-        "required": ["id", "tool", "operation", "success"],
+        "required": [
+          "id",
+          "tool",
+          "operation",
+          "success"
+        ],
         "properties": {
-          "id": {"type": "string"},
-          "tool": {"type": "string"},
-          "operation": {"type": "string"},
-          "parameters": {"type": "object"},
-          "success": {"type": "boolean"},
-          "output_sha256": {"type": ["string", "null"]},
-          "duration_ms": {"type": "number"},
-          "error": {"type": ["string", "null"]}
+          "id": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "requested_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "What the model asked for, before any adapter translation."
+          },
+          "executed_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "What the product was actually run with. Differs from requested_query where an adapter translates dialects, such as a Java FQN narrowed to the declaring type scip-search matches on."
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "output": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The bounded response text the model saw, stored verbatim so a product_direct claim can be checked against the output that backs it."
+          },
+          "output_sha256": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "output_full_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Response size before bounding, so truncation loss is visible."
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "output_normalized": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Bounded copy of the response with unstable ordering canonicalized."
+          },
+          "output_normalized_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Hash over the complete canonicalized response, not the bounded copy. Judges reproducibility on content, so that a product reordering equal nodes between identical calls does not read as a semantic change."
+          },
+          "duration_ms": {
+            "type": "number"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
         }
       },
       "description": "Runner-generated receipt per product invocation. A product_direct finding must reference one of these IDs."
+    },
+    "product_playbook": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "properties": {
+          "intention": {
+            "type": "string",
+            "enum": [
+              "locate",
+              "references",
+              "expand",
+              "tests"
+            ]
+          },
+          "tool": {
+            "type": "string"
+          },
+          "operation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "description": "Track C only: the frozen query playbook the harness ran against the product before the model saw anything. Null on a natural-adoption run, which must never be compared with a product-first one."
     },
     "product_assisted_eligible": {
       "type": [
@@ -141,24 +274,94 @@
       "description": "SHA-256 over the precomputed index payloads served to this run, or 'none' for index-free contestants."
     },
     "product_provenance": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "properties": {
-        "mode": {"type": "string", "const": "real_product"},
-        "product": {"type": "string"},
-        "version": {"type": "string"},
-        "commit": {"type": ["string", "null"]},
-        "binary_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        "manifest_sha256": {"type": ["string", "null"]},
-        "query_surface": {"type": "array", "items": {"type": "string"}},
-        "freshness": {"type": "string", "const": "verified"},
-        "adapter_version": {"type": "string"},
-        "config_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-        "index_built_at": {"type": ["string", "null"]},
-        "index_duration_seconds": {"type": ["number", "null"]},
-        "indexed_estate_sha256": {"type": ["string", "null"], "pattern": "^([a-f0-9]{64})?$"}
+        "mode": {
+          "type": "string",
+          "const": "real_product"
+        },
+        "product": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "binary_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifest_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query_surface": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "freshness": {
+          "type": "string",
+          "const": "verified"
+        },
+        "adapter_version": {
+          "type": "string"
+        },
+        "config_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "index_built_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "index_duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "indexed_estate_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^([a-f0-9]{64})?$"
+        }
       },
-      "required": ["mode", "product", "version", "commit", "binary_sha256", "artifact_sha256", "manifest_sha256", "query_surface", "freshness", "adapter_version", "config_sha256", "index_built_at", "index_duration_seconds", "indexed_estate_sha256"],
+      "required": [
+        "mode",
+        "product",
+        "version",
+        "commit",
+        "binary_sha256",
+        "artifact_sha256",
+        "manifest_sha256",
+        "query_surface",
+        "freshness",
+        "adapter_version",
+        "config_sha256",
+        "index_built_at",
+        "index_duration_seconds",
+        "indexed_estate_sha256"
+      ],
       "additionalProperties": false,
       "description": "Runner-stamped identity and freshness receipt for a real open-source product integration."
     },
@@ -244,7 +447,11 @@
               },
               "attribution": {
                 "type": "string",
-                "enum": ["product_direct", "agent_inferred", "file_search"]
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
               },
               "receipt_id": {
                 "type": "string",
@@ -283,7 +490,11 @@
               },
               "attribution": {
                 "type": "string",
-                "enum": ["product_direct", "agent_inferred", "file_search"]
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
               },
               "receipt_id": {
                 "type": "string",
@@ -336,7 +547,11 @@
               },
               "attribution": {
                 "type": "string",
-                "enum": ["product_direct", "agent_inferred", "file_search"]
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
               },
               "receipt_id": {
                 "type": "string",
@@ -376,7 +591,11 @@
               },
               "attribution": {
                 "type": "string",
-                "enum": ["product_direct", "agent_inferred", "file_search"]
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
               },
               "receipt_id": {
                 "type": "string",

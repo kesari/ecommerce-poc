@@ -30,6 +30,8 @@ import {
 } from "./estate.ts";
 import type { EstateSnapshot } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection } from "./indexes.ts";
+import { candidateSection, deriveAnchor, playbookFor, runPlaybook } from "./playbook.ts";
+import type { ChangeAnchor } from "./playbook.ts";
 import { RECORDS, RUN_DIR, RUNS } from "./paths.ts";
 import { createRealProduct } from "./products.ts";
 import type { ProductConfig, ProductReceipt } from "./products.ts";
@@ -41,6 +43,10 @@ const PI_PACKAGE = resolve(dirname(PI_ENTRY), "..", "package.json");
 // Harness policy. Identical for every contestant, so only provider/model varies.
 export const FIXED_TOOLS = ["read", "grep", "find", "ls"] as const;
 export const FIXED_THINKING = "off";
+// Track C phase B: extra product calls the agent may make beyond the frozen
+// playbook. The playbook is the guaranteed evidence; this is headroom to
+// follow a thread, not a second bite at retrieval.
+export const PHASE_B_PRODUCT_BUDGET = 6;
 
 interface Contestant {
 	label: string;
@@ -50,6 +56,8 @@ interface Contestant {
 	/** Precomputed index support: "symbol" (SCIP-like), "contract" (Gortex-like), "concept" (Graphify-like). */
 	indexes?: ("symbol" | "contract" | "concept")[];
 	product?: ProductConfig;
+	/** Track C: run the frozen playbook before the model, then verify. */
+	product_first?: boolean;
 	enabled?: boolean;
 }
 
@@ -151,7 +159,7 @@ function stableHash(value: any) {
 
 async function harnessHash() {
 	const files = [
-		"answer.ts", "estate.ts", "indexes.ts", "products.ts", "run.ts", "scoring.ts",
+		"answer.ts", "estate.ts", "indexes.ts", "playbook.ts", "products.ts", "run.ts", "scoring.ts",
 		"contestants.json", "prompt-template.md", "../scoring/score.py",
 		"../schema/contestant-answer.schema.json", "../schema/change-ground-truth.schema.json",
 	];
@@ -209,6 +217,8 @@ async function ask(
 	indexes: readonly ("symbol" | "contract" | "concept")[] = [],
 	product?: ProductConfig,
 	snapshot?: EstateSnapshot,
+	anchor?: ChangeAnchor,
+	question?: string,
 ) {
 	const scratch = await mkdtemp(join(tmpdir(), "poc-run-"));
 	let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
@@ -230,6 +240,7 @@ async function ask(
 		}
 		let productReceipt: ProductReceipt | undefined;
 		let productReceipts: any[] = [];
+		let playbook: any[] | undefined;
 		let productPrompt = "";
 		let productTools: any[] = [];
 		if (product) {
@@ -239,6 +250,26 @@ async function ask(
 			productReceipts = integration.receipts;
 			productPrompt = integration.prompt;
 			productTools = integration.tools;
+			// Track C phase A: query the product before the model exists, so its
+			// evidence is in the analysis whether or not the agent would have
+			// asked. Track B measured that choice; this measures the product.
+			if (anchor) {
+				if (!anchor.usable) throw new Error(`no usable change anchor for a product-first run: ${anchor.repo}`);
+				playbook = await runPlaybook(productTools, playbookFor(product.kind, anchor, question ?? ""));
+				productPrompt = `${candidateSection(anchor, productReceipts)}\n\n${productPrompt}`;
+				// Phase B keeps the product available, but on a budget: the
+				// playbook is the guaranteed evidence, not an opening bid.
+				const spent = productReceipts.length;
+				productTools = productTools.map((tool: any) => ({
+					...tool,
+					execute: async (id: string, params: any) => {
+						if (productReceipts.length - spent >= PHASE_B_PRODUCT_BUDGET) {
+							throw new Error(`product query budget spent (${PHASE_B_PRODUCT_BUDGET} beyond the playbook); use the evidence you have`);
+						}
+						return tool.execute(id, params);
+					},
+				}));
+			}
 		}
 		const tools = [...(await createRestrictedReadOnlyTools(workdir)) as any[], ...productTools];
 		const toolCalls = countToolCalls(tools);
@@ -278,7 +309,7 @@ async function ask(
 			await session?.abort().catch(() => undefined);
 		});
 		const elapsed = Math.round((performance.now() - started) / 100) / 10;
-		return { raw, elapsed, stats: session.getSessionStats(), toolCalls: toolCalls(), toolTelemetry: (toolCalls as any).telemetry(), indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none"), productReceipt, productReceipts, effectivePrompt, allowedTools };
+		return { raw, elapsed, playbook, stats: session.getSessionStats(), toolCalls: toolCalls(), toolTelemetry: (toolCalls as any).telemetry(), indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none"), productReceipt, productReceipts, effectivePrompt, allowedTools };
 	} finally {
 		unsubscribe?.();
 		session?.dispose();
@@ -320,6 +351,15 @@ function stampProvenance(answer: any, options: {
 		tool_calls: toolCalls ?? null,
 		tool_calls_by_name: toolTelemetry?.byName ?? null,
 		product_tool_calls: productSummary(productReceipts),
+		// Present only on a Track C run: which frozen playbook steps ran, so a
+		// product-first answer is never mistaken for a natural-adoption one.
+		product_playbook: options.playbook
+			? options.playbook.map((entry: any) => ({
+				intention: entry.step.intention, tool: entry.step.tool,
+				operation: entry.step.params.operation ?? entry.step.params.action ?? null,
+				ok: entry.ok, error: entry.error ?? null,
+			}))
+			: null,
 		product_tool_receipts: productReceipts ?? null,
 		product_assisted_eligible: productEligible(contestant, productReceipts),
 		index_sha256: indexSha ?? "none",
@@ -355,8 +395,10 @@ async function runOnce(
 	const section = indexPromptSection(contestant.indexes ?? []);
 	const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
 	const runStartedAt = new Date().toISOString();
-	const { raw, elapsed, stats, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, effectivePrompt, allowedTools } = await ask(
+	const { raw, elapsed, playbook, stats, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, effectivePrompt, allowedTools } = await ask(
 		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [], contestant.product, context.estate,
+		contestant.product_first ? deriveAnchor(record.proposed_change?.repo ?? "", record.proposed_change?.diff ?? "") : undefined,
+		contestant.product_first ? record.query : undefined,
 	);
 
 	let answer: any;
@@ -369,7 +411,7 @@ async function runOnce(
 		await writeFile(rawPath, raw);
 		throw new Error(`${(error as Error).message}; raw output saved to ${rawPath}`);
 	}
-	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools });
+	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools, playbook });
 }
 
 export async function main(argv = process.argv.slice(2)) {
