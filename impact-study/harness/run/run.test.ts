@@ -16,7 +16,7 @@ import { countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate 
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
 import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, productEligible, productSummary, withTimeout } from "./run.ts";
 import { createRealProduct } from "./products.ts";
-import { verifyHeads } from "./products.ts";
+import { verifyHeads, canonicalizeOutput, scipQueryName } from "./products.ts";
 import { validateFile } from "./scoring.ts";
 
 test("parseArgs accepts repeated records and positive numeric values", () => {
@@ -439,8 +439,11 @@ test("real product invocations leave runner-generated receipts", async () => {
 	};
 	const integration = await createRealProduct({ kind: "scip" }, "unused", snapshot);
 	assert.deepEqual(integration.receipts, []);
-	await integration.tools[0].execute("test", { operation: "symbols", name: "AddressResponse" });
+	const output: any = await integration.tools[0].execute("test", { operation: "symbols", name: "AddressResponse" });
 	assert.equal(integration.receipts.length, 1);
+	// The model can only cite a receipt id it was shown; score.py rejects a
+	// product_direct finding whose receipt_id matches no recorded receipt.
+	assert.match(output.content[0].text, /^\[receipt r1\]\n/);
 	const receipt = integration.receipts[0];
 	assert.equal(receipt.tool, "scip_search");
 	assert.equal(receipt.operation, "symbols");
@@ -449,6 +452,70 @@ test("real product invocations leave runner-generated receipts", async () => {
 	assert.match(receipt.output_sha256, /^[a-f0-9]{64}$/);
 	assert.equal(typeof receipt.duration_ms, "number");
 	assert.match(receipt.id, /^r\d+$/);
+	// A hash alone cannot be audited, so the bounded text the model saw is
+	// stored verbatim alongside it.
+	assert.equal(typeof receipt.output, "string");
+	assert.equal(receipt.output_bytes, Buffer.byteLength(receipt.output));
+	// Output is stored whole: bounding it cost Gortex most of its richest answer.
+	assert.equal(receipt.truncated, false);
+	assert.equal(receipt.output_bytes, receipt.output_full_bytes);
+	assert.match(receipt.output_normalized_sha256, /^[a-f0-9]{64}$/);
+	// scip_search was asked for a partial name here, so no translation applies.
+	assert.equal(receipt.requested_query, "AddressResponse");
+	assert.equal(receipt.executed_query, "AddressResponse");
+});
+
+test("scipQueryName narrows an FQN to the declaring type, leaves partials alone", () => {
+	// scip-search returns nothing for an FQN; the pilot's six references calls
+	// all came back empty for exactly this reason.
+	assert.equal(scipQueryName("com.poc.order.infrastructure.client.AccountClient"), "AccountClient");
+	assert.equal(scipQueryName("com.poc.account.api.dto.AddressResponse"), "AddressResponse");
+	// Member on the end: keep the declaring type, not the member.
+	assert.equal(scipQueryName("com.poc.account.api.dto.AddressResponse.postalCode"), "AddressResponse");
+	// Already a partial name, or free text: unchanged.
+	assert.equal(scipQueryName("AccountClient"), "AccountClient");
+	assert.equal(scipQueryName("address postal code"), "address postal code");
+	// All-lowercase dotted path with no type segment: fall back to the last.
+	assert.equal(scipQueryName("order.confirmed.v1"), "v1");
+});
+
+test("canonicalizeOutput makes reordering identical but content changes visible", () => {
+	const a = '{"nodes":[{"id":"di::JwtDecoder","line":28},{"id":"di::SecurityFilterChain","line":35}]}';
+	const b = '{"nodes":[{"id":"di::SecurityFilterChain","line":35},{"id":"di::JwtDecoder","line":28}]}';
+	// Gortex reorders equal nodes between identical calls; that is not a
+	// semantic difference and must not read as one.
+	assert.equal(canonicalizeOutput(a), canonicalizeOutput(b));
+	// A real change still is one.
+	const c = '{"nodes":[{"id":"di::JwtDecoder","line":29},{"id":"di::SecurityFilterChain","line":35}]}';
+	assert.notEqual(canonicalizeOutput(a), canonicalizeOutput(c));
+	// Non-JSON passes through untouched.
+	assert.equal(canonicalizeOutput("No results."), "No results.");
+});
+
+test("gortex_contracts refuses a route where a symbol belongs, and the reverse", async (context) => {
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	const probe = spawnSync("git", ["-C", join(DEFAULT_ESTATE, "account-service"), "rev-parse", "HEAD"], { encoding: "utf8" });
+	if (probe.status !== 0) return context.skip("estate repositories are not git checkouts here");
+	const snapshot = {
+		sha256: "0".repeat(64),
+		repositories: Object.keys(pins.repositories),
+		revisions: Object.entries(pins.repositories).map(([name, value]: [string, any]) => ({
+			name, commit: value.commit, dirty: value.dirty,
+		})),
+	};
+	let integration: any;
+	try {
+		integration = await createRealProduct({ kind: "gortex" }, DEFAULT_ESTATE, snapshot);
+	} catch {
+		return context.skip("gortex daemon unreachable");
+	}
+	const contracts = integration.tools.find((tool: any) => tool.name === "gortex_contracts");
+	await assert.rejects(
+		() => contracts.execute("t", { action: "symbol_impact", query: "POST /api/v1/addresses", repo: "account-service" }),
+		/not an HTTP route/);
+	await assert.rejects(
+		() => contracts.execute("t", { action: "route_impact", query: "AddressResponse", repo: "account-service" }),
+		/route must read/);
 });
 
 test("real product refuses a snapshot that does not match pins", async () => {

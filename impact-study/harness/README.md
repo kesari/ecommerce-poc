@@ -75,9 +75,9 @@ The active product-backed contestants add a `product` entry:
 
 ```json
 "pi-codex-scip-real": { "label": "scip", "provider": "openai-codex",
-                         "model": "gpt-5.4", "product": {"kind": "scip"} },
+                         "model": "gpt-5.6-terra", "product": {"kind": "scip"} },
 "pi-codex-gortex-real": { "label": "gortex", "provider": "openai-codex",
-                           "model": "gpt-5.4", "product": {"kind": "gortex"} }
+                           "model": "gpt-5.6-terra", "product": {"kind": "gortex"} }
 ```
 
 The real integrations query pinned open-source scip-java plus scip-search,
@@ -86,6 +86,37 @@ can run, the harness verifies repository revisions, dirty state, product binary
 or package identity, artifact hashes, and Gortex freshness. Each answer carries
 a `product_provenance` receipt. Product-backed findings also distinguish
 `product_direct`, `agent_inferred`, and `file_search` attribution.
+
+## Product-first runs
+
+A contestant with `"product_first": true` runs Track C instead of natural
+adoption. The harness queries the product before the model exists, so product
+evidence is guaranteed to enter the analysis rather than depending on the agent
+choosing to ask — in the natural-adoption pilot it usually did not.
+
+Phase A derives a change anchor from the record's diff and runs a frozen
+playbook in `run/playbook.ts`: the same four intentions for every product —
+locate, references, expand, tests — expressed in each product's native surface.
+A product with no native answer for an intention has no step for it, and that
+absence is a result. Phase B gives the model the question, the candidate set and
+every receipt, plus file-search tools and `PHASE_B_PRODUCT_BUDGET` further
+product calls, and asks it to verify rather than rediscover.
+
+The anchor is derived mechanically — the symmetric difference of identifiers
+across the diff's changed lines, with quoted literals taken whole or not at all
+— so no judgement about the expected answer can leak into what the product is
+asked. A diff that renames nothing yields no anchor and a product-first run
+refuses to start: `INT-001`, `INT-002` and `KAFKA-004` change only a literal or
+a comment and are outside Track C.
+
+Every answer carries `product_playbook`, which is `null` on a natural-adoption
+run. Do not compare the two: one measures whether the agent asks, the other
+measures what the product returns when it is asked for it.
+
+Attribution is not the utilization metric here. Phase B asks the agent to verify
+candidates, and verification re-attributes them, so `product_direct` under-counts
+badly — a run can carry every playbook item into its answer and still report
+zero. Measure overlap between the playbook's output and the final findings.
 
 `run/indexes.ts` contains the old harness-built simulations. They are disabled
 by default and their contestant descriptions say `LEGACY SIMULATION`. Historical
