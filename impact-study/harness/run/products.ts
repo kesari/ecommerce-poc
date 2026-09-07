@@ -29,8 +29,12 @@ export interface ProductReceipt {
 	indexed_estate_sha256: string | null;
 }
 
-/** Bump when this adapter's query construction or normalization changes. */
-const ADAPTER_VERSION = "1.0.0";
+/** Bump when this adapter's query construction or normalization changes.
+ *  1.1.0 — output persisted on every receipt, canonicalized reproducibility
+ *  hash, SCIP FQN translation, Gortex route/symbol split.
+ *  1.2.0 — output ceilings removed: an 8KB per-call bound discarded the tail
+ *  of Gortex's richest answer, and with it three affected repositories. */
+const ADAPTER_VERSION = "1.2.0";
 
 function configSha(value: unknown) {
 	return sha256(JSON.stringify(value));
@@ -87,6 +91,25 @@ function assertQuery(value: unknown, name: string) {
 	return value.trim();
 }
 
+/** An HTTP route, not a symbol. Enforced so route_impact and symbol_impact
+ *  cannot be confused at the call site the way bridge_impact allowed. */
+function assertRoute(value: unknown) {
+	const route = assertQuery(value, "query");
+	if (!/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+\/\S*$/.test(route)) {
+		throw new Error('route must read "<METHOD> /path", for example "POST /api/v1/addresses"; use symbol_impact for a code symbol');
+	}
+	return route;
+}
+
+/** A code symbol, not a route. */
+function assertSymbol(value: unknown) {
+	const symbol = assertQuery(value, "query");
+	if (/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)\s+\//.test(symbol) || symbol.startsWith("/")) {
+		throw new Error("symbol_impact takes a code symbol, not an HTTP route; use route_impact for a route");
+	}
+	return symbol;
+}
+
 function assertRepo(value: unknown) {
 	if (typeof value !== "string" || !(ESTATE_REPOSITORIES as readonly string[]).includes(value)) {
 		throw new Error("repo must be one of the pinned estate repositories");
@@ -100,10 +123,71 @@ export interface ProductInvocationReceipt {
 	operation: string;
 	// Normalized arguments as validated by the wrapper — not raw model text.
 	parameters: Record<string, unknown>;
+	// What the model asked for vs what the product was actually run with.
+	// They differ where an adapter translates dialects; see scipTool.
+	requested_query: string | null;
+	executed_query: string | null;
 	success: boolean;
+	// The bounded text the model saw, stored verbatim. A hash alone cannot be
+	// audited: it proves two things match, never what either one said.
+	output: string | null;
 	output_sha256: string | null;
+	output_bytes: number | null;
+	// Equal to output_bytes while nothing is bounded; kept so a future ceiling
+	// makes its loss visible instead of silent.
+	output_full_bytes: number | null;
+	truncated: boolean;
+	// Same output with unstable ordering canonicalized, so that reproducibility
+	// is judged on content. Gortex reorders equal nodes between identical calls.
+	output_normalized: string | null;
+	output_normalized_sha256: string | null;
 	duration_ms: number;
 	error: string | null;
+}
+
+// Output is stored and passed on whole. Bounding it to 8KB per call cost
+// Gortex 5 of the 8 ground-truth items in its richest single answer, because
+// head-truncation discards the tail and Gortex's tail held three of the four
+// affected repositories. The only remaining ceiling is the 1MB spawn buffer in
+// run(), which surfaces as a failed receipt rather than a silent trim.
+
+/** Sort JSON arrays of objects by a stable key so ordering noise stops
+ *  registering as semantic change. Non-JSON output is returned unchanged. */
+export function canonicalizeOutput(text: string) {
+	let parsed: unknown;
+	try {
+		parsed = JSON.parse(text);
+	} catch {
+		return text;
+	}
+	const walk = (value: any): any => {
+		if (Array.isArray(value)) {
+			const items = value.map(walk);
+			return items.every((item) => item && typeof item === "object" && !Array.isArray(item))
+				? items.slice().sort((a, b) => (JSON.stringify(a) < JSON.stringify(b) ? -1 : 1))
+				: items;
+		}
+		if (value && typeof value === "object") {
+			return Object.fromEntries(Object.keys(value).sort().map((key) => [key, walk(value[key])]));
+		}
+		return value;
+	};
+	return JSON.stringify(walk(parsed));
+}
+
+/** scip-search matches partial symbol names and returns nothing for a
+ *  fully-qualified one. The prompt's Identifier Convention trains the model on
+ *  canonical FQNs, so it asked in a dialect the product does not answer: every
+ *  `references` call in the REST-001 pilot came back empty. Translate rather
+ *  than reject, and record both forms on the receipt. */
+export function scipQueryName(requested: string) {
+	const trimmed = requested.trim();
+	if (/\s/.test(trimmed) || !trimmed.includes(".")) return trimmed;
+	const segments = trimmed.split(".").filter(Boolean);
+	// A canonical Java FQN ends in the declaring type, optionally then a member.
+	// Take the last segment starting upper-case; fall back to the final segment.
+	const typeIndex = segments.map((s) => /^[A-Z]/.test(s)).lastIndexOf(true);
+	return typeIndex === -1 ? segments[segments.length - 1] : segments[typeIndex];
 }
 
 function scipTool(binary: string, index: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
@@ -111,19 +195,28 @@ function scipTool(binary: string, index: string, receipts: ProductInvocationRece
 	return {
 		name: "scip_search",
 		label: "SCIP search",
-		description: "Query the real aggregated scip-java index through scip-search. Results are product-direct evidence; cross-service connections absent from the output are not.",
+		description: "Query the real aggregated scip-java index through scip-search. A fully-qualified name is accepted and narrowed to its declaring type, which is the form the index matches. Results are product-direct evidence; cross-service connections absent from the output are not.",
 		parameters: schema({
 			operation: stringEnum(operations),
-			name: textParameter("Literal partial symbol name."),
+			name: textParameter("Symbol name. A partial name or a fully-qualified name both work."),
 		}, ["operation", "name"]),
 		execute: async (_id: string, params: any) => {
 			const operation = assertQuery(params.operation, "operation");
 			if (!operations.includes(operation)) throw new Error("unsupported SCIP operation");
-			const name = assertQuery(params.name, "name");
-			return invokeWithReceipt(receipts, takeId, "scip_search", operation, { operation, name }, () =>
-				result(run(binary, [operation, "--index", index, "--name", name, "--json"])));
+			const requested = assertQuery(params.name, "name");
+			const executed = scipQueryName(requested);
+			return invokeWithReceipt(receipts, takeId, "scip_search", operation, { operation, name: requested },
+				() => result(run(binary, [operation, "--index", index, "--name", executed, "--json"])),
+				{ requested, executed });
 		},
 	};
+}
+
+/** Prefix a tool result with its receipt id, so a product_direct finding can cite it. */
+function stampReceiptId(value: any, id: string) {
+	const block = value?.content?.[0];
+	if (block?.type === "text") block.text = `[receipt ${id}]\n${block.text}`;
+	return value;
 }
 
 /** Run a product invocation, recording a runner-generated receipt.
@@ -139,21 +232,53 @@ async function invokeWithReceipt(
 	operation: string,
 	parameters: Record<string, unknown>,
 	invoke: () => unknown,
+	queries: { requested?: string; executed?: string } = {},
 ) {
 	const started = performance.now();
 	const id = takeId();
 	try {
-		const value = await invoke();
+		const value: any = await invoke();
+		// Bound before the model sees it, so the receipt stores exactly the
+		// bytes that reached the model — not a longer text it never read.
+		const output = value?.content?.[0]?.text ?? "";
+		const full = output;
+		const truncated = false;
+		// Canonicalize the COMPLETE output, never the truncated one: two
+		// differently-ordered responses cut at the same byte offset leave
+		// different fragments, and a fragment is not parseable JSON, so
+		// canonicalization would silently pass it through unsorted. The
+		// normalized hash judges reproducibility and must see everything.
+		const normalizedFull = canonicalizeOutput(full);
+		const normalized = normalizedFull;
 		receipts.push({
-			id, tool, operation, parameters, success: true,
+			id, tool, operation, parameters,
+			requested_query: queries.requested ?? null,
+			executed_query: queries.executed ?? null,
+			success: true,
+			output,
 			output_sha256: sha256(JSON.stringify(value) ?? ""),
+			output_bytes: Buffer.byteLength(output),
+			output_full_bytes: Buffer.byteLength(full),
+			truncated,
+			output_normalized: normalized,
+			// Covers the full canonical output, so it stays comparable across
+			// calls even when the stored copies above are both truncated.
+			output_normalized_sha256: sha256(normalizedFull),
 			duration_ms: Math.round((performance.now() - started) * 10) / 10,
 			error: null,
 		});
-		return value;
+		// Hashed above, stamped after: output_sha256 covers the product's own
+		// output, and the model still sees the id it must cite to claim
+		// product_direct.
+		return stampReceiptId(value, id);
 	} catch (error) {
 		receipts.push({
-			id, tool, operation, parameters, success: false, output_sha256: null,
+			id, tool, operation, parameters,
+			requested_query: queries.requested ?? null,
+			executed_query: queries.executed ?? null,
+			success: false,
+			output: null, output_sha256: null, output_bytes: null, output_full_bytes: null, truncated: false,
+			output_normalized: null, output_normalized_sha256: null,
 			duration_ms: Math.round((performance.now() - started) * 10) / 10,
 			error: String((error as Error)?.message ?? error).slice(0, 500),
 		});
@@ -222,14 +347,18 @@ function gortexTool(binary: string, estate: string, pins: any, receipts: Product
 }
 
 function gortexContractsTool(binary: string, estate: string, pins: any, receipts: ProductInvocationReceipt[], takeId: () => string) {
-	const actions = ["list", "check", "validate", "bridge_rank", "bridge_impact", "api_impact"];
+	// route_impact and symbol_impact were one `bridge_impact` action taking a
+	// free-text `query`. The model fed it HTTP routes, which it answers with
+	// "symbol not found" — 6 of 22 Gortex calls in the REST-001 pilot. Separate
+	// operations make the argument's kind unmistakable at the call site.
+	const actions = ["list", "check", "validate", "bridge_rank", "symbol_impact", "route_impact"];
 	return {
 		name: "gortex_contracts",
 		label: "Gortex contracts",
-		description: "Use Gortex's native read-only contract bridge or fused API-impact analysis across the pinned workspace.",
+		description: "Use Gortex's native read-only contract bridge or fused API-impact analysis across the pinned workspace. Use route_impact for an HTTP route and symbol_impact for a code symbol; they are not interchangeable.",
 		parameters: schema({
 			action: stringEnum(actions),
-			query: { type: "string", maxLength: 300, description: "Route, bridge query, or graph symbol, depending on action." },
+			query: { type: "string", maxLength: 300, description: "An HTTP route for route_impact, a code symbol for symbol_impact, a bridge query for bridge_rank. Omit for list, check and validate." },
 			repo: stringEnum([...ESTATE_REPOSITORIES], "Repository used as the query view."),
 		}, ["action", "repo"]),
 		execute: async (_id: string, params: any) => {
@@ -239,26 +368,33 @@ function gortexContractsTool(binary: string, estate: string, pins: any, receipts
 			const repo = assertRepo(params.repo);
 			const indexArgs = ["--index", join(estate, repo), "--format", "json"];
 			const parameters: Record<string, unknown> = { action, repo };
+			let executed: string | undefined;
 			const invoke = () => {
-				if (action === "api_impact") {
-					const query = assertQuery(params.query, "query");
-					parameters.query = query;
-					return result(run(binary, ["call", "api_impact", "--arg", `route=${query}`, "--arg", `repo=${repo}`, ...indexArgs]));
+				if (action === "route_impact") {
+					const route = assertRoute(params.query);
+					parameters.query = route;
+					executed = route;
+					return result(run(binary, ["call", "api_impact", "--arg", `route=${route}`, "--arg", `repo=${repo}`, ...indexArgs]));
 				}
-				const contractAction = action.startsWith("bridge_") ? "bridge" : action;
+				const contractAction = action.startsWith("bridge_") || action === "symbol_impact" ? "bridge" : action;
 				const args = ["call", "contracts", "--arg", `action=${contractAction}`];
 				if (action === "bridge_rank") {
-					args.push("--arg", "mode=rank", "--arg", `query=${assertQuery(params.query, "query")}`);
-					parameters.query = params.query;
-				} else if (action === "bridge_impact") {
-					args.push("--arg", "mode=impact", "--arg", `symbol=${assertQuery(params.query, "query")}`);
-					parameters.query = params.query;
+					const query = assertQuery(params.query, "query");
+					args.push("--arg", "mode=rank", "--arg", `query=${query}`);
+					parameters.query = query;
+					executed = query;
+				} else if (action === "symbol_impact") {
+					const symbol = assertSymbol(params.query);
+					args.push("--arg", "mode=impact", "--arg", `symbol=${symbol}`);
+					parameters.query = symbol;
+					executed = symbol;
 				} else {
 					args.push("--arg", `repo=${repo}`);
 				}
 				return result(run(binary, [...args, ...indexArgs]));
 			};
-			return invokeWithReceipt(receipts, takeId, "gortex_contracts", action, parameters, invoke);
+			return invokeWithReceipt(receipts, takeId, "gortex_contracts", action, parameters, invoke,
+				{ requested: params.query, executed });
 		},
 	};
 }
@@ -358,9 +494,9 @@ export async function createRealProduct(
 			mode: "real_product", product: "gortex", version: pins.toolchain.gortex,
 			commit: pins.toolchain["gortex-commit"], binary_sha256: pins.toolchain["gortex-sha256"],
 			artifact_sha256: artifactSha, manifest_sha256: null,
-			query_surface: ["symbol", "usages", "callers", "calls", "dependents", "deps", "implementations", "contracts", "api_impact"], freshness: "verified",
+			query_surface: ["symbol", "usages", "callers", "calls", "dependents", "deps", "implementations", "contracts", "route_impact", "symbol_impact"], freshness: "verified",
 			adapter_version: ADAPTER_VERSION,
-			config_sha256: configSha({ product: "gortex", workspace: pins.toolchain["gortex-workspace"], query_surface: ["symbol", "usages", "callers", "calls", "dependents", "deps", "implementations", "contracts", "api_impact"] }),
+			config_sha256: configSha({ product: "gortex", workspace: pins.toolchain["gortex-workspace"], query_surface: ["symbol", "usages", "callers", "calls", "dependents", "deps", "implementations", "contracts", "route_impact", "symbol_impact"] }),
 			index_built_at: null,
 			index_duration_seconds: null,
 			indexed_estate_sha256: snapshot.sha256 ?? null,

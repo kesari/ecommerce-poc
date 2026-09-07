@@ -10,7 +10,9 @@
     "description": "LEGACY SIMULATION: pi SDK plus the harness Java symbol table; not scip-java/scip-search",
     "provider": "ollama",
     "model": "qwen3-coder:30b-a3b-q8_0",
-    "indexes": ["symbol"],
+    "indexes": [
+      "symbol"
+    ],
     "enabled": false
   },
   "pi-gortex": {
@@ -18,7 +20,9 @@
     "description": "LEGACY SIMULATION: pi SDK plus the harness contract graph; not Gortex",
     "provider": "ollama",
     "model": "qwen3-coder:30b-a3b-q8_0",
-    "indexes": ["contract"],
+    "indexes": [
+      "contract"
+    ],
     "enabled": false
   },
   "pi-haiku": {
@@ -32,7 +36,9 @@
     "description": "LEGACY SIMULATION: harness Java symbol table; not scip-java/scip-search",
     "provider": "anthropic",
     "model": "claude-haiku-4-5",
-    "indexes": ["symbol"],
+    "indexes": [
+      "symbol"
+    ],
     "enabled": false
   },
   "pi-haiku-gortex": {
@@ -40,14 +46,16 @@
     "description": "LEGACY SIMULATION: harness contract graph; not Gortex",
     "provider": "anthropic",
     "model": "claude-haiku-4-5",
-    "indexes": ["contract"],
+    "indexes": [
+      "contract"
+    ],
     "enabled": false
   },
   "pi-codex": {
     "label": "agent-only",
     "description": "pi SDK, read-only tools, GPT via Codex subscription (OAuth)",
     "provider": "openai-codex",
-    "model": "gpt-5.4"
+    "model": "gpt-5.6-terra"
   },
   "pi-luna": {
     "label": "agent-only",
@@ -59,53 +67,98 @@
     "label": "synthetic-symbol-index",
     "description": "LEGACY SIMULATION: harness Java symbol table; not scip-java/scip-search",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "indexes": ["symbol"],
+    "model": "gpt-5.6-terra",
+    "indexes": [
+      "symbol"
+    ],
     "enabled": false
   },
   "pi-codex-gortex": {
     "label": "synthetic-contract-graph",
     "description": "LEGACY SIMULATION: harness contract graph; not Gortex",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "indexes": ["contract"],
+    "model": "gpt-5.6-terra",
+    "indexes": [
+      "contract"
+    ],
     "enabled": false
   },
   "pi-combined": {
     "label": "synthetic-combined",
     "description": "LEGACY SIMULATION: two harness-built indexes; not a product combination",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "indexes": ["symbol", "contract"],
+    "model": "gpt-5.6-terra",
+    "indexes": [
+      "symbol",
+      "contract"
+    ],
     "enabled": false
   },
   "pi-graphify": {
     "label": "synthetic-config-graph",
     "description": "LEGACY SIMULATION: harness deployment-wiring index; not Graphify",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "indexes": ["concept"],
+    "model": "gpt-5.6-terra",
+    "indexes": [
+      "concept"
+    ],
     "enabled": false
   },
   "pi-codex-scip-real": {
     "label": "scip",
     "description": "pi SDK plus real scip-java 0.10.4 and scip-search v0.2.0 over the pinned estate",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "product": {"kind": "scip"}
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "scip"
+    }
   },
   "pi-codex-gortex-real": {
     "label": "gortex",
     "description": "pi SDK plus real Gortex v0.63.10 over the pinned poc-estate workspace",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "product": {"kind": "gortex"}
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "gortex"
+    }
   },
   "pi-codex-graphify-real": {
     "label": "graphify",
     "description": "pi SDK plus real Graphify 0.9.53 over the pinned merged graph",
     "provider": "openai-codex",
-    "model": "gpt-5.4",
-    "product": {"kind": "graphify"}
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "graphify"
+    }
+  },
+  "pi-codex-scip-first": {
+    "label": "scip-first",
+    "description": "Track C: frozen scip playbook runs before the model, which then verifies the candidates",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "scip"
+    },
+    "product_first": true
+  },
+  "pi-codex-gortex-first": {
+    "label": "gortex-first",
+    "description": "Track C: frozen gortex playbook runs before the model, which then verifies the candidates",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "gortex"
+    },
+    "product_first": true
+  },
+  "pi-codex-graphify-first": {
+    "label": "graphify-first",
+    "description": "Track C: frozen graphify playbook runs before the model, which then verifies the candidates",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "graphify"
+    },
+    "product_first": true
   }
 }

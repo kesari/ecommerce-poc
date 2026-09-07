@@ -55,6 +55,11 @@ finding: `product_direct` only when the product output contains the fact,
 `agent_inferred` when you bridge or reason beyond that output, and `file_search`
 when the read/grep/find/ls tools establish it.
 
+Every product tool result opens with a `[receipt rN]` line. A `product_direct`
+finding must set `receipt_id` to the id of the result that contained the fact.
+A `product_direct` finding without a matching `receipt_id` is rejected. Omit
+`receipt_id` on `agent_inferred` and `file_search` findings.
+
 ## Identifier convention
 
 Use these canonical forms so answers can be matched. Matching is
@@ -84,11 +89,11 @@ Reply with ONE JSON object and nothing else. No prose, no markdown fence.
   "change_id": "{{CHANGE_ID}}",
   "contestant": "agent-only",
   "findings": {
-    "repositories": [ {"name": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ],
-    "symbols":      [ {"fqn": "...", "repo": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ],
+    "repositories": [ {"name": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "receipt_id": "rN, product_direct only", "evidence": "..."} ],
+    "symbols":      [ {"fqn": "...", "repo": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "receipt_id": "rN, product_direct only", "evidence": "..."} ],
     "contracts":    [ {"type": "rest|kafka|grpc|openapi|db", "identifier": "...",
-                       "consumer_repos": ["..."], "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ],
-    "tests":        [ {"repo": "...", "suite": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "evidence": "..."} ]
+                       "consumer_repos": ["..."], "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "receipt_id": "rN, product_direct only", "evidence": "..."} ],
+    "tests":        [ {"repo": "...", "suite": "...", "evidence_tier": "...", "attribution": "product_direct|agent_inferred|file_search", "receipt_id": "rN, product_direct only", "evidence": "..."} ]
   }
 }
 ```
