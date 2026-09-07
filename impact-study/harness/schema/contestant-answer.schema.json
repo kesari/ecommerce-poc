@@ -27,9 +27,10 @@
         "synthetic-combined",
         "scip-first",
         "gortex-first",
-        "graphify-first"
+        "graphify-first",
+        "codex-direct"
       ],
-      "description": "scip/gortex/graphify/combined name real-product natural-adoption runs; *-first name Track C product-first runs; synthetic-* names experimental controls. Older answers keep their original labels."
+      "description": "scip/gortex/graphify/combined name real-product natural-adoption runs; *-first name Track C product-first runs; synthetic-* names experimental controls; codex-direct names an unharnessed run driven by the Codex CLI with full shell and reasoning. Older answers keep their labels."
     },
     "runner": {
       "type": "string"

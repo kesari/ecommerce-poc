@@ -1,0 +1,70 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["findings"],
+  "properties": {
+    "findings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositories", "symbols", "contracts", "tests"],
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "evidence_tier", "evidence"],
+            "properties": {
+              "name": { "type": "string" },
+              "evidence_tier": { "type": "string", "enum": ["compiler", "extracted", "contract_matched", "inferred", "hypothesis"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fqn", "repo", "evidence_tier", "evidence"],
+            "properties": {
+              "fqn": { "type": "string" },
+              "repo": { "type": "string" },
+              "evidence_tier": { "type": "string", "enum": ["compiler", "extracted", "contract_matched", "inferred", "hypothesis"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["type", "identifier", "consumer_repos", "evidence_tier", "evidence"],
+            "properties": {
+              "type": { "type": "string", "enum": ["rest", "kafka", "grpc", "openapi", "db"] },
+              "identifier": { "type": "string" },
+              "consumer_repos": { "type": "array", "items": { "type": "string" } },
+              "evidence_tier": { "type": "string", "enum": ["compiler", "extracted", "contract_matched", "inferred", "hypothesis"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["repo", "suite", "evidence_tier", "evidence"],
+            "properties": {
+              "repo": { "type": "string" },
+              "suite": { "type": "string" },
+              "evidence_tier": { "type": "string", "enum": ["compiler", "extracted", "contract_matched", "inferred", "hypothesis"] },
+              "evidence": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
