@@ -1,0 +1,391 @@
+{
+  "change_id": "REST-002",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:169 defines ProductResponse.priceMinor."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:68 reads catalog priceMinor."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "commerce-web/src/pages/ProductsPage.tsx:63 renders the relayed product.priceMinor."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.catalog.api.dto.ProductResponse",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:10 declares priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.api.dto.PriceUpdateRequest",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java:5 declares priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.api.ProductController",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/ProductController.java:67 passes request.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.catalog.application.CatalogService",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java:64 accepts long priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java:10 declares priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.application.port.CatalogPort",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java:9 declares ProductInfo.priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogClient",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:68 maps response.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketService",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketService.java:130 snapshots product.priceMinor()."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/ProductResponse",
+        "consumer_repos": [
+          "basket-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "catalog-service/openapi/catalog.yaml:169 defines priceMinor; basket binds it and the BFF relays it."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:58 fetches this catalog response."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CatalogProxyController.java:62 relays JSON unchanged to the web client."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "catalog-service",
+        "suite": "CatalogComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java:92 asserts $.priceMinor."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:128 stubs catalog priceMinor."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:76 asserts snapshotted minor pricing."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 4,
+  "run_started_at": "2026-09-06T10:00:10.394Z",
+  "elapsed_seconds": 147.3,
+  "tool_calls": 68,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 6,
+      "succeeded": 6,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 20,
+      "succeeded": 20,
+      "failed": 0
+    },
+    "read": {
+      "calls": 35,
+      "succeeded": 35,
+      "failed": 0
+    },
+    "find": {
+      "calls": 7,
+      "succeeded": 7,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "priceMinor"
+      },
+      "requested_query": "priceMinor",
+      "executed_query": "priceMinor",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"priceMinor\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java\",\"range\":[8,50,60]}},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"priceMinor\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java\",\"range\":[9,13,23]}},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"priceMinor\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java\",\"range\":[4,54,64]}},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"priceMinor\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\",\"range\":[9,13,23]}},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"priceMinor\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"range\":[10,13,23]}},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"priceMinor\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java\",\"range\":[10,13,23]}}]}",
+      "output_sha256": "570de29a423f0f5d9a2ab42ee66f49e038f6d44d1ab8fc3c05694689b0dad2ac",
+      "output_bytes": 2691,
+      "output_full_bytes": 2691,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java\",\"range\":[8,50,60]},\"matchSource\":\"displayName\",\"matchText\":\"priceMinor\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java\",\"range\":[9,13,23]},\"matchSource\":\"displayName\",\"matchText\":\"priceMinor\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java\",\"range\":[4,54,64]},\"matchSource\":\"displayName\",\"matchText\":\"priceMinor\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\",\"range\":[9,13,23]},\"matchSource\":\"displayName\",\"matchText\":\"priceMinor\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"range\":[10,13,23]},\"matchSource\":\"displayName\",\"matchText\":\"priceMinor\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java\",\"range\":[10,13,23]},\"matchSource\":\"displayName\",\"matchText\":\"priceMinor\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/catalog_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"}]}",
+      "output_normalized_sha256": "3fadbbd4b6444b6e60eb227730526e9cc6990bdc00012475676c0515d6d797f6",
+      "duration_ms": 82.9,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "priceMinor"
+      },
+      "requested_query": "priceMinor",
+      "executed_query": "priceMinor",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\",\"references\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"]}",
+      "output_sha256": "a000a1511548e10362f47d2038b0f8dcf83be6fce51a74f26124402e800130cc",
+      "output_bytes": 1677,
+      "output_full_bytes": 1677,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"]}",
+      "output_normalized_sha256": "d1b88774696d354f15d827177d86edf8ac754c552bed4ae8d88c3cfb75a8fa56",
+      "duration_ms": 33.8,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "priceMinor"
+      },
+      "requested_query": "priceMinor",
+      "executed_query": "priceMinor",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java\",\"range\":[8,50,60]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java\",\"range\":[9,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java\",\"range\":[4,54,64]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\",\"range\":[9,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"range\":[10,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java\",\"range\":[10,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"]}",
+      "output_sha256": "6ef7d17c1cabac2a057088674912c14b06af6f9fcee62e7fcee14ea01e245e8b",
+      "output_bytes": 2668,
+      "output_full_bytes": 2668,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java\",\"range\":[8,50,60]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java\",\"range\":[9,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java\",\"range\":[4,54,64]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\",\"range\":[9,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"range\":[10,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\"},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java\",\"range\":[10,13,23]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"]}",
+      "output_normalized_sha256": "3df1b9766bb5250aa1b308d869bffe4f7e76791f0f1e9f3233376a9ca3f1aef4",
+      "duration_ms": 22.8,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "priceMinor"
+      },
+      "requested_query": "priceMinor",
+      "executed_query": "priceMinor",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java\",\"range\":[8,50,60]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java\",\"range\":[9,13,23]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java\",\"range\":[4,54,64]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\",\"range\":[9,13,23]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"range\":[10,13,23]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\",\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java\",\"range\":[10,13,23]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"]}",
+      "output_sha256": "bcb5376751e55c43c086ba65105c00c29f3daf6cf0dd6a922adf12edb0e59c6e",
+      "output_bytes": 3166,
+      "output_full_bytes": 3166,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java\",\"range\":[8,50,60]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java\",\"range\":[9,13,23]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java\",\"range\":[4,54,64]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\",\"range\":[9,13,23]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"range\":[10,13,23]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java\",\"range\":[10,13,23]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\",\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/application/port/CatalogPort#ProductInfo#priceMinor.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/catalog/CatalogProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/PriceUpdateRequest#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/api/dto/ProductResponse#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/domain/model/Product#priceMinor.\",\"semanticdb maven maven/com.poc/catalog_service 0.1.0 com/poc/catalog/infrastructure/persistence/row/ProductRow#priceMinor.\"]}",
+      "output_normalized_sha256": "796bf96231f1649d77fbe69ed0b26bfe75e31a03319ac7031cc9ed3884745f01",
+      "duration_ms": 21.7,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 186990,
+  "cost_usd": 0.2309296,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "b6daddea0b1f6cf61d6537d5a33569a5c158f1d3660463e099a3439c9a9fbc7d",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

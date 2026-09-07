@@ -1,0 +1,343 @@
+{
+  "change_id": "REST-004",
+  "contestant": "gortex-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "Coupon.java:3 declares the renamed coupon component."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.basket.domain.model.Coupon",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "Coupon.java:3 declares discountPercent."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketPricing",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "BasketPricing.java:35 calculates from coupon.discountPercent()."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.persistence.row.CouponRow",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "CouponRow.java:3 binds the persistence row as discountPercent."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.persistence.repository.MyBatisBasketRepository",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "MyBatisBasketRepository.java:95 reads row.discountPercent() to construct Coupon."
+      }
+    ],
+    "contracts": [],
+    "tests": [
+      {
+        "repo": "basket-service",
+        "suite": "BasketRepositoryComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "BasketRepositoryComponentTest.java:130 calls coupon.discountPercent()."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "BasketApiMockedTest.java:181 seeds SAVE10 as a percent-based Coupon."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-07T01:23:58.259Z",
+  "elapsed_seconds": 95.1,
+  "tool_calls": 41,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 14,
+      "succeeded": 14,
+      "failed": 0
+    },
+    "read": {
+      "calls": 22,
+      "succeeded": 22,
+      "failed": 0
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "bridge_rank",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "parameters": {
+        "operation": "symbol",
+        "query": "discountPercent",
+        "repo": "basket-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"query_class\": \"symbol\",\n  \"results\": [\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/basket-service/src/main/java/com/poc/basket/application/BasketPricing.java\",\n      \"enclosing\": \"BasketPricing\",\n      \"enclosing_id\": \"basket-service/src/main/java/com/poc/basket/application/BasketPricing.java::BasketPricing\",\n      \"file_path\": \"basket-service/src/main/java/com/poc/basket/application/BasketPricing.java\",\n      \"id\": \"basket-service/src/main/java/com/poc/basket/application/BasketPricing.java::BasketPricing.discount\",\n      \"kind\": \"method\",\n      \"name\": \"discount\",\n      \"project_id\": \"basket-service\",\n      \"repo_prefix\": \"basket-service\",\n      \"start_line\": 31,\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\n      \"file_path\": \"basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\n      \"id\": \"basket-service/src/main/resources/db/migration/V1__basket_schema.sql::coupons.discount_percent\",\n      \"kind\": \"variable\",\n      \"name\": \"discount_percent\",\n      \"project_id\": \"basket-service\",\n      \"repo_prefix\": \"basket-service\",\n      \"start_line\": 3,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\n      \"file_path\": \"basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\n      \"id\": \"basket-service/src/main/resources/db/migration/V1__basket_schema.sql::coupons\",\n      \"kind\": \"type\",\n      \"name\": \"coupons\",\n      \"project_id\": \"basket-service\",\n      \"repo_prefix\": \"basket-service\",\n      \"start_line\": 1,\n      \"type_flavor\": \"table\",\n      \"workspace_id\": \"poc-estate\"\n    }\n  ],\n  \"total\": 3,\n  \"truncated\": false\n}",
+      "output_sha256": "766b9f97477094c1d3d20d6db9ee1a139e8735e3c9283074ac7df395f5e94986",
+      "output_bytes": 1958,
+      "output_full_bytes": 1958,
+      "truncated": false,
+      "output_normalized": "{\"query_class\":\"symbol\",\"results\":[{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/basket-service/src/main/java/com/poc/basket/application/BasketPricing.java\",\"enclosing\":\"BasketPricing\",\"enclosing_id\":\"basket-service/src/main/java/com/poc/basket/application/BasketPricing.java::BasketPricing\",\"file_path\":\"basket-service/src/main/java/com/poc/basket/application/BasketPricing.java\",\"id\":\"basket-service/src/main/java/com/poc/basket/application/BasketPricing.java::BasketPricing.discount\",\"kind\":\"method\",\"name\":\"discount\",\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"start_line\":31,\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\"file_path\":\"basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\"id\":\"basket-service/src/main/resources/db/migration/V1__basket_schema.sql::coupons\",\"kind\":\"type\",\"name\":\"coupons\",\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"start_line\":1,\"type_flavor\":\"table\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\"file_path\":\"basket-service/src/main/resources/db/migration/V1__basket_schema.sql\",\"id\":\"basket-service/src/main/resources/db/migration/V1__basket_schema.sql::coupons.discount_percent\",\"kind\":\"variable\",\"name\":\"discount_percent\",\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"start_line\":3,\"workspace_id\":\"poc-estate\"}],\"total\":3,\"truncated\":false}",
+      "output_normalized_sha256": "2ce5349049d031f42f0391ba4de568e120e96690d5141845e70bfa3fc8bc0088",
+      "duration_ms": 86.8,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "parameters": {
+        "operation": "usages",
+        "query": "discountPercent",
+        "repo": "basket-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"caveat\": {\n    \"class\": \"possible_extraction_gap\",\n    \"message\": \"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like \\u003crepo\\u003e/\\u003cpath\\u003e::\\u003csymbol\\u003e, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"\n  },\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "c82b1ad913777b030f7c4b8bfb7ff6d5d1af8b79c6a966a03c572affc07151a2",
+      "output_bytes": 478,
+      "output_full_bytes": 478,
+      "truncated": false,
+      "output_normalized": "{\"caveat\":{\"class\":\"possible_extraction_gap\",\"message\":\"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like <repo>/<path>::<symbol>, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"},\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "b6b6f2773a8d44eb7473ea20b6ef7eb3a3b5bc6394a69a2e3fd1870d5bb942d4",
+      "duration_ms": 41.3,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "parameters": {
+        "action": "list",
+        "repo": "basket-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"by_repo\": {\n    \"basket-service\": {\n      \"contracts\": {\n        \"di\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/infrastructure/ClockConfig.java\",\n            \"id\": \"di::Clock\",\n            \"line\": 11,\n            \"meta\": {\n              \"bean\": \"basket-service/src/main/java/com/poc/basket/infrastructure/ClockConfig.java::ClockConfig.clock\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/infrastructure/ClockConfig.java::ClockConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::JwtDecoder\",\n            \"line\": 25,\n            \"meta\": {\n              \"bean\": \"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig.jwtDecoder\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::SecurityFilterChain\",\n            \"line\": 32,\n            \"meta\": {\n              \"bean\": \"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig.filterChain\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ],\n        \"http\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\n            \"id\": \"http::POST::/items\",\n            \"line\": 59,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"POST\",\n              \"original_path\": \"/items\",\n              \"path\": \"/items\",\n              \"request_type\": \"AddItemRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.addItem\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\n            \"id\": \"http::DELETE::/items/{p1}\",\n            \"line\": 90,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"DELETE\",\n              \"original_path\": \"/items/{productId}\",\n              \"path\": \"/items/{p1}\",\n              \"path_param_names\": [\n                \"productId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"none\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.removeItem\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\n            \"id\": \"http::ANY::/api/v1/basket\",\n            \"line\": 30,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"ANY\",\n              \"original_path\": \"/api/v1/basket\",\n              \"path\": \"/api/v1/basket\",\n              \"request_type\": \"AddItemRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\n            \"id\": \"http::DELETE::/coupon\",\n            \"line\": 116,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"DELETE\",\n              \"original_path\": \"/coupon\",\n              \"path\": \"/coupon\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"none\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.removeCoupon\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\n            \"id\": \"http::PUT::/coupon\",\n            \"line\": 105,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"PUT\",\n              \"original_path\": \"/coupon\",\n              \"path\": \"/coupon\",\n              \"request_type\": \"CouponRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.applyCoupon\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\n            \"id\": \"http::PATCH::/items/{p1}\",\n            \"line\": 77,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"PATCH\",\n              \"original_path\": \"/items/{productId}\",\n              \"path\": \"/items/{p1}\",\n              \"path_param_names\": [\n                \"productId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"request_type\": \"UpdateQuantityRequest\",\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.setQuantity\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ],\n        \"openapi\": [\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"basket-service/openapi/basket.yaml\",\n            \"id\": \"http::POST::/api/v1/basket/items\",\n            \"line\": 69,\n            \"meta\": {\n              \"method\": \"POST\",\n              \"path\": \"/api/v1/basket/items\",\n              \"request_type\": \"AddItemRequest\",\n              \"response_type\": \"BasketResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                400,\n                404,\n                409,\n                503\n              ]\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"basket-service/openapi/basket.yaml\",\n            \"id\": \"http::GET::/api/v1/basket\",\n            \"line\": 10,\n            \"meta\": {\n              \"method\": \"GET\",\n              \"path\": \"/api/v1/basket\",\n              \"response_type\": \"BasketResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200\n              ]\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"basket-service/openapi/basket.yaml\",\n            \"id\": \"http::PUT::/api/v1/basket/coupon\",\n            \"line\": 22,\n            \"meta\": {\n              \"method\": \"PUT\",\n              \"path\": \"/api/v1/basket/coupon\",\n              \"request_type\": \"CouponRequest\",\n              \"response_type\": \"BasketResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                400,\n                409\n              ]\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"basket-service/openapi/basket.yaml\",\n            \"id\": \"http::PATCH::/api/v1/basket/items/{p1}\",\n            \"line\": 111,\n            \"meta\": {\n              \"method\": \"PATCH\",\n              \"path\": \"/api/v1/basket/items/{p1}\",\n              \"request_type\": \"UpdateQuantityRequest\",\n              \"response_type\": \"BasketResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                400,\n                404,\n                409\n              ]\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"basket-service/openapi/basket.yaml\",\n            \"id\": \"http::DELETE::/api/v1/basket/coupon\",\n            \"line\": 22,\n            \"meta\": {\n              \"method\": \"DELETE\",\n              \"path\": \"/api/v1/basket/coupon\",\n              \"response_type\": \"BasketResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                409\n              ]\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"basket-service/openapi/basket.yaml\",\n            \"id\": \"http::DELETE::/api/v1/basket/items/{p1}\",\n            \"line\": 111,\n            \"meta\": {\n              \"method\": \"DELETE\",\n              \"path\": \"/api/v1/basket/items/{p1}\",\n              \"response_type\": \"BasketResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                409\n              ]\n            },\n            \"project_id\": \"basket-service\",\n            \"repo_prefix\": \"basket-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ]\n      },\n      \"total\": 15\n    }\n  },\n  \"other_repos\": {\n    \"by_repo\": {\n      \"account-service\": 19,\n      \"catalog-service\": 8,\n      \"commerce-bff\": 39,\n      \"commerce-web\": 27,\n      \"inventory-service\": 2,\n      \"order-service\": 10,\n      \"payment-service\": 2,\n      \"shipment-service\": 9\n    },\n    \"hint\": \"pass all_repos=true or repo=\\u003cprefix\\u003e/project=\\u003cname\\u003e to include these\",\n    \"repo_count\": 8,\n    \"total\": 116\n  },\n  \"total\": 15,\n  \"truncated\": false\n}",
+      "output_sha256": "99f7254493672b0785d42935b8ff8e375d559aa84392723510ad25ae329d7bfb",
+      "output_bytes": 12702,
+      "output_full_bytes": 12702,
+      "truncated": false,
+      "output_normalized": "{\"by_repo\":{\"basket-service\":{\"contracts\":{\"di\":[{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/infrastructure/ClockConfig.java\",\"id\":\"di::Clock\",\"line\":11,\"meta\":{\"bean\":\"basket-service/src/main/java/com/poc/basket/infrastructure/ClockConfig.java::ClockConfig.clock\",\"binding\":\"bean\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/infrastructure/ClockConfig.java::ClockConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java\",\"id\":\"di::JwtDecoder\",\"line\":25,\"meta\":{\"bean\":\"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig.jwtDecoder\",\"binding\":\"bean\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java\",\"id\":\"di::SecurityFilterChain\",\"line\":32,\"meta\":{\"bean\":\"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig.filterChain\",\"binding\":\"bean\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"}],\"http\":[{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\"id\":\"http::ANY::/api/v1/basket\",\"line\":30,\"meta\":{\"framework\":\"spring\",\"method\":\"ANY\",\"original_path\":\"/api/v1/basket\",\"path\":\"/api/v1/basket\",\"request_type\":\"AddItemRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\"id\":\"http::DELETE::/coupon\",\"line\":116,\"meta\":{\"framework\":\"spring\",\"method\":\"DELETE\",\"original_path\":\"/coupon\",\"path\":\"/coupon\",\"route_kind\":\"static\",\"schema_source\":\"none\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.removeCoupon\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\"id\":\"http::DELETE::/items/{p1}\",\"line\":90,\"meta\":{\"framework\":\"spring\",\"method\":\"DELETE\",\"original_path\":\"/items/{productId}\",\"path\":\"/items/{p1}\",\"path_param_names\":[\"productId\"],\"path_params\":[\"p1\"],\"route_kind\":\"parametric\",\"schema_source\":\"none\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.removeItem\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\"id\":\"http::PATCH::/items/{p1}\",\"line\":77,\"meta\":{\"framework\":\"spring\",\"method\":\"PATCH\",\"original_path\":\"/items/{productId}\",\"path\":\"/items/{p1}\",\"path_param_names\":[\"productId\"],\"path_params\":[\"p1\"],\"request_type\":\"UpdateQuantityRequest\",\"route_kind\":\"parametric\",\"schema_source\":\"extracted\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.setQuantity\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\"id\":\"http::POST::/items\",\"line\":59,\"meta\":{\"framework\":\"spring\",\"method\":\"POST\",\"original_path\":\"/items\",\"path\":\"/items\",\"request_type\":\"AddItemRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.addItem\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java\",\"id\":\"http::PUT::/coupon\",\"line\":105,\"meta\":{\"framework\":\"spring\",\"method\":\"PUT\",\"original_path\":\"/coupon\",\"path\":\"/coupon\",\"request_type\":\"CouponRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"basket-service/src/main/java/com/poc/basket/api/BasketController.java::BasketController.applyCoupon\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"}],\"openapi\":[{\"confidence\":0.95,\"file_path\":\"basket-service/openapi/basket.yaml\",\"id\":\"http::DELETE::/api/v1/basket/coupon\",\"line\":22,\"meta\":{\"method\":\"DELETE\",\"path\":\"/api/v1/basket/coupon\",\"response_type\":\"BasketResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,409]},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"basket-service/openapi/basket.yaml\",\"id\":\"http::DELETE::/api/v1/basket/items/{p1}\",\"line\":111,\"meta\":{\"method\":\"DELETE\",\"path\":\"/api/v1/basket/items/{p1}\",\"response_type\":\"BasketResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,409]},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"basket-service/openapi/basket.yaml\",\"id\":\"http::GET::/api/v1/basket\",\"line\":10,\"meta\":{\"method\":\"GET\",\"path\":\"/api/v1/basket\",\"response_type\":\"BasketResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200]},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"basket-service/openapi/basket.yaml\",\"id\":\"http::PATCH::/api/v1/basket/items/{p1}\",\"line\":111,\"meta\":{\"method\":\"PATCH\",\"path\":\"/api/v1/basket/items/{p1}\",\"request_type\":\"UpdateQuantityRequest\",\"response_type\":\"BasketResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,400,404,409]},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"basket-service/openapi/basket.yaml\",\"id\":\"http::POST::/api/v1/basket/items\",\"line\":69,\"meta\":{\"method\":\"POST\",\"path\":\"/api/v1/basket/items\",\"request_type\":\"AddItemRequest\",\"response_type\":\"BasketResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,400,404,409,503]},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"basket-service/openapi/basket.yaml\",\"id\":\"http::PUT::/api/v1/basket/coupon\",\"line\":22,\"meta\":{\"method\":\"PUT\",\"path\":\"/api/v1/basket/coupon\",\"request_type\":\"CouponRequest\",\"response_type\":\"BasketResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,400,409]},\"project_id\":\"basket-service\",\"repo_prefix\":\"basket-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"}]},\"total\":15}},\"other_repos\":{\"by_repo\":{\"account-service\":19,\"catalog-service\":8,\"commerce-bff\":39,\"commerce-web\":27,\"inventory-service\":2,\"order-service\":10,\"payment-service\":2,\"shipment-service\":9},\"hint\":\"pass all_repos=true or repo=<prefix>/project=<name> to include these\",\"repo_count\":8,\"total\":116},\"total\":15,\"truncated\":false}",
+      "output_normalized_sha256": "60b5b2839b30d84788c5b971565a65c4462236425ac364188c201ac7be2ef737",
+      "duration_ms": 44.9,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "gortex_contracts",
+      "operation": "bridge_rank",
+      "parameters": {
+        "action": "bridge_rank",
+        "repo": "basket-service",
+        "query": "discountPercent"
+      },
+      "requested_query": "discountPercent",
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"groups\": [\n    {\n      \"bridge_id\": \"bridge::poc-estate::commerce-web::http::GET::/basket\",\n      \"canonical_key\": \"GET /basket\",\n      \"consumer_count\": 1,\n      \"consumers\": [\n        {\n          \"contract_id\": \"http::GET::/basket\",\n          \"file_path\": \"commerce-web/src/api/basket.ts\",\n          \"line\": 5,\n          \"repo\": \"commerce-web\",\n          \"symbol_id\": \"commerce-web/src/api/basket.ts::getBasket\"\n        }\n      ],\n      \"contract_type\": \"http\",\n      \"fused_score\": 0.01639344262295082,\n      \"provider_count\": 1,\n      \"providers\": [\n        {\n          \"contract_id\": \"http::GET::/basket\",\n          \"file_path\": \"commerce-web/src/App.tsx\",\n          \"line\": 24,\n          \"repo\": \"commerce-web\"\n        }\n      ],\n      \"repos\": [\n        \"commerce-web\"\n      ],\n      \"signal_ranks\": {\n        \"degree\": 1\n      }\n    },\n    {\n      \"bridge_id\": \"bridge::poc-estate::commerce-web::http::GET::/orders/{p1}\",\n      \"canonical_key\": \"GET /orders/{p1}\",\n      \"consumer_count\": 1,\n      \"consumers\": [\n        {\n          \"contract_id\": \"http::GET::/orders/{p1}\",\n          \"file_path\": \"commerce-web/src/api/orders.ts\",\n          \"line\": 18,\n          \"repo\": \"commerce-web\",\n          \"symbol_id\": \"commerce-web/src/api/orders.ts::getOrder\"\n        }\n      ],\n      \"contract_type\": \"http\",\n      \"fused_score\": 0.016129032258064516,\n      \"provider_count\": 1,\n      \"providers\": [\n        {\n          \"contract_id\": \"http::GET::/orders/{p1}\",\n          \"file_path\": \"commerce-web/src/App.tsx\",\n          \"line\": 27,\n          \"repo\": \"commerce-web\"\n        }\n      ],\n      \"repos\": [\n        \"commerce-web\"\n      ],\n      \"signal_ranks\": {\n        \"degree\": 2\n      }\n    }\n  ],\n  \"mode\": \"rank\",\n  \"signals\": [\n    \"degree\",\n    \"path_repo\",\n    \"text\"\n  ],\n  \"total\": 2\n}",
+      "output_sha256": "665edbe89ac6f7e3ceed6439ab50f3fe2d3f7de8d7285a8c872d14e069c66361",
+      "output_bytes": 1801,
+      "output_full_bytes": 1801,
+      "truncated": false,
+      "output_normalized": "{\"groups\":[{\"bridge_id\":\"bridge::poc-estate::commerce-web::http::GET::/basket\",\"canonical_key\":\"GET /basket\",\"consumer_count\":1,\"consumers\":[{\"contract_id\":\"http::GET::/basket\",\"file_path\":\"commerce-web/src/api/basket.ts\",\"line\":5,\"repo\":\"commerce-web\",\"symbol_id\":\"commerce-web/src/api/basket.ts::getBasket\"}],\"contract_type\":\"http\",\"fused_score\":0.01639344262295082,\"provider_count\":1,\"providers\":[{\"contract_id\":\"http::GET::/basket\",\"file_path\":\"commerce-web/src/App.tsx\",\"line\":24,\"repo\":\"commerce-web\"}],\"repos\":[\"commerce-web\"],\"signal_ranks\":{\"degree\":1}},{\"bridge_id\":\"bridge::poc-estate::commerce-web::http::GET::/orders/{p1}\",\"canonical_key\":\"GET /orders/{p1}\",\"consumer_count\":1,\"consumers\":[{\"contract_id\":\"http::GET::/orders/{p1}\",\"file_path\":\"commerce-web/src/api/orders.ts\",\"line\":18,\"repo\":\"commerce-web\",\"symbol_id\":\"commerce-web/src/api/orders.ts::getOrder\"}],\"contract_type\":\"http\",\"fused_score\":0.016129032258064516,\"provider_count\":1,\"providers\":[{\"contract_id\":\"http::GET::/orders/{p1}\",\"file_path\":\"commerce-web/src/App.tsx\",\"line\":27,\"repo\":\"commerce-web\"}],\"repos\":[\"commerce-web\"],\"signal_ranks\":{\"degree\":2}}],\"mode\":\"rank\",\"signals\":[\"degree\",\"path_repo\",\"text\"],\"total\":2}",
+      "output_normalized_sha256": "b40f47a07c2457c405f1de0c420a38c96222799c5af7e217ab009df7caaa1b13",
+      "duration_ms": 48,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "parameters": {
+        "operation": "dependents",
+        "query": "discountPercent",
+        "repo": "basket-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "918dff31d9ed9777183369f6d2840e8709446daf196930c1bbae4e749ec4db69",
+      "output_bytes": 94,
+      "output_full_bytes": 94,
+      "truncated": false,
+      "output_normalized": "{\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "66c93a5ef9beeec26edaf0e0d8ca0aa4b9878b8abd9fd08e45eebf55184870dc",
+      "duration_ms": 39.8,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "gortex",
+    "version": "v0.63.10",
+    "commit": "5b299072c44457751cd339c00aabb0e5d2356ad3",
+    "binary_sha256": "30566ec81f2b4335b7e84e5664f508ae43238f0f037be7d2100543e211a05532",
+    "artifact_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+    "manifest_sha256": null,
+    "query_surface": [
+      "symbol",
+      "usages",
+      "callers",
+      "calls",
+      "dependents",
+      "deps",
+      "implementations",
+      "contracts",
+      "route_impact",
+      "symbol_impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "d9cd33199f9cb7ea2e85ffb4e8125b9900cac6bfef467a328fbaaac9c49ea702",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 125805,
+  "cost_usd": 0.12997999999999998,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "94b4ad331611e31f8489162c05eea93d951f2a118b38a8e58e2c4118fe39ffc0",
+  "contestant_config_sha256": "9aa43e33dd8bf1e73fabe496f0ad97a29c0f3ba9b6b110a3ea19938964ece6c4",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

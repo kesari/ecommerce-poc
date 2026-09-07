@@ -1,0 +1,110 @@
+{
+  "change_id": "KAFKA-003",
+  "contestant": "scip-first",
+  "metrics": {
+    "symbol_recall": 0.5,
+    "test_recall": 0.5,
+    "cross_repo_recall": 0.5,
+    "contract_recall": 0.0,
+    "precision": 0.8,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.25,
+    "composite": 0.4825
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 2,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 0,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 3,
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "order-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.application.sagatransitions",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.infrastructure.messaging.sagaresultlistener",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "contract",
+      "key": "kafka payment.declined.v1",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.payment.infrastructure.persistence.repository.mybatispaymentstore"
+    ],
+    "contracts": [],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 3,
+    "compiler": 2
+  },
+  "raw": {
+    "elapsed_seconds": 65,
+    "tokens_consumed": 70969
+  },
+  "answer_sha256": "3d7ed32fe98809ea2bfeafef4048a2c8ff004b0d4f354fd83cfd3c9c86eaac9f",
+  "ground_truth_sha256": "3da427eec04d81327ab6b73b975b8b090986f81dff1677baeeba16e83e5333d9",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

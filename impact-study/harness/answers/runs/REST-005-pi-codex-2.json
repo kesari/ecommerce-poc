@@ -1,0 +1,381 @@
+{
+  "change_id": "REST-005",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:27 constructs the two-date DeliveryWindow."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:25 binds shipment fromDate/toDate."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:37 renders estimatedDelivery.from and .to."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.shipment.domain.model.DeliveryWindow",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java:5 declares the changed record."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:27 calls the removed two-argument constructor."
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.DeliveryEstimateResponse",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java:15 reads removed from/to accessors."
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.ShipmentResponse",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java:15 reads promised from/to accessors."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java:95 emits removed promised from/to accessors."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.persistence.repository.MyBatisShipmentRepository",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java:55 constructs the old window."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.persistence.row.ShipmentRow",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java:9 stores two LocalDate values."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.cache.ValkeyEstimateCache",
+        "repo": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java:46 deserializes cached DeliveryEstimate JSON."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+        "repo": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:25 binds renamed shipment response fields."
+      },
+      {
+        "fqn": "com.poc.order.api.dto.QuoteResponse",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java:22 exposes the propagated date window."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisQuoteRepository.java:33 persists two dates."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.row.QuoteRow",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java:9 declares two LocalDate columns."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:11 declares the endpoint consumed in ShipmentClient.java:34."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:shipment-service.yaml#/components/schemas/DeliveryEstimateResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:78 defines fromDate/toDate bound by ShipmentClient.java:25."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/checkout/quotes",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:37 consumes the quote delivery fields relayed from order-service."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:order-service.yaml#/components/schemas/EstimatedDelivery",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/openapi/order-service.yaml:117 declares date-format from/to fields rendered by CheckoutPage.tsx:37."
+      },
+      {
+        "type": "kafka",
+        "identifier": "shipment.created.v1#/promisedFrom",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/asyncapi/schemas/shipment.created.v1.json:10 defines the emitted date field on order-service's topic."
+      },
+      {
+        "type": "kafka",
+        "identifier": "shipment.created.v1#/promisedTo",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/asyncapi/schemas/shipment.created.v1.json:11 defines the emitted date field on order-service's topic."
+      },
+      {
+        "type": "db",
+        "identifier": "shipment.shipments.promised_from",
+        "consumer_repos": [],
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql:12 stores the old start date."
+      },
+      {
+        "type": "db",
+        "identifier": "shipment.shipments.promised_to",
+        "consumer_repos": [],
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql:13 stores the old end date."
+      },
+      {
+        "type": "db",
+        "identifier": "order.quotes.promised_from",
+        "consumer_repos": [],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/resources/db/migration/V1__order_schema.sql:12 persists the propagated start date."
+      },
+      {
+        "type": "db",
+        "identifier": "order.quotes.promised_to",
+        "consumer_repos": [],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/resources/db/migration/V1__order_schema.sql:13 persists the propagated end date."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java:20 asserts removed from/to accessors."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:92 asserts fromDate JSON."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentPersistenceComponentTest",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java:138 constructs a two-date window."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:62 validates promisedFrom/promisedTo."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/OpenApiContractTest.java:57 requires the committed generated spec."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:105 asserts the propagated estimatedDelivery.from."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:219 constructs the persisted two-date quote."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OpenApiContractTest.java:51 requires the committed generated spec."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:66 supplies the old estimatedDelivery from/to shape."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 2,
+  "run_started_at": "2026-09-07T01:42:03.469Z",
+  "elapsed_seconds": 149.9,
+  "tool_calls": 57,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 11,
+      "succeeded": 11,
+      "failed": 0
+    },
+    "find": {
+      "calls": 10,
+      "succeeded": 10,
+      "failed": 0
+    },
+    "read": {
+      "calls": 35,
+      "succeeded": 34,
+      "failed": 1
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 0,
+    "succeeded": 0,
+    "failed": 0
+  },
+  "product_playbook": null,
+  "product_tool_receipts": [],
+  "product_assisted_eligible": null,
+  "index_sha256": "none",
+  "product_provenance": null,
+  "tokens_consumed": 235517,
+  "cost_usd": 0.2301276,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "969749e18f8ff3946a7212ceba900b2680e9b23288c6fa262bde8210b308a63f",
+  "contestant_config_sha256": "2a2a675cc0a6d2de8a1105ba178eb9651c488a35aad09a70e99c28a3965a7881",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

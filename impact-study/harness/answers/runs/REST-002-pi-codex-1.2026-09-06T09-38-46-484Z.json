@@ -1,0 +1,369 @@
+{
+  "change_id": "REST-002",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:10 declares priceMinor."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:68 reads catalog priceMinor."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:22 declares the relayed product priceMinor field."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:44 propagates basket prices into quotes."
+      },
+      {
+        "name": "payment-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "payment-service/src/main/java/com/poc/payment/application/PaymentMessageParser.java:24 accepts the resulting amountMinor."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.catalog.api.dto.ProductResponse",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:5 declares the response record."
+      },
+      {
+        "fqn": "com.poc.catalog.api.dto.PriceUpdateRequest",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java:5 declares priceMinor input."
+      },
+      {
+        "fqn": "com.poc.catalog.api.ProductController",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/ProductController.java:67 passes request.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.catalog.application.CatalogService",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java:64 accepts long priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.domain.model.Product",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java:11 declares long priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.application.port.ProductRepository",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java:17 exposes updatePrice long."
+      },
+      {
+        "fqn": "com.poc.catalog.infrastructure.persistence.repository.MyBatisProductRepository",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java:50 persists priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.infrastructure.persistence.row.ProductRow",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/row/ProductRow.java:11 declares priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.infrastructure.persistence.mapper.ProductMapper",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java:20 maps priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java:10 binds priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogClient",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:68 reads response.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.basket.application.port.CatalogPort",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/port/CatalogPort.java:9 declares ProductInfo priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketService",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketService.java:130 snapshots product.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.basket.domain.model.BasketItem",
+        "repo": "basket-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/domain/model/BasketItem.java:5 stores the catalog snapshot as minor units."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketPricing",
+        "repo": "basket-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketPricing.java:26 totals snapped unitPriceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.api.dto.BasketResponse",
+        "repo": "basket-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java:29 exports snapped unitPriceMinor."
+      },
+      {
+        "fqn": "Product",
+        "repo": "commerce-web",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:17 declares Product.priceMinor at line 22."
+      },
+      {
+        "fqn": "ProductsPage",
+        "repo": "commerce-web",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/ProductsPage.tsx:63 formats product.priceMinor."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.BasketClient",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:47 copies basket unitPriceMinor."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:47 builds OrderLine from basket prices."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:79 emits order.totalMinor."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:48 defines detail GET; CatalogClient.java:57 calls it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/ProductResponse",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:158 defines ProductResponse priceMinor; CatalogProductResponse.java:10 binds it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:basket.yaml#/components/schemas/BasketResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/openapi/basket.yaml:200 exposes unitPriceMinor; BasketClient.java:28 binds it."
+      },
+      {
+        "type": "kafka",
+        "identifier": "payment.charge.requested.v1#/amountMinor",
+        "consumer_repos": [
+          "payment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/asyncapi/schemas/payment.charge.requested.v1.json:2 requires amountMinor."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "catalog-service",
+        "suite": "CatalogComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java:92 asserts $.priceMinor."
+      },
+      {
+        "repo": "catalog-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/OpenApiContractTest.java:55 compares generated catalog.yaml."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:128 stubs catalog priceMinor."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:76 asserts snapped unitPriceMinor."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 1,
+  "run_started_at": "2026-09-06T09:38:46.484Z",
+  "elapsed_seconds": 172.4,
+  "tool_calls": 62,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 16,
+      "succeeded": 15,
+      "failed": 1
+    },
+    "find": {
+      "calls": 2,
+      "succeeded": 2,
+      "failed": 0
+    },
+    "read": {
+      "calls": 43,
+      "succeeded": 43,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 0,
+    "succeeded": 0,
+    "failed": 0
+  },
+  "product_playbook": null,
+  "product_tool_receipts": [],
+  "product_assisted_eligible": null,
+  "index_sha256": "none",
+  "product_provenance": null,
+  "tokens_consumed": 204937,
+  "cost_usd": 0.23449720000000002,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "73afa8cabf2a146d1dba4e794d0d50017dbbed94e38720bab6db67aeb895bcab",
+  "contestant_config_sha256": "2a2a675cc0a6d2de8a1105ba178eb9651c488a35aad09a70e99c28a3965a7881",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

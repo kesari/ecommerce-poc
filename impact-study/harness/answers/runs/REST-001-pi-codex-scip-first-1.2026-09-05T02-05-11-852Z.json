@@ -1,0 +1,430 @@
+{
+  "change_id": "REST-001",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:217 and :246 declare postalCode in address API schemas."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds Account's old response name."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads the null-propagated event field."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:18 and :119 send and render postalCode."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 posts postalCode."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 defines postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 defines postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:65 accesses request.postalCode()."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 defines response postalCode."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:4 defines postalCode."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 emits the snapshot as postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads address.postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:20 rejects a null postal code."
+      },
+      {
+        "fqn": "CheckoutPage",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 binds postalCode in the address form."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account-service/openapi/account.yaml:217 and commerce-web/src/pages/CheckoutPage.tsx:119 use postalCode."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account-service/openapi/account.yaml:246 and AccountClient.java:25 bind postalCode."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account-service/openapi/account.yaml:54 and AccountClient.java:31 define the matched endpoint."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "commerce-web/src/api/checkout.ts:9 posts the AddressInput through the address relay."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "SagaOrchestrator.java:111 preserves null under postalCode and OrderConfirmedListener.java:37 consumes it."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118 posts postalCode."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:46 fixtures the old Address postalCode field."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:171 covers confirmed-event postalCode."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T02:05:11.852Z",
+  "elapsed_seconds": 121.6,
+  "tool_calls": 40,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    },
+    "read": {
+      "calls": 31,
+      "succeeded": 31,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "postalCode"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"range\":[12,50,60]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"range\":[12,15,25]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"range\":[13,15,25]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"range\":[13,15,25]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java\",\"range\":[3,51,61]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]}},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCodeIsTrimmedBeforeZoneLookup\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44]}},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"range\":[7,58,68]}},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\"range\":[2,37,47]}},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"postalCode\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java\",\"range\":[6,84,94]}}]}",
+      "output_sha256": "be4be0e05d8c97f5ccfd757e92c3dee8a09de167e4771070959be53561482063",
+      "output_bytes": 4448,
+      "output_full_bytes": 4448,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"range\":[12,50,60]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"range\":[12,15,25]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"range\":[13,15,25]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"range\":[13,15,25]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java\",\"range\":[3,51,61]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"range\":[7,58,68]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\"range\":[2,37,47]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java\",\"range\":[6,84,94]},\"matchSource\":\"displayName\",\"matchText\":\"postalCode\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44]},\"matchSource\":\"displayName\",\"matchText\":\"postalCodeIsTrimmedBeforeZoneLookup\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/shipment_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\"}]}",
+      "output_normalized_sha256": "e853219aaf8809d649bae3bf91a52397407abfaf218059227af05c6df995b74c",
+      "duration_ms": 81,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "postalCode"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\",\"references\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"]}",
+      "output_sha256": "2b4fad7bc65b7e2ddb32a2b81ccec3b30b85ad0baa260c2f11d5b4d27ecdebe3",
+      "output_bytes": 2743,
+      "output_full_bytes": 2743,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"]}",
+      "output_normalized_sha256": "0ce9e25ee19414d9f35746b737f96c16d00322c2d035518fb0a139cf96188314",
+      "duration_ms": 35.8,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "postalCode"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"range\":[12,50,60]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"range\":[12,15,25]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"range\":[13,15,25]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"range\":[13,15,25]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java\",\"range\":[3,51,61]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"definition\":{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"range\":[7,58,68]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\"range\":[2,37,47]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java\",\"range\":[6,84,94]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"]}",
+      "output_sha256": "ecce3054d21c1bcbd1a735a84fa7fa5440c80de2c00d397343a98858f335adc2",
+      "output_bytes": 4389,
+      "output_full_bytes": 4389,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"range\":[12,50,60]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"range\":[12,15,25]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"range\":[13,15,25]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"range\":[13,15,25]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java\",\"range\":[3,51,61]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"range\":[7,58,68]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\"range\":[2,37,47]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java\",\"range\":[6,84,94]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"},{\"definition\":{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"]}",
+      "output_normalized_sha256": "4059a582f60448735006fe42bad8ce072860fbfbad52c11d791a521419f95873",
+      "duration_ms": 22.6,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "postalCode"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"range\":[12,50,60]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"range\":[12,15,25]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"range\":[13,15,25]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"range\":[13,15,25]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java\",\"range\":[3,51,61]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"definition\":{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44],\"reasons\":[\"testPath\"]}]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"range\":[7,58,68]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\"range\":[2,37,47]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\",\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java\",\"range\":[6,84,94]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"]}",
+      "output_sha256": "1db21582b436d772ba4a8438422af121547dcfee5a4a4cc2a6c0821fd8f89d0a",
+      "output_bytes": 5496,
+      "output_full_bytes": 5496,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"range\":[12,50,60]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"range\":[12,15,25]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"range\":[13,15,25]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"range\":[13,15,25]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java\",\"range\":[3,51,61]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"range\":[7,58,68]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\"range\":[2,37,47]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java\",\"range\":[6,84,94]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"tests\":[{\"documentPath\":\"shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java\",\"range\":[47,9,44],\"reasons\":[\"testPath\"],\"symbol\":\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\"}]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressRequest#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/api/dto/AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/domain/model/Address#postalCode.\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/row/AddressRow#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/DeliveryEstimatorTest#postalCodeIsTrimmedBeforeZoneLookup().\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/api/dto/DeliveryEstimateRequest#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/domain/model/DeliveryAddress#postalCode.\",\"semanticdb maven maven/com.poc/shipment_service 0.1.0 com/poc/shipment/infrastructure/persistence/row/ShipmentRow#postalCode.\"]}",
+      "output_normalized_sha256": "8597a946b6e87c62bad2f77badc9f4f92616466cf8e4e38f98439770ecb1433c",
+      "duration_ms": 22.2,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 151111,
+  "cost_usd": 0.1508416,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "3316c64e3ab4a8fa2c45d9a033d33866a250daee80b7dcb4cf3deab3ea861a76",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

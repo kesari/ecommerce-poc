@@ -1,0 +1,453 @@
+{
+  "change_id": "REST-001",
+  "contestant": "graphify-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares postalCode."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds Account postalCode."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "agent_inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads propagated postalCode."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:54 declares the relayed Address postalCode."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 sends postalCode."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares the request component."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares the response component."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:65 calls request.postalCode()."
+      },
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:15 builds AddressResponse."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds postalCode by name."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads address.postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "agent_inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:21 rejects a null postal code."
+      },
+      {
+        "fqn": "Address",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:54 declares postalCode on the API Address type."
+      },
+      {
+        "fqn": "CheckoutPage",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 binds the postalCode form field."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:31 calls this endpoint."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:7 posts addresses."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:217 declares postalCode in AddressRequest."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:246 declares postalCode in AddressResponse."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "agent_inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 relays the snapshot field."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118 sends postalCode."
+      },
+      {
+        "repo": "account-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/OpenApiContractTest.java:48 compares the committed OpenAPI document."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:46 constructs an Address with postalCode."
+      }
+    ]
+  },
+  "runner": "pi-codex-graphify-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T02:09:31.589Z",
+  "elapsed_seconds": 137.8,
+  "tool_calls": 51,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 10,
+      "succeeded": 10,
+      "failed": 0
+    },
+    "read": {
+      "calls": 34,
+      "succeeded": 32,
+      "failed": 2
+    },
+    "find": {
+      "calls": 6,
+      "succeeded": 6,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "tests",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "account-service postalCode consumers across repositories"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode', 'account-service', 'AccountFlowComponentTest.java', '.service()'] | 76 nodes found\n\n[!] TRUNCATED: showing 68 of 76 nodes (~2000-token budget). The answer may be among the 8 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE account-service [src=README.md loc=L1 community=]\nNODE AccountFlowComponentTest.java [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE AccountFlowComponentTest [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L32 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L13 community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE account-service::mediatype [src= loc= community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE account-service::assertthat [src= loc= community=]\nNODE account-service::autowired [src= loc= community=]\nNODE account-service::container [src= loc= community=]\nNODE account-service::get [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE account-service::status [src= loc= community=]\nNODE account-service::beforeeach [src= loc= community=]\nNODE account-service::delete [src= loc= community=]\nNODE account-service::jsonnode [src= loc= community=]\nNODE account-service::jsonpath [src= loc= community=]\nNODE account-service::methodorderer [src= loc= community=]\nNODE account-service::mvcresult [src= loc= community=]\nNODE account-service::post [src= loc= community=]\nNODE account-service::put [src= loc= community=]\nNODE README.md [src=README.md loc=L1 community=]\nNODE Build and test [src=README.md loc=L6 community=]\nNODE Run locally [src=README.md loc=L12 community=]\nNODE pattern [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE AddressController.java [src=src/main/java/com/poc/account/api/AddressController.java loc=L1 community=]\nNODE AuthController.java [src=src/main/java/com/poc/account/api/AuthController.java loc=L1 community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L1 community=]\nNODE RateLimitFilter.java [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE ProblemAuthHandlers.java [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L1 community=]\nNODE RateLimitFilter [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L19 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L22 community=]\nNODE ProblemAuthHandlers [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L15 community=]\nNODE GlobalExceptionHandler [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L17 community=]\nNODE .problem() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L46 community=]\nNODE .body() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L58 community=]\nNODE org.springframework.http.ProblemDetail [src= loc= community=]\nNODE .duplicateSignupConflicts() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L82 community=]\nNODE .loginWithWrongPasswordIsUnauthorized() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L92 community=]\nNODE .refreshRotatesAndRevokesOldToken() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L155 community=]\nNODE .signupIssuesTokens() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L67 community=]\nNODE address [src=asyncapi/schemas/order.confirmed.v1.json loc=L10 community=]\nNODE org.springframework.web.bind.annotation.ExceptionHandler [src= loc= community=]\nNODE AccountApplicationSmokeTest.java [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L1 community=]\nNODE .addressCrudLifecycle() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L109 community=]\nNODE .addressesRequireAuthentication() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L102 community=]\nNODE .datasource() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L51 community=]\nNODE .properties() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L41 community=]\nNODE .applicationClassExists() [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L9 community=]\nNODE .committedSpecMatchesTheGeneratedDocument() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L48 community=]\nNODE .swaggerUiIsReachableWithoutAuthentication() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L68 community=]\nNODE city [src=asyncapi/schemas/order.confirmed.v1.json loc=L17 community=]\n... (truncated — 8 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "ac113a4e00f34432603e60b1227648680b5e5d3371a2f32967c3320d4da71df6",
+      "output_bytes": 6743,
+      "output_full_bytes": 6743,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode', 'account-service', 'AccountFlowComponentTest.java', '.service()'] | 76 nodes found\n\n[!] TRUNCATED: showing 68 of 76 nodes (~2000-token budget). The answer may be among the 8 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE account-service [src=README.md loc=L1 community=]\nNODE AccountFlowComponentTest.java [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE AccountFlowComponentTest [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L32 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L13 community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE account-service::mediatype [src= loc= community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE account-service::assertthat [src= loc= community=]\nNODE account-service::autowired [src= loc= community=]\nNODE account-service::container [src= loc= community=]\nNODE account-service::get [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE account-service::status [src= loc= community=]\nNODE account-service::beforeeach [src= loc= community=]\nNODE account-service::delete [src= loc= community=]\nNODE account-service::jsonnode [src= loc= community=]\nNODE account-service::jsonpath [src= loc= community=]\nNODE account-service::methodorderer [src= loc= community=]\nNODE account-service::mvcresult [src= loc= community=]\nNODE account-service::post [src= loc= community=]\nNODE account-service::put [src= loc= community=]\nNODE README.md [src=README.md loc=L1 community=]\nNODE Build and test [src=README.md loc=L6 community=]\nNODE Run locally [src=README.md loc=L12 community=]\nNODE pattern [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE AddressController.java [src=src/main/java/com/poc/account/api/AddressController.java loc=L1 community=]\nNODE AuthController.java [src=src/main/java/com/poc/account/api/AuthController.java loc=L1 community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L1 community=]\nNODE RateLimitFilter.java [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE ProblemAuthHandlers.java [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L1 community=]\nNODE RateLimitFilter [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L19 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L22 community=]\nNODE ProblemAuthHandlers [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L15 community=]\nNODE GlobalExceptionHandler [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L17 community=]\nNODE .problem() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L46 community=]\nNODE .body() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L58 community=]\nNODE org.springframework.http.ProblemDetail [src= loc= community=]\nNODE .duplicateSignupConflicts() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L82 community=]\nNODE .loginWithWrongPasswordIsUnauthorized() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L92 community=]\nNODE .refreshRotatesAndRevokesOldToken() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L155 community=]\nNODE .signupIssuesTokens() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L67 community=]\nNODE address [src=asyncapi/schemas/order.confirmed.v1.json loc=L10 community=]\nNODE org.springframework.web.bind.annotation.ExceptionHandler [src= loc= community=]\nNODE AccountApplicationSmokeTest.java [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L1 community=]\nNODE .addressCrudLifecycle() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L109 community=]\nNODE .addressesRequireAuthentication() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L102 community=]\nNODE .datasource() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L51 community=]\nNODE .properties() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L41 community=]\nNODE .applicationClassExists() [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L9 community=]\nNODE .committedSpecMatchesTheGeneratedDocument() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L48 community=]\nNODE .swaggerUiIsReachableWithoutAuthentication() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L68 community=]\nNODE city [src=asyncapi/schemas/order.confirmed.v1.json loc=L17 community=]\n... (truncated — 8 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "74b04dc9de0a4d1bfdeb61fb5a14d2e54288dc47a9da12bb2917ab5530c2c9ae",
+      "duration_ms": 214.7,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "parameters": {
+        "operation": "affected",
+        "query": "postalCode"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "No unique node match for postalCode",
+      "output_sha256": "fa0fb43181d6227d21da6b936360dd1181334d2c7685a50fc9eb24916ea5117a",
+      "output_bytes": 35,
+      "output_full_bytes": 35,
+      "truncated": false,
+      "output_normalized": "No unique node match for postalCode",
+      "output_normalized_sha256": "b1b5a84239ddf1c4b212d238e00426ceb8c974eabdbbf235878503b65d70066c",
+      "duration_ms": 106,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "parameters": {
+        "operation": "explain",
+        "query": "postalCode"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Node: postalCode\n  ID:        basket-service::ref_postalcode\n  Source:    asyncapi/schemas/order.confirmed.v1.json L12\n  Type:      concept\n  Community: \n  Degree:    1\n\nConnections (1):\n  <-- required [extends] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L12",
+      "output_sha256": "e8497433c169a303d276b86bc17e28e335e7ff635a87ac869b1ff269add40672",
+      "output_bytes": 268,
+      "output_full_bytes": 268,
+      "truncated": false,
+      "output_normalized": "Node: postalCode\n  ID:        basket-service::ref_postalcode\n  Source:    asyncapi/schemas/order.confirmed.v1.json L12\n  Type:      concept\n  Community: \n  Degree:    1\n\nConnections (1):\n  <-- required [extends] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L12",
+      "output_normalized_sha256": "85f568ddeaac27b95e105bfd6896107d000df48815d90050dc79759e298fa15f",
+      "duration_ms": 184.6,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "What breaks across repositories if the address JSON field postalCode is renamed to postcode in Account's address API?"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode', 'Address', 'json()', 'AccountFlowComponentTest.java', 'apiRequest()', '.runtimeParserAcceptsUnknownFieldsButRejectsBrokenRoutingAndUnsupportedSelectors()'] | Context: field (heuristic) | 6 nodes found\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE Address [src=src/main/java/com/poc/account/domain/model/Address.java loc=L6 community=]\nNODE json() [src=src/test/app.test.tsx loc=L7 community=]\nNODE AccountFlowComponentTest.java [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L1 community=]\nNODE apiRequest() [src=src/api/client.ts loc=L104 community=]\nNODE .runtimeParserAcceptsUnknownFieldsButRejectsBrokenRoutingAndUnsupportedSelectors() [src=src/test/java/com/poc/payment/PaymentContractTest.java loc=L62 community=]\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "aa3061d205589bbd7045a24f6dd533ec363311f16a2e237ebf8c7a8ab231ff6a",
+      "output_bytes": 1112,
+      "output_full_bytes": 1112,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode', 'Address', 'json()', 'AccountFlowComponentTest.java', 'apiRequest()', '.runtimeParserAcceptsUnknownFieldsButRejectsBrokenRoutingAndUnsupportedSelectors()'] | Context: field (heuristic) | 6 nodes found\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE Address [src=src/main/java/com/poc/account/domain/model/Address.java loc=L6 community=]\nNODE json() [src=src/test/app.test.tsx loc=L7 community=]\nNODE AccountFlowComponentTest.java [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L1 community=]\nNODE apiRequest() [src=src/api/client.ts loc=L104 community=]\nNODE .runtimeParserAcceptsUnknownFieldsButRejectsBrokenRoutingAndUnsupportedSelectors() [src=src/test/java/com/poc/payment/PaymentContractTest.java loc=L62 community=]\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "529a90989b6787fb9977f7bc0ac9ac56baa0f2fc91901618378e9af41a2ceaa5",
+      "duration_ms": 221.1,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "postalCode test coverage in account-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode', 'test', 'AccountFlowComponentTest', 'AccountFlowComponentTest.java', '.service()'] | 79 nodes found\n\n[!] TRUNCATED: showing 68 of 79 nodes (~2000-token budget). The answer may be among the 11 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE test [src=package.json loc=L11 community=]\nNODE AccountFlowComponentTest [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L32 community=]\nNODE AccountFlowComponentTest.java [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L13 community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE account-service::mediatype [src= loc= community=]\nNODE .body() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L58 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE .duplicateSignupConflicts() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L82 community=]\nNODE .loginWithWrongPasswordIsUnauthorized() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L92 community=]\nNODE .refreshRotatesAndRevokesOldToken() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L155 community=]\nNODE .signupIssuesTokens() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L67 community=]\nNODE .addressCrudLifecycle() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L109 community=]\nNODE .addressesRequireAuthentication() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L102 community=]\nNODE .datasource() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L51 community=]\nNODE account-service::assertthat [src= loc= community=]\nNODE account-service::autowired [src= loc= community=]\nNODE account-service::container [src= loc= community=]\nNODE account-service::get [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE account-service::status [src= loc= community=]\nNODE account-service::beforeeach [src= loc= community=]\nNODE account-service::delete [src= loc= community=]\nNODE account-service::jsonnode [src= loc= community=]\nNODE account-service::jsonpath [src= loc= community=]\nNODE account-service::methodorderer [src= loc= community=]\nNODE MethodOrderer.OrderAnnotation [src= loc= community=]\nNODE account-service::mvcresult [src= loc= community=]\nNODE account-service::post [src= loc= community=]\nNODE account-service::put [src= loc= community=]\nNODE pattern [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE AddressController.java [src=src/main/java/com/poc/account/api/AddressController.java loc=L1 community=]\nNODE AuthController.java [src=src/main/java/com/poc/account/api/AuthController.java loc=L1 community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L1 community=]\nNODE RateLimitFilter.java [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE ProblemAuthHandlers.java [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L1 community=]\nNODE RateLimitFilter [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L19 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L22 community=]\nNODE ProblemAuthHandlers [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L15 community=]\nNODE GlobalExceptionHandler [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L17 community=]\nNODE package.json [src=package.json loc=L1 community=]\nNODE .problem() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L46 community=]\nNODE org.springframework.http.ProblemDetail [src= loc= community=]\nNODE address [src=asyncapi/schemas/order.confirmed.v1.json loc=L10 community=]\nNODE org.springframework.web.bind.annotation.ExceptionHandler [src= loc= community=]\nNODE AccountApplicationSmokeTest.java [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L1 community=]\nNODE .properties() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L41 community=]\nNODE .applicationClassExists() [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L9 community=]\nNODE .committedSpecMatchesTheGeneratedDocument() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L48 community=]\nNODE .swaggerUiIsReachableWithoutAuthentication() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L68 community=]\nNODE city [src=asyncapi/schemas/order.confirmed.v1.json loc=L17 community=]\n... (truncated — 11 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "a75564b136bb4ea9ff7d7078d5c47fc46a092d8e4877dcd8d8bd09f4a484e5f0",
+      "output_bytes": 6763,
+      "output_full_bytes": 6763,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode', 'test', 'AccountFlowComponentTest', 'AccountFlowComponentTest.java', '.service()'] | 79 nodes found\n\n[!] TRUNCATED: showing 68 of 79 nodes (~2000-token budget). The answer may be among the 11 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE test [src=package.json loc=L11 community=]\nNODE AccountFlowComponentTest [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L32 community=]\nNODE AccountFlowComponentTest.java [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L13 community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE account-service::mediatype [src= loc= community=]\nNODE .body() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L58 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE .duplicateSignupConflicts() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L82 community=]\nNODE .loginWithWrongPasswordIsUnauthorized() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L92 community=]\nNODE .refreshRotatesAndRevokesOldToken() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L155 community=]\nNODE .signupIssuesTokens() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L67 community=]\nNODE .addressCrudLifecycle() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L109 community=]\nNODE .addressesRequireAuthentication() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L102 community=]\nNODE .datasource() [src=src/test/java/com/poc/account/AccountFlowComponentTest.java loc=L51 community=]\nNODE account-service::assertthat [src= loc= community=]\nNODE account-service::autowired [src= loc= community=]\nNODE account-service::container [src= loc= community=]\nNODE account-service::get [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE account-service::status [src= loc= community=]\nNODE account-service::beforeeach [src= loc= community=]\nNODE account-service::delete [src= loc= community=]\nNODE account-service::jsonnode [src= loc= community=]\nNODE account-service::jsonpath [src= loc= community=]\nNODE account-service::methodorderer [src= loc= community=]\nNODE MethodOrderer.OrderAnnotation [src= loc= community=]\nNODE account-service::mvcresult [src= loc= community=]\nNODE account-service::post [src= loc= community=]\nNODE account-service::put [src= loc= community=]\nNODE pattern [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE AddressController.java [src=src/main/java/com/poc/account/api/AddressController.java loc=L1 community=]\nNODE AuthController.java [src=src/main/java/com/poc/account/api/AuthController.java loc=L1 community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L1 community=]\nNODE RateLimitFilter.java [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE ProblemAuthHandlers.java [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L1 community=]\nNODE RateLimitFilter [src=src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java loc=L19 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L22 community=]\nNODE ProblemAuthHandlers [src=src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java loc=L15 community=]\nNODE GlobalExceptionHandler [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L17 community=]\nNODE package.json [src=package.json loc=L1 community=]\nNODE .problem() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L46 community=]\nNODE org.springframework.http.ProblemDetail [src= loc= community=]\nNODE address [src=asyncapi/schemas/order.confirmed.v1.json loc=L10 community=]\nNODE org.springframework.web.bind.annotation.ExceptionHandler [src= loc= community=]\nNODE AccountApplicationSmokeTest.java [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L1 community=]\nNODE .properties() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L41 community=]\nNODE .applicationClassExists() [src=src/test/java/com/poc/account/AccountApplicationSmokeTest.java loc=L9 community=]\nNODE .committedSpecMatchesTheGeneratedDocument() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L48 community=]\nNODE .swaggerUiIsReachableWithoutAuthentication() [src=src/test/java/com/poc/account/OpenApiContractTest.java loc=L68 community=]\nNODE city [src=asyncapi/schemas/order.confirmed.v1.json loc=L17 community=]\n... (truncated — 11 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "6abed6f5fe939e15c1d4e7ac064828ed5c13e57933d8d0d87df4eeaaab0212b7",
+      "duration_ms": 217.2,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "graphify",
+    "version": "0.9.53",
+    "commit": null,
+    "binary_sha256": "5201bbf13d9959ab9ce913c2adb891be75fee0d9454ab3d93208625257e90b2f",
+    "artifact_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+    "manifest_sha256": "71b2cccdf485ce96c39253f4180f30c79ccb54bbe95db259fbd6796806f5d02f",
+    "query_surface": [
+      "query",
+      "explain",
+      "path",
+      "affected"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "ee6e66d04d14c9720f5973a9dd53ca5c44801f9af2029134f44eb943c5b0a5e5",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 204410,
+  "cost_usd": 0.19027680000000002,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "c78949ea393916bcb32d776bab86e43ed4885ede77b3d6ed77b855b73da403de",
+  "contestant_config_sha256": "a3cabf9a2097e289cfbe45daf66ab522824489c03b116a3b77ad4e5f9c354067",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

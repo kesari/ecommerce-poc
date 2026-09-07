@@ -1,0 +1,549 @@
+{
+  "change_id": "REST-005",
+  "contestant": "gortex-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java:5 declares the two LocalDate fields."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:25 binds shipment fromDate and toDate."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:37 renders estimatedDelivery.from and .to."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.shipment.domain.model.DeliveryWindow",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java:5 declares from and to."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:27 constructs a two-date DeliveryWindow."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java:95 emits promisedFrom and promisedTo."
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.DeliveryEstimateResponse",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java:7 maps window.from and window.to."
+      },
+      {
+        "fqn": "com.poc.shipment.api.dto.ShipmentResponse",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java:10 exposes promisedFrom and promisedTo."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.persistence.repository.MyBatisShipmentRepository",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java:30 persists both window dates."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.persistence.row.ShipmentRow",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java:9 declares LocalDate promisedFrom and promisedTo."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:43 reads both bound response dates."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.DeliveryWindow",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/DeliveryWindow.java:5 stores the propagated date window."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:56 copies ShipmentPort's window into a saved quote."
+      },
+      {
+        "fqn": "com.poc.order.api.dto.QuoteResponse",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java:22 serializes the quote's two delivery dates."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisQuoteRepository.java:29 persists promised fromDate and toDate."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.row.QuoteRow",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java:9 declares two LocalDate promise fields."
+      },
+      {
+        "fqn": "Quote",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:75 defines estimatedDelivery with from and to strings."
+      },
+      {
+        "fqn": "QuotePreview",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:37 reads both delivery-window fields."
+      },
+      {
+        "fqn": "deliveryDate",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/utils/format.ts:1 formats a date-only value by appending T00:00:00Z."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:11 defines it and ShipmentClient.java:34 calls it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:shipment-service.yaml#/components/schemas/DeliveryEstimateResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/openapi/shipment-service.yaml:73 declares date fields bound by ShipmentClient.java:25."
+      },
+      {
+        "type": "kafka",
+        "identifier": "shipment.created.v1#/promisedFrom",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment.created.v1.json:6 requires promisedFrom; SagaResultListener.java:41 consumes the topic."
+      },
+      {
+        "type": "kafka",
+        "identifier": "shipment.created.v1#/promisedTo",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment.created.v1.json:6 requires promisedTo; SagaResultListener.java:41 consumes the topic."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/checkout/quotes",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "CheckoutProxyController.java:38 relays this route and CheckoutPage.tsx:37 consumes its delivery shape."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:order-service.yaml#/components/schemas/EstimatedDelivery",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/openapi/order-service.yaml:108 defines from/to and commerce-web/src/api/types.ts:75 binds them."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "shipment-service",
+        "suite": "DeliveryEstimatorTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java:18 asserts window.from and window.to."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentPersistenceComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java:138 constructs a two-date window."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:91 asserts fromDate and toDate JSON."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:62 validates promisedFrom and promisedTo."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/OpenApiContractTest.java:61 compares the committed generated spec."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:93 asserts estimatedDelivery.from."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:219 seeds a two-date DeliveryWindow."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OpenApiContractTest.java:49 compares the committed generated spec."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:66 supplies a quote with estimatedDelivery.from and .to."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-07T02:04:59.308Z",
+  "elapsed_seconds": 227.8,
+  "tool_calls": 57,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "find": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 13,
+      "succeeded": 13,
+      "failed": 0
+    },
+    "read": {
+      "calls": 38,
+      "succeeded": 38,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "bridge_rank",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "parameters": {
+        "operation": "symbol",
+        "query": "from",
+        "repo": "shipment-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"query_class\": \"concept\",\n  \"results\": [\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java\",\n      \"enclosing\": \"ShipmentService\",\n      \"enclosing_id\": \"shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java::ShipmentService\",\n      \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java\",\n      \"id\": \"shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java::ShipmentService.createFromConfirmedOrder\",\n      \"kind\": \"method\",\n      \"name\": \"createFromConfirmedOrder\",\n      \"project_id\": \"shipment-service\",\n      \"repo_prefix\": \"shipment-service\",\n      \"start_line\": 51,\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java\",\n      \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java\",\n      \"id\": \"shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java::from\",\n      \"kind\": \"method\",\n      \"name\": \"from\",\n      \"project_id\": \"shipment-service\",\n      \"repo_prefix\": \"shipment-service\",\n      \"start_line\": 12,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\",\n      \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\",\n      \"id\": \"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java::from\",\n      \"kind\": \"method\",\n      \"name\": \"from\",\n      \"project_id\": \"shipment-service\",\n      \"repo_prefix\": \"shipment-service\",\n      \"start_line\": 14,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql\",\n      \"file_path\": \"shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql\",\n      \"id\": \"shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql::shipments.promised_from\",\n      \"kind\": \"variable\",\n      \"name\": \"promised_from\",\n      \"project_id\": \"shipment-service\",\n      \"repo_prefix\": \"shipment-service\",\n      \"start_line\": 12,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java\",\n      \"enclosing\": \"ShipmentIntegrationTest\",\n      \"enclosing_id\": \"shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java::ShipmentIntegrationTest\",\n      \"file_path\": \"shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java\",\n      \"id\": \"shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java::ShipmentIntegrationTest.secondIdenticalEstimateIsServedFromCache\",\n      \"is_test\": true,\n      \"kind\": \"method\",\n      \"name\": \"secondIdenticalEstimateIsServedFromCache\",\n      \"project_id\": \"shipment-service\",\n      \"repo_prefix\": \"shipment-service\",\n      \"start_line\": 117,\n      \"test_role\": \"test\",\n      \"visibility\": \"package\",\n      \"workspace_id\": \"poc-estate\"\n    }\n  ],\n  \"total\": 5,\n  \"truncated\": false\n}",
+      "output_sha256": "be2b1d658b28b9de908f531c6ba28c62cfa85313c52b53ce9ded8bc7fc1ba150",
+      "output_bytes": 3528,
+      "output_full_bytes": 3528,
+      "truncated": false,
+      "output_normalized": "{\"query_class\":\"concept\",\"results\":[{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\",\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\",\"id\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java::from\",\"kind\":\"method\",\"name\":\"from\",\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"start_line\":14,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java\",\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java\",\"id\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java::from\",\"kind\":\"method\",\"name\":\"from\",\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"start_line\":12,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java\",\"enclosing\":\"ShipmentService\",\"enclosing_id\":\"shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java::ShipmentService\",\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java\",\"id\":\"shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java::ShipmentService.createFromConfirmedOrder\",\"kind\":\"method\",\"name\":\"createFromConfirmedOrder\",\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"start_line\":51,\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql\",\"file_path\":\"shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql\",\"id\":\"shipment-service/src/main/resources/db/migration/V1__shipment_schema.sql::shipments.promised_from\",\"kind\":\"variable\",\"name\":\"promised_from\",\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"start_line\":12,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java\",\"enclosing\":\"ShipmentIntegrationTest\",\"enclosing_id\":\"shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java::ShipmentIntegrationTest\",\"file_path\":\"shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java\",\"id\":\"shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java::ShipmentIntegrationTest.secondIdenticalEstimateIsServedFromCache\",\"is_test\":true,\"kind\":\"method\",\"name\":\"secondIdenticalEstimateIsServedFromCache\",\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"start_line\":117,\"test_role\":\"test\",\"visibility\":\"package\",\"workspace_id\":\"poc-estate\"}],\"total\":5,\"truncated\":false}",
+      "output_normalized_sha256": "c331666ff0ec05d89e6d190f04d7d0bb80950936a783d63bfe56565be00de3bc",
+      "duration_ms": 81.5,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "parameters": {
+        "operation": "usages",
+        "query": "from",
+        "repo": "shipment-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"caveat\": {\n    \"class\": \"possible_extraction_gap\",\n    \"message\": \"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like \\u003crepo\\u003e/\\u003cpath\\u003e::\\u003csymbol\\u003e, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"\n  },\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "c82b1ad913777b030f7c4b8bfb7ff6d5d1af8b79c6a966a03c572affc07151a2",
+      "output_bytes": 478,
+      "output_full_bytes": 478,
+      "truncated": false,
+      "output_normalized": "{\"caveat\":{\"class\":\"possible_extraction_gap\",\"message\":\"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like <repo>/<path>::<symbol>, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"},\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "b6b6f2773a8d44eb7473ea20b6ef7eb3a3b5bc6394a69a2e3fd1870d5bb942d4",
+      "duration_ms": 39.7,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "parameters": {
+        "action": "list",
+        "repo": "shipment-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"by_repo\": {\n    \"shipment-service\": {\n      \"contracts\": {\n        \"di\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::SecurityFilterChain\",\n            \"line\": 32,\n            \"meta\": {\n              \"bean\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig.filterChain\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::JwtDecoder\",\n            \"line\": 25,\n            \"meta\": {\n              \"bean\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig.jwtDecoder\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/ClockConfig.java\",\n            \"id\": \"di::Clock\",\n            \"line\": 11,\n            \"meta\": {\n              \"bean\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/ClockConfig.java::ClockConfig.clock\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"shipment-service/src/main/java/com/poc/shipment/infrastructure/ClockConfig.java::ClockConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java\",\n            \"id\": \"di::ObjectMapper\",\n            \"line\": 149,\n            \"meta\": {\n              \"bean\": \"shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java::PersistenceTestConfiguration.objectMapper\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java::PersistenceTestConfiguration\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ],\n        \"http\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\n            \"id\": \"http::POST::/delivery-estimates\",\n            \"line\": 39,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"POST\",\n              \"original_path\": \"/delivery-estimates\",\n              \"path\": \"/delivery-estimates\",\n              \"request_type\": \"DeliveryEstimateRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java::ShipmentController.estimate\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\n            \"id\": \"http::GET::/shipments/by-order/{p1}\",\n            \"line\": 50,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"GET\",\n              \"original_path\": \"/shipments/by-order/{orderId}\",\n              \"path\": \"/shipments/by-order/{p1}\",\n              \"path_param_names\": [\n                \"orderId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"none\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java::ShipmentController.byOrder\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\n            \"id\": \"http::ANY::/api/v1\",\n            \"line\": 25,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"ANY\",\n              \"original_path\": \"/api/v1\",\n              \"path\": \"/api/v1\",\n              \"request_type\": \"DeliveryEstimateRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ],\n        \"openapi\": [\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"shipment-service/openapi/shipment-service.yaml\",\n            \"id\": \"http::GET::/api/v1/shipments/by-order/{p1}\",\n            \"line\": 35,\n            \"meta\": {\n              \"method\": \"GET\",\n              \"path\": \"/api/v1/shipments/by-order/{p1}\",\n              \"response_type\": \"ShipmentResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                404\n              ]\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"shipment-service/openapi/shipment-service.yaml\",\n            \"id\": \"http::POST::/api/v1/delivery-estimates\",\n            \"line\": 11,\n            \"meta\": {\n              \"method\": \"POST\",\n              \"path\": \"/api/v1/delivery-estimates\",\n              \"request_type\": \"DeliveryEstimateRequest\",\n              \"response_type\": \"DeliveryEstimateResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                400\n              ]\n            },\n            \"project_id\": \"shipment-service\",\n            \"repo_prefix\": \"shipment-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ]\n      },\n      \"total\": 9\n    }\n  },\n  \"other_repos\": {\n    \"by_repo\": {\n      \"account-service\": 19,\n      \"basket-service\": 15,\n      \"catalog-service\": 8,\n      \"commerce-bff\": 39,\n      \"commerce-web\": 27,\n      \"inventory-service\": 2,\n      \"order-service\": 10,\n      \"payment-service\": 2\n    },\n    \"hint\": \"pass all_repos=true or repo=\\u003cprefix\\u003e/project=\\u003cname\\u003e to include these\",\n    \"repo_count\": 8,\n    \"total\": 122\n  },\n  \"total\": 9,\n  \"truncated\": false\n}",
+      "output_sha256": "c51b768c9be477150e264cdf92028c69878ec6ec6ea7b83118511c496ab0329b",
+      "output_bytes": 7966,
+      "output_full_bytes": 7966,
+      "truncated": false,
+      "output_normalized": "{\"by_repo\":{\"shipment-service\":{\"contracts\":{\"di\":[{\"confidence\":0.9,\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/ClockConfig.java\",\"id\":\"di::Clock\",\"line\":11,\"meta\":{\"bean\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/ClockConfig.java::ClockConfig.clock\",\"binding\":\"bean\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/ClockConfig.java::ClockConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java\",\"id\":\"di::JwtDecoder\",\"line\":25,\"meta\":{\"bean\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig.jwtDecoder\",\"binding\":\"bean\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java\",\"id\":\"di::SecurityFilterChain\",\"line\":32,\"meta\":{\"bean\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig.filterChain\",\"binding\":\"bean\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"shipment-service/src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java\",\"id\":\"di::ObjectMapper\",\"line\":149,\"meta\":{\"bean\":\"shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java::PersistenceTestConfiguration.objectMapper\",\"binding\":\"bean\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"shipment-service/src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java::PersistenceTestConfiguration\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"}],\"http\":[{\"confidence\":0.9,\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\"id\":\"http::ANY::/api/v1\",\"line\":25,\"meta\":{\"framework\":\"spring\",\"method\":\"ANY\",\"original_path\":\"/api/v1\",\"path\":\"/api/v1\",\"request_type\":\"DeliveryEstimateRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\"id\":\"http::GET::/shipments/by-order/{p1}\",\"line\":50,\"meta\":{\"framework\":\"spring\",\"method\":\"GET\",\"original_path\":\"/shipments/by-order/{orderId}\",\"path\":\"/shipments/by-order/{p1}\",\"path_param_names\":[\"orderId\"],\"path_params\":[\"p1\"],\"route_kind\":\"parametric\",\"schema_source\":\"none\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java::ShipmentController.byOrder\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\"id\":\"http::POST::/delivery-estimates\",\"line\":39,\"meta\":{\"framework\":\"spring\",\"method\":\"POST\",\"original_path\":\"/delivery-estimates\",\"path\":\"/delivery-estimates\",\"request_type\":\"DeliveryEstimateRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java::ShipmentController.estimate\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"}],\"openapi\":[{\"confidence\":0.95,\"file_path\":\"shipment-service/openapi/shipment-service.yaml\",\"id\":\"http::GET::/api/v1/shipments/by-order/{p1}\",\"line\":35,\"meta\":{\"method\":\"GET\",\"path\":\"/api/v1/shipments/by-order/{p1}\",\"response_type\":\"ShipmentResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,404]},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"shipment-service/openapi/shipment-service.yaml\",\"id\":\"http::POST::/api/v1/delivery-estimates\",\"line\":11,\"meta\":{\"method\":\"POST\",\"path\":\"/api/v1/delivery-estimates\",\"request_type\":\"DeliveryEstimateRequest\",\"response_type\":\"DeliveryEstimateResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,400]},\"project_id\":\"shipment-service\",\"repo_prefix\":\"shipment-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"}]},\"total\":9}},\"other_repos\":{\"by_repo\":{\"account-service\":19,\"basket-service\":15,\"catalog-service\":8,\"commerce-bff\":39,\"commerce-web\":27,\"inventory-service\":2,\"order-service\":10,\"payment-service\":2},\"hint\":\"pass all_repos=true or repo=<prefix>/project=<name> to include these\",\"repo_count\":8,\"total\":122},\"total\":9,\"truncated\":false}",
+      "output_normalized_sha256": "cc38fcd5ff5632b0bfe45d78ae050d37f0d00f13b081051d92d89a559ff2a975",
+      "duration_ms": 52.7,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "gortex_contracts",
+      "operation": "bridge_rank",
+      "parameters": {
+        "action": "bridge_rank",
+        "repo": "shipment-service",
+        "query": "from"
+      },
+      "requested_query": "from",
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"groups\": [\n    {\n      \"bridge_id\": \"bridge::poc-estate::commerce-web::http::GET::/basket\",\n      \"canonical_key\": \"GET /basket\",\n      \"consumer_count\": 1,\n      \"consumers\": [\n        {\n          \"contract_id\": \"http::GET::/basket\",\n          \"file_path\": \"commerce-web/src/api/basket.ts\",\n          \"line\": 5,\n          \"repo\": \"commerce-web\",\n          \"symbol_id\": \"commerce-web/src/api/basket.ts::getBasket\"\n        }\n      ],\n      \"contract_type\": \"http\",\n      \"fused_score\": 0.01639344262295082,\n      \"provider_count\": 1,\n      \"providers\": [\n        {\n          \"contract_id\": \"http::GET::/basket\",\n          \"file_path\": \"commerce-web/src/App.tsx\",\n          \"line\": 24,\n          \"repo\": \"commerce-web\"\n        }\n      ],\n      \"repos\": [\n        \"commerce-web\"\n      ],\n      \"signal_ranks\": {\n        \"degree\": 1\n      }\n    },\n    {\n      \"bridge_id\": \"bridge::poc-estate::commerce-web::http::GET::/orders/{p1}\",\n      \"canonical_key\": \"GET /orders/{p1}\",\n      \"consumer_count\": 1,\n      \"consumers\": [\n        {\n          \"contract_id\": \"http::GET::/orders/{p1}\",\n          \"file_path\": \"commerce-web/src/api/orders.ts\",\n          \"line\": 18,\n          \"repo\": \"commerce-web\",\n          \"symbol_id\": \"commerce-web/src/api/orders.ts::getOrder\"\n        }\n      ],\n      \"contract_type\": \"http\",\n      \"fused_score\": 0.016129032258064516,\n      \"provider_count\": 1,\n      \"providers\": [\n        {\n          \"contract_id\": \"http::GET::/orders/{p1}\",\n          \"file_path\": \"commerce-web/src/App.tsx\",\n          \"line\": 27,\n          \"repo\": \"commerce-web\"\n        }\n      ],\n      \"repos\": [\n        \"commerce-web\"\n      ],\n      \"signal_ranks\": {\n        \"degree\": 2\n      }\n    }\n  ],\n  \"mode\": \"rank\",\n  \"signals\": [\n    \"degree\",\n    \"path_repo\",\n    \"text\"\n  ],\n  \"total\": 2\n}",
+      "output_sha256": "665edbe89ac6f7e3ceed6439ab50f3fe2d3f7de8d7285a8c872d14e069c66361",
+      "output_bytes": 1801,
+      "output_full_bytes": 1801,
+      "truncated": false,
+      "output_normalized": "{\"groups\":[{\"bridge_id\":\"bridge::poc-estate::commerce-web::http::GET::/basket\",\"canonical_key\":\"GET /basket\",\"consumer_count\":1,\"consumers\":[{\"contract_id\":\"http::GET::/basket\",\"file_path\":\"commerce-web/src/api/basket.ts\",\"line\":5,\"repo\":\"commerce-web\",\"symbol_id\":\"commerce-web/src/api/basket.ts::getBasket\"}],\"contract_type\":\"http\",\"fused_score\":0.01639344262295082,\"provider_count\":1,\"providers\":[{\"contract_id\":\"http::GET::/basket\",\"file_path\":\"commerce-web/src/App.tsx\",\"line\":24,\"repo\":\"commerce-web\"}],\"repos\":[\"commerce-web\"],\"signal_ranks\":{\"degree\":1}},{\"bridge_id\":\"bridge::poc-estate::commerce-web::http::GET::/orders/{p1}\",\"canonical_key\":\"GET /orders/{p1}\",\"consumer_count\":1,\"consumers\":[{\"contract_id\":\"http::GET::/orders/{p1}\",\"file_path\":\"commerce-web/src/api/orders.ts\",\"line\":18,\"repo\":\"commerce-web\",\"symbol_id\":\"commerce-web/src/api/orders.ts::getOrder\"}],\"contract_type\":\"http\",\"fused_score\":0.016129032258064516,\"provider_count\":1,\"providers\":[{\"contract_id\":\"http::GET::/orders/{p1}\",\"file_path\":\"commerce-web/src/App.tsx\",\"line\":27,\"repo\":\"commerce-web\"}],\"repos\":[\"commerce-web\"],\"signal_ranks\":{\"degree\":2}}],\"mode\":\"rank\",\"signals\":[\"degree\",\"path_repo\",\"text\"],\"total\":2}",
+      "output_normalized_sha256": "b40f47a07c2457c405f1de0c420a38c96222799c5af7e217ab009df7caaa1b13",
+      "duration_ms": 46.5,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "parameters": {
+        "operation": "dependents",
+        "query": "from",
+        "repo": "shipment-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "918dff31d9ed9777183369f6d2840e8709446daf196930c1bbae4e749ec4db69",
+      "output_bytes": 94,
+      "output_full_bytes": 94,
+      "truncated": false,
+      "output_normalized": "{\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "66c93a5ef9beeec26edaf0e0d8ca0aa4b9878b8abd9fd08e45eebf55184870dc",
+      "duration_ms": 40.1,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "gortex",
+    "version": "v0.63.10",
+    "commit": "5b299072c44457751cd339c00aabb0e5d2356ad3",
+    "binary_sha256": "30566ec81f2b4335b7e84e5664f508ae43238f0f037be7d2100543e211a05532",
+    "artifact_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+    "manifest_sha256": null,
+    "query_surface": [
+      "symbol",
+      "usages",
+      "callers",
+      "calls",
+      "dependents",
+      "deps",
+      "implementations",
+      "contracts",
+      "route_impact",
+      "symbol_impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "d9cd33199f9cb7ea2e85ffb4e8125b9900cac6bfef467a328fbaaac9c49ea702",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 224909,
+  "cost_usd": 0.23409560000000001,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "444f70e30591e543e03d2cdfe2c39a7b0013a92a481f49351e502f7f002c6ef9",
+  "contestant_config_sha256": "9aa43e33dd8bf1e73fabe496f0ad97a29c0f3ba9b6b110a3ea19938964ece6c4",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

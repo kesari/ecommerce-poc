@@ -1,0 +1,304 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService emits OUT_OF_STOCK at inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java:59."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service constrains the consumed rejection reason at order-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "reserve constructs the rejection reason at inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java:58-59."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1#/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "Provider and consumer schemas both restrict reason to OUT_OF_STOCK at inventory-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6 and order-service/asyncapi/schemas/inventory.reservation-rejected.v1.json:6."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "The rejection integration test expects OUT_OF_STOCK at inventory-service/src/test/java/com/poc/inventory/InventoryIntegrationTest.java:135."
+      },
+      {
+        "repo": "inventory-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "The contract sample covers only OUT_OF_STOCK at inventory-service/src/test/java/com/poc/inventory/ContractValidationTest.java:66-67."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T08:15:10.668Z",
+  "elapsed_seconds": 98.5,
+  "tool_calls": 27,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 2,
+      "succeeded": 2,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 7,
+      "succeeded": 7,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    },
+    "read": {
+      "calls": 15,
+      "succeeded": 15,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "OUT_OF_STOCK"
+      },
+      "requested_query": "OUT_OF_STOCK",
+      "executed_query": "OUT_OF_STOCK",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"REJECTED_OUT_OF_STOCK\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[10,4,25]}}]}",
+      "output_sha256": "ec20f3ff4b4be0212ccb788d3d9f8dbb76981ff529634742eb5fcd2772ea24eb",
+      "output_bytes": 541,
+      "output_full_bytes": 541,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[10,4,25]},\"matchSource\":\"displayName\",\"matchText\":\"REJECTED_OUT_OF_STOCK\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}]}",
+      "output_normalized_sha256": "bb8fe292ee85054b4ed9d69e322761b6c821312a166e8b1ecf97e335f740daf5",
+      "duration_ms": 67.5,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "OUT_OF_STOCK"
+      },
+      "requested_query": "OUT_OF_STOCK",
+      "executed_query": "OUT_OF_STOCK",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaTransitions.java\",\"range\":[33,33,54],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[19,44,65],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"roles\":0}]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"]}",
+      "output_sha256": "497ffa2bf0732f58c4d0e451609825cce34655b855802c4129e79faf858d7075",
+      "output_bytes": 1834,
+      "output_full_bytes": 1834,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaTransitions.java\",\"range\":[33,33,54],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[19,44,65],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"]}",
+      "output_normalized_sha256": "a28d64f181a4971807797652d95a77b623d6f92848d7c14400e9790a38a91490",
+      "duration_ms": 33.5,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "OUT_OF_STOCK"
+      },
+      "requested_query": "OUT_OF_STOCK",
+      "executed_query": "OUT_OF_STOCK",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[10,4,25]},\"incoming\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaTransitions.java\",\"range\":[33,33,54],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[19,44,65],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"roles\":0}],\"outgoing\":null,\"relationships\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"]}",
+      "output_sha256": "2f192320b47ba4cc1936b636da8eb29059f14e8a8d5d80054a424a3767f5ca20",
+      "output_bytes": 1989,
+      "output_full_bytes": 1989,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[10,4,25]},\"incoming\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaTransitions.java\",\"range\":[33,33,54],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[19,44,65],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"]}",
+      "output_normalized_sha256": "78e37904e1fa737632d99eb36cf4ef820ce8201dd5a3e16566e340b826838d08",
+      "duration_ms": 20.7,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "OUT_OF_STOCK"
+      },
+      "requested_query": "OUT_OF_STOCK",
+      "executed_query": "OUT_OF_STOCK",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[10,4,25]},\"review\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaTransitions.java\",\"range\":[33,33,54],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[19,44,65],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"roles\":0}],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"reasons\":[\"testPath\"]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"reasons\":[\"testPath\"]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"reasons\":[\"testPath\"]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"reasons\":[\"testPath\"]}]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"]}",
+      "output_sha256": "967df08fe437091822baf2877b4c74d55a1b3033ae969c95601d9f1700989601",
+      "output_bytes": 3085,
+      "output_full_bytes": 3085,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[10,4,25]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaTransitions.java\",\"range\":[33,33,54],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java\",\"range\":[19,44,65],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\",\"tests\":[{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[152,41,62],\"reasons\":[\"testPath\"],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[37,22,43],\"reasons\":[\"testPath\"],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[38,19,40],\"reasons\":[\"testPath\"],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/SagaTransitionsTest.java\",\"range\":[67,65,86],\"reasons\":[\"testPath\"],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"}]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/OrderStatus#REJECTED_OUT_OF_STOCK.\"]}",
+      "output_normalized_sha256": "9b5fd5f8be3f4e7144795d2b0bfe2199b11251ff9427d004bcda544a24850d35",
+      "duration_ms": 21.3,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 80454,
+  "cost_usd": 0.1239504,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "b5b28ab70d58c234d5bccb6f2ecc2784da3bf6dbf1f496d5951175458de0d079",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

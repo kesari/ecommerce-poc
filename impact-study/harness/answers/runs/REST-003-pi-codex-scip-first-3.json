@@ -1,0 +1,387 @@
+{
+  "change_id": "REST-003",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java:9 declares the renamed response field."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:24 binds basketVersion from basket JSON."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.basket.api.dto.BasketResponse",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java:9 declares basketVersion."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.BasketClient",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:24 declares the JSON-bound basketVersion."
+      },
+      {
+        "fqn": "com.poc.order.application.port.BasketPort",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:43 passes the bound value into BasketSnapshot."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:58 copies BasketSnapshot.basketVersion into Quote."
+      },
+      {
+        "fqn": "com.poc.order.application.OrderService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/OrderService.java:79 compares the current snapshot value with the quote."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.Quote",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/Quote.java:7 carries the basket version used by the guard."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.Order",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/Order.java:7 persists the checked basket version on orders."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisQuoteRepository.java:29 saves Quote.basketVersion."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.repository.MyBatisOrderRepository",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java:30 saves Order.basketVersion."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "basket-service/openapi/basket.yaml:11 defines the response and BasketClient.java:34 calls it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:basket.yaml#/components/schemas/BasketResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "basket-service/openapi/basket.yaml:217 defines basketVersion and BasketClient.java:24 binds it by name."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:82 asserts $.basketVersion."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:172 asserts $.basketVersion."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/OpenApiContractTest.java:44 compares generated OpenAPI with basket.yaml."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderApiMockedTest",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r4",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:184 covers the basket-version rejection guard."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 3,
+  "run_started_at": "2026-09-06T10:43:22.247Z",
+  "elapsed_seconds": 144,
+  "tool_calls": 55,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 9,
+      "succeeded": 9,
+      "failed": 0
+    },
+    "find": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "read": {
+      "calls": 40,
+      "succeeded": 40,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "basketVersion"
+      },
+      "requested_query": "basketVersion",
+      "executed_query": "basketVersion",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java\",\"range\":[8,49,62]}},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[6,67,80]}},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/BasketRow.java\",\"range\":[9,13,26]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersionChangeSinceQuoteIsRejected\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersionChanged\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java\",\"range\":[48,18,38]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java\",\"range\":[8,66,79]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/BasketPort.java\",\"range\":[9,31,44]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,25,38]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,52,65]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java\",\"range\":[23,46,59]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java\",\"range\":[4,84,97]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"basketVersion\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java\",\"range\":[6,55,68]}}]}",
+      "output_sha256": "c5668e62743354487e1277c281017c395a239907b2cf3203359a9f83d93b88e4",
+      "output_bytes": 5241,
+      "output_full_bytes": 5241,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java\",\"range\":[8,49,62]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[6,67,80]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/BasketRow.java\",\"range\":[9,13,26]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java\",\"range\":[48,18,38]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersionChanged\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java\",\"range\":[8,66,79]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/BasketPort.java\",\"range\":[9,31,44]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,25,38]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,52,65]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java\",\"range\":[23,46,59]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java\",\"range\":[4,84,97]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java\",\"range\":[6,55,68]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersion\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48]},\"matchSource\":\"displayName\",\"matchText\":\"basketVersionChangeSinceQuoteIsRejected\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\"}]}",
+      "output_normalized_sha256": "94ca2533fe3fad221b7f881774c553e56645966b3702b8ef7eb51f1d5fb9fba8",
+      "duration_ms": 87.5,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "basketVersion"
+      },
+      "requested_query": "basketVersion",
+      "executed_query": "basketVersion",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[11,53,66],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\",\"references\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"]}",
+      "output_sha256": "f6d6a827df7203fc2964259ff3e0ca3374e6a2a379f853d3a0beebfadaa69ccc",
+      "output_bytes": 3458,
+      "output_full_bytes": 3458,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"},{\"references\":[{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[11,53,66],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\"}],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"]}",
+      "output_normalized_sha256": "460392eabe81b61f9a7ae97cfdf7c40aa284c1bbc6e550a68886c1a5512ab083",
+      "duration_ms": 34.9,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "basketVersion"
+      },
+      "requested_query": "basketVersion",
+      "executed_query": "basketVersion",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java\",\"range\":[8,49,62]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[6,67,80]},\"incoming\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[11,53,66],\"roles\":0}],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/BasketRow.java\",\"range\":[9,13,26]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"definition\":{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java\",\"range\":[48,18,38]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java\",\"range\":[8,66,79]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/BasketPort.java\",\"range\":[9,31,44]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,25,38]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,52,65]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java\",\"range\":[23,46,59]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java\",\"range\":[4,84,97]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java\",\"range\":[6,55,68]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"]}",
+      "output_sha256": "cc5e4ce8e38f6339855b345ce879ca24dcd7fc91238e0ae6decb6db3e7ee6ed3",
+      "output_bytes": 5360,
+      "output_full_bytes": 5360,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java\",\"range\":[8,49,62]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[6,67,80]},\"incoming\":[{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[11,53,66],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\"}],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/BasketRow.java\",\"range\":[9,13,26]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java\",\"range\":[48,18,38]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java\",\"range\":[8,66,79]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/BasketPort.java\",\"range\":[9,31,44]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,25,38]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,52,65]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java\",\"range\":[23,46,59]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java\",\"range\":[4,84,97]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java\",\"range\":[6,55,68]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"},{\"definition\":{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"]}",
+      "output_normalized_sha256": "33f6fc0ed6128ef680165e46a151011d082558cc30968bb8abdbc9d074abb9c3",
+      "duration_ms": 22.2,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "basketVersion"
+      },
+      "requested_query": "basketVersion",
+      "executed_query": "basketVersion",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java\",\"range\":[8,49,62]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[6,67,80]},\"review\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[11,53,66],\"roles\":0}],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/BasketRow.java\",\"range\":[9,13,26]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"definition\":{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48],\"reasons\":[\"testPath\"]}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java\",\"range\":[48,18,38]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java\",\"range\":[8,66,79]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/BasketPort.java\",\"range\":[9,31,44]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,25,38]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,52,65]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java\",\"range\":[23,46,59]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java\",\"range\":[4,84,97]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java\",\"range\":[6,55,68]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"]}",
+      "output_sha256": "2b8d2c4969bef7d0fe737fa691a4ba566d300295e349f4a43363193f62cb47ae",
+      "output_bytes": 6620,
+      "output_full_bytes": 6620,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/api/dto/BasketResponse.java\",\"range\":[8,49,62]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[6,67,80]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Basket.java\",\"range\":[11,53,66],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\"}],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/BasketRow.java\",\"range\":[9,13,26]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java\",\"range\":[48,18,38]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java\",\"range\":[8,66,79]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/BasketPort.java\",\"range\":[9,31,44]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,25,38]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,52,65]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java\",\"range\":[23,46,59]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java\",\"range\":[4,84,97]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java\",\"range\":[6,55,68]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"tests\":[{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[183,9,48],\"reasons\":[\"testPath\"],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\"}]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/api/dto/BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Basket#basketVersion.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/BasketRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/OrderApiMockedTest#basketVersionChangeSinceQuoteIsRejected().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/GlobalExceptionHandler#basketVersionChanged().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/api/dto/QuoteResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/BasketPort#BasketSnapshot#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Order#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/Quote#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/BasketClient#BasketResponse#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/QuoteRow#basketVersion.\"]}",
+      "output_normalized_sha256": "04b01cd0a8ebb7b2052fb4c2ac71ba58896fcb203bd098b78c808aaf61b24cf0",
+      "duration_ms": 21.9,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 230281,
+  "cost_usd": 0.20910800000000002,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "9077e30ef86286d14ec0a86348fd754e73c8f6022a770e41247cea05090feb96",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

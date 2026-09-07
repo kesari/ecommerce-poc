@@ -1,0 +1,112 @@
+{
+  "change_id": "REST-004",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.7692,
+    "test_recall": 0.5,
+    "cross_repo_recall": 0.4545,
+    "contract_recall": 0.0,
+    "precision": 0.5,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.5341
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 5,
+      "matched": 2,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 0,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 4,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "commerce-web",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "repository",
+      "key": "order-service",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.pricebreakdown",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "rest put /api/v1/basket/coupon",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "order-service orderpricingtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.basket.infrastructure.persistence.mapper.basketmapper",
+      "com.poc.basket.infrastructure.persistence.repository.mybatisbasketrepository",
+      "com.poc.basket.infrastructure.persistence.row.couponrow"
+    ],
+    "contracts": [],
+    "tests": [
+      "basket-service basketrepositorycomponenttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 8
+  },
+  "raw": {
+    "elapsed_seconds": 74.8,
+    "tokens_consumed": 124196
+  },
+  "answer_sha256": "901635f21b31aee6fad189b581cad0d582a7cefc9a551e7d6805507e54e36306",
+  "ground_truth_sha256": "986296944ca537e47adfe15584aee99bf343c6813575e31fabb5c02485f9772d",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

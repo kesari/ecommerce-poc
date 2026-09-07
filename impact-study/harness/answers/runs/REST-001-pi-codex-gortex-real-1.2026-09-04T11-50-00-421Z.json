@@ -1,0 +1,408 @@
+{
+  "change_id": "REST-001",
+  "contestant": "gortex",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:22 binds Account AddressResponse.postalCode by name."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads address.postalCode from order.confirmed.v1."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:54 defines Address.postalCode for /addresses payloads."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r4",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:14 is indexed in Gortex."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3 stores postalCode from account."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:52 passes address.postalCode() to shipment estimates."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 writes address.postalCode into order.confirmed payload."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r5",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:14 is indexed in Gortex."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java:62 estimates from address.postalCode()."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:60 reads request.postalCode() on create."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:12 declares request field postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:11 declares response field postalCode."
+      },
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:14 maps address.postalCode() to response."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:30 calls /api/v1/addresses/{addressId} and deserializes postalCode."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:239 defines AddressResponse.postalCode used by order client and SPA type."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:210 defines AddressRequest.postalCode sent by checkout UI."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/asyncapi/schemas/order.confirmed.v1.json:12 requires address.postalCode and listener reads it."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118 posts and asserts $.postalCode."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:100 validates order.confirmed sample with postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:55 validates consumed order.confirmed sample with postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:171 builds event address with postalCode."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:46 seeds Address fixture with postalCode."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex-real",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T11:50:00.421Z",
+  "elapsed_seconds": 95.3,
+  "tool_calls": 52,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 12,
+      "succeeded": 12,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    },
+    "read": {
+      "calls": 30,
+      "succeeded": 30,
+      "failed": 0
+    },
+    "gortex_contracts": {
+      "calls": 2,
+      "succeeded": 1,
+      "failed": 1
+    },
+    "gortex_query": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 6,
+    "succeeded": 5,
+    "failed": 1
+  },
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "gortex_contracts",
+      "operation": "api_impact",
+      "parameters": {
+        "action": "api_impact",
+        "repo": "account-service",
+        "query": "GET /api/v1/addresses/{addressId}"
+      },
+      "success": false,
+      "output_sha256": null,
+      "duration_ms": 73.7,
+      "error": "Error: no route matching \"GET /api/v1/addresses/{addressId}\""
+    },
+    {
+      "id": "r2",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "parameters": {
+        "operation": "usages",
+        "query": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service"
+      },
+      "success": true,
+      "output_sha256": "c82b1ad913777b030f7c4b8bfb7ff6d5d1af8b79c6a966a03c572affc07151a2",
+      "duration_ms": 340.3,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "parameters": {
+        "operation": "usages",
+        "query": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service"
+      },
+      "success": true,
+      "output_sha256": "c82b1ad913777b030f7c4b8bfb7ff6d5d1af8b79c6a966a03c572affc07151a2",
+      "duration_ms": 40.5,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "parameters": {
+        "operation": "symbol",
+        "query": "AccountClient",
+        "repo": "order-service"
+      },
+      "success": true,
+      "output_sha256": "eadb9a8f98a170dba1d710bfb32326c9931e9c331dee7c180f2ffb379a2264b5",
+      "duration_ms": 667.2,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "parameters": {
+        "operation": "symbol",
+        "query": "OrderConfirmedListener",
+        "repo": "shipment-service"
+      },
+      "success": true,
+      "output_sha256": "5d2266deee2fa746f07851e38c5a5b833c4c4e378a7e05aa129bc349db0b4ec2",
+      "duration_ms": 357,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "parameters": {
+        "action": "list",
+        "repo": "account-service"
+      },
+      "success": true,
+      "output_sha256": "4556ea4f14c3338353e35b16c393bdce7ab5f831f4c1076ad2a5c61a171d9325",
+      "duration_ms": 52.6,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "gortex",
+    "version": "v0.63.10",
+    "commit": "5b299072c44457751cd339c00aabb0e5d2356ad3",
+    "binary_sha256": "30566ec81f2b4335b7e84e5664f508ae43238f0f037be7d2100543e211a05532",
+    "artifact_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+    "manifest_sha256": null,
+    "query_surface": [
+      "symbol",
+      "usages",
+      "callers",
+      "calls",
+      "dependents",
+      "deps",
+      "implementations",
+      "contracts",
+      "api_impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.0.0",
+    "config_sha256": "8e8d8d5d65c676ea6cc581e8c1b39d6794af63550b8bf5d34d5f42999bc355a5",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 166801,
+  "cost_usd": 0.1648925,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "378dfa5ce61e13ce56c7ca60290ddf0231858bd4f6a07cb7c304a82f7b55b590",
+  "contestant_config_sha256": "a65032254c42ff364167ffed940bf540b30d47be9fb8bb66ddd8b0a561827aa9",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "35d4653f6486af892f9edce063778e624a8f33a14ef72804b995e491376b7e46",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

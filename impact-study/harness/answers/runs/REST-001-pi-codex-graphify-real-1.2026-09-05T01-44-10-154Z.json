@@ -1,0 +1,352 @@
+{
+  "change_id": "REST-001",
+  "contestant": "graphify",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:217 and :246 declare postalCode in address schemas."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds the Account response by postalCode."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads postalCode from the relayed event."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:54 declares the Account address response field as postalCode."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/e2e-bruno/run-e2e.sh:136 posts an address body containing postalCode."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:65 calls request.postalCode()."
+      },
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:15 constructs AddressResponse."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds postalCode by JSON name."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 passes missing postalCode as null."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:20 rejects null as an invalid PIN."
+      },
+      {
+        "fqn": "Address",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:46-54 defines Address with postalCode."
+      },
+      {
+        "fqn": "CheckoutPage",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 sends addressInput.postalCode."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:217 defines postalCode for address writes."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:246 defines postalCode for address reads."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:20-35 binds POST to AddressRequest and AddressResponse."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:10-19 returns AddressResponse addresses."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32 calls the address-detail endpoint."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118 posts postalCode and asserts it at :128."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:46 supplies postalCode in the Address fixture."
+      }
+    ]
+  },
+  "runner": "pi-codex-graphify-real",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T01:44:10.154Z",
+  "elapsed_seconds": 149.4,
+  "tool_calls": 53,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "graphify_query": {
+      "calls": 2,
+      "succeeded": 2,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "find": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "read": {
+      "calls": 40,
+      "succeeded": 40,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 2,
+    "succeeded": 2,
+    "failed": 0
+  },
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "postalCode"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode'] | 11 nodes found\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L13 community=]\nNODE pattern [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE address [src=asyncapi/schemas/order.confirmed.v1.json loc=L10 community=]\nNODE city [src=asyncapi/schemas/order.confirmed.v1.json loc=L17 community=]\nNODE country [src=asyncapi/schemas/order.confirmed.v1.json loc=L20 community=]\nNODE fullName [src=asyncapi/schemas/order.confirmed.v1.json loc=L14 community=]\nNODE line1 [src=asyncapi/schemas/order.confirmed.v1.json loc=L15 community=]\nNODE line2 [src=asyncapi/schemas/order.confirmed.v1.json loc=L16 community=]\nNODE state [src=asyncapi/schemas/order.confirmed.v1.json loc=L18 community=]\nEDGE properties --contains [EXTRACTED]--> postalCode at=asyncapi/schemas/order.confirmed.v1.json:L19\nEDGE postalCode --contains [EXTRACTED]--> type at=asyncapi/schemas/order.confirmed.v1.json:L19\nEDGE postalCode --contains [EXTRACTED]--> pattern at=asyncapi/schemas/order.confirmed.v1.json:L19\nEDGE address --contains [EXTRACTED]--> properties at=asyncapi/schemas/order.confirmed.v1.json:L13\nEDGE properties --contains [EXTRACTED]--> fullName at=asyncapi/schemas/order.confirmed.v1.json:L14\nEDGE properties --contains [EXTRACTED]--> line1 at=asyncapi/schemas/order.confirmed.v1.json:L15\nEDGE properties --contains [EXTRACTED]--> line2 at=asyncapi/schemas/order.confirmed.v1.json:L16\nEDGE properties --contains [EXTRACTED]--> city at=asyncapi/schemas/order.confirmed.v1.json:L17\nEDGE properties --contains [EXTRACTED]--> state at=asyncapi/schemas/order.confirmed.v1.json:L18\nEDGE properties --contains [EXTRACTED]--> country at=asyncapi/schemas/order.confirmed.v1.json:L20\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "d99ef42cd1da1af970c7e2ad1622e0174c7d2365ea68ae536302104d7c9aa16a",
+      "output_bytes": 2182,
+      "output_full_bytes": 2182,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['postalCode'] | 11 nodes found\n\nNODE postalCode [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L13 community=]\nNODE pattern [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L19 community=]\nNODE address [src=asyncapi/schemas/order.confirmed.v1.json loc=L10 community=]\nNODE city [src=asyncapi/schemas/order.confirmed.v1.json loc=L17 community=]\nNODE country [src=asyncapi/schemas/order.confirmed.v1.json loc=L20 community=]\nNODE fullName [src=asyncapi/schemas/order.confirmed.v1.json loc=L14 community=]\nNODE line1 [src=asyncapi/schemas/order.confirmed.v1.json loc=L15 community=]\nNODE line2 [src=asyncapi/schemas/order.confirmed.v1.json loc=L16 community=]\nNODE state [src=asyncapi/schemas/order.confirmed.v1.json loc=L18 community=]\nEDGE properties --contains [EXTRACTED]--> postalCode at=asyncapi/schemas/order.confirmed.v1.json:L19\nEDGE postalCode --contains [EXTRACTED]--> type at=asyncapi/schemas/order.confirmed.v1.json:L19\nEDGE postalCode --contains [EXTRACTED]--> pattern at=asyncapi/schemas/order.confirmed.v1.json:L19\nEDGE address --contains [EXTRACTED]--> properties at=asyncapi/schemas/order.confirmed.v1.json:L13\nEDGE properties --contains [EXTRACTED]--> fullName at=asyncapi/schemas/order.confirmed.v1.json:L14\nEDGE properties --contains [EXTRACTED]--> line1 at=asyncapi/schemas/order.confirmed.v1.json:L15\nEDGE properties --contains [EXTRACTED]--> line2 at=asyncapi/schemas/order.confirmed.v1.json:L16\nEDGE properties --contains [EXTRACTED]--> city at=asyncapi/schemas/order.confirmed.v1.json:L17\nEDGE properties --contains [EXTRACTED]--> state at=asyncapi/schemas/order.confirmed.v1.json:L18\nEDGE properties --contains [EXTRACTED]--> country at=asyncapi/schemas/order.confirmed.v1.json:L20\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "b59a68c7670d5defa3105aa18783e6d550a6003600293f77c6d0b395d8122ef9",
+      "duration_ms": 224,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "graphify_query",
+      "operation": "path",
+      "parameters": {
+        "operation": "path",
+        "query": "com.poc.order.infrastructure.client.AccountClient",
+        "target": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "No directed path found between 'com.poc.order.infrastructure.client.AccountClient' and 'com.poc.shipment.infrastructure.messaging.OrderConfirmedListener'. Re-run with --undirected to search ignoring edge direction.\nwarning: target match was ambiguous (top score 194.765, runner-up 192.593)",
+      "output_sha256": "77c420af5a16ccdaca21027dead19dd06bbc671bdceb4de04c69bc9caa39d576",
+      "output_bytes": 289,
+      "output_full_bytes": 289,
+      "truncated": false,
+      "output_normalized": "No directed path found between 'com.poc.order.infrastructure.client.AccountClient' and 'com.poc.shipment.infrastructure.messaging.OrderConfirmedListener'. Re-run with --undirected to search ignoring edge direction.\nwarning: target match was ambiguous (top score 194.765, runner-up 192.593)",
+      "output_normalized_sha256": "978780757c8af0f8af0a620d779c5240359f8ec5c89177d57d1dc80934d81054",
+      "duration_ms": 264.6,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "graphify",
+    "version": "0.9.53",
+    "commit": null,
+    "binary_sha256": "5201bbf13d9959ab9ce913c2adb891be75fee0d9454ab3d93208625257e90b2f",
+    "artifact_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+    "manifest_sha256": "71b2cccdf485ce96c39253f4180f30c79ccb54bbe95db259fbd6796806f5d02f",
+    "query_surface": [
+      "query",
+      "explain",
+      "path",
+      "affected"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.1.0",
+    "config_sha256": "ee6e66d04d14c9720f5973a9dd53ca5c44801f9af2029134f44eb943c5b0a5e5",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 254792,
+  "cost_usd": 0.1900132,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "79026729692a4aedb0304ad20ea3f22fd87c03d7f39e5b845b20502d8f7ad25c",
+  "contestant_config_sha256": "164e31edf3c1034733c0183659f4b6a378eddf93d7b72ab825a4c7565168bd7d",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "bc1422dfdaa85f6f148ae904237266cb32d89479036bb2a7f1ccbf57e826f3ce",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

@@ -409,6 +409,12 @@ async function runOnce(
 		const stamp = runStartedAt.replace(/[:.]/g, "-");
 		const rawPath = join(RUNS, `${record.change_id}-${name}-${index}.${stamp}.raw.txt`);
 		await writeFile(rawPath, raw);
+		// KNOWN GAP: a provider rejection (quota, retired model) reaches here as
+		// this same message over a 0-byte raw file, indistinguishable from a
+		// model that answered badly. Capturing the provider's own words needs
+		// the SDK's real error-event shape, taken from a live failure — an
+		// extractor written against an assumed shape was tried and silently
+		// caught nothing. See the state review of 7 September.
 		throw new Error(`${(error as Error).message}; raw output saved to ${rawPath}`);
 	}
 	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools, playbook });

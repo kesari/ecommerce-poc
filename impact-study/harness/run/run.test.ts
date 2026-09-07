@@ -15,6 +15,7 @@ import { extractAnswer } from "./answer.ts";
 import { countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
 import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, productEligible, productSummary, withTimeout } from "./run.ts";
+import { candidateSection } from "./playbook.ts";
 import { createRealProduct } from "./products.ts";
 import { verifyHeads, canonicalizeOutput, scipQueryName } from "./products.ts";
 import { validateFile } from "./scoring.ts";
@@ -463,6 +464,22 @@ test("real product invocations leave runner-generated receipts", async () => {
 	// scip_search was asked for a partial name here, so no translation applies.
 	assert.equal(receipt.requested_query, "AddressResponse");
 	assert.equal(receipt.executed_query, "AddressResponse");
+});
+
+test("candidateSection embeds canonicalized output, so the prompt hash is stable", () => {
+	// prompt_sha256 is part of the cohort key. Gortex reorders equal nodes on
+	// every call, so embedding raw output made every product-first run its own
+	// cohort: 26 gortex-first runs produced 21 cohorts and could not aggregate.
+	const anchor = { primary: "postal_code", removed: ["postal_code"], added: ["postcode"], repo: "account-service", usable: true };
+	const receipt = (raw: string) => [{
+		id: "r1", tool: "gortex_contracts", operation: "list", parameters: {},
+		requested_query: null, executed_query: null, success: true,
+		output: raw, output_normalized: '{"nodes":[{"id":"a"},{"id":"b"}]}',
+	}];
+	const a = candidateSection(anchor as any, receipt('{"nodes":[{"id":"a"},{"id":"b"}]}'));
+	const b = candidateSection(anchor as any, receipt('{"nodes":[{"id":"b"},{"id":"a"}]}'));
+	assert.equal(a, b);
+	assert.match(a, /\{"nodes":\[\{"id":"a"\},\{"id":"b"\}\]\}/);
 });
 
 test("scipQueryName narrows an FQN to the declaring type, leaves partials alone", () => {

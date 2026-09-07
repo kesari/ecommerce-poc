@@ -1,0 +1,296 @@
+{
+  "change_id": "KAFKA-003",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "payment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "payment-service/src/main/resources/db/migration/V1__payment_schema.sql:6 permits DECLINED but not REJECTED."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.payment.domain.PaymentStatus",
+        "repo": "payment-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java:5 declares DECLINED."
+      },
+      {
+        "fqn": "com.poc.payment.application.PaymentCommandService",
+        "repo": "payment-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r2",
+        "evidence": "payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java:52 references PaymentStatus.DECLINED."
+      },
+      {
+        "fqn": "com.poc.payment.infrastructure.persistence.repository.MyBatisPaymentStore",
+        "repo": "payment-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "payment-service/src/main/java/com/poc/payment/infrastructure/persistence/repository/MyBatisPaymentStore.java:78 parses stored status by enum name."
+      }
+    ],
+    "contracts": [],
+    "tests": [
+      {
+        "repo": "payment-service",
+        "suite": "PaymentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "payment-service/src/test/java/com/poc/payment/PaymentIntegrationTest.java:126 expects stored status DECLINED."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 5,
+  "run_started_at": "2026-09-05T08:45:33.167Z",
+  "elapsed_seconds": 77.6,
+  "tool_calls": 35,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 6,
+      "succeeded": 6,
+      "failed": 0
+    },
+    "find": {
+      "calls": 7,
+      "succeeded": 7,
+      "failed": 0
+    },
+    "read": {
+      "calls": 21,
+      "succeeded": 21,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "DECLINED"
+      },
+      "requested_query": "DECLINED",
+      "executed_query": "DECLINED",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/payment_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"DECLINED_TOPIC\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[20,31,45]}},{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/payment_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"DECLINED\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java\",\"range\":[4,4,12]}}]}",
+      "output_sha256": "ae69fdd716ed70b5a70c4c090e0450dab13c06e71f6cc72686ad6a900a122cdb",
+      "output_bytes": 959,
+      "output_full_bytes": 959,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[20,31,45]},\"matchSource\":\"displayName\",\"matchText\":\"DECLINED_TOPIC\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/payment_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\"},{\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java\",\"range\":[4,4,12]},\"matchSource\":\"displayName\",\"matchText\":\"DECLINED\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/payment_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"}]}",
+      "output_normalized_sha256": "722f6eb26f386125a82790c747c4effaf8ff6029f6f2281772a3885c9a6ab2bf",
+      "duration_ms": 73.2,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "DECLINED"
+      },
+      "requested_query": "DECLINED",
+      "executed_query": "DECLINED",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[70,63,77],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[51,56,64],\"roles\":0}]}],\"symbols\":[\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"]}",
+      "output_sha256": "761fec40767f9350433be0f36df2c861f19715fe89164121e3f03ab1c17278de",
+      "output_bytes": 1130,
+      "output_full_bytes": 1130,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[51,56,64],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"}],\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"},{\"references\":[{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[70,63,77],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\"}],\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"]}",
+      "output_normalized_sha256": "9249210d3daf4913103e4965f89b8d9ab23e94094e051bde997752b2f59e932a",
+      "duration_ms": 32.4,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "DECLINED"
+      },
+      "requested_query": "DECLINED",
+      "executed_query": "DECLINED",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[20,31,45]},\"incoming\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[70,63,77],\"roles\":0}],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java\",\"range\":[4,4,12]},\"incoming\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[51,56,64],\"roles\":0}],\"outgoing\":null,\"relationships\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"]}",
+      "output_sha256": "caa5f7b42ddee81f94c9be73db8907b77b6af94995da36ad0f7ad5c2867d5775",
+      "output_bytes": 1453,
+      "output_full_bytes": 1453,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[20,31,45]},\"incoming\":[{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[70,63,77],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\"}],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\"},{\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java\",\"range\":[4,4,12]},\"incoming\":[{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[51,56,64],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"}],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"]}",
+      "output_normalized_sha256": "33e2330998e5eec1b4981e57249d153f016050c447add0d4103a5ec456a013e8",
+      "duration_ms": 20.7,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "DECLINED"
+      },
+      "requested_query": "DECLINED",
+      "executed_query": "DECLINED",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[20,31,45]},\"review\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[70,63,77],\"roles\":0}],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java\",\"range\":[4,4,12]},\"review\":[{\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[51,56,64],\"roles\":0}],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"]}",
+      "output_sha256": "a324a9070bf98ac7d918a99cbfe07660c13627ee1b8d4d8420552ebc107e83d2",
+      "output_bytes": 1619,
+      "output_full_bytes": 1619,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[20,31,45]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[70,63,77],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\"}],\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java\",\"range\":[4,4,12]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[{\"documentPath\":\"payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java\",\"range\":[51,56,64],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"}],\"symbol\":\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\",\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/application/PaymentCommandService#DECLINED_TOPIC.\",\"semanticdb maven maven/com.poc/payment_service 0.1.0 com/poc/payment/domain/PaymentStatus#DECLINED.\"]}",
+      "output_normalized_sha256": "9354175f5c4586963ccd372a634db40aa464f05cddd6c692de8549bbb56fcb61",
+      "duration_ms": 20.2,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 128562,
+  "cost_usd": 0.1414828,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "72a2fe0275926f8ce28ee7cea836d6de8478a7a213b30e047e05458edc41c14f",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

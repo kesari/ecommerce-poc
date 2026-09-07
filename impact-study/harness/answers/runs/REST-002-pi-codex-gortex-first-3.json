@@ -1,0 +1,483 @@
+{
+  "change_id": "REST-002",
+  "contestant": "gortex-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:130 defines the renamed integer request field."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:61 binds catalog JSON by name."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/ProductsPage.tsx:63 reads the renamed product field."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:47 carries basket unit prices into quotes."
+      },
+      {
+        "name": "payment-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "payment-service/src/main/java/com/poc/payment/application/PaymentMessageParser.java:24 accepts the resulting non-negative amount."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.catalog.api.dto.ProductResponse",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:10 declares long priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.api.dto.PriceUpdateRequest",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java:5 declares the priceMinor request field."
+      },
+      {
+        "fqn": "com.poc.catalog.api.ProductController",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/ProductController.java:67 calls request.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.catalog.application.CatalogService",
+        "repo": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java:93 constructs ProductResponse with product.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java:10 binds long priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogClient",
+        "repo": "basket-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:68 propagates the bound catalog price."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketService",
+        "repo": "basket-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketService.java:130 snapshots product.priceMinor into a basket item."
+      },
+      {
+        "fqn": "Product",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:22 declares Product.priceMinor."
+      },
+      {
+        "fqn": "ProductsPage",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/ProductsPage.tsx:63 formats product.priceMinor."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.BasketClient",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:47 maps basket item prices into snapshots."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:47 copies basket prices into order lines."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:79 emits order.totalMinor as charge amount."
+      },
+      {
+        "fqn": "com.poc.payment.application.PaymentMessageParser",
+        "repo": "payment-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "payment-service/src/main/java/com/poc/payment/application/PaymentMessageParser.java:24 permits a zero amount."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/ProductResponse",
+        "consumer_repos": [
+          "basket-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:153 defines ProductResponse and basket-service binds it at CatalogClient.java:61."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:59 exposes ProductResponse and CatalogClient.java:59 calls this path."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "commerce-bff/src/main/java/com/poc/bff/api/CatalogProxyController.java:42 relays this JSON path unchanged."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/basket",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java:36 consumes the tainted basket snapshot."
+      },
+      {
+        "type": "kafka",
+        "identifier": "payment.charge.requested.v1#/payload/amountMinor",
+        "consumer_repos": [
+          "payment-service"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:79 emits the derived total."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "catalog-service",
+        "suite": "CatalogComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java:112 posts priceMinor."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:128 stubs catalog priceMinor JSON."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex-first",
+  "run_index": 3,
+  "run_started_at": "2026-09-06T10:10:14.806Z",
+  "elapsed_seconds": 161.4,
+  "tool_calls": 68,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 2,
+      "succeeded": 2,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 16,
+      "succeeded": 16,
+      "failed": 0
+    },
+    "read": {
+      "calls": 45,
+      "succeeded": 44,
+      "failed": 1
+    },
+    "find": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "bridge_rank",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "parameters": {
+        "operation": "symbol",
+        "query": "priceMinor",
+        "repo": "catalog-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"query_class\": \"symbol\",\n  \"results\": [\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java::updatePrice\",\n      \"kind\": \"method\",\n      \"name\": \"updatePrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 20,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\n      \"enclosing\": \"CatalogService\",\n      \"enclosing_id\": \"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java::CatalogService\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java::CatalogService.updatePrice\",\n      \"kind\": \"method\",\n      \"name\": \"updatePrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 63,\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java::updatePrice\",\n      \"kind\": \"method\",\n      \"name\": \"updatePrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 17,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/resources/mybatis/mapper/ProductMapper.xml\",\n      \"file_path\": \"catalog-service/src/main/resources/mybatis/mapper/ProductMapper.xml\",\n      \"id\": \"catalog-service/com.poc.catalog.infrastructure.persistence.mapper.ProductMapper::updatePrice\",\n      \"kind\": \"method\",\n      \"name\": \"updatePrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 35,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n      \"enclosing\": \"ProductController\",\n      \"enclosing_id\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.updatePrice\",\n      \"kind\": \"method\",\n      \"name\": \"updatePrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 59,\n      \"visibility\": \"package\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java::withPrice\",\n      \"kind\": \"method\",\n      \"name\": \"withPrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 18,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\n      \"file_path\": \"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\n      \"id\": \"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql::products\",\n      \"kind\": \"type\",\n      \"name\": \"products\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 1,\n      \"type_flavor\": \"table\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\n      \"enclosing\": \"MyBatisProductRepository\",\n      \"enclosing_id\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java::MyBatisProductRepository\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java::MyBatisProductRepository.updatePrice\",\n      \"kind\": \"method\",\n      \"name\": \"updatePrice\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 48,\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\n      \"file_path\": \"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\n      \"id\": \"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql::products.price_minor\",\n      \"kind\": \"variable\",\n      \"name\": \"price_minor\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 6,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java::updatePrice#param:priceMinor@1\",\n      \"kind\": \"param\",\n      \"name\": \"priceMinor\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 20,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java::updatePrice#param:priceMinor@1\",\n      \"kind\": \"param\",\n      \"name\": \"priceMinor\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 17,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java::CatalogService.updatePrice#param:priceMinor@1\",\n      \"kind\": \"param\",\n      \"name\": \"priceMinor\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 64,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n      \"id\": \"catalog-service/annotation::java::PutMapping\",\n      \"kind\": \"type\",\n      \"name\": \"PutMapping\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 64,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java::MyBatisProductRepository.updatePrice#param:priceMinor@1\",\n      \"kind\": \"param\",\n      \"name\": \"priceMinor\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 50,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n      \"id\": \"http::PUT::/{p1}/price\",\n      \"kind\": \"contract\",\n      \"name\": \"http::PUT::/{p1}/price\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 0,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java::withPrice#param:newPriceMinor@0\",\n      \"kind\": \"param\",\n      \"name\": \"newPriceMinor\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 18,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java\",\n      \"enclosing\": \"CatalogComponentTest\",\n      \"enclosing_id\": \"catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java::CatalogComponentTest\",\n      \"file_path\": \"catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java\",\n      \"id\": \"catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java::CatalogComponentTest.priceUpdateInvalidatesDetailCache\",\n      \"is_test\": true,\n      \"kind\": \"method\",\n      \"name\": \"priceUpdateInvalidatesDetailCache\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 103,\n      \"test_role\": \"test\",\n      \"visibility\": \"package\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\n      \"id\": \"catalog-service/annotation::java::Configuration\",\n      \"kind\": \"type\",\n      \"name\": \"Configuration\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 7,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\n      \"id\": \"catalog-service/annotation::java::OpenAPIDefinition\",\n      \"kind\": \"type\",\n      \"name\": \"OpenAPIDefinition\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 8,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\n      \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\n      \"id\": \"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java::OpenApiConfig\",\n      \"kind\": \"type\",\n      \"name\": \"OpenApiConfig\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 7,\n      \"type_flavor\": \"class\",\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/openapi/catalog.yaml\",\n      \"file_path\": \"catalog-service/openapi/catalog.yaml\",\n      \"id\": \"http::PUT::/api/v1/products/{p1}/price\",\n      \"kind\": \"contract\",\n      \"name\": \"http::PUT::/api/v1/products/{p1}/price\",\n      \"project_id\": \"catalog-service\",\n      \"repo_prefix\": \"catalog-service\",\n      \"start_line\": 0,\n      \"workspace_id\": \"poc-estate\"\n    }\n  ],\n  \"total\": 21,\n  \"truncated\": false\n}",
+      "output_sha256": "46ea74024ea7f1b0bb296edf71a893d5954ccf7e2b0cd499ae5c6327b30be15d",
+      "output_bytes": 13184,
+      "output_full_bytes": 13184,
+      "truncated": false,
+      "output_normalized": "{\"query_class\":\"symbol\",\"results\":[{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/openapi/catalog.yaml\",\"file_path\":\"catalog-service/openapi/catalog.yaml\",\"id\":\"http::PUT::/api/v1/products/{p1}/price\",\"kind\":\"contract\",\"name\":\"http::PUT::/api/v1/products/{p1}/price\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":0,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\"id\":\"catalog-service/annotation::java::Configuration\",\"kind\":\"type\",\"name\":\"Configuration\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":7,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\"id\":\"catalog-service/annotation::java::OpenAPIDefinition\",\"kind\":\"type\",\"name\":\"OpenAPIDefinition\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":8,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/api/OpenApiConfig.java::OpenApiConfig\",\"kind\":\"type\",\"name\":\"OpenApiConfig\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":7,\"type_flavor\":\"class\",\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"enclosing\":\"ProductController\",\"enclosing_id\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.updatePrice\",\"kind\":\"method\",\"name\":\"updatePrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":59,\"visibility\":\"package\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"catalog-service/annotation::java::PutMapping\",\"kind\":\"type\",\"name\":\"PutMapping\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":64,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"http::PUT::/{p1}/price\",\"kind\":\"contract\",\"name\":\"http::PUT::/{p1}/price\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":0,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\"enclosing\":\"CatalogService\",\"enclosing_id\":\"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java::CatalogService\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java::CatalogService.updatePrice\",\"kind\":\"method\",\"name\":\"updatePrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":63,\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java::CatalogService.updatePrice#param:priceMinor@1\",\"kind\":\"param\",\"name\":\"priceMinor\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":64,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java::updatePrice\",\"kind\":\"method\",\"name\":\"updatePrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":17,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/application/port/ProductRepository.java::updatePrice#param:priceMinor@1\",\"kind\":\"param\",\"name\":\"priceMinor\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":17,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java::withPrice\",\"kind\":\"method\",\"name\":\"withPrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":18,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/domain/model/Product.java::withPrice#param:newPriceMinor@0\",\"kind\":\"param\",\"name\":\"newPriceMinor\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":18,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java::updatePrice\",\"kind\":\"method\",\"name\":\"updatePrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":20,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/mapper/ProductMapper.java::updatePrice#param:priceMinor@1\",\"kind\":\"param\",\"name\":\"priceMinor\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":20,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\"enclosing\":\"MyBatisProductRepository\",\"enclosing_id\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java::MyBatisProductRepository\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java::MyBatisProductRepository.updatePrice\",\"kind\":\"method\",\"name\":\"updatePrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":48,\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java\",\"id\":\"catalog-service/src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java::MyBatisProductRepository.updatePrice#param:priceMinor@1\",\"kind\":\"param\",\"name\":\"priceMinor\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":50,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\"file_path\":\"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\"id\":\"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql::products\",\"kind\":\"type\",\"name\":\"products\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":1,\"type_flavor\":\"table\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\"file_path\":\"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql\",\"id\":\"catalog-service/src/main/resources/db/migration/V1__catalog_schema.sql::products.price_minor\",\"kind\":\"variable\",\"name\":\"price_minor\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":6,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/main/resources/mybatis/mapper/ProductMapper.xml\",\"file_path\":\"catalog-service/src/main/resources/mybatis/mapper/ProductMapper.xml\",\"id\":\"catalog-service/com.poc.catalog.infrastructure.persistence.mapper.ProductMapper::updatePrice\",\"kind\":\"method\",\"name\":\"updatePrice\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":35,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java\",\"enclosing\":\"CatalogComponentTest\",\"enclosing_id\":\"catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java::CatalogComponentTest\",\"file_path\":\"catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java\",\"id\":\"catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java::CatalogComponentTest.priceUpdateInvalidatesDetailCache\",\"is_test\":true,\"kind\":\"method\",\"name\":\"priceUpdateInvalidatesDetailCache\",\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"start_line\":103,\"test_role\":\"test\",\"visibility\":\"package\",\"workspace_id\":\"poc-estate\"}],\"total\":21,\"truncated\":false}",
+      "output_normalized_sha256": "990453156ec70b8f8f81fa9d3fafd6cd6016c771da2c428b73aff5f6b4ebe341",
+      "duration_ms": 72.4,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "parameters": {
+        "operation": "usages",
+        "query": "priceMinor",
+        "repo": "catalog-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"caveat\": {\n    \"class\": \"possible_extraction_gap\",\n    \"message\": \"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like \\u003crepo\\u003e/\\u003cpath\\u003e::\\u003csymbol\\u003e, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"\n  },\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "c82b1ad913777b030f7c4b8bfb7ff6d5d1af8b79c6a966a03c572affc07151a2",
+      "output_bytes": 478,
+      "output_full_bytes": 478,
+      "truncated": false,
+      "output_normalized": "{\"caveat\":{\"class\":\"possible_extraction_gap\",\"message\":\"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like <repo>/<path>::<symbol>, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"},\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "b6b6f2773a8d44eb7473ea20b6ef7eb3a3b5bc6394a69a2e3fd1870d5bb942d4",
+      "duration_ms": 49.3,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "parameters": {
+        "action": "list",
+        "repo": "catalog-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"by_repo\": {\n    \"catalog-service\": {\n      \"contracts\": {\n        \"http\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n            \"id\": \"http::GET::/{p1}\",\n            \"line\": 48,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"GET\",\n              \"original_path\": \"/{productId}\",\n              \"path\": \"/{p1}\",\n              \"path_param_names\": [\n                \"productId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"none\"\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.get\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n            \"id\": \"http::PUT::/{p1}/price\",\n            \"line\": 64,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"PUT\",\n              \"original_path\": \"/{productId}/price\",\n              \"path\": \"/{p1}/price\",\n              \"path_param_names\": [\n                \"productId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"request_type\": \"PriceUpdateRequest\",\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.updatePrice\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n            \"id\": \"http::POST::/batch-lookup\",\n            \"line\": 54,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"POST\",\n              \"original_path\": \"/batch-lookup\",\n              \"path\": \"/batch-lookup\",\n              \"request_type\": \"BatchLookupRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.batchLookup\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\n            \"id\": \"http::ANY::/api/v1/products\",\n            \"line\": 27,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"ANY\",\n              \"original_path\": \"/api/v1/products\",\n              \"path\": \"/api/v1/products\",\n              \"request_type\": \"BatchLookupRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ],\n        \"openapi\": [\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"catalog-service/openapi/catalog.yaml\",\n            \"id\": \"http::PUT::/api/v1/products/{p1}/price\",\n            \"line\": 84,\n            \"meta\": {\n              \"method\": \"PUT\",\n              \"path\": \"/api/v1/products/{p1}/price\",\n              \"request_type\": \"PriceUpdateRequest\",\n              \"response_type\": \"ProductResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                404\n              ]\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"catalog-service/openapi/catalog.yaml\",\n            \"id\": \"http::POST::/api/v1/products/batch-lookup\",\n            \"line\": 39,\n            \"meta\": {\n              \"method\": \"POST\",\n              \"path\": \"/api/v1/products/batch-lookup\",\n              \"request_type\": \"BatchLookupRequest\",\n              \"response_type\": \"ProductResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200\n              ]\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"catalog-service/openapi/catalog.yaml\",\n            \"id\": \"http::GET::/api/v1/products\",\n            \"line\": 10,\n            \"meta\": {\n              \"method\": \"GET\",\n              \"path\": \"/api/v1/products\",\n              \"response_type\": \"ProductResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200\n              ]\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.95,\n            \"file_path\": \"catalog-service/openapi/catalog.yaml\",\n            \"id\": \"http::GET::/api/v1/products/{p1}\",\n            \"line\": 59,\n            \"meta\": {\n              \"method\": \"GET\",\n              \"path\": \"/api/v1/products/{p1}\",\n              \"response_type\": \"ProductResponse\",\n              \"schema_source\": \"extracted\",\n              \"status_codes\": [\n                200,\n                404\n              ]\n            },\n            \"project_id\": \"catalog-service\",\n            \"repo_prefix\": \"catalog-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"\",\n            \"type\": \"openapi\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ]\n      },\n      \"total\": 8\n    }\n  },\n  \"other_repos\": {\n    \"by_repo\": {\n      \"account-service\": 19,\n      \"basket-service\": 15,\n      \"commerce-bff\": 39,\n      \"commerce-web\": 27,\n      \"inventory-service\": 2,\n      \"order-service\": 10,\n      \"payment-service\": 2,\n      \"shipment-service\": 9\n    },\n    \"hint\": \"pass all_repos=true or repo=\\u003cprefix\\u003e/project=\\u003cname\\u003e to include these\",\n    \"repo_count\": 8,\n    \"total\": 123\n  },\n  \"total\": 8,\n  \"truncated\": false\n}",
+      "output_sha256": "306453068c32dd61bf634cf91ac0a27a12ef11de0166e89a798e04f433f55c40",
+      "output_bytes": 7215,
+      "output_full_bytes": 7215,
+      "truncated": false,
+      "output_normalized": "{\"by_repo\":{\"catalog-service\":{\"contracts\":{\"http\":[{\"confidence\":0.9,\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"http::ANY::/api/v1/products\",\"line\":27,\"meta\":{\"framework\":\"spring\",\"method\":\"ANY\",\"original_path\":\"/api/v1/products\",\"path\":\"/api/v1/products\",\"request_type\":\"BatchLookupRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"http::GET::/{p1}\",\"line\":48,\"meta\":{\"framework\":\"spring\",\"method\":\"GET\",\"original_path\":\"/{productId}\",\"path\":\"/{p1}\",\"path_param_names\":[\"productId\"],\"path_params\":[\"p1\"],\"route_kind\":\"parametric\",\"schema_source\":\"none\"},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.get\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"http::POST::/batch-lookup\",\"line\":54,\"meta\":{\"framework\":\"spring\",\"method\":\"POST\",\"original_path\":\"/batch-lookup\",\"path\":\"/batch-lookup\",\"request_type\":\"BatchLookupRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.batchLookup\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java\",\"id\":\"http::PUT::/{p1}/price\",\"line\":64,\"meta\":{\"framework\":\"spring\",\"method\":\"PUT\",\"original_path\":\"/{productId}/price\",\"path\":\"/{p1}/price\",\"path_param_names\":[\"productId\"],\"path_params\":[\"p1\"],\"request_type\":\"PriceUpdateRequest\",\"route_kind\":\"parametric\",\"schema_source\":\"extracted\"},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"catalog-service/src/main/java/com/poc/catalog/api/ProductController.java::ProductController.updatePrice\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"}],\"openapi\":[{\"confidence\":0.95,\"file_path\":\"catalog-service/openapi/catalog.yaml\",\"id\":\"http::GET::/api/v1/products\",\"line\":10,\"meta\":{\"method\":\"GET\",\"path\":\"/api/v1/products\",\"response_type\":\"ProductResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200]},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"catalog-service/openapi/catalog.yaml\",\"id\":\"http::GET::/api/v1/products/{p1}\",\"line\":59,\"meta\":{\"method\":\"GET\",\"path\":\"/api/v1/products/{p1}\",\"response_type\":\"ProductResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,404]},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"catalog-service/openapi/catalog.yaml\",\"id\":\"http::POST::/api/v1/products/batch-lookup\",\"line\":39,\"meta\":{\"method\":\"POST\",\"path\":\"/api/v1/products/batch-lookup\",\"request_type\":\"BatchLookupRequest\",\"response_type\":\"ProductResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200]},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"catalog-service/openapi/catalog.yaml\",\"id\":\"http::PUT::/api/v1/products/{p1}/price\",\"line\":84,\"meta\":{\"method\":\"PUT\",\"path\":\"/api/v1/products/{p1}/price\",\"request_type\":\"PriceUpdateRequest\",\"response_type\":\"ProductResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,404]},\"project_id\":\"catalog-service\",\"repo_prefix\":\"catalog-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"}]},\"total\":8}},\"other_repos\":{\"by_repo\":{\"account-service\":19,\"basket-service\":15,\"commerce-bff\":39,\"commerce-web\":27,\"inventory-service\":2,\"order-service\":10,\"payment-service\":2,\"shipment-service\":9},\"hint\":\"pass all_repos=true or repo=<prefix>/project=<name> to include these\",\"repo_count\":8,\"total\":123},\"total\":8,\"truncated\":false}",
+      "output_normalized_sha256": "5c3f0f63f8e95a99d31a7538b6a4fe2febf116f518fc28d407b0e0aee80f5c3a",
+      "duration_ms": 64.1,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "gortex_contracts",
+      "operation": "bridge_rank",
+      "parameters": {
+        "action": "bridge_rank",
+        "repo": "catalog-service",
+        "query": "priceMinor"
+      },
+      "requested_query": "priceMinor",
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"groups\": [\n    {\n      \"bridge_id\": \"bridge::poc-estate::commerce-web::http::GET::/basket\",\n      \"canonical_key\": \"GET /basket\",\n      \"consumer_count\": 1,\n      \"consumers\": [\n        {\n          \"contract_id\": \"http::GET::/basket\",\n          \"file_path\": \"commerce-web/src/api/basket.ts\",\n          \"line\": 5,\n          \"repo\": \"commerce-web\",\n          \"symbol_id\": \"commerce-web/src/api/basket.ts::getBasket\"\n        }\n      ],\n      \"contract_type\": \"http\",\n      \"fused_score\": 0.01639344262295082,\n      \"provider_count\": 1,\n      \"providers\": [\n        {\n          \"contract_id\": \"http::GET::/basket\",\n          \"file_path\": \"commerce-web/src/App.tsx\",\n          \"line\": 24,\n          \"repo\": \"commerce-web\"\n        }\n      ],\n      \"repos\": [\n        \"commerce-web\"\n      ],\n      \"signal_ranks\": {\n        \"degree\": 1\n      }\n    },\n    {\n      \"bridge_id\": \"bridge::poc-estate::commerce-web::http::GET::/orders/{p1}\",\n      \"canonical_key\": \"GET /orders/{p1}\",\n      \"consumer_count\": 1,\n      \"consumers\": [\n        {\n          \"contract_id\": \"http::GET::/orders/{p1}\",\n          \"file_path\": \"commerce-web/src/api/orders.ts\",\n          \"line\": 18,\n          \"repo\": \"commerce-web\",\n          \"symbol_id\": \"commerce-web/src/api/orders.ts::getOrder\"\n        }\n      ],\n      \"contract_type\": \"http\",\n      \"fused_score\": 0.016129032258064516,\n      \"provider_count\": 1,\n      \"providers\": [\n        {\n          \"contract_id\": \"http::GET::/orders/{p1}\",\n          \"file_path\": \"commerce-web/src/App.tsx\",\n          \"line\": 27,\n          \"repo\": \"commerce-web\"\n        }\n      ],\n      \"repos\": [\n        \"commerce-web\"\n      ],\n      \"signal_ranks\": {\n        \"degree\": 2\n      }\n    }\n  ],\n  \"mode\": \"rank\",\n  \"signals\": [\n    \"degree\",\n    \"path_repo\",\n    \"text\"\n  ],\n  \"total\": 2\n}",
+      "output_sha256": "665edbe89ac6f7e3ceed6439ab50f3fe2d3f7de8d7285a8c872d14e069c66361",
+      "output_bytes": 1801,
+      "output_full_bytes": 1801,
+      "truncated": false,
+      "output_normalized": "{\"groups\":[{\"bridge_id\":\"bridge::poc-estate::commerce-web::http::GET::/basket\",\"canonical_key\":\"GET /basket\",\"consumer_count\":1,\"consumers\":[{\"contract_id\":\"http::GET::/basket\",\"file_path\":\"commerce-web/src/api/basket.ts\",\"line\":5,\"repo\":\"commerce-web\",\"symbol_id\":\"commerce-web/src/api/basket.ts::getBasket\"}],\"contract_type\":\"http\",\"fused_score\":0.01639344262295082,\"provider_count\":1,\"providers\":[{\"contract_id\":\"http::GET::/basket\",\"file_path\":\"commerce-web/src/App.tsx\",\"line\":24,\"repo\":\"commerce-web\"}],\"repos\":[\"commerce-web\"],\"signal_ranks\":{\"degree\":1}},{\"bridge_id\":\"bridge::poc-estate::commerce-web::http::GET::/orders/{p1}\",\"canonical_key\":\"GET /orders/{p1}\",\"consumer_count\":1,\"consumers\":[{\"contract_id\":\"http::GET::/orders/{p1}\",\"file_path\":\"commerce-web/src/api/orders.ts\",\"line\":18,\"repo\":\"commerce-web\",\"symbol_id\":\"commerce-web/src/api/orders.ts::getOrder\"}],\"contract_type\":\"http\",\"fused_score\":0.016129032258064516,\"provider_count\":1,\"providers\":[{\"contract_id\":\"http::GET::/orders/{p1}\",\"file_path\":\"commerce-web/src/App.tsx\",\"line\":27,\"repo\":\"commerce-web\"}],\"repos\":[\"commerce-web\"],\"signal_ranks\":{\"degree\":2}}],\"mode\":\"rank\",\"signals\":[\"degree\",\"path_repo\",\"text\"],\"total\":2}",
+      "output_normalized_sha256": "b40f47a07c2457c405f1de0c420a38c96222799c5af7e217ab009df7caaa1b13",
+      "duration_ms": 60.3,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "parameters": {
+        "operation": "dependents",
+        "query": "priceMinor",
+        "repo": "catalog-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "918dff31d9ed9777183369f6d2840e8709446daf196930c1bbae4e749ec4db69",
+      "output_bytes": 94,
+      "output_full_bytes": 94,
+      "truncated": false,
+      "output_normalized": "{\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "66c93a5ef9beeec26edaf0e0d8ca0aa4b9878b8abd9fd08e45eebf55184870dc",
+      "duration_ms": 52.6,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "gortex",
+    "version": "v0.63.10",
+    "commit": "5b299072c44457751cd339c00aabb0e5d2356ad3",
+    "binary_sha256": "30566ec81f2b4335b7e84e5664f508ae43238f0f037be7d2100543e211a05532",
+    "artifact_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+    "manifest_sha256": null,
+    "query_surface": [
+      "symbol",
+      "usages",
+      "callers",
+      "calls",
+      "dependents",
+      "deps",
+      "implementations",
+      "contracts",
+      "route_impact",
+      "symbol_impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "d9cd33199f9cb7ea2e85ffb4e8125b9900cac6bfef467a328fbaaac9c49ea702",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 209286,
+  "cost_usd": 0.2230264,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "ff4b647fd6c382488b1f54fab47723800ba5a0b418bf8a94a883b7db86c0b9a8",
+  "contestant_config_sha256": "9aa43e33dd8bf1e73fabe496f0ad97a29c0f3ba9b6b110a3ea19938964ece6c4",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

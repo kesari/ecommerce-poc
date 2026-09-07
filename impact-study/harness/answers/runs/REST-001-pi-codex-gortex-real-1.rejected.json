@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-001",
+  "runner": "pi-codex-gortex-real",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T11:32:04.320Z",
+  "reason": "answer schema validation failed: {\n  \"kind\": \"answer\",\n  \"schema\": \"contestant-answer.schema.json\",\n  \"checked\": [\n    \"REST-001-pi-codex-gortex-real-1.2026-09-04T11-30-33-362Z.json\"\n  ],\n  \"errors\": {\n    \"REST-001-pi-codex-gortex-real-1.2026-09-04T11-30-33-362Z.json\": [\n      \"REST-001-pi-codex-gortex-real-1.2026-09-04T11-30-33-362Z.json.findings.symbols[0]: product_direct requires a receipt_id matching a runner-generated product invocation receipt\",\n      \"REST-001-pi-codex-gortex-real-1.2026-09-04T11-30-33-362Z.json.findings.symbols[4]: product_direct requires a receipt_id matching a runner-generated product invocation receipt\",\n      \"REST-001-pi-codex-gortex-real-1.2026-09-04T11-30-33-362Z.json.findings.symbols[7]: product_direct requires a receipt_id matching a runner-generated product invocation receipt\"\n    ]\n  },\n  \"invalid_findings\": {},\n  \"valid\": false\n}",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

@@ -185,7 +185,12 @@ export function candidateSection(anchor: ChangeAnchor, receipts: any[]) {
 			lines.push(`failed: ${receipt.error}`);
 		} else {
 			lines.push("```");
-			lines.push(receipt.output ?? "");
+			// The canonicalized copy, not the raw one. This text lands in the
+			// prompt, and prompt_sha256 is part of the cohort key: with Gortex
+			// reordering equal nodes on every call, the raw output made every
+			// run its own cohort — 26 gortex-first runs produced 21 cohorts,
+			// which can never be aggregated. Same content, stable bytes.
+			lines.push(receipt.output_normalized ?? receipt.output ?? "");
 			lines.push("```");
 		}
 		lines.push("");

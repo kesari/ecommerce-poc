@@ -1,0 +1,370 @@
+{
+  "change_id": "KAFKA-001",
+  "contestant": "graphify-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/EventEnvelope.java:23 derives the published topic suffix as .v1."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/messaging/OrderConfirmedListener.java:33 subscribes to order.confirmed.v1."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:27 subscribes to order.confirmed.v1."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/kafka/topic-definitions.yaml:26 provisions order.confirmed.v1."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.order.application.EventEnvelope",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/EventEnvelope.java:23 returns eventType + .v1 as the topic."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/messaging/OrderConfirmedListener.java:32 lists v1 and v1 retry topics."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:27 binds its Kafka listener to v1."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#",
+        "consumer_repos": [
+          "basket-service",
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/asyncapi/order-service.yaml:31 publishes while basket-service/asyncapi/basket-service.yaml:13 and shipment-service/asyncapi/shipment-service.yaml:12 subscribe."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:135 awaits order.confirmed.v1."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:28 declares order.confirmed.v1 as produced."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:24 sets the consumed topic to order.confirmed.v1."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:195 sends an order.confirmed.v1 event."
+      }
+    ]
+  },
+  "runner": "pi-codex-graphify-first",
+  "run_index": 2,
+  "run_started_at": "2026-09-05T08:03:28.178Z",
+  "elapsed_seconds": 74.8,
+  "tool_calls": 29,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 7,
+      "succeeded": 7,
+      "failed": 0
+    },
+    "read": {
+      "calls": 18,
+      "succeeded": 18,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "tests",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "order-service order.confirmed.v1 consumers across repositories"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CONFIRMED', 'order.confirmed.v1.json', 'Order', '.service()', 'V1__order_schema.sql'] | 262 nodes found\n\n[!] TRUNCATED: showing 60 of 262 nodes (~2000-token budget). The answer may be among the 202 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CONFIRMED [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L10 community=]\nNODE order.confirmed.v1.json [src=asyncapi/schemas/order.confirmed.v1.json loc=L1 community=]\nNODE Order [src=src/main/java/com/poc/order/domain/model/Order.java loc=L6 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE V1__order_schema.sql [src=src/main/resources/db/migration/V1__order_schema.sql loc=None community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderSagaIntegrationTest.java [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE CheckoutController.java [src=src/main/java/com/poc/order/api/CheckoutController.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE .place() [src=src/main/java/com/poc/order/application/OrderService.java loc=L52 community=]\nNODE OrderLine [src=src/main/java/com/poc/order/domain/model/OrderLine.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE AddressSnapshot [src=src/main/java/com/poc/order/domain/model/AddressSnapshot.java loc=L3 community=]\nNODE .seedOrder() [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L211 community=]\nNODE MyBatisOrderRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L1 community=]\nNODE FakeOrderRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L260 community=]\nNODE .save() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L27 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE .findById() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L14 community=]\nNODE .findById() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L39 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L6 community=]\nNODE required [src=asyncapi/schemas/order.confirmed.v1.json loc=L5 community=]\nNODE .byId() [src=src/main/java/com/poc/order/application/OrderService.java loc=L100 community=]\nNODE OrderRepository.java [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L1 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L13 community=]\nNODE OrderResponse.java [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L1 community=]\nNODE .save() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L12 community=]\nNODE .payloadFor() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L74 community=]\nNODE .updateStatus() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L274 community=]\nNODE .reservePayload() [src=src/main/java/com/poc/order/application/OrderService.java loc=L107 community=]\nNODE .addressPayload() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L104 community=]\nNODE Order.java [src=src/main/java/com/poc/order/domain/model/Order.java loc=L1 community=]\nNODE orders [src=src/main/resources/db/migration/V1__order_schema.sql loc=L27 community=]\nNODE .findById() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L269 community=]\nNODE .save() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L264 community=]\nNODE order_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L45 community=]\nNODE order_status_history [src=src/main/resources/db/migration/V1__order_schema.sql loc=L54 community=]\nNODE quote_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L18 community=]\nNODE quotes [src=src/main/resources/db/migration/V1__order_schema.sql loc=L1 community=]\nNODE $schema [src=asyncapi/schemas/order.confirmed.v1.json loc=L2 community=]\nNODE title [src=asyncapi/schemas/order.confirmed.v1.json loc=L3 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L4 community=]\nNODE idempotency_keys [src=src/main/resources/db/migration/V1__order_schema.sql loc=L63 community=]\nNODE inbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L71 community=]\nNODE outbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L76 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE order-service::uuid [src= loc= community=]\nNODE OrderMapper [src=src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java loc=L15 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE Quote [src=src/main/java/com/poc/order/domain/model/Quote.java loc=L7 community=]\nNODE OrderApiMockedTest [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L52 community=]\nNODE OrderSagaIntegrationTest [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L48 community=]\nNODE CheckoutService.java [src=src/main/java/com/poc/order/application/CheckoutService.java loc=L1 community=]\nNODE OrderRepository [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L10 community=]\nNODE order-service::list [src= loc= community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\n... (truncated — 202 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "a71eb5e9e0f9743d164d539c69a9f41d3bb2818a373149fd5e22eb8ccf46e24d",
+      "output_bytes": 6785,
+      "output_full_bytes": 6785,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CONFIRMED', 'order.confirmed.v1.json', 'Order', '.service()', 'V1__order_schema.sql'] | 262 nodes found\n\n[!] TRUNCATED: showing 60 of 262 nodes (~2000-token budget). The answer may be among the 202 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CONFIRMED [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L10 community=]\nNODE order.confirmed.v1.json [src=asyncapi/schemas/order.confirmed.v1.json loc=L1 community=]\nNODE Order [src=src/main/java/com/poc/order/domain/model/Order.java loc=L6 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE V1__order_schema.sql [src=src/main/resources/db/migration/V1__order_schema.sql loc=None community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderSagaIntegrationTest.java [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE CheckoutController.java [src=src/main/java/com/poc/order/api/CheckoutController.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE .place() [src=src/main/java/com/poc/order/application/OrderService.java loc=L52 community=]\nNODE OrderLine [src=src/main/java/com/poc/order/domain/model/OrderLine.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE AddressSnapshot [src=src/main/java/com/poc/order/domain/model/AddressSnapshot.java loc=L3 community=]\nNODE .seedOrder() [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L211 community=]\nNODE MyBatisOrderRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L1 community=]\nNODE FakeOrderRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L260 community=]\nNODE .save() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L27 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE .findById() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L14 community=]\nNODE .findById() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L39 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L6 community=]\nNODE required [src=asyncapi/schemas/order.confirmed.v1.json loc=L5 community=]\nNODE .byId() [src=src/main/java/com/poc/order/application/OrderService.java loc=L100 community=]\nNODE OrderRepository.java [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L1 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L13 community=]\nNODE OrderResponse.java [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L1 community=]\nNODE .save() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L12 community=]\nNODE .payloadFor() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L74 community=]\nNODE .updateStatus() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L274 community=]\nNODE .reservePayload() [src=src/main/java/com/poc/order/application/OrderService.java loc=L107 community=]\nNODE .addressPayload() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L104 community=]\nNODE Order.java [src=src/main/java/com/poc/order/domain/model/Order.java loc=L1 community=]\nNODE orders [src=src/main/resources/db/migration/V1__order_schema.sql loc=L27 community=]\nNODE .findById() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L269 community=]\nNODE .save() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L264 community=]\nNODE order_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L45 community=]\nNODE order_status_history [src=src/main/resources/db/migration/V1__order_schema.sql loc=L54 community=]\nNODE quote_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L18 community=]\nNODE quotes [src=src/main/resources/db/migration/V1__order_schema.sql loc=L1 community=]\nNODE $schema [src=asyncapi/schemas/order.confirmed.v1.json loc=L2 community=]\nNODE title [src=asyncapi/schemas/order.confirmed.v1.json loc=L3 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L4 community=]\nNODE idempotency_keys [src=src/main/resources/db/migration/V1__order_schema.sql loc=L63 community=]\nNODE inbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L71 community=]\nNODE outbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L76 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE order-service::uuid [src= loc= community=]\nNODE OrderMapper [src=src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java loc=L15 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE Quote [src=src/main/java/com/poc/order/domain/model/Quote.java loc=L7 community=]\nNODE OrderApiMockedTest [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L52 community=]\nNODE OrderSagaIntegrationTest [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L48 community=]\nNODE CheckoutService.java [src=src/main/java/com/poc/order/application/CheckoutService.java loc=L1 community=]\nNODE OrderRepository [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L10 community=]\nNODE order-service::list [src= loc= community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\n... (truncated — 202 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "f1958f66632b24f5680bda29f79a22100a26aacd7c80d50469e25ed6df538296",
+      "duration_ms": 213.9,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "parameters": {
+        "operation": "affected",
+        "query": "order.confirmed.v1"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "No unique node match for order.confirmed.v1",
+      "output_sha256": "670c4e2bbefd380051dc5efb1cd5786a2c673ffba95955c1189ee3d4b0d24433",
+      "output_bytes": 43,
+      "output_full_bytes": 43,
+      "truncated": false,
+      "output_normalized": "No unique node match for order.confirmed.v1",
+      "output_normalized_sha256": "d20659b523cd2d9a2e9207c920c42bf168e0c7b690243bb6dfb484493bca7052",
+      "duration_ms": 105.4,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "parameters": {
+        "operation": "explain",
+        "query": "order.confirmed.v1"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Node: order.confirmed.v1.json\n  ID:        basket-service::asyncapi_schemas_order_confirmed_v1\n  Source:    asyncapi/schemas/order.confirmed.v1.json L1\n  Type:      code\n  Community: \n  Degree:    5\n\nConnections (5):\n  --> required [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L5\n  --> properties [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L6\n  --> $schema [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L2\n  --> title [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L3\n  --> type [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L4",
+      "output_sha256": "5b194703a5251524047b87087f504492a136d1b5eee620372c9d0f62de3d1ce2",
+      "output_bytes": 620,
+      "output_full_bytes": 620,
+      "truncated": false,
+      "output_normalized": "Node: order.confirmed.v1.json\n  ID:        basket-service::asyncapi_schemas_order_confirmed_v1\n  Source:    asyncapi/schemas/order.confirmed.v1.json L1\n  Type:      code\n  Community: \n  Degree:    5\n\nConnections (5):\n  --> required [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L5\n  --> properties [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L6\n  --> $schema [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L2\n  --> title [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L3\n  --> type [contains] [EXTRACTED] asyncapi/schemas/order.confirmed.v1.json:L4",
+      "output_normalized_sha256": "fd0be461128a5d3d3011233aa553c4c2ad72afd8dad4eb328b559e483bc3fbf4",
+      "duration_ms": 184.5,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "What breaks across repositories if the Kafka topic order.confirmed.v1 is renamed to order.confirmed.v2?"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CONFIRMED', 'order.confirmed.v1.json', 'Order', 'kafka_publish()', '.topic()', 'V1__order_schema.sql', 'V2__seed_stock.sql'] | 287 nodes found\n\n[!] TRUNCATED: showing 56 of 287 nodes (~2000-token budget). The answer may be among the 231 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CONFIRMED [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L10 community=]\nNODE order.confirmed.v1.json [src=asyncapi/schemas/order.confirmed.v1.json loc=L1 community=]\nNODE Order [src=src/main/java/com/poc/order/domain/model/Order.java loc=L6 community=]\nNODE kafka_publish() [src=e2e-bruno/run-e2e.sh loc=L78 community=]\nNODE .topic() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L74 community=]\nNODE V1__order_schema.sql [src=src/main/resources/db/migration/V1__order_schema.sql loc=None community=]\nNODE V2__seed_stock.sql [src=src/main/resources/db/migration/V2__seed_stock.sql loc=None community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderSagaIntegrationTest.java [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE CheckoutController.java [src=src/main/java/com/poc/order/api/CheckoutController.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE .place() [src=src/main/java/com/poc/order/application/OrderService.java loc=L52 community=]\nNODE OrderLine [src=src/main/java/com/poc/order/domain/model/OrderLine.java loc=L5 community=]\nNODE run-e2e.sh [src=e2e-bruno/run-e2e.sh loc=L1 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE AddressSnapshot [src=src/main/java/com/poc/order/domain/model/AddressSnapshot.java loc=L3 community=]\nNODE .seedOrder() [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L211 community=]\nNODE run-e2e.sh script [src=e2e-bruno/run-e2e.sh loc=L1 community=]\nNODE PaymentConfiguration [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L11 community=]\nNODE MyBatisOrderRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L1 community=]\nNODE org.apache.kafka.clients.admin.NewTopic [src= loc= community=]\nNODE FakeOrderRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L260 community=]\nNODE .save() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L27 community=]\nNODE .findById() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L14 community=]\nNODE .findById() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L39 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L6 community=]\nNODE required [src=asyncapi/schemas/order.confirmed.v1.json loc=L5 community=]\nNODE .byId() [src=src/main/java/com/poc/order/application/OrderService.java loc=L100 community=]\nNODE OrderRepository.java [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L1 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L13 community=]\nNODE OrderResponse.java [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L1 community=]\nNODE .save() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L12 community=]\nNODE .payloadFor() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L74 community=]\nNODE .updateStatus() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L274 community=]\nNODE .chargeDlq() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L34 community=]\nNODE .chargeRequested() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L19 community=]\nNODE .chargeRetryOne() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L24 community=]\nNODE .chargeRetryTwo() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L29 community=]\nNODE .paymentCharged() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L59 community=]\nNODE .paymentDeclined() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L64 community=]\nNODE .paymentRefunded() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L69 community=]\nNODE .refundDlq() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L54 community=]\nNODE .refundRequested() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L39 community=]\nNODE .refundRetryOne() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L44 community=]\nNODE .refundRetryTwo() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L49 community=]\nNODE .reservePayload() [src=src/main/java/com/poc/order/application/OrderService.java loc=L107 community=]\nNODE .addressPayload() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L104 community=]\nNODE Order.java [src=src/main/java/com/poc/order/domain/model/Order.java loc=L1 community=]\nNODE orders [src=src/main/resources/db/migration/V1__order_schema.sql loc=L27 community=]\nNODE .findById() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L269 community=]\nNODE .save() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L264 community=]\nNODE order_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L45 community=]\nNODE order_status_history [src=src/main/resources/db/migration/V1__order_schema.sql loc=L54 community=]\n... (truncated — 231 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "d3f65f782fa2cfbb4471ebae7028f3a9e94971a855985dfa186d9b8769fe4cdc",
+      "output_bytes": 6751,
+      "output_full_bytes": 6751,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CONFIRMED', 'order.confirmed.v1.json', 'Order', 'kafka_publish()', '.topic()', 'V1__order_schema.sql', 'V2__seed_stock.sql'] | 287 nodes found\n\n[!] TRUNCATED: showing 56 of 287 nodes (~2000-token budget). The answer may be among the 231 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CONFIRMED [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L10 community=]\nNODE order.confirmed.v1.json [src=asyncapi/schemas/order.confirmed.v1.json loc=L1 community=]\nNODE Order [src=src/main/java/com/poc/order/domain/model/Order.java loc=L6 community=]\nNODE kafka_publish() [src=e2e-bruno/run-e2e.sh loc=L78 community=]\nNODE .topic() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L74 community=]\nNODE V1__order_schema.sql [src=src/main/resources/db/migration/V1__order_schema.sql loc=None community=]\nNODE V2__seed_stock.sql [src=src/main/resources/db/migration/V2__seed_stock.sql loc=None community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderSagaIntegrationTest.java [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE CheckoutController.java [src=src/main/java/com/poc/order/api/CheckoutController.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE .place() [src=src/main/java/com/poc/order/application/OrderService.java loc=L52 community=]\nNODE OrderLine [src=src/main/java/com/poc/order/domain/model/OrderLine.java loc=L5 community=]\nNODE run-e2e.sh [src=e2e-bruno/run-e2e.sh loc=L1 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE AddressSnapshot [src=src/main/java/com/poc/order/domain/model/AddressSnapshot.java loc=L3 community=]\nNODE .seedOrder() [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L211 community=]\nNODE run-e2e.sh script [src=e2e-bruno/run-e2e.sh loc=L1 community=]\nNODE PaymentConfiguration [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L11 community=]\nNODE MyBatisOrderRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L1 community=]\nNODE org.apache.kafka.clients.admin.NewTopic [src= loc= community=]\nNODE FakeOrderRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L260 community=]\nNODE .save() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L27 community=]\nNODE .findById() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L14 community=]\nNODE .findById() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L39 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L6 community=]\nNODE required [src=asyncapi/schemas/order.confirmed.v1.json loc=L5 community=]\nNODE .byId() [src=src/main/java/com/poc/order/application/OrderService.java loc=L100 community=]\nNODE OrderRepository.java [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L1 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L13 community=]\nNODE OrderResponse.java [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L1 community=]\nNODE .save() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L12 community=]\nNODE .payloadFor() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L74 community=]\nNODE .updateStatus() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L274 community=]\nNODE .chargeDlq() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L34 community=]\nNODE .chargeRequested() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L19 community=]\nNODE .chargeRetryOne() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L24 community=]\nNODE .chargeRetryTwo() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L29 community=]\nNODE .paymentCharged() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L59 community=]\nNODE .paymentDeclined() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L64 community=]\nNODE .paymentRefunded() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L69 community=]\nNODE .refundDlq() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L54 community=]\nNODE .refundRequested() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L39 community=]\nNODE .refundRetryOne() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L44 community=]\nNODE .refundRetryTwo() [src=src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java loc=L49 community=]\nNODE .reservePayload() [src=src/main/java/com/poc/order/application/OrderService.java loc=L107 community=]\nNODE .addressPayload() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L104 community=]\nNODE Order.java [src=src/main/java/com/poc/order/domain/model/Order.java loc=L1 community=]\nNODE orders [src=src/main/resources/db/migration/V1__order_schema.sql loc=L27 community=]\nNODE .findById() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L269 community=]\nNODE .save() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L264 community=]\nNODE order_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L45 community=]\nNODE order_status_history [src=src/main/resources/db/migration/V1__order_schema.sql loc=L54 community=]\n... (truncated — 231 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "e8a53968681baf67100f6e24937d5f1fa61a406d5032fd9678ec00cf0b0677b4",
+      "duration_ms": 225.6,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "order.confirmed.v1 test coverage in order-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CONFIRMED', 'order.confirmed.v1.json', 'Order', '.service()', 'test', 'V1__order_schema.sql'] | 269 nodes found\n\n[!] TRUNCATED: showing 61 of 269 nodes (~2000-token budget). The answer may be among the 208 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CONFIRMED [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L10 community=]\nNODE order.confirmed.v1.json [src=asyncapi/schemas/order.confirmed.v1.json loc=L1 community=]\nNODE Order [src=src/main/java/com/poc/order/domain/model/Order.java loc=L6 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE test [src=package.json loc=L11 community=]\nNODE V1__order_schema.sql [src=src/main/resources/db/migration/V1__order_schema.sql loc=None community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderSagaIntegrationTest.java [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE CheckoutController.java [src=src/main/java/com/poc/order/api/CheckoutController.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE .place() [src=src/main/java/com/poc/order/application/OrderService.java loc=L52 community=]\nNODE OrderLine [src=src/main/java/com/poc/order/domain/model/OrderLine.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE AddressSnapshot [src=src/main/java/com/poc/order/domain/model/AddressSnapshot.java loc=L3 community=]\nNODE .seedOrder() [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L211 community=]\nNODE MyBatisOrderRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L1 community=]\nNODE FakeOrderRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L260 community=]\nNODE .save() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L27 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE .findById() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L14 community=]\nNODE .findById() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L39 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L6 community=]\nNODE required [src=asyncapi/schemas/order.confirmed.v1.json loc=L5 community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE .byId() [src=src/main/java/com/poc/order/application/OrderService.java loc=L100 community=]\nNODE OrderRepository.java [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L1 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L13 community=]\nNODE OrderResponse.java [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L1 community=]\nNODE .save() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L12 community=]\nNODE .payloadFor() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L74 community=]\nNODE .updateStatus() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L274 community=]\nNODE .reservePayload() [src=src/main/java/com/poc/order/application/OrderService.java loc=L107 community=]\nNODE .addressPayload() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L104 community=]\nNODE Order.java [src=src/main/java/com/poc/order/domain/model/Order.java loc=L1 community=]\nNODE orders [src=src/main/resources/db/migration/V1__order_schema.sql loc=L27 community=]\nNODE .findById() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L269 community=]\nNODE .save() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L264 community=]\nNODE order_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L45 community=]\nNODE order_status_history [src=src/main/resources/db/migration/V1__order_schema.sql loc=L54 community=]\nNODE quote_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L18 community=]\nNODE quotes [src=src/main/resources/db/migration/V1__order_schema.sql loc=L1 community=]\nNODE $schema [src=asyncapi/schemas/order.confirmed.v1.json loc=L2 community=]\nNODE title [src=asyncapi/schemas/order.confirmed.v1.json loc=L3 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L4 community=]\nNODE idempotency_keys [src=src/main/resources/db/migration/V1__order_schema.sql loc=L63 community=]\nNODE inbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L71 community=]\nNODE outbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L76 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE order-service::uuid [src= loc= community=]\nNODE OrderMapper [src=src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java loc=L15 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE Quote [src=src/main/java/com/poc/order/domain/model/Quote.java loc=L7 community=]\nNODE OrderApiMockedTest [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L52 community=]\nNODE OrderSagaIntegrationTest [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L48 community=]\nNODE CheckoutService.java [src=src/main/java/com/poc/order/application/CheckoutService.java loc=L1 community=]\nNODE OrderRepository [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L10 community=]\nNODE order-service::list [src= loc= community=]\n... (truncated — 208 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "124829da18d3b620c8f35ef183088eb690758ec219492e8c40453ffb73dddc4d",
+      "output_bytes": 6778,
+      "output_full_bytes": 6778,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CONFIRMED', 'order.confirmed.v1.json', 'Order', '.service()', 'test', 'V1__order_schema.sql'] | 269 nodes found\n\n[!] TRUNCATED: showing 61 of 269 nodes (~2000-token budget). The answer may be among the 208 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CONFIRMED [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L10 community=]\nNODE order.confirmed.v1.json [src=asyncapi/schemas/order.confirmed.v1.json loc=L1 community=]\nNODE Order [src=src/main/java/com/poc/order/domain/model/Order.java loc=L6 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE test [src=package.json loc=L11 community=]\nNODE V1__order_schema.sql [src=src/main/resources/db/migration/V1__order_schema.sql loc=None community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderSagaIntegrationTest.java [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE CheckoutController.java [src=src/main/java/com/poc/order/api/CheckoutController.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE .place() [src=src/main/java/com/poc/order/application/OrderService.java loc=L52 community=]\nNODE OrderLine [src=src/main/java/com/poc/order/domain/model/OrderLine.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE AddressSnapshot [src=src/main/java/com/poc/order/domain/model/AddressSnapshot.java loc=L3 community=]\nNODE .seedOrder() [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L211 community=]\nNODE MyBatisOrderRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L1 community=]\nNODE FakeOrderRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L260 community=]\nNODE .save() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L27 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE .findById() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L14 community=]\nNODE .findById() [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java loc=L39 community=]\nNODE properties [src=asyncapi/schemas/order.confirmed.v1.json loc=L6 community=]\nNODE required [src=asyncapi/schemas/order.confirmed.v1.json loc=L5 community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE .byId() [src=src/main/java/com/poc/order/application/OrderService.java loc=L100 community=]\nNODE OrderRepository.java [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L1 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L13 community=]\nNODE OrderResponse.java [src=src/main/java/com/poc/order/api/dto/OrderResponse.java loc=L1 community=]\nNODE .save() [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L12 community=]\nNODE .payloadFor() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L74 community=]\nNODE .updateStatus() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L274 community=]\nNODE .reservePayload() [src=src/main/java/com/poc/order/application/OrderService.java loc=L107 community=]\nNODE .addressPayload() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L104 community=]\nNODE Order.java [src=src/main/java/com/poc/order/domain/model/Order.java loc=L1 community=]\nNODE orders [src=src/main/resources/db/migration/V1__order_schema.sql loc=L27 community=]\nNODE .findById() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L269 community=]\nNODE .save() [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L264 community=]\nNODE order_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L45 community=]\nNODE order_status_history [src=src/main/resources/db/migration/V1__order_schema.sql loc=L54 community=]\nNODE quote_lines [src=src/main/resources/db/migration/V1__order_schema.sql loc=L18 community=]\nNODE quotes [src=src/main/resources/db/migration/V1__order_schema.sql loc=L1 community=]\nNODE $schema [src=asyncapi/schemas/order.confirmed.v1.json loc=L2 community=]\nNODE title [src=asyncapi/schemas/order.confirmed.v1.json loc=L3 community=]\nNODE type [src=asyncapi/schemas/order.confirmed.v1.json loc=L4 community=]\nNODE idempotency_keys [src=src/main/resources/db/migration/V1__order_schema.sql loc=L63 community=]\nNODE inbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L71 community=]\nNODE outbox [src=src/main/resources/db/migration/V1__order_schema.sql loc=L76 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE order-service::uuid [src= loc= community=]\nNODE OrderMapper [src=src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java loc=L15 community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE Quote [src=src/main/java/com/poc/order/domain/model/Quote.java loc=L7 community=]\nNODE OrderApiMockedTest [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L52 community=]\nNODE OrderSagaIntegrationTest [src=src/test/java/com/poc/order/OrderSagaIntegrationTest.java loc=L48 community=]\nNODE CheckoutService.java [src=src/main/java/com/poc/order/application/CheckoutService.java loc=L1 community=]\nNODE OrderRepository [src=src/main/java/com/poc/order/application/port/OrderRepository.java loc=L10 community=]\nNODE order-service::list [src= loc= community=]\n... (truncated — 208 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "f64b4d7142b80d4b325753a61f4ae369afeae3ee3fcb7f66bdf4f93c5c351567",
+      "duration_ms": 216.2,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "graphify",
+    "version": "0.9.53",
+    "commit": null,
+    "binary_sha256": "5201bbf13d9959ab9ce913c2adb891be75fee0d9454ab3d93208625257e90b2f",
+    "artifact_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+    "manifest_sha256": "71b2cccdf485ce96c39253f4180f30c79ccb54bbe95db259fbd6796806f5d02f",
+    "query_surface": [
+      "query",
+      "explain",
+      "path",
+      "affected"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "ee6e66d04d14c9720f5973a9dd53ca5c44801f9af2029134f44eb943c5b0a5e5",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 108821,
+  "cost_usd": 0.1017024,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "4eec8346aaeab365b68e2504cb68ae92a10a725582fdecae504e71d88687ebc4",
+  "contestant_config_sha256": "a3cabf9a2097e289cfbe45daf66ab522824489c03b116a3b77ad4e5f9c354067",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-001",
+  "runner": "pi-haiku",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T01:25:10.990Z",
+  "reason": "No API key found for anthropic.\n\nUse /login to log into a provider via OAuth or API key. See:\n  /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/run/node_modules/@earendil-works/pi-coding-agent/docs/providers.md\n  /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/run/node_modules/@earendil-works/pi-coding-agent/docs/models.md",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}
