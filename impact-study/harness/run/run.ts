@@ -56,6 +56,8 @@ interface Contestant {
 	/** Precomputed index support: "symbol" (SCIP-like), "contract" (Gortex-like), "concept" (Graphify-like). */
 	indexes?: ("symbol" | "contract" | "concept")[];
 	product?: ProductConfig;
+	/** Markdown in run/skills/ teaching the agent to use this product. */
+	skill?: string;
 	/** Track C: run the frozen playbook before the model, then verify. */
 	product_first?: boolean;
 	enabled?: boolean;
@@ -393,7 +395,15 @@ async function runOnce(
 	if (!model) throw new Error(`model not in pi registry: ${contestant.provider}/${contestant.model}`);
 	const template = await readFile(join(RUN_DIR, "prompt-template.md"), "utf8");
 	const section = indexPromptSection(contestant.indexes ?? []);
-	const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
+	// The skill goes in the prompt rather than through PI's skill loader, so a
+	// scored run still inherits no local PI configuration, and so that editing
+	// a skill moves prompt_sha256 and therefore the cohort.
+	const skill = contestant.skill
+		? await readFile(join(RUN_DIR, "skills", contestant.skill), "utf8")
+		: "";
+	const prompt = buildPrompt(record, template)
+		+ (section ? `\n\n${section}` : "")
+		+ (skill ? `\n\n${skill}` : "");
 	const runStartedAt = new Date().toISOString();
 	const { raw, elapsed, playbook, stats, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, effectivePrompt, allowedTools } = await ask(
 		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [], contestant.product, context.estate,
