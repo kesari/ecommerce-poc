@@ -91,12 +91,14 @@ Branch-per-product makes a non-sibling clone the normal case. Without this, a
 clone cannot build its indexes or run its suite, and the failure presents as
 drift rather than misconfiguration.
 
-### 6. `--one-line` instead of `--json`
+### 6. `--one-line` instead of `--json` — tried and reverted
 
-The adapter asked for `--json` on every call since it was written. The CLI's
-own default for query commands is `--one-line`, which carries the same facts
-the skill tells the agent to cite — path, line, column, symbol — without
-restating them in a structure nothing reads.
+The adapter asked for `--json` on every call. The CLI's own default for query
+commands is `--one-line`, which carries the same facts the skill tells the agent
+to cite — path, line, column, symbol — without restating them in a structure
+that looked redundant.
+
+Measured per call, it is much smaller:
 
 | operation | json | one-line | |
 |---|---|---|---|
@@ -105,7 +107,27 @@ restating them in a structure nothing reads.
 | callers | 12,604 | 7,719 | 39% smaller |
 | impact | 14,596 | 12,820 | 12% smaller |
 
-Result pending at time of writing.
+Measured per run, it was worse on every axis that matters:
+
+| version | n | median | med tokens | product output | scip calls | reads |
+|---|---|---|---|---|---|---|
+| `--json` | 3 | **0.93** | **260,854** | 148,487 B | 9 | 23 |
+| `--one-line` | 3 | 0.80 | 459,683 | 105,890 B | 21 | 34 |
+
+Per-run output did fall, 148KB to 106KB, despite 2.3x more calls — so the
+per-call saving was real. It bought nothing. The agent made 21 index calls
+instead of 9 and 42 reads instead of 23, and spent 76% more tokens. Two of the
+three runs took ~460-500k tokens with 86-100 total tool calls; the third made 7
+calls, cost 255k and scored 0.95, behaving like the JSON version.
+
+Terser output is less informative per call, so the agent queries repeatedly to
+reconstruct what one structured result gave it. The JSON structure was doing
+work that reading the raw byte counts did not reveal.
+
+**Reverted.** The general lesson is that per-call payload size is the wrong
+thing to optimise in an agentic loop. What costs tokens is the number of turns,
+and a richer result that ends the search sooner is cheaper than a terse one
+that prompts another query — even though it looks more expensive in isolation.
 
 ## Findings
 
@@ -127,6 +149,12 @@ This traces to removing the per-call output ceiling. That was right for Gortex,
 where an 8KB cap discarded the tail of its richest answer along with three of
 the four affected repositories, but it was applied globally and SCIP's outputs
 were never the problem.
+
+The obvious remedy does not follow, though. Shrinking the payload directly, by
+switching to `--one-line`, raised total cost by 76% because the agent then made
+2.3x as many calls (section 6). Payload and turn count trade against each
+other, and turn count wins. If a ceiling is reinstated it should be justified
+by a measured run, not by the byte counts alone.
 
 ### A universal miss turned out to be a ground-truth artifact
 
