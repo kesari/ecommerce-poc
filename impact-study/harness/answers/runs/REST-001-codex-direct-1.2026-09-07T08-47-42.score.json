@@ -1,0 +1,181 @@
+{
+  "change_id": "REST-001",
+  "contestant": "codex-direct",
+  "metrics": {
+    "symbol_recall": 0.0,
+    "test_recall": 0.0,
+    "cross_repo_recall": 0.0,
+    "contract_recall": 0.0,
+    "precision": 0.0,
+    "evidence_quality": 0.0,
+    "critical_penalty": 0.25,
+    "composite": 0.0395
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.3684,
+    "contract_recall": 0.2105,
+    "precision": 0.1579,
+    "evidence_quality": 0.1053,
+    "critical_penalty": 0.1579
+  },
+  "excluded_components": [
+    "freshness",
+    "latency",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 1
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 1
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 1
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 1
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 3,
+      "contract_consumer": 8,
+      "test_suite": 3
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "account-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "repository",
+      "key": "commerce-web",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "repository",
+      "key": "order-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "repository",
+      "key": "shipment-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressrequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.addresssnapshot",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.infrastructure.client.accountclient",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "kafka order.confirmed.v1#/address/postalcode",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "rest post /api/v1/addresses",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "account-service accountflowcomponenttest",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [],
+    "contracts": [],
+    "tests": []
+  },
+  "invalid_findings": [
+    {
+      "kind": "repositories",
+      "index": 0,
+      "errors": [
+        "findings.repositories[0].evidence_tier: 'extracted|inferred|contract_matched|compiler|hypothesis' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 0,
+      "errors": [
+        "findings.symbols[0].evidence_tier: '...' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "contracts",
+      "index": 0,
+      "errors": [
+        "findings.contracts[0].type: 'rest|kafka|grpc|openapi|db' is not one of ['rest', 'kafka', 'grpc', 'openapi', 'db']",
+        "findings.contracts[0].evidence_tier: '...' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "tests",
+      "index": 0,
+      "errors": [
+        "findings.tests[0].evidence_tier: '...' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    }
+  ],
+  "provenance_distribution": {
+    "schema_invalid": 4
+  },
+  "raw": {
+    "elapsed_seconds": null,
+    "tokens_consumed": 38086
+  },
+  "answer_sha256": "1c2f2df186ba8259ed4fd7bd53777b1f25aa530c663dafa99440358de2b3006b",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "095e07b11a3fa42328719cd53d343fadd53c423b95bd8531634411fd432b4ffc"
+}

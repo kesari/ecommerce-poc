@@ -1,0 +1,111 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP defines com.poc.account.api.dto.AddressResponse.postalCode in account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:35 binds Account's response and line 41 transfers postalCode into AddressSnapshot."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/types.ts:54 declares the Account address response field as postalCode."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 consumes the retained postalCode event key."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves the record declaration in account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6, including postalCode at line 13."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves AccountClient's local response binding in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:35."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves AddressSnapshot construction from the bound response in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:40."
+   },
+   {
+    "fqn": "Address",
+    "repo": "commerce-web",
+    "evidence_tier": "extracted",
+    "evidence": "commerce-web/src/api/types.ts:47 declares the typed address response, with postalCode at line 54."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:27 returns AddressResponse for the address resource, while commerce-web/src/api/checkout.ts:9 and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32 consume it."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:246 declares postalCode in AddressResponse, which is bound by order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:35."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 deliberately emits postalCode, matching shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java:8."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/asyncapi/schemas/order.confirmed.v1.json:19 retains postalCode and shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads it."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:128 asserts the response key $.postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 supplies postalCode and 05-create-quote.bru:19 uses that saved address in the affected flow."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "scip",
+ "runner": "codex-scip",
+ "agent_sha256": "2112a9434de4fd6fedcd5c8a3acf559a4abeb903e9b4b9c805e2cf5a1073b099",
+ "tokens_consumed": 64067
+}

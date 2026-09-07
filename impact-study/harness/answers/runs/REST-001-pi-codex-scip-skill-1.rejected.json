@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-001",
+  "runner": "pi-codex-scip-skill",
+  "run_index": 1,
+  "run_started_at": "2026-09-07T08:35:36.271Z",
+  "reason": "Credential store read failed for openai-codex: EPERM: operation not permitted, mkdir '/Users/rajmohan/.pi/agent/auth.json.lock'",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

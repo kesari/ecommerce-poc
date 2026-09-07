@@ -1,0 +1,118 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares the response JSON property as postalCode."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/types.ts:54 defines postalCode in the address shape returned and submitted to Account."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds Account's postalCode response property."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "inferred",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads the unchanged event postalCode key, which receives the now-null order snapshot value."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.domain.model.Address",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/domain/model/Address.java:14 declares postalCode in the proposed provider type."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressRequest",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 binds the inbound address JSON postalCode property."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares the outbound address JSON postalCode property."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-26 declares the typed REST response binder with postalCode."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3-4 holds the value assigned from AccountClient at AccountClient.java:40-41."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:217 defines postalCode in the address request schema consumed by the web and address resource users."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:246 declares postalCode and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:36 binds that response schema."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 preserves postalCode for shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118-128 posts and asserts postalCode on the address API."
+   },
+   {
+    "repo": "order-service",
+    "suite": "OrderSagaIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:135-136 asserts postalCode is carried into order.confirmed.v1."
+   },
+   {
+    "repo": "shipment-service",
+    "suite": "ShipmentIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:164-172 builds the consumed confirmed-order address with postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "extracted",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:17-25 posts postalCode in the full-flow address creation scenario."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 58746
+}

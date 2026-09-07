@@ -1,0 +1,42 @@
+{
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "findings": {
+  "repositories": [
+   {
+    "name": "...",
+    "evidence_tier": "extracted|inferred|contract_matched|compiler|hypothesis",
+    "evidence": "file:line, one short sentence"
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "...",
+    "repo": "...",
+    "evidence_tier": "...",
+    "evidence": "..."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest|kafka|grpc|openapi|db",
+    "identifier": "...",
+    "consumer_repos": [
+     "..."
+    ],
+    "evidence_tier": "...",
+    "evidence": "..."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "...",
+    "suite": "...",
+    "evidence_tier": "...",
+    "evidence": "..."
+   }
+  ]
+ },
+ "runner": "codex-direct",
+ "tokens_consumed": 38086
+}

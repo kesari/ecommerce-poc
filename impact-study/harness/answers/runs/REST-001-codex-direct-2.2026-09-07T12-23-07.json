@@ -1,0 +1,207 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "AddressRequest and AddressResponse expose `postalCode` at src/main/java/com/poc/account/api/dto/AddressRequest.java:13 and AddressResponse.java:13."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "The checkout client sends and renders the Account address field at src/pages/CheckoutPage.tsx:119."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "AccountClient binds the Account address response by name at src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25."
+   },
+   {
+    "name": "commerce-platform",
+    "evidence_tier": "contract_matched",
+    "evidence": "Bruno address-creation scenarios still send `postalCode`, for example e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "The shipment consumer reads the separate order-confirmed event field at src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressRequest",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "The request record declares the JSON-bound field at src/main/java/com/poc/account/api/dto/AddressRequest.java:13."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "The response record declares the serialized field at src/main/java/com/poc/account/api/dto/AddressResponse.java:13."
+   },
+   {
+    "fqn": "com.poc.account.api.AddressController",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "The controller calls `request.postalCode()` at src/main/java/com/poc/account/api/AddressController.java:65."
+   },
+   {
+    "fqn": "Address",
+    "repo": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "The frontend Account-address type declares `postalCode` at src/api/types.ts:54."
+   },
+   {
+    "fqn": "CheckoutPage",
+    "repo": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "The checkout form and saved-address display access `postalCode` at src/pages/CheckoutPage.tsx:112 and src/pages/CheckoutPage.tsx:119."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "Its response DTO binds `postalCode` and copies it into the snapshot at src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 and AccountClient.java:41."
+   },
+   {
+    "fqn": "com.poc.order.application.CheckoutService",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "The null value produced by the stale Account binding is forwarded to shipment estimation at src/main/java/com/poc/order/application/CheckoutService.java:52."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "Map.of rejects the forwarded null postal code while building the shipment request at src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36."
+   },
+   {
+    "fqn": "com.poc.order.application.SagaOrchestrator",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "The order-confirmed mapper deliberately emits the distinct event field `postalCode` at src/main/java/com/poc/order/application/SagaOrchestrator.java:111."
+   },
+   {
+    "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+    "repo": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "The shipment listener deliberately consumes `address.postalCode` from the order-confirmed event at src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "Account declares the list response as AddressResponse at openapi/account.yaml:15, and commerce-web requests it at src/api/checkout.ts:5."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web",
+     "commerce-platform"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "Account declares AddressRequest and AddressResponse for creation at openapi/account.yaml:25, while commerce-web posts it at src/api/checkout.ts:9."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "Account declares the detail AddressResponse at openapi/account.yaml:58, and order-service requests it at src/main/java/com/poc/order/infrastructure/client/AccountClient.java:33."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+    "consumer_repos": [
+     "commerce-web",
+     "commerce-platform"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The Account request schema defines `postalCode` at account-service/openapi/account.yaml:217 and external clients post that name."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The Account response schema defines `postalCode` at account-service/openapi/account.yaml:246 and both consumers bind the response."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "basket-service",
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The producer schema retains `postalCode` at order-service/asyncapi/schemas/order.confirmed.v1.json:19 and shipment consumes that field at shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "The address CRUD test posts and asserts `postalCode` at src/test/java/com/poc/account/AccountFlowComponentTest.java:118 and AccountFlowComponentTest.java:128."
+   },
+   {
+    "repo": "commerce-web",
+    "suite": "src/test",
+    "evidence_tier": "extracted",
+    "evidence": "The Vitest Account-address fixture uses `postalCode` at src/test/app.test.tsx:46."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "extracted",
+    "evidence": "The scenario posts `postalCode` at e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/05-basket-changed-after-quote",
+    "evidence_tier": "extracted",
+    "evidence": "The scenario posts `postalCode` at e2e-bruno/05-basket-changed-after-quote/04-create-address.bru:23."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/06-out-of-stock",
+    "evidence_tier": "extracted",
+    "evidence": "The scenario posts `postalCode` at e2e-bruno/06-out-of-stock/03-create-address.bru:23."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/07-payment-decline",
+    "evidence_tier": "extracted",
+    "evidence": "The scenario posts `postalCode` at e2e-bruno/07-payment-decline/03-create-address.bru:23."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/08-duplicate-place-order",
+    "evidence_tier": "extracted",
+    "evidence": "The scenario posts `postalCode` at e2e-bruno/08-duplicate-place-order/03-create-address.bru:23."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno",
+    "evidence_tier": "extracted",
+    "evidence": "The shell end-to-end run posts `postalCode` at e2e-bruno/run-e2e.sh:136."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 45688
+}

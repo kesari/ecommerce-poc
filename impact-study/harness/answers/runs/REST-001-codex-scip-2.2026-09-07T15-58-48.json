@@ -1,0 +1,102 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves com.poc.account.api.dto.AddressResponse, which declares postalCode in account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "AccountClient binds the account response postalCode and copies it into AddressSnapshot in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24 and :41."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Address response type expects postalCode in commerce-web/src/api/types.ts:54 and listAddresses binds the address resource in commerce-web/src/api/checkout.ts:5."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "inferred",
+    "evidence": "The order-confirmed consumer continues to read address.postalCode in shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves the AddressResponse declaration in account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6, including its postalCode member at :13."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves the local response-binding record declared in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves AddressSnapshot and its construction from AccountClient in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:40."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service exposes AddressResponse with postalCode in account-service/openapi/account.yaml:246, while consumers bind that response in commerce-web/src/api/types.ts:54 and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:36."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The provider schema declares postalCode in account-service/openapi/account.yaml:246 and consumer response types bind it in commerce-web/src/api/types.ts:54 and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service keeps postalCode in its emitted schema at order-service/asyncapi/schemas/order.confirmed.v1.json:19, and shipment-service reads that key at shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "The address lifecycle asserts the response key $.postalCode in account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:128."
+   },
+   {
+    "repo": "order-service",
+    "suite": "OrderSagaIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "The full saga asserts that the confirmed-order address retains postalCode in order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:136."
+   },
+   {
+    "repo": "shipment-service",
+    "suite": "AsyncApiContractTest",
+    "evidence_tier": "extracted",
+    "evidence": "The consumed order-confirmed contract sample validates address.postalCode in shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:55."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "scip",
+ "runner": "codex-scip",
+ "agent_sha256": "2112a9434de4fd6fedcd5c8a3acf559a4abeb903e9b4b9c805e2cf5a1073b099",
+ "tokens_consumed": 71012
+}

@@ -1,0 +1,96 @@
+{
+  "change_id": "REST-001",
+  "contestant": "codex-direct",
+  "metrics": {
+    "symbol_recall": 0.75,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.8,
+    "evidence_quality": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.9684
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.3684,
+    "contract_recall": 0.2105,
+    "precision": 0.1579,
+    "evidence_quality": 0.1053,
+    "critical_penalty": 0.1579
+  },
+  "excluded_components": [
+    "freshness",
+    "latency",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 3,
+      "matched": 3,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 5,
+      "matched": 3,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressrequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest",
+      "rest post /api/v1/delivery-estimates"
+    ],
+    "tests": [
+      "shipment-service asyncapicontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 5,
+    "contract_matched": 10
+  },
+  "raw": {
+    "elapsed_seconds": null,
+    "tokens_consumed": 69223
+  },
+  "answer_sha256": "8ed56a2463eba857797d31b73d1e2f29070e173cca7251df7094c7464ff3b9ec",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "095e07b11a3fa42328719cd53d343fadd53c423b95bd8531634411fd432b4ffc"
+}

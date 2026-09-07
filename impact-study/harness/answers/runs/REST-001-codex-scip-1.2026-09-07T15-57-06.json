@@ -1,0 +1,117 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "AddressResponse.java:13 declares the renamed response component, resolved by the SCIP index."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "AccountClient.java:41 copies the account response's postalCode into AddressSnapshot, so postcode would bind as null."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "inferred",
+    "evidence": "DeliveryEstimator.java:20 converts a null postal code to an invalid value before rejecting it."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "inferred",
+    "evidence": "src/api/types.ts:54 declares the relayed address response with postalCode."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves the declaration at AddressResponse.java:6, whose postalCode component is at line 13."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves the local response binder declared in AccountClient.java:24-26."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves AddressSnapshot.java:3-4, and AccountClient.java:40-41 constructs it from the bound response."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "order-service",
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "AddressController.java:60-67 returns AddressResponse; AccountClient.java:32-36 and commerce-web/src/api/checkout.ts:5 consume that address payload."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "order-service",
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account.yaml:246 defines postalCode in AddressResponse; AccountClient.java:24-26 and commerce-web/src/api/types.ts:47-58 bind that response shape."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "ShipmentClient.java:34-37 sends the retained postalCode key and DeliveryEstimateRequest.java:7-10 binds it."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/asyncapi/schemas/order.confirmed.v1.json:19 preserves postalCode, which OrderConfirmedListener.java:37 reads."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "AccountFlowComponentTest.java:128 asserts the address response's postalCode field."
+   },
+   {
+    "repo": "order-service",
+    "suite": "OrderSagaIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "OrderSagaIntegrationTest.java:136 asserts postalCode in the confirmed-order address."
+   },
+   {
+    "repo": "shipment-service",
+    "suite": "ShipmentIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "ShipmentIntegrationTest.java:171 supplies postalCode in its confirmed-order event."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 posts postalCode before the quote and order flow."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "scip",
+ "runner": "codex-scip",
+ "agent_sha256": "2112a9434de4fd6fedcd5c8a3acf559a4abeb903e9b4b9c805e2cf5a1073b099",
+ "tokens_consumed": 52818
+}

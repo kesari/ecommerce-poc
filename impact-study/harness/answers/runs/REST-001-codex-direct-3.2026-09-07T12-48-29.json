@@ -1,0 +1,189 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares the response JSON component as postalCode."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/types.ts:54 models Account address responses with postalCode."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41 binds Account's response postalCode and copies it into AddressSnapshot."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 consumes postalCode from the unchanged order.confirmed.v1 address payload."
+   },
+   {
+    "name": "basket-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "basket-service/asyncapi/schemas/order.confirmed.v1.json:12-19 requires the downstream address postalCode field."
+   },
+   {
+    "name": "commerce-platform",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/05-create-quote.bru:8 invokes quote creation after using an Account address."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6-18 declares the renamed response type."
+   },
+   {
+    "fqn": "Address",
+    "repo": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/types.ts:47-59 declares postalCode for Account address responses."
+   },
+   {
+    "fqn": "AddressInput",
+    "repo": "commerce-web",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-web/src/api/types.ts:61 derives request input from Address, while CheckoutPage.tsx:18 still sends postalCode to the unchanged request contract."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41 binds postalCode by name and assigns it to AddressSnapshot."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3-4 carries the null postalCode copied by AccountClient."
+   },
+   {
+    "fqn": "com.poc.order.application.CheckoutService",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:51-52 passes AddressSnapshot.postalCode to shipment estimation."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 builds Map.of with postalCode, which rejects the null value before a shipment request is sent."
+   },
+   {
+    "fqn": "com.poc.shipment.domain.model.DeliveryAddress",
+    "repo": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:35-40 maps the still-named Kafka postalCode into DeliveryAddress."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32-36 calls this Account endpoint and deserializes its response."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:4-5 requests Account address-list responses through the transparent BFF relay."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:8-12 treats the create response as Address, whose response field is renamed."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:225-247 documents AddressResponse.postalCode, matching both consumers' bindings."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "basket-service",
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:104-112 emits postalCode; this downstream event field must remain unchanged."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:128 and :143 assert postalCode in AddressResponse JSON."
+   },
+   {
+    "repo": "commerce-web",
+    "suite": "app.test.tsx",
+    "evidence_tier": "extracted",
+    "evidence": "commerce-web/src/test/app.test.tsx:39-50 supplies a typed Address fixture with postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/05-create-quote.bru:8-19 creates a quote from the Account address selected earlier in the scenario."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/05-basket-changed-after-quote",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/05-basket-changed-after-quote/05-create-quote.bru:8-19 creates a quote from an Account address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/06-out-of-stock",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/06-out-of-stock/04-create-quote.bru:8-19 creates a quote from an Account address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/07-payment-decline",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/07-payment-decline/04-create-quote.bru:8-19 creates a quote from an Account address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/08-duplicate-place-order",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/08-duplicate-place-order/04-create-quote.bru:8-19 creates a quote from an Account address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/run-e2e.sh:135-139 creates an Account address and immediately requests a quote in its shell-driven journeys."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 67970
+}

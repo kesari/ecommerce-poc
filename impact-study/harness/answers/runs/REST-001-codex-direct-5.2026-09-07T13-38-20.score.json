@@ -1,0 +1,115 @@
+{
+  "change_id": "REST-001",
+  "contestant": "codex-direct",
+  "metrics": {
+    "symbol_recall": 0.25,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.6667,
+    "precision": 0.6,
+    "evidence_quality": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8667
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.3684,
+    "contract_recall": 0.2105,
+    "precision": 0.1579,
+    "evidence_quality": 0.1053,
+    "critical_penalty": 0.1579
+  },
+  "excluded_components": [
+    "freshness",
+    "latency",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 5,
+      "matched": 4,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 6,
+      "matched": 2,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 4,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressrequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.infrastructure.client.accountclient",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-platform"
+    ],
+    "symbols": [
+      "address"
+    ],
+    "contracts": [],
+    "tests": [
+      "commerce-platform e2e-bruno/05-basket-changed-after-quote",
+      "commerce-platform e2e-bruno/06-out-of-stock",
+      "commerce-platform e2e-bruno/07-payment-decline",
+      "commerce-platform e2e-bruno/08-duplicate-place-order"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 7,
+    "contract_matched": 8
+  },
+  "raw": {
+    "elapsed_seconds": null,
+    "tokens_consumed": 74354
+  },
+  "answer_sha256": "87a61d223b1f676578c81a8ddbd93873eb7bf3fee4967423c81f04812b43d152",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "095e07b11a3fa42328719cd53d343fadd53c423b95bd8531634411fd432b4ffc"
+}

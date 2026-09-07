@@ -1,0 +1,104 @@
+{
+  "change_id": "REST-001",
+  "contestant": "codex-direct",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.4,
+    "evidence_quality": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.9053
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.3684,
+    "contract_recall": 0.2105,
+    "precision": 0.1579,
+    "evidence_quality": 0.1053,
+    "critical_penalty": 0.1579
+  },
+  "excluded_components": [
+    "freshness",
+    "latency",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 5,
+      "matched": 4,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 13,
+      "matched": 4,
+      "false_positives": 9,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 7,
+      "matched": 3,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 10,
+      "matched": 3,
+      "false_positives": 7,
+      "invalid": 0
+    },
+    "missed_by_severity": {}
+  },
+  "missed": [],
+  "false_positives": {
+    "repositories": [
+      "commerce-platform"
+    ],
+    "symbols": [
+      "address",
+      "checkoutpage",
+      "com.poc.account.api.addresscontroller",
+      "com.poc.account.infrastructure.mapping.addressdtomapper",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.order.infrastructure.client.shipmentclient",
+      "com.poc.shipment.api.dto.deliveryestimaterequest",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest",
+      "rest get /api/v1/addresses",
+      "rest get /api/v1/addresses/{addressid}",
+      "rest post /api/v1/delivery-estimates"
+    ],
+    "tests": [
+      "commerce-platform e2e-bruno",
+      "commerce-platform e2e-bruno/05-basket-changed-after-quote",
+      "commerce-platform e2e-bruno/06-out-of-stock",
+      "commerce-platform e2e-bruno/07-payment-decline",
+      "commerce-platform e2e-bruno/08-duplicate-place-order",
+      "commerce-web app.test.tsx",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 12,
+    "contract_matched": 13,
+    "inferred": 8,
+    "compiler": 2
+  },
+  "raw": {
+    "elapsed_seconds": null,
+    "tokens_consumed": 60713
+  },
+  "answer_sha256": "982e5f40489fde817620b0b99e7c7f9c7d21b2d5941b931b3462b6fb433e81e7",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "095e07b11a3fa42328719cd53d343fadd53c423b95bd8531634411fd432b4ffc"
+}

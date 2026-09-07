@@ -1,0 +1,214 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "The proposed response-field rename is declared by AddressResponse at account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6-18; AddressController returns it from list/get/create/update at account-service/src/main/java/com/poc/account/api/AddressController.java:45-81."
+   },
+   {
+    "name": "commerce-bff",
+    "evidence_tier": "extracted",
+    "evidence": "AddressProxyController accepts and returns JsonNode, then relays to account-service at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:35-69. DownstreamRelay serializes the unbound body and deserializes the response as JsonNode at commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:40-58, so it transparently exposes postcode to its callers."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "extracted",
+    "evidence": "The SPA's Address type declares postalCode at commerce-web/src/api/types.ts:47-61, and CheckoutPage reads and submits that property at commerce-web/src/pages/CheckoutPage.tsx:12-20 and commerce-web/src/pages/CheckoutPage.tsx:112-120."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "AccountClient name-binds Account's GET response into a postalCode record component at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41. A renamed provider property therefore becomes null and is sent to ShipmentClient by CheckoutService at order-service/src/main/java/com/poc/order/application/CheckoutService.java:41-52."
+   },
+   {
+    "name": "commerce-platform",
+    "evidence_tier": "extracted",
+    "evidence": "End-to-end address/quote scenarios call the BFF at localhost:8080 (commerce-platform/e2e-bruno/environments/local.bru:2) and retain postalCode in address payloads, e.g. commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:17-25 and commerce-platform/e2e-bruno/run-e2e.sh:133-139."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "Its postalCode record component is the JSON property being renamed at account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6-18."
+   },
+   {
+    "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "It maps the persisted domain value into the renamed response component position at account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:10-16."
+   },
+   {
+    "fqn": "com.poc.account.api.AddressController",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "It exposes AddressResponse through GET list/detail and POST/PUT responses at account-service/src/main/java/com/poc/account/api/AddressController.java:45-81."
+   },
+   {
+    "fqn": "com.poc.bff.api.AddressProxyController",
+    "repo": "commerce-bff",
+    "evidence_tier": "extracted",
+    "evidence": "It passes address bodies and responses as JsonNode, without rebinding either field name, at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:35-69."
+   },
+   {
+    "fqn": "com.poc.bff.infrastructure.client.DownstreamRelay",
+    "repo": "commerce-bff",
+    "evidence_tier": "extracted",
+    "evidence": "The relay forwards the body unchanged and materializes responses as JsonNode at commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:40-58."
+   },
+   {
+    "fqn": "commerce-web.src.api.types.Address",
+    "repo": "commerce-web",
+    "evidence_tier": "extracted",
+    "evidence": "The client-side response model has postalCode at commerce-web/src/api/types.ts:47-59."
+   },
+   {
+    "fqn": "commerce-web.src.pages.CheckoutPage",
+    "repo": "commerce-web",
+    "evidence_tier": "extracted",
+    "evidence": "It renders address.postalCode and writes addressInput.postalCode into the create-address request at commerce-web/src/pages/CheckoutPage.tsx:112-120."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "Jackson binds Account's detail response by the postalCode component name at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-36; postcode is otherwise ignored and postalCode becomes null."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "It copies the name-bound response.postalCode into AddressSnapshot at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:40-41."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "This internal snapshot carries the null postalCode value at order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3-4."
+   },
+   {
+    "fqn": "com.poc.order.application.CheckoutService",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "It passes AddressSnapshot.postalCode() to the shipment port before a quote can be saved at order-service/src/main/java/com/poc/order/application/CheckoutService.java:41-60."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "Its Map.of payload construction rejects the null postalCode before an HTTP delivery-estimate request or an order.confirmed event can be emitted at order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:30-39."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-bff",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The account OpenAPI response schema declares postalCode at account-service/openapi/account.yaml:225-250. It is used by list/create/get/update responses at account-service/openapi/account.yaml:10-115; order-service binds the detail response by name at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-bff"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "Account publishes the list endpoint returning AddressResponse at account-service/openapi/account.yaml:10-23; the BFF relays GET /api/v1/addresses to account-service as JsonNode at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:33-37 and commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:65-69."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "commerce-bff",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "Account publishes the AddressResponse detail endpoint at account-service/openapi/account.yaml:62-85. order-service calls it and binds its JSON response at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:30-41; the BFF also relays this path through its common call method at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:65-69."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-bff"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The POST response is AddressResponse at account-service/openapi/account.yaml:24-40. The BFF forwards the JSON body and returns the raw JSON result at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:39-44 and commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:48-53."
+   },
+   {
+    "type": "rest",
+    "identifier": "PUT /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "commerce-bff"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The PUT response is AddressResponse at account-service/openapi/account.yaml:86-115. The BFF forwards this body unchanged at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:49-53."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "The address CRUD flow asserts response $.postalCode after create and update at account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:111-143."
+   },
+   {
+    "repo": "account-service",
+    "suite": "OpenApiContractTest",
+    "evidence_tier": "extracted",
+    "evidence": "This suite compares generated OpenAPI with openapi/account.yaml at account-service/src/test/java/com/poc/account/OpenApiContractTest.java:48-65; renaming AddressResponse changes that generated document."
+   },
+   {
+    "repo": "commerce-web",
+    "suite": "commerce web",
+    "evidence_tier": "extracted",
+    "evidence": "The checkout test fixture is typed as Address and supplies postalCode at commerce-web/src/test/app.test.tsx:39-51; its mock feeds /api/v1/addresses at commerce-web/src/test/app.test.tsx:83-104."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "01-signup-to-confirmed-order",
+    "evidence_tier": "extracted",
+    "evidence": "The collection creates an address with postalCode at commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:17-25, then relies on it to create a quote."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "05-basket-changed-after-quote",
+    "evidence_tier": "extracted",
+    "evidence": "Its address setup retains postalCode at commerce-platform/e2e-bruno/05-basket-changed-after-quote/04-create-address.bru:17-25 before the quote workflow."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "06-out-of-stock",
+    "evidence_tier": "extracted",
+    "evidence": "Its address setup retains postalCode at commerce-platform/e2e-bruno/06-out-of-stock/03-create-address.bru:17-25 before the quote workflow."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "07-payment-decline",
+    "evidence_tier": "extracted",
+    "evidence": "Its address setup retains postalCode at commerce-platform/e2e-bruno/07-payment-decline/03-create-address.bru:17-25 before the quote workflow."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "08-duplicate-place-order",
+    "evidence_tier": "extracted",
+    "evidence": "Its address setup retains postalCode at commerce-platform/e2e-bruno/08-duplicate-place-order/03-create-address.bru:17-25 before the quote and duplicate-order workflow."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "run-e2e.sh",
+    "evidence_tier": "extracted",
+    "evidence": "The shell E2E runner's quote-expiry and refund scenarios create addresses using postalCode at commerce-platform/e2e-bruno/run-e2e.sh:133-139 and commerce-platform/e2e-bruno/run-e2e.sh:212-219."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 179774
+}

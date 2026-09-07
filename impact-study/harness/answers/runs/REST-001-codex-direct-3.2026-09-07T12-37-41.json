@@ -1,0 +1,183 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "AddressRequest and AddressResponse expose postalCode at src/main/java/com/poc/account/api/dto/AddressRequest.java:13 and AddressResponse.java:13."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "The checkout client declares and sends postalCode in src/api/types.ts:54 and src/pages/CheckoutPage.tsx:18."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "AccountClient binds the address response's postalCode at src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41."
+   },
+   {
+    "name": "commerce-platform",
+    "evidence_tier": "contract_matched",
+    "evidence": "End-to-end address-creation scenarios send postalCode, for example e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressRequest",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares the validated JSON request component as postalCode."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares the JSON response component as postalCode."
+   },
+   {
+    "fqn": "com.poc.account.api.AddressController",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "src/main/java/com/poc/account/api/AddressController.java:65 and :81 read request.postalCode() for POST and PUT."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-41 deserializes Account's response by postalCode and maps it onward."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "src/main/java/com/poc/order/domain/model/AddressSnapshot.java:3 receives AccountClient's missing postalCode value as its postalCode component."
+   },
+   {
+    "fqn": "com.poc.order.application.CheckoutService",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "src/main/java/com/poc/order/application/CheckoutService.java:52 passes AddressSnapshot.postalCode() to shipment estimation."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 builds Map.of with the null postalCode, which rejects null before the delivery-estimate request is sent."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+    "consumer_repos": [
+     "commerce-web",
+     "commerce-platform"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:30 references AddressRequest for POST, whose postalCode property is declared at :217."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:20 and :76 expose AddressResponse, whose postalCode property is declared at :246."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web",
+     "commerce-platform"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:8 posts AddressInput, while commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 sends postalCode."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:5 reads the address list and src/pages/CheckoutPage.tsx:112 renders address.postalCode."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32-41 reads this response into its postalCode-bound DTO."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 emits the existing postalCode event field and shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 consumes it; this separate contract must retain postalCode."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "src/test/java/com/poc/account/AccountFlowComponentTest.java:118 sends postalCode and :128 and :143 assert postalCode responses."
+   },
+   {
+    "repo": "commerce-web",
+    "suite": "src/test/app.test.tsx",
+    "evidence_tier": "extracted",
+    "evidence": "src/test/app.test.tsx:39-46 constructs the Address API fixture with postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 sends postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/05-basket-changed-after-quote",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/05-basket-changed-after-quote/04-create-address.bru:23 sends postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/06-out-of-stock",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/06-out-of-stock/03-create-address.bru:23 sends postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/07-payment-decline",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/07-payment-decline/03-create-address.bru:23 sends postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/08-duplicate-place-order",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/08-duplicate-place-order/03-create-address.bru:23 sends postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno",
+    "evidence_tier": "extracted",
+    "evidence": "e2e-bruno/run-e2e.sh:136 and :216 send postalCode in its shell-driven scenarios."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 55758
+}

@@ -1,0 +1,252 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "The API DTO accessors must change with the JSON rename; AddressController calls request.postalCode() at account-service/src/main/java/com/poc/account/api/AddressController.java:65 and :81, and the response mapper constructs the renamed response field at account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:14."
+   },
+   {
+    "name": "commerce-bff",
+    "evidence_tier": "contract_matched",
+    "evidence": "Its address endpoints are an opaque relay: AddressProxyController accepts JsonNode and forwards it to account-service at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:41-43 and :65-69. Thus its public behavior changes, but it has no field-binding rename to make."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "compiler",
+    "evidence": "The frontend's Address type declares postalCode at commerce-web/src/api/types.ts:47-59; CheckoutPage both displays it and submits it at commerce-web/src/pages/CheckoutPage.tsx:112 and :119. It will otherwise send the obsolete request field and read an absent response field."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "AccountClient deserializes Account's GET response into a local AddressResponse with postalCode at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-26 and copies it at :40-41. A provider response containing postcode leaves this consumer's postalCode unset unless this adapter is changed."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "inferred",
+    "evidence": "This is the downstream failure boundary, not a field-renaming target. If an order with a null snapshot reaches Kafka, the listener reads address.postalCode at shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:32-40 and DeliveryEstimator rejects null/non-numeric values at shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:19-24."
+   },
+   {
+    "name": "commerce-platform",
+    "evidence_tier": "contract_matched",
+    "evidence": "Its end-to-end clients post the old field through the BFF, for example commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:17-25 and commerce-platform/e2e-bruno/run-e2e.sh:135-137."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressRequest",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "postalCode is the validated JSON request component at account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:7-15; rename it to postcode."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "postalCode is the JSON response component at account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:6-18; rename it to postcode."
+   },
+   {
+    "fqn": "com.poc.account.api.AddressController.create",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "The controller reads request.postalCode() when creating an address at account-service/src/main/java/com/poc/account/api/AddressController.java:61-67."
+   },
+   {
+    "fqn": "com.poc.account.api.AddressController.update",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "The controller reads request.postalCode() when updating an address at account-service/src/main/java/com/poc/account/api/AddressController.java:75-82."
+   },
+   {
+    "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper.toResponse",
+    "repo": "account-service",
+    "evidence_tier": "compiler",
+    "evidence": "It supplies address.postalCode() to the AddressResponse constructor at account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:10-17."
+   },
+   {
+    "fqn": "com.poc.bff.api.AddressProxyController.create",
+    "repo": "commerce-bff",
+    "evidence_tier": "contract_matched",
+    "evidence": "The proxy receives an untyped JsonNode body and forwards it unchanged at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:40-44."
+   },
+   {
+    "fqn": "com.poc.bff.api.AddressProxyController.update",
+    "repo": "commerce-bff",
+    "evidence_tier": "contract_matched",
+    "evidence": "The update proxy likewise forwards the JsonNode unchanged at commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:49-54."
+   },
+   {
+    "fqn": "com.poc.bff.infrastructure.client.DownstreamRelay.relay",
+    "repo": "commerce-bff",
+    "evidence_tier": "contract_matched",
+    "evidence": "The relay passes the supplied body directly to RestClient via body(body), without rebinding address fields, at commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:40-53."
+   },
+   {
+    "fqn": "Address and AddressInput",
+    "repo": "commerce-web",
+    "evidence_tier": "compiler",
+    "evidence": "Address declares postalCode and AddressInput derives from it at commerce-web/src/api/types.ts:47-61."
+   },
+   {
+    "fqn": "CheckoutPage",
+    "repo": "commerce-web",
+    "evidence_tier": "compiler",
+    "evidence": "The checkout form initializes, renders, and updates postalCode at commerce-web/src/pages/CheckoutPage.tsx:12-21 and :112-121."
+   },
+   {
+    "fqn": "createAddress",
+    "repo": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "The client serializes AddressInput without translation at commerce-web/src/api/checkout.ts:8-12, so changing the type/UI changes the posted JSON field."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "This by-name response binding still expects postalCode at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24-26."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.address",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Account response is converted into the local snapshot using response.postalCode() at order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:30-43; adapt this boundary to response.postcode() while retaining the local snapshot name."
+   },
+   {
+    "fqn": "com.poc.order.application.CheckoutService.createQuote",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "It sends address.postalCode() to shipment estimation at order-service/src/main/java/com/poc/order/application/CheckoutService.java:41-59. With the stale Account binding this value is null."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "The immediate normal-path failure is earlier than Kafka: Map.of rejects null while constructing the shipment REST body at order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:30-47."
+   },
+   {
+    "fqn": "com.poc.order.application.SagaOrchestrator.addressPayload",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "If a null snapshot is persisted or otherwise reaches saga emission, this method keeps the existing event key postalCode and writes the null value at order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:104-113. Do not rename this event field merely because Account's REST field changed."
+   },
+   {
+    "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed",
+    "repo": "shipment-service",
+    "evidence_tier": "inferred",
+    "evidence": "The Kafka consumer extracts the unchanged event field postalCode with asText(null) at shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:27-45."
+   },
+   {
+    "fqn": "com.poc.shipment.application.DeliveryEstimator.estimate",
+    "repo": "shipment-service",
+    "evidence_tier": "inferred",
+    "evidence": "Null is converted to an empty string then rejected as an invalid PIN at shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:19-24."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "openapi",
+    "identifier": "account-service: /api/v1/addresses request and response schemas",
+    "consumer_repos": [
+     "commerce-bff",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The provider contract exposes postalCode in AddressRequest at account-service/openapi/account.yaml:190-224 and AddressResponse at account-service/openapi/account.yaml:225-252. POST, PUT, list, and get all reference those schemas at account-service/openapi/account.yaml:10-115."
+   },
+   {
+    "type": "rest",
+    "identifier": "commerce-bff: /api/v1/addresses proxy",
+    "consumer_repos": [
+     "commerce-web",
+     "commerce-platform"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "The BFF publishes the address routes at commerce-bff/openapi/bff.yaml:11-94, but models their bodies as JsonNode; its relay code preserves callers' old postalCode JSON rather than translating it at commerce-bff/src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java:48-53."
+   },
+   {
+    "type": "rest",
+    "identifier": "shipment-service: POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "inferred",
+    "evidence": "This contract itself remains postalCode: ShipmentClient creates that request field at order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:33-39 and ShipmentController binds it at shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java:39-43. It receives a null only if the AccountClient adapter is left stale."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1 address.postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "inferred",
+    "evidence": "The producer explicitly emits postalCode at order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:104-113, and the published schema requires a string postalCode at order-service/asyncapi/schemas/order.confirmed.v1.json:10-20. Therefore this event contract is unchanged; a stale Account adapter can only produce a conditional invalid null payload, not a legitimate postcode event."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest.addressCrudLifecycle",
+    "evidence_tier": "contract_matched",
+    "evidence": "Its create/update payloads and response assertions use postalCode at account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:111-143; it will fail validation and then assert the wrong response key."
+   },
+   {
+    "repo": "account-service",
+    "suite": "OpenApiContractTest.committedSpecMatchesTheGeneratedDocument",
+    "evidence_tier": "contract_matched",
+    "evidence": "The test compares the generated OpenAPI document with openapi/account.yaml at account-service/src/test/java/com/poc/account/OpenApiContractTest.java:48-65, so the committed schema must be regenerated after the DTO rename."
+   },
+   {
+    "repo": "commerce-web",
+    "suite": "app.test.tsx",
+    "evidence_tier": "compiler",
+    "evidence": "Its Address fixture declares postalCode at commerce-web/src/test/app.test.tsx:39-51; after the frontend type is migrated, this fixture must use postcode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "01-signup-to-confirmed-order / create address",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Bruno request posts postalCode at commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:17-25."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "05-basket-changed-after-quote / create address",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Bruno request posts postalCode at commerce-platform/e2e-bruno/05-basket-changed-after-quote/04-create-address.bru:17-25."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "06-out-of-stock / create address",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Bruno request posts postalCode at commerce-platform/e2e-bruno/06-out-of-stock/03-create-address.bru:17-25."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "07-payment-decline / create address",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Bruno request posts postalCode at commerce-platform/e2e-bruno/07-payment-decline/03-create-address.bru:17-25."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "08-duplicate-place-order / create address",
+    "evidence_tier": "contract_matched",
+    "evidence": "The Bruno request posts postalCode at commerce-platform/e2e-bruno/08-duplicate-place-order/03-create-address.bru:17-25."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "run-e2e.sh quote-expiry and refund scenarios",
+    "evidence_tier": "contract_matched",
+    "evidence": "Both scripted address payloads post postalCode at commerce-platform/e2e-bruno/run-e2e.sh:135-137 and :215-217."
+   },
+   {
+    "repo": "order-service",
+    "suite": "missing AccountClient provider-compatibility test",
+    "evidence_tier": "hypothesis",
+    "evidence": "Existing OrderApiMockedTest replaces AccountPort with a fake snapshot at order-service/src/test/java/com/poc/order/OrderApiMockedTest.java:75-76 and :342-347, so it cannot detect the renamed Account JSON field or the resulting null binding."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 102039
+}

@@ -1,0 +1,99 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:5 binds the address response to Address[], whose postalCode member is declared in commerce-web/src/api/types.ts:54."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:41 assigns the name-bound response postalCode into AddressSnapshot."
+   },
+   {
+    "name": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads order.confirmed address.postalCode into DeliveryAddress."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "Address",
+    "repo": "commerce-web",
+    "evidence_tier": "extracted",
+    "evidence": "commerce-web/src/api/types.ts:54 declares Address.postalCode, which apiRequest returns as Address[] in commerce-web/src/api/checkout.ts:5."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:41 copies the bound response postalCode into AddressSnapshot."
+   },
+   {
+    "fqn": "com.poc.shipment.domain.model.DeliveryAddress",
+    "repo": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:36 constructs DeliveryAddress from the event field, which ShipmentService feeds to estimation at line 62."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:37 returns AddressResponse for the address resource, while commerce-web/src/api/checkout.ts:5 and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:30 bind its responses."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "commerce-web",
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:246 declares postalCode, matched by commerce-web/src/api/types.ts:54 and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 deliberately emits postalCode, matching shipment-service/openapi/shipment-service.yaml:69; this key must remain postalCode."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/asyncapi/schemas/order.confirmed.v1.json:19 defines postalCode and shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 consumes it; the event key must remain unchanged."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "order-service",
+    "suite": "OrderSagaIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:136 asserts the traced postalCode in order.confirmed."
+   },
+   {
+    "repo": "shipment-service",
+    "suite": "ShipmentIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:171 supplies postalCode in order.confirmed input and line 201 asserts the resulting delivery window."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 64723
+}

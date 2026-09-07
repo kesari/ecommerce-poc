@@ -1,0 +1,112 @@
+{
+  "change_id": "REST-001",
+  "contestant": "codex-direct",
+  "metrics": {
+    "symbol_recall": 0.75,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 0.7222,
+    "contract_recall": 1.0,
+    "precision": 0.5,
+    "evidence_quality": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.7792
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.3684,
+    "contract_recall": 0.2105,
+    "precision": 0.1579,
+    "evidence_quality": 0.1053,
+    "critical_penalty": 0.1579
+  },
+  "excluded_components": [
+    "freshness",
+    "latency",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 3,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 6,
+      "matched": 3,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 8,
+      "matched": 2,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 1,
+      "contract_consumer": 1,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "shipment-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.addresssnapshot",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-platform"
+    ],
+    "symbols": [
+      "address"
+    ],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest",
+      "rest get /api/v1/addresses",
+      "rest get /api/v1/addresses/{addressid}"
+    ],
+    "tests": [
+      "commerce-platform e2e-bruno",
+      "commerce-platform e2e-bruno/05-basket-changed-after-quote",
+      "commerce-platform e2e-bruno/06-out-of-stock",
+      "commerce-platform e2e-bruno/07-payment-decline",
+      "commerce-platform e2e-bruno/08-duplicate-place-order",
+      "commerce-web src/test"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 4,
+    "contract_matched": 18
+  },
+  "raw": {
+    "elapsed_seconds": null,
+    "tokens_consumed": 62662
+  },
+  "answer_sha256": "18adae03f34135eebd4ad8bfe5051a0792fba4566f1f151562dee4c58a000a51",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "095e07b11a3fa42328719cd53d343fadd53c423b95bd8531634411fd432b4ffc"
+}

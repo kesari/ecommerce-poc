@@ -1,0 +1,175 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares the JSON response component as postalCode."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds Account's response as postalCode."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/types.ts:54 models Account address responses with postalCode."
+   },
+   {
+    "name": "commerce-platform",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/05-create-quote.bru:25 requires a successful quote after address creation."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares postalCode, which controls the serialized response name."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds the provider field by its old postalCode name."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:41 copies response.postalCode() into the internal snapshot."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:4 retains postalCode and receives null from the stale client binding."
+   },
+   {
+    "fqn": "com.poc.order.application.CheckoutService",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:52 passes the null snapshot postalCode to shipment estimation."
+   },
+   {
+    "fqn": "com.poc.order.application.port.ShipmentPort",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/application/port/ShipmentPort.java:7 carries postalCode across the checkout-to-shipment boundary."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 constructs Map.of with postalCode, which rejects the null value before the shipment request is sent."
+   },
+   {
+    "fqn": "Address",
+    "repo": "commerce-web",
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/types.ts:48 declares the response model's postalCode property."
+   },
+   {
+    "fqn": "AddressInput",
+    "repo": "commerce-web",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-web/src/api/types.ts:59 derives request input from Address, so it must retain postalCode while the response model changes."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "order-service",
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:246 defines AddressResponse.postalCode, while consumers bind that response field."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32 requests this endpoint and binds postalCode at line 25."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:5 fetches address responses typed with postalCode."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "commerce-web"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "commerce-web/src/api/checkout.ts:9 receives the created address as the stale Address response type."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:128 asserts the response JSON path $.postalCode."
+   },
+   {
+    "repo": "commerce-web",
+    "suite": "src/test",
+    "evidence_tier": "extracted",
+    "evidence": "commerce-web/src/test/app.test.tsx:46 provides a typed Address fixture with postalCode."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/05-create-quote.bru:25 asserts quote creation, which reaches the stale order-service binding."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/05-basket-changed-after-quote",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/05-basket-changed-after-quote/05-create-quote.bru:25 asserts quote creation after its saved address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/06-out-of-stock",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/06-out-of-stock/04-create-quote.bru:25 asserts quote creation after its saved address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/07-payment-decline",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/07-payment-decline/04-create-quote.bru:25 asserts quote creation after its saved address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/08-duplicate-place-order",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/08-duplicate-place-order/04-create-quote.bru:25 asserts quote creation after its saved address."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-platform/e2e-bruno/run-e2e.sh:138 creates a quote after creating an address, so its subsequent quoteId extraction fails."
+   }
+  ]
+ },
+ "change_id": "REST-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "tokens_consumed": 52893
+}
