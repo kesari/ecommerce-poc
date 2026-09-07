@@ -36,9 +36,17 @@ export const ESTATE_REPOSITORIES = [
 
 const repositoryRoot = resolve(HARNESS, "..", "..");
 const siblingEstate = join(repositoryRoot, "POC-order-microservices");
-export const DEFAULT_ESTATE = ESTATE_REPOSITORIES.every((name) => existsSync(join(siblingEstate, name)))
-	? siblingEstate
-	: repositoryRoot;
+// POC_ESTATE first: a clone that is not a sibling of the estate cannot find it
+// by walking upward, and the fallback to repositoryRoot is worse than no guess
+// — inside the monorepo that path holds all ten service directories as plain
+// folders of one repository, so every per-repo pin check reads the monorepo's
+// HEAD and reports drift that is not there. Branch-per-product makes this the
+// normal case, not the exception.
+export const DEFAULT_ESTATE = process.env.POC_ESTATE
+	? resolve(process.env.POC_ESTATE)
+	: ESTATE_REPOSITORIES.every((name) => existsSync(join(siblingEstate, name)))
+		? siblingEstate
+		: repositoryRoot;
 
 export interface EstateRevision {
 	name: string;

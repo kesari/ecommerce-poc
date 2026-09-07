@@ -585,7 +585,7 @@ test("scip freshness: touch, stale query, re-index, fresh query", async (context
 	const root = await mkdtemp(join(tmpdir(), "harness-fresh-scip-"));
 	try {
 		const repo = join(root, "account-service");
-		await cp(join(import.meta.dirname, "..", "..", "..", "POC-order-microservices", "account-service"), repo, { recursive: true });
+		await cp(join(DEFAULT_ESTATE, "account-service"), repo, { recursive: true });
 		const index = join(root, "index.scip");
 		shell(cs, ["launch", "com.sourcegraph:scip-java_2.13:0.10.4", "--", "index"], repo);
 		await cp(join(repo, "index.scip"), index);
@@ -616,7 +616,7 @@ test("graphify freshness: touch, stale query, re-extract, fresh query", async (c
 	const root = await mkdtemp(join(tmpdir(), "harness-fresh-graphify-"));
 	try {
 		const repo = join(root, "account-service");
-		await cp(join(import.meta.dirname, "..", "..", "..", "POC-order-microservices", "account-service"), repo, { recursive: true });
+		await cp(join(DEFAULT_ESTATE, "account-service"), repo, { recursive: true });
 		const graph = join(root, "graph.json");
 		shell(graphify, ["update", repo, "--no-cluster"], root);
 		await cp(join(repo, "graphify-out", "graph.json"), graph);
