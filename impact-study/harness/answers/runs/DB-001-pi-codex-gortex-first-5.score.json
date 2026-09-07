@@ -1,0 +1,103 @@
+{
+  "change_id": "DB-001",
+  "contestant": "gortex-first",
+  "metrics": {
+    "symbol_recall": 0.0,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.6667,
+    "evidence_quality": 1.0,
+    "latency": 0.5946,
+    "critical_penalty": 0.25,
+    "composite": 0.6172
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 0,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "critical_runtime_dependency": 3
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.infrastructure.mapping.addressdtomapper",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.infrastructure.persistence.repository.mybatisaddressrepository",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.infrastructure.persistence.row.addressrow",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "contract",
+      "key": "db account.addresses.postal_code",
+      "severity": "critical_runtime_dependency"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.account.infrastructure.persistence.mapper.addressmapper"
+    ],
+    "contracts": [],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 3
+  },
+  "raw": {
+    "elapsed_seconds": 504.5,
+    "tokens_consumed": 83706
+  },
+  "answer_sha256": "5161b8d9aa30b633a0b75b98c8f43c71d5e1285c83b084db5cf172b9d18ad697",
+  "ground_truth_sha256": "a1653c8ea6c79f6f9829e5d7686aad982022dbfff0e4ba05f344ea02c791b542",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

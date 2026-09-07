@@ -1,0 +1,291 @@
+{
+  "change_id": "REST-001",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:217 and :246 declare postalCode in address schemas."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:54 binds Address.postalCode from the address API."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 posts postalCode."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds Account postalCode."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads the null-propagated field."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:65 calls request.postalCode()."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds postalCode by name."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:52 forwards the bound value to shipment."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 emits the snapshot under postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads address.postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.application.ShipmentService",
+        "repo": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/ShipmentService.java:62 passes postalCode to the validator."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:20 rejects a null postalCode."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:19 uses AddressRequest; commerce-web/src/api/checkout.ts:9 posts it."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:67 returns AddressResponse; AccountClient.java:34 calls this path."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:189 declares postalCode; CheckoutPage.tsx:18 constructs it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "commerce-web",
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:225 declares postalCode; AccountClient.java:25 binds it."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/SagaOrchestrator.java:111 preserves the null under postalCode; shipment listener reads it at :37."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118 posts postalCode."
+      },
+      {
+        "repo": "account-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/OpenApiContractTest.java:48 compares generated and committed schemas."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:46 defines an Address fixture with postalCode."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 5,
+  "run_started_at": "2026-09-06T04:06:59.926Z",
+  "elapsed_seconds": 133.5,
+  "tool_calls": 41,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "find": {
+      "calls": 7,
+      "succeeded": 7,
+      "failed": 0
+    },
+    "read": {
+      "calls": 32,
+      "succeeded": 32,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 0,
+    "succeeded": 0,
+    "failed": 0
+  },
+  "product_playbook": null,
+  "product_tool_receipts": [],
+  "product_assisted_eligible": null,
+  "index_sha256": "none",
+  "product_provenance": null,
+  "tokens_consumed": 177263,
+  "cost_usd": 0.19934799999999997,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "d6cba1a93c791c0c7d7781045ad15eb1521d1e22c0849ad8cdd82b7356fbab80",
+  "contestant_config_sha256": "2a2a675cc0a6d2de8a1105ba178eb9651c488a35aad09a70e99c28a3965a7881",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

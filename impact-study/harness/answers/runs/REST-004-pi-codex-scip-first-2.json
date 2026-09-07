@@ -1,0 +1,310 @@
+{
+  "change_id": "REST-004",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/resources/db/migration/V1__basket_schema.sql:3 stores percentage discounts."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.basket.domain.model.Coupon",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java:3 declares discountPercent."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.persistence.row.CouponRow",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r1",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java:3 declares discountPercent."
+      },
+      {
+        "fqn": "com.poc.basket.application.BasketPricing",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/application/BasketPricing.java:35 calculates a percentage discount."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.persistence.repository.MyBatisBasketRepository",
+        "repo": "basket-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/persistence/repository/MyBatisBasketRepository.java:95 maps the row percentage accessor."
+      }
+    ],
+    "contracts": [],
+    "tests": [
+      {
+        "repo": "basket-service",
+        "suite": "BasketRepositoryComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketRepositoryComponentTest.java:130 asserts discountPercent."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketApiMockedTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketApiMockedTest.java:181 seeds a percentage coupon and asserts its result."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 2,
+  "run_started_at": "2026-09-07T01:17:04.212Z",
+  "elapsed_seconds": 96.9,
+  "tool_calls": 39,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 2,
+      "succeeded": 2,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 8,
+      "succeeded": 8,
+      "failed": 0
+    },
+    "find": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "read": {
+      "calls": 24,
+      "succeeded": 23,
+      "failed": 1
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "discountPercent"
+      },
+      "requested_query": "discountPercent",
+      "executed_query": "discountPercent",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"discountPercent\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java\",\"range\":[2,38,53]}},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"discountPercent\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java\",\"range\":[2,41,56]}}]}",
+      "output_sha256": "543a3c9cfe5f704d0ee982a0ddf43a087d2730e6261a89d3cf70bb21e60f1817",
+      "output_bytes": 977,
+      "output_full_bytes": 977,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java\",\"range\":[2,38,53]},\"matchSource\":\"displayName\",\"matchText\":\"discountPercent\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java\",\"range\":[2,41,56]},\"matchSource\":\"displayName\",\"matchText\":\"discountPercent\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/basket_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"}]}",
+      "output_normalized_sha256": "761d32476dcba7ce31f29f8b9a6d7802518d9f0798113785cbb1860cdc45893e",
+      "duration_ms": 86,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "discountPercent"
+      },
+      "requested_query": "discountPercent",
+      "executed_query": "discountPercent",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\",\"references\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"]}",
+      "output_sha256": "bea4ba7ccab1a144421b2cae59cbda19393031dfadc887dd3a45bfd93e6164da",
+      "output_bytes": 645,
+      "output_full_bytes": 645,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"]}",
+      "output_normalized_sha256": "e2ac829d506636a8170d1a89c308c54e929b4d0bdd0fe94a1d6b8cbe1a08e83c",
+      "duration_ms": 36.4,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "discountPercent"
+      },
+      "requested_query": "discountPercent",
+      "executed_query": "discountPercent",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java\",\"range\":[2,38,53]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java\",\"range\":[2,41,56]},\"incoming\":[],\"outgoing\":null,\"relationships\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"]}",
+      "output_sha256": "8fe9b64180c431f1f8ac34f35f6c48fbbc6adfae49ccca47644879206f1ec686",
+      "output_bytes": 970,
+      "output_full_bytes": 970,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java\",\"range\":[2,38,53]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\"},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java\",\"range\":[2,41,56]},\"incoming\":[],\"outgoing\":null,\"relationships\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"]}",
+      "output_normalized_sha256": "21cf439156cc493a49f948c77cefadc5b01acf99dd34c7ed17ba5ba334b51a06",
+      "duration_ms": 21.9,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "discountPercent"
+      },
+      "requested_query": "discountPercent",
+      "executed_query": "discountPercent",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java\",\"range\":[2,38,53]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\",\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java\",\"range\":[2,41,56]},\"review\":[],\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"]}",
+      "output_sha256": "c65c9d3df4812e4132d681bd9ed5ac920e938741925300699e7540a94cf10439",
+      "output_bytes": 1136,
+      "output_full_bytes": 1136,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/domain/model/Coupon.java\",\"range\":[2,38,53]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"tests\":[]},{\"definition\":{\"documentPath\":\"basket-service/src/main/java/com/poc/basket/infrastructure/persistence/row/CouponRow.java\",\"range\":[2,41,56]},\"dependencies\":[],\"outgoingUnavailable\":\"definition has no enclosing range in this index\",\"relationships\":[],\"review\":[],\"symbol\":\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\",\"tests\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/domain/model/Coupon#discountPercent.\",\"semanticdb maven maven/com.poc/basket_service 0.1.0 com/poc/basket/infrastructure/persistence/row/CouponRow#discountPercent.\"]}",
+      "output_normalized_sha256": "93f770cf6e96e8933bb5c0364dadc375a64ff0047e5df3ba6b07875315ecfd8a",
+      "duration_ms": 22.3,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 169819,
+  "cost_usd": 0.1413532,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "8a0562528e5804bef44d4093a3c321667d9f829563103655518461947dc7f86e",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

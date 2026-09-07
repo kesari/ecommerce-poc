@@ -1,0 +1,98 @@
+{
+  "change_id": "INT-003",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.5,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.25,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8875
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 3,
+      "matched": 1,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 5,
+      "matched": 1,
+      "false_positives": 4,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.addresscontroller",
+      "severity": "contract_consumer"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "commerce-web",
+      "order-service"
+    ],
+    "symbols": [
+      "com.poc.account.api.dto.addressresponse",
+      "com.poc.order.application.sagaorchestrator",
+      "com.poc.order.domain.model.addresssnapshot",
+      "com.poc.order.infrastructure.client.accountclient"
+    ],
+    "contracts": [
+      "kafka order.confirmed.v1#/address/line2",
+      "openapi openapi:account.yaml#/components/schemas/addressresponse",
+      "rest get /api/v1/addresses/{addressid}"
+    ],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 9,
+    "contract_matched": 3
+  },
+  "raw": {
+    "elapsed_seconds": 156,
+    "tokens_consumed": 248707
+  },
+  "answer_sha256": "a6524f666ddb05f7153be6cae1e8f0875bb79256247fc2dcfde7dbed5780776b",
+  "ground_truth_sha256": "365fb2d4da80d0086ec5454089a62e578f2955802d3f9ee05d8ff765e3f415a5",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

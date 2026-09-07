@@ -1,0 +1,104 @@
+{
+  "change_id": "KAFKA-001",
+  "contestant": "scip-first",
+  "metrics": {
+    "symbol_recall": 0.6154,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.6667,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.5,
+    "composite": 0.675
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 0,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 2,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "critical_runtime_dependency": 2,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.application.sagaorchestrator",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "contract",
+      "key": "kafka order.confirmed.v1",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "test",
+      "key": "basket-service basketcheckoutconsumertest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.application.eventenvelope"
+    ],
+    "contracts": [
+      "kafka order.confirmed.v1#"
+    ],
+    "tests": [
+      "order-service contractvalidationtest",
+      "shipment-service asyncapicontracttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 11,
+    "contract_matched": 1
+  },
+  "raw": {
+    "elapsed_seconds": 90.6,
+    "tokens_consumed": 104520
+  },
+  "answer_sha256": "7399a968785c979128b64e7a57785ff275d9870e4e6974ec728ebbd8e636bb66",
+  "ground_truth_sha256": "a30e081642c56d19c29a5941a6179c219134568f9c57128c02cecf4cd38acda5",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

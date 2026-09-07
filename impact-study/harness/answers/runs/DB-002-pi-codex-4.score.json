@@ -1,0 +1,98 @@
+{
+  "change_id": "DB-002",
+  "contestant": "agent-only",
+  "metrics": {
+    "symbol_recall": 0.3333,
+    "test_recall": 1.0,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 0.0,
+    "precision": 0.6,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.74
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 1,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 0,
+      "matched": 0,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 1,
+      "reported": 1,
+      "matched": 1,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 3
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.order",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.infrastructure.persistence.row.quoterow",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "contract",
+      "key": "db order.orders.address_country",
+      "severity": "contract_consumer"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.infrastructure.persistence.mapper.ordermapper",
+      "com.poc.order.infrastructure.persistence.repository.mybatisorderrepository"
+    ],
+    "contracts": [],
+    "tests": []
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 5
+  },
+  "raw": {
+    "elapsed_seconds": 89.4,
+    "tokens_consumed": 155663
+  },
+  "answer_sha256": "db3f647e56d23b4429a17bb893231e9d249c6b6adee78501c81444d22b881f04",
+  "ground_truth_sha256": "9f5913a840843d7de46ed0af11de1b417fe3da906e1d30c775f694eb8ac094dd",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

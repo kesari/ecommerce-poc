@@ -1,0 +1,126 @@
+{
+  "change_id": "REST-005",
+  "contestant": "scip-first",
+  "metrics": {
+    "symbol_recall": 0.5714,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.25,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8875
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 3,
+      "matched": 3,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 11,
+      "matched": 2,
+      "false_positives": 9,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 9,
+      "matched": 1,
+      "false_positives": 8,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 9,
+      "matched": 2,
+      "false_positives": 7,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 2,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.shipment.api.dto.deliveryestimaterequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.shipment.domain.model.deliveryestimate",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "order-service contractvalidationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.api.dto.quoteresponse",
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.domain.model.deliverywindow",
+      "com.poc.order.infrastructure.client.shipmentclient",
+      "com.poc.order.infrastructure.persistence.repository.mybatisquoterepository",
+      "com.poc.shipment.api.dto.deliveryestimateresponse",
+      "com.poc.shipment.api.dto.shipmentresponse",
+      "com.poc.shipment.application.shipmentservice",
+      "com.poc.shipment.infrastructure.persistence.repository.mybatisshipmentrepository"
+    ],
+    "contracts": [
+      "db order-service.quotes.promised_from",
+      "db order-service.quotes.promised_to",
+      "db shipment-service.shipments.promised_from",
+      "db shipment-service.shipments.promised_to",
+      "kafka shipment.created.v1#/promisedfrom",
+      "kafka shipment.created.v1#/promisedto",
+      "openapi openapi:order-service.yaml#/components/schemas/estimateddelivery",
+      "openapi openapi:shipment-service.yaml#/components/schemas/deliveryestimateresponse"
+    ],
+    "tests": [
+      "commerce-web app.test.tsx",
+      "order-service openapicontracttest",
+      "order-service orderapimockedtest",
+      "order-service ordersagaintegrationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service openapicontracttest",
+      "shipment-service shipmentpersistencecomponenttest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 24,
+    "contract_matched": 5,
+    "compiler": 2,
+    "inferred": 1
+  },
+  "raw": {
+    "elapsed_seconds": 153.1,
+    "tokens_consumed": 321363
+  },
+  "answer_sha256": "5dc5f171420025d874c33621974af05a44894eaa096192f28c7347e9e63b4bfa",
+  "ground_truth_sha256": "98510ed314715f9d5c5fb12c88fcf32853c15e94b2f3f4e5d47bc9edf7f780ab",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

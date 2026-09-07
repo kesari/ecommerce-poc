@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-002",
+  "runner": "pi-codex-gortex-first",
+  "run_index": 3,
+  "run_started_at": "2026-09-05T08:51:19.953Z",
+  "reason": "no answer object with a 'findings' key in the output; raw output saved to /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/REST-002-pi-codex-gortex-first-3.2026-09-05T08-51-16-213Z.raw.txt",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

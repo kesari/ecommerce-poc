@@ -1,0 +1,402 @@
+{
+  "change_id": "REST-002",
+  "contestant": "graphify-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "catalog-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/openapi/catalog.yaml:130 and :169 declare priceMinor API fields."
+      },
+      {
+        "name": "basket-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:61 binds Catalog product JSON."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/ProductsPage.tsx:63 reads the relayed Product priceMinor field."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.catalog.api.dto.ProductResponse",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java:5 declares long priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.api.dto.PriceUpdateRequest",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/dto/PriceUpdateRequest.java:5 declares long priceMinor."
+      },
+      {
+        "fqn": "com.poc.catalog.api.ProductController",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/api/ProductController.java:67 reads request.priceMinor()."
+      },
+      {
+        "fqn": "com.poc.catalog.application.CatalogService",
+        "repo": "catalog-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/main/java/com/poc/catalog/application/CatalogService.java:94 maps product.priceMinor() to the response."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java:10 declares bound priceMinor."
+      },
+      {
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogClient",
+        "repo": "basket-service",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:68 reads response.priceMinor()."
+      },
+      {
+        "fqn": "Product",
+        "repo": "commerce-web",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:22 declares Product.priceMinor as number."
+      },
+      {
+        "fqn": "ProductsPage",
+        "repo": "commerce-web",
+        "evidence_tier": "compiler",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/ProductsPage.tsx:63 passes product.priceMinor to minor-unit formatting."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:catalog.yaml#/components/schemas/ProductResponse",
+        "consumer_repos": [
+          "basket-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "catalog-service/openapi/catalog.yaml:169 defines ProductResponse.priceMinor."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "consumer_repos": [
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java:60 calls this endpoint."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "catalog-service",
+        "suite": "CatalogComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/CatalogComponentTest.java:112 sends and asserts priceMinor."
+      },
+      {
+        "repo": "catalog-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "catalog-service/src/test/java/com/poc/catalog/OpenApiContractTest.java:29 compares openapi/catalog.yaml."
+      },
+      {
+        "repo": "basket-service",
+        "suite": "BasketIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "basket-service/src/test/java/com/poc/basket/BasketIntegrationTest.java:128 stubs catalog priceMinor JSON."
+      }
+    ]
+  },
+  "runner": "pi-codex-graphify-first",
+  "run_index": 5,
+  "run_started_at": "2026-09-06T10:26:33.852Z",
+  "elapsed_seconds": 150.1,
+  "tool_calls": 64,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 18,
+      "succeeded": 18,
+      "failed": 0
+    },
+    "read": {
+      "calls": 41,
+      "succeeded": 41,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "tests",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "catalog-service priceMinor consumers across repositories"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CatalogService', 'CatalogService.java', 'catalog-service', 'CatalogComponentTest.java', '.service()'] | 137 nodes found\n\n[!] TRUNCATED: showing 68 of 137 nodes (~2000-token budget). The answer may be among the 69 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CatalogService [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L16 community=]\nNODE CatalogService.java [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L1 community=]\nNODE catalog-service [src=README.md loc=L1 community=]\nNODE CatalogComponentTest.java [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE ProductController.java [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L1 community=]\nNODE ProductCache [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L18 community=]\nNODE CatalogComponentTest [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L33 community=]\nNODE Product [src=src/main/java/com/poc/catalog/domain/model/Product.java loc=L6 community=]\nNODE ProductResponse [src=src/main/java/com/poc/catalog/api/dto/ProductResponse.java loc=L5 community=]\nNODE catalog-service::uuid [src= loc= community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE org.springframework.transaction.annotation.Transactional [src= loc= community=]\nNODE ProductRepository [src=src/main/java/com/poc/catalog/application/port/ProductRepository.java loc=L9 community=]\nNODE ProductController [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L26 community=]\nNODE .getById() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L42 community=]\nNODE .updatePrice() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L63 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE .listActive() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L29 community=]\nNODE ProductNotFoundException [src=src/main/java/com/poc/catalog/domain/exception/ProductNotFoundException.java loc=L5 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE catalog-service::list [src= loc= community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE org.springframework.data.redis.core.StringRedisTemplate [src= loc= community=]\nNODE .batchLookup() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L54 community=]\nNODE .toResponse() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L92 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.GenericContainer [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE .CatalogService() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L23 community=]\nNODE .writeList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L84 community=]\nNODE catalog-service::assertthat [src= loc= community=]\nNODE catalog-service::autowired [src= loc= community=]\nNODE catalog-service::container [src= loc= community=]\nNODE catalog-service::get [src= loc= community=]\nNODE catalog-service::mediatype [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE org.springframework.stereotype.Service [src= loc= community=]\nNODE .ProductController() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L32 community=]\nNODE .readList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L75 community=]\nNODE catalog-service::status [src= loc= community=]\nNODE catalog-service::jsonnode [src= loc= community=]\nNODE catalog-service::jsonpath [src= loc= community=]\nNODE catalog-service::methodorderer [src= loc= community=]\nNODE catalog-service::mvcresult [src= loc= community=]\nNODE catalog-service::post [src= loc= community=]\nNODE catalog-service::put [src= loc= community=]\nNODE README.md [src=README.md loc=L1 community=]\nNODE Build and test [src=README.md loc=L6 community=]\nNODE Run locally [src=README.md loc=L12 community=]\nNODE catalog-service::typereference [src= loc= community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L1 community=]\nNODE ProductCache.java [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE .get() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L43 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L23 community=]\nNODE CorrelationIdFilter.java [src=src/main/java/com/poc/catalog/api/CorrelationIdFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/catalog/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE MyBatisProductRepository.java [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L1 community=]\nNODE MyBatisProductRepository [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L14 community=]\n... (truncated — 69 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "aaa1d17fb0aaaff8ae2ca574b5e6e3cb0b29b242702026743a7dc4b23fa1d9ab",
+      "output_bytes": 6727,
+      "output_full_bytes": 6727,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['CatalogService', 'CatalogService.java', 'catalog-service', 'CatalogComponentTest.java', '.service()'] | 137 nodes found\n\n[!] TRUNCATED: showing 68 of 137 nodes (~2000-token budget). The answer may be among the 69 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE CatalogService [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L16 community=]\nNODE CatalogService.java [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L1 community=]\nNODE catalog-service [src=README.md loc=L1 community=]\nNODE CatalogComponentTest.java [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE ProductController.java [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L1 community=]\nNODE ProductCache [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L18 community=]\nNODE CatalogComponentTest [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L33 community=]\nNODE Product [src=src/main/java/com/poc/catalog/domain/model/Product.java loc=L6 community=]\nNODE ProductResponse [src=src/main/java/com/poc/catalog/api/dto/ProductResponse.java loc=L5 community=]\nNODE catalog-service::uuid [src= loc= community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE org.springframework.transaction.annotation.Transactional [src= loc= community=]\nNODE ProductRepository [src=src/main/java/com/poc/catalog/application/port/ProductRepository.java loc=L9 community=]\nNODE ProductController [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L26 community=]\nNODE .getById() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L42 community=]\nNODE .updatePrice() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L63 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE .listActive() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L29 community=]\nNODE ProductNotFoundException [src=src/main/java/com/poc/catalog/domain/exception/ProductNotFoundException.java loc=L5 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE catalog-service::list [src= loc= community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE org.springframework.data.redis.core.StringRedisTemplate [src= loc= community=]\nNODE .batchLookup() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L54 community=]\nNODE .toResponse() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L92 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.GenericContainer [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE .CatalogService() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L23 community=]\nNODE .writeList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L84 community=]\nNODE catalog-service::assertthat [src= loc= community=]\nNODE catalog-service::autowired [src= loc= community=]\nNODE catalog-service::container [src= loc= community=]\nNODE catalog-service::get [src= loc= community=]\nNODE catalog-service::mediatype [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE org.springframework.stereotype.Service [src= loc= community=]\nNODE .ProductController() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L32 community=]\nNODE .readList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L75 community=]\nNODE catalog-service::status [src= loc= community=]\nNODE catalog-service::jsonnode [src= loc= community=]\nNODE catalog-service::jsonpath [src= loc= community=]\nNODE catalog-service::methodorderer [src= loc= community=]\nNODE catalog-service::mvcresult [src= loc= community=]\nNODE catalog-service::post [src= loc= community=]\nNODE catalog-service::put [src= loc= community=]\nNODE README.md [src=README.md loc=L1 community=]\nNODE Build and test [src=README.md loc=L6 community=]\nNODE Run locally [src=README.md loc=L12 community=]\nNODE catalog-service::typereference [src= loc= community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L1 community=]\nNODE ProductCache.java [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE .get() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L43 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L23 community=]\nNODE CorrelationIdFilter.java [src=src/main/java/com/poc/catalog/api/CorrelationIdFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/catalog/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE MyBatisProductRepository.java [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L1 community=]\nNODE MyBatisProductRepository [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L14 community=]\n... (truncated — 69 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "0e755e2bf6bcc03639182043eae9d5d5e7044e602d25bf80cab286ec6f4c2814",
+      "duration_ms": 222,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "parameters": {
+        "operation": "affected",
+        "query": "priceMinor"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "No unique node match for priceMinor",
+      "output_sha256": "66fe6b7ff0d42012f787457f9c3d70a75a386ecf489cbc60c6bb6704703c21ad",
+      "output_bytes": 35,
+      "output_full_bytes": 35,
+      "truncated": false,
+      "output_normalized": "No unique node match for priceMinor",
+      "output_normalized_sha256": "c6a77388cda2156ab758120d17bf2dee89153510aee8bc0382a11327d12bf597",
+      "duration_ms": 115.5,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "parameters": {
+        "operation": "explain",
+        "query": "priceMinor"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "No node matching 'priceMinor' found.",
+      "output_sha256": "3a7616f665056e98bdfbf46c23412ea444248450530cee9affae6dc474967cb6",
+      "output_bytes": 36,
+      "output_full_bytes": 36,
+      "truncated": false,
+      "output_normalized": "No node matching 'priceMinor' found.",
+      "output_normalized_sha256": "a5a6a0aabec62a25a3001df663cbc530b44c0133a75f6489b5ec998bd1f355dd",
+      "duration_ms": 187,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "What breaks across repositories if money amounts change from integer minor units to decimal in the catalog price API?"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['money()', 'Change', 'Price', '.taxRoundsHalfUpOnOddAmounts()', 'apiRequest()', 'CatalogComponentTest.java', 'amountMinor'] | 279 nodes found\n\n[!] TRUNCATED: showing 82 of 279 nodes (~2000-token budget). The answer may be among the 197 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE money() [src=src/utils/format.ts loc=L1 community=]\nNODE Change [src=src/main/java/com/poc/basket/application/BasketService.java loc=L49 community=]\nNODE Price [src=src/main/java/com/poc/order/api/dto/QuoteResponse.java loc=L12 community=]\nNODE .taxRoundsHalfUpOnOddAmounts() [src=src/test/java/com/poc/order/OrderPricingTest.java loc=L35 community=]\nNODE apiRequest() [src=src/api/client.ts loc=L104 community=]\nNODE CatalogComponentTest.java [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L1 community=]\nNODE amountMinor [src=asyncapi/schemas/payment.charge.requested.v1.json loc=L3 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE client.ts [src=src/api/client.ts loc=L1 community=]\nNODE BasketService [src=src/main/java/com/poc/basket/application/BasketService.java loc=L23 community=]\nNODE BasketItem [src=src/main/java/com/poc/basket/domain/model/BasketItem.java loc=L5 community=]\nNODE CatalogComponentTest [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L33 community=]\nNODE BasketPage.tsx [src=src/pages/BasketPage.tsx loc=L1 community=]\nNODE ProductsPage.tsx [src=src/pages/ProductsPage.tsx loc=L1 community=]\nNODE OrderStatusPage.tsx [src=src/pages/OrderStatusPage.tsx loc=L1 community=]\nNODE catalog-service::uuid [src= loc= community=]\nNODE .mutate() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L87 community=]\nNODE basket.ts [src=src/api/basket.ts loc=L1 community=]\nNODE auth.ts [src=src/api/auth.ts loc=L1 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE checkout.ts [src=src/api/checkout.ts loc=L1 community=]\nNODE orders.ts [src=src/api/orders.ts loc=L1 community=]\nNODE BasketPage() [src=src/pages/BasketPage.tsx loc=L9 community=]\nNODE client.test.ts [src=src/test/client.test.ts loc=L1 community=]\nNODE .applyCoupon() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L71 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE format.ts [src=src/utils/format.ts loc=L1 community=]\nNODE .addItem() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L55 community=]\nNODE clearTokens() [src=src/auth/authStore.ts loc=L20 community=]\nNODE PriceBreakdown.tsx [src=src/components/PriceBreakdown.tsx loc=L1 community=]\nNODE ProductsPage() [src=src/pages/ProductsPage.tsx loc=L13 community=]\nNODE .setQuantity() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L61 community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE getBasket() [src=src/api/basket.ts loc=L4 community=]\nNODE products.ts [src=src/api/products.ts loc=L1 community=]\nNODE QuoteResponse [src=src/main/java/com/poc/order/api/dto/QuoteResponse.java loc=L9 community=]\nNODE OrderPricingTest [src=src/test/java/com/poc/order/OrderPricingTest.java loc=L13 community=]\nNODE .removeCoupon() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L83 community=]\nNODE .removeItem() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L66 community=]\nNODE org.springframework.data.redis.core.StringRedisTemplate [src= loc= community=]\nNODE applyBasketCoupon() [src=src/api/basket.ts loc=L26 community=]\nNODE removeBasketCoupon() [src=src/api/basket.ts loc=L33 community=]\nNODE ApiError [src=src/api/client.ts loc=L25 community=]\nNODE properties [src=asyncapi/schemas/payment.charge.requested.v1.json loc=L3 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/QuoteResponse.java loc=L17 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.GenericContainer [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE addBasketItem() [src=src/api/basket.ts loc=L8 community=]\nNODE removeBasketItem() [src=src/api/basket.ts loc=L22 community=]\nNODE updateBasketQuantity() [src=src/api/basket.ts loc=L15 community=]\nNODE createAddress() [src=src/api/checkout.ts loc=L8 community=]\nNODE createQuote() [src=src/api/checkout.ts loc=L15 community=]\nNODE listAddresses() [src=src/api/checkout.ts loc=L4 community=]\nNODE singleFlightRefresh() [src=src/api/client.ts loc=L69 community=]\nNODE getOrder() [src=src/api/orders.ts loc=L17 community=]\nNODE placeOrder() [src=src/api/orders.ts loc=L6 community=]\nNODE listProducts() [src=src/api/products.ts loc=L4 community=]\nNODE PriceBreakdown() [src=src/components/PriceBreakdown.tsx loc=L4 community=]\nNODE OrderStatusPage() [src=src/pages/OrderStatusPage.tsx loc=L28 community=]\nNODE problemFrom() [src=src/api/client.ts loc=L37 community=]\nNODE send() [src=src/api/client.ts loc=L97 community=]\nNODE .taxOn() [src=src/main/java/com/poc/order/application/OrderPricing.java loc=L24 community=]\nNODE catalog-service::assertthat [src= loc= community=]\nNODE catalog-service::autowired [src= loc= community=]\nNODE catalog-service::container [src= loc= community=]\nNODE catalog-service::get [src= loc= community=]\nNODE catalog-service::mediatype [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE catalog-service::status [src= loc= community=]\nNODE catalog-service::jsonnode [src= loc= community=]\nNODE catalog-service::jsonpath [src= loc= community=]\nNODE catalog-service::methodorderer [src= loc= community=]\nNODE catalog-service::mvcresult [src= loc= community=]\nNODE catalog-service::post [src= loc= community=]\nNODE catalog-service::put [src= loc= community=]\n... (truncated — 197 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "7eca0ef1da43e7ea71ce416b908fd30f4b9f71e6e790551cb6adcf59f38caa32",
+      "output_bytes": 6822,
+      "output_full_bytes": 6822,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['money()', 'Change', 'Price', '.taxRoundsHalfUpOnOddAmounts()', 'apiRequest()', 'CatalogComponentTest.java', 'amountMinor'] | 279 nodes found\n\n[!] TRUNCATED: showing 82 of 279 nodes (~2000-token budget). The answer may be among the 197 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE money() [src=src/utils/format.ts loc=L1 community=]\nNODE Change [src=src/main/java/com/poc/basket/application/BasketService.java loc=L49 community=]\nNODE Price [src=src/main/java/com/poc/order/api/dto/QuoteResponse.java loc=L12 community=]\nNODE .taxRoundsHalfUpOnOddAmounts() [src=src/test/java/com/poc/order/OrderPricingTest.java loc=L35 community=]\nNODE apiRequest() [src=src/api/client.ts loc=L104 community=]\nNODE CatalogComponentTest.java [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L1 community=]\nNODE amountMinor [src=asyncapi/schemas/payment.charge.requested.v1.json loc=L3 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE client.ts [src=src/api/client.ts loc=L1 community=]\nNODE BasketService [src=src/main/java/com/poc/basket/application/BasketService.java loc=L23 community=]\nNODE BasketItem [src=src/main/java/com/poc/basket/domain/model/BasketItem.java loc=L5 community=]\nNODE CatalogComponentTest [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L33 community=]\nNODE BasketPage.tsx [src=src/pages/BasketPage.tsx loc=L1 community=]\nNODE ProductsPage.tsx [src=src/pages/ProductsPage.tsx loc=L1 community=]\nNODE OrderStatusPage.tsx [src=src/pages/OrderStatusPage.tsx loc=L1 community=]\nNODE catalog-service::uuid [src= loc= community=]\nNODE .mutate() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L87 community=]\nNODE basket.ts [src=src/api/basket.ts loc=L1 community=]\nNODE auth.ts [src=src/api/auth.ts loc=L1 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE checkout.ts [src=src/api/checkout.ts loc=L1 community=]\nNODE orders.ts [src=src/api/orders.ts loc=L1 community=]\nNODE BasketPage() [src=src/pages/BasketPage.tsx loc=L9 community=]\nNODE client.test.ts [src=src/test/client.test.ts loc=L1 community=]\nNODE .applyCoupon() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L71 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE format.ts [src=src/utils/format.ts loc=L1 community=]\nNODE .addItem() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L55 community=]\nNODE clearTokens() [src=src/auth/authStore.ts loc=L20 community=]\nNODE PriceBreakdown.tsx [src=src/components/PriceBreakdown.tsx loc=L1 community=]\nNODE ProductsPage() [src=src/pages/ProductsPage.tsx loc=L13 community=]\nNODE .setQuantity() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L61 community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE getBasket() [src=src/api/basket.ts loc=L4 community=]\nNODE products.ts [src=src/api/products.ts loc=L1 community=]\nNODE QuoteResponse [src=src/main/java/com/poc/order/api/dto/QuoteResponse.java loc=L9 community=]\nNODE OrderPricingTest [src=src/test/java/com/poc/order/OrderPricingTest.java loc=L13 community=]\nNODE .removeCoupon() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L83 community=]\nNODE .removeItem() [src=src/main/java/com/poc/basket/application/BasketService.java loc=L66 community=]\nNODE org.springframework.data.redis.core.StringRedisTemplate [src= loc= community=]\nNODE applyBasketCoupon() [src=src/api/basket.ts loc=L26 community=]\nNODE removeBasketCoupon() [src=src/api/basket.ts loc=L33 community=]\nNODE ApiError [src=src/api/client.ts loc=L25 community=]\nNODE properties [src=asyncapi/schemas/payment.charge.requested.v1.json loc=L3 community=]\nNODE .from() [src=src/main/java/com/poc/order/api/dto/QuoteResponse.java loc=L17 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.GenericContainer [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE addBasketItem() [src=src/api/basket.ts loc=L8 community=]\nNODE removeBasketItem() [src=src/api/basket.ts loc=L22 community=]\nNODE updateBasketQuantity() [src=src/api/basket.ts loc=L15 community=]\nNODE createAddress() [src=src/api/checkout.ts loc=L8 community=]\nNODE createQuote() [src=src/api/checkout.ts loc=L15 community=]\nNODE listAddresses() [src=src/api/checkout.ts loc=L4 community=]\nNODE singleFlightRefresh() [src=src/api/client.ts loc=L69 community=]\nNODE getOrder() [src=src/api/orders.ts loc=L17 community=]\nNODE placeOrder() [src=src/api/orders.ts loc=L6 community=]\nNODE listProducts() [src=src/api/products.ts loc=L4 community=]\nNODE PriceBreakdown() [src=src/components/PriceBreakdown.tsx loc=L4 community=]\nNODE OrderStatusPage() [src=src/pages/OrderStatusPage.tsx loc=L28 community=]\nNODE problemFrom() [src=src/api/client.ts loc=L37 community=]\nNODE send() [src=src/api/client.ts loc=L97 community=]\nNODE .taxOn() [src=src/main/java/com/poc/order/application/OrderPricing.java loc=L24 community=]\nNODE catalog-service::assertthat [src= loc= community=]\nNODE catalog-service::autowired [src= loc= community=]\nNODE catalog-service::container [src= loc= community=]\nNODE catalog-service::get [src= loc= community=]\nNODE catalog-service::mediatype [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE catalog-service::status [src= loc= community=]\nNODE catalog-service::jsonnode [src= loc= community=]\nNODE catalog-service::jsonpath [src= loc= community=]\nNODE catalog-service::methodorderer [src= loc= community=]\nNODE catalog-service::mvcresult [src= loc= community=]\nNODE catalog-service::post [src= loc= community=]\nNODE catalog-service::put [src= loc= community=]\n... (truncated — 197 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "232e7131571df08e47a6373a208bb5f68a1d0a6610c8ae5f3700e0108c40181c",
+      "duration_ms": 225.2,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "priceMinor test coverage in catalog-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['test', 'CatalogService', 'CatalogService.java', 'CatalogComponentTest.java', '.service()'] | 140 nodes found\n\n[!] TRUNCATED: showing 67 of 140 nodes (~2000-token budget). The answer may be among the 73 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE test [src=package.json loc=L11 community=]\nNODE CatalogService [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L16 community=]\nNODE CatalogService.java [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L1 community=]\nNODE CatalogComponentTest.java [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE ProductController.java [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L1 community=]\nNODE ProductCache [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L18 community=]\nNODE CatalogComponentTest [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L33 community=]\nNODE Product [src=src/main/java/com/poc/catalog/domain/model/Product.java loc=L6 community=]\nNODE ProductResponse [src=src/main/java/com/poc/catalog/api/dto/ProductResponse.java loc=L5 community=]\nNODE catalog-service::uuid [src= loc= community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE org.springframework.transaction.annotation.Transactional [src= loc= community=]\nNODE ProductRepository [src=src/main/java/com/poc/catalog/application/port/ProductRepository.java loc=L9 community=]\nNODE ProductController [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L26 community=]\nNODE .getById() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L42 community=]\nNODE .updatePrice() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L63 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE .listActive() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L29 community=]\nNODE ProductNotFoundException [src=src/main/java/com/poc/catalog/domain/exception/ProductNotFoundException.java loc=L5 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE catalog-service::list [src= loc= community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE org.springframework.data.redis.core.StringRedisTemplate [src= loc= community=]\nNODE .batchLookup() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L54 community=]\nNODE .toResponse() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L92 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.GenericContainer [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE .CatalogService() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L23 community=]\nNODE .writeList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L84 community=]\nNODE catalog-service::assertthat [src= loc= community=]\nNODE catalog-service::autowired [src= loc= community=]\nNODE catalog-service::container [src= loc= community=]\nNODE catalog-service::get [src= loc= community=]\nNODE catalog-service::mediatype [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE org.springframework.stereotype.Service [src= loc= community=]\nNODE .ProductController() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L32 community=]\nNODE .readList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L75 community=]\nNODE catalog-service::status [src= loc= community=]\nNODE catalog-service::jsonnode [src= loc= community=]\nNODE catalog-service::jsonpath [src= loc= community=]\nNODE catalog-service::methodorderer [src= loc= community=]\nNODE catalog-service::mvcresult [src= loc= community=]\nNODE catalog-service::post [src= loc= community=]\nNODE catalog-service::put [src= loc= community=]\nNODE catalog-service::typereference [src= loc= community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L1 community=]\nNODE ProductCache.java [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE .get() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L43 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L23 community=]\nNODE CorrelationIdFilter.java [src=src/main/java/com/poc/catalog/api/CorrelationIdFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/catalog/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE MyBatisProductRepository.java [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L1 community=]\nNODE MyBatisProductRepository [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L14 community=]\nNODE UuidTypeHandler.java [src=src/main/java/com/poc/catalog/infrastructure/persistence/typehandler/UuidTypeHandler.java loc=L1 community=]\n... (truncated — 73 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "84350e93e7b7c201b3c094fc27f63f19536376df9080457424bdcf234b8739aa",
+      "output_bytes": 6744,
+      "output_full_bytes": 6744,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['test', 'CatalogService', 'CatalogService.java', 'CatalogComponentTest.java', '.service()'] | 140 nodes found\n\n[!] TRUNCATED: showing 67 of 140 nodes (~2000-token budget). The answer may be among the 73 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE test [src=package.json loc=L11 community=]\nNODE CatalogService [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L16 community=]\nNODE CatalogService.java [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L1 community=]\nNODE CatalogComponentTest.java [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L1 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE ProductController.java [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L1 community=]\nNODE ProductCache [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L18 community=]\nNODE CatalogComponentTest [src=src/test/java/com/poc/catalog/CatalogComponentTest.java loc=L33 community=]\nNODE Product [src=src/main/java/com/poc/catalog/domain/model/Product.java loc=L6 community=]\nNODE ProductResponse [src=src/main/java/com/poc/catalog/api/dto/ProductResponse.java loc=L5 community=]\nNODE catalog-service::uuid [src= loc= community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE org.springframework.transaction.annotation.Transactional [src= loc= community=]\nNODE ProductRepository [src=src/main/java/com/poc/catalog/application/port/ProductRepository.java loc=L9 community=]\nNODE ProductController [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L26 community=]\nNODE .getById() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L42 community=]\nNODE .updatePrice() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L63 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE .listActive() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L29 community=]\nNODE ProductNotFoundException [src=src/main/java/com/poc/catalog/domain/exception/ProductNotFoundException.java loc=L5 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE catalog-service::list [src= loc= community=]\nNODE org.junit.jupiter.api.Order [src= loc= community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE org.springframework.data.redis.core.StringRedisTemplate [src= loc= community=]\nNODE .batchLookup() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L54 community=]\nNODE .toResponse() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L92 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.test.context.ActiveProfiles [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.springframework.test.web.servlet.MockMvc [src= loc= community=]\nNODE org.testcontainers.containers.GenericContainer [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE .CatalogService() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L23 community=]\nNODE .writeList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L84 community=]\nNODE catalog-service::assertthat [src= loc= community=]\nNODE catalog-service::autowired [src= loc= community=]\nNODE catalog-service::container [src= loc= community=]\nNODE catalog-service::get [src= loc= community=]\nNODE catalog-service::mediatype [src= loc= community=]\nNODE org.junit.jupiter.api.TestMethodOrder [src= loc= community=]\nNODE org.springframework.stereotype.Service [src= loc= community=]\nNODE .ProductController() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L32 community=]\nNODE .readList() [src=src/main/java/com/poc/catalog/application/CatalogService.java loc=L75 community=]\nNODE catalog-service::status [src= loc= community=]\nNODE catalog-service::jsonnode [src= loc= community=]\nNODE catalog-service::jsonpath [src= loc= community=]\nNODE catalog-service::methodorderer [src= loc= community=]\nNODE catalog-service::mvcresult [src= loc= community=]\nNODE catalog-service::post [src= loc= community=]\nNODE catalog-service::put [src= loc= community=]\nNODE catalog-service::typereference [src= loc= community=]\nNODE org.springframework.http.ResponseEntity [src= loc= community=]\nNODE OpenApiContractTest.java [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L1 community=]\nNODE ProductCache.java [src=src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE .get() [src=src/main/java/com/poc/catalog/api/ProductController.java loc=L43 community=]\nNODE OpenApiContractTest [src=src/test/java/com/poc/catalog/OpenApiContractTest.java loc=L23 community=]\nNODE CorrelationIdFilter.java [src=src/main/java/com/poc/catalog/api/CorrelationIdFilter.java loc=L1 community=]\nNODE GlobalExceptionHandler.java [src=src/main/java/com/poc/catalog/api/GlobalExceptionHandler.java loc=L1 community=]\nNODE MyBatisProductRepository.java [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L1 community=]\nNODE MyBatisProductRepository [src=src/main/java/com/poc/catalog/infrastructure/persistence/repository/MyBatisProductRepository.java loc=L14 community=]\nNODE UuidTypeHandler.java [src=src/main/java/com/poc/catalog/infrastructure/persistence/typehandler/UuidTypeHandler.java loc=L1 community=]\n... (truncated — 73 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "1fa0241ac6e766bbb7f5653b360e15d2ae613fdeeb8cca96a777d85730f0b526",
+      "duration_ms": 218.4,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "graphify",
+    "version": "0.9.53",
+    "commit": null,
+    "binary_sha256": "5201bbf13d9959ab9ce913c2adb891be75fee0d9454ab3d93208625257e90b2f",
+    "artifact_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+    "manifest_sha256": "71b2cccdf485ce96c39253f4180f30c79ccb54bbe95db259fbd6796806f5d02f",
+    "query_surface": [
+      "query",
+      "explain",
+      "path",
+      "affected"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "ee6e66d04d14c9720f5973a9dd53ca5c44801f9af2029134f44eb943c5b0a5e5",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 219317,
+  "cost_usd": 0.1998556,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "e2302c73dd8e60ec708dc092c9161f89bfb3eacb4c3178ed323dca418c80857d",
+  "contestant_config_sha256": "a3cabf9a2097e289cfbe45daf66ab522824489c03b116a3b77ad4e5f9c354067",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "87b9f6c01e48d7d89a4d9cb78259226386792aaa04346a7e225ad56ac4e45c6e",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

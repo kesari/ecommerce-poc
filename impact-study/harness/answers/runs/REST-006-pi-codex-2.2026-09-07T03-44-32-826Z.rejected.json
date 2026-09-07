@@ -1,0 +1,8 @@
+{
+  "change_id": "REST-006",
+  "runner": "pi-codex",
+  "run_index": 2,
+  "run_started_at": "2026-09-07T03:44:32.826Z",
+  "reason": "no answer object with a 'findings' key in the output; raw output saved to /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/REST-006-pi-codex-2.2026-09-07T03-44-31-006Z.raw.txt",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+}

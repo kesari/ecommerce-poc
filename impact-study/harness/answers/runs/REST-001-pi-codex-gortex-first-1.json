@@ -1,0 +1,472 @@
+{
+  "change_id": "REST-001",
+  "contestant": "gortex-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "openapi/account.yaml:217 and :246 declare postalCode in address API schemas."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/api/types.ts:54 binds Address.postalCode."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform/e2e-bruno/run-e2e.sh:136 posts postalCode to the address API."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 binds Account postalCode."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads the propagated event field."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares postalCode."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/main/java/com/poc/account/api/AddressController.java:65 reads request.postalCode()."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:25 declares a postalCode-bound response."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java:4 carries postalCode."
+      },
+      {
+        "fqn": "com.poc.order.application.CheckoutService",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:52 passes snapshot postalCode to shipment."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java:111 emits address.postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 reads address.postalCode."
+      },
+      {
+        "fqn": "com.poc.shipment.application.DeliveryEstimator",
+        "repo": "shipment-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:20 rejects the resulting null value."
+      },
+      {
+        "fqn": "CheckoutPage",
+        "repo": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 submits addressInput.postalCode."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:18 uses AddressRequest, whose field is at :217."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:10 returns AddressResponse, whose field is at :246."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:32 calls this route."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:217 declares postalCode for address requests."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "commerce-web",
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account-service/openapi/account.yaml:246 declares postalCode for address responses."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "shipment-service/asyncapi/schemas/order.confirmed.v1.json:19 declares the consumed postalCode."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:118 posts postalCode."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web/src/test/app.test.tsx:46 supplies postalCode in its address fixture."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:90 validates postalCode."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java:136 asserts event postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/AsyncApiContractTest.java:55 validates postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:171 builds event postalCode."
+      }
+    ]
+  },
+  "runner": "pi-codex-gortex-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T01:51:10.732Z",
+  "elapsed_seconds": 120.8,
+  "tool_calls": 61,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 20,
+      "succeeded": 20,
+      "failed": 0
+    },
+    "read": {
+      "calls": 36,
+      "succeeded": 33,
+      "failed": 3
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 4,
+    "succeeded": 4,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "gortex_query",
+      "operation": "symbol",
+      "parameters": {
+        "operation": "symbol",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"query_class\": \"symbol\",\n  \"results\": [\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\n      \"enclosing\": \"AddressBookService\",\n      \"enclosing_id\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.create\",\n      \"kind\": \"method\",\n      \"name\": \"create\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 32,\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\n      \"enclosing\": \"AddressBookService\",\n      \"enclosing_id\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.update\",\n      \"kind\": \"method\",\n      \"name\": \"update\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 41,\n      \"visibility\": \"public\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\n      \"enclosing\": \"GlobalExceptionHandler\",\n      \"enclosing_id\": \"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler.problem\",\n      \"kind\": \"method\",\n      \"name\": \"problem\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 56,\n      \"visibility\": \"package\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/AddressController.java\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/api/AddressController.java\",\n      \"id\": \"account-service/annotation::java::ApiResponse\",\n      \"kind\": \"type\",\n      \"name\": \"ApiResponse\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 43,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java\",\n      \"enclosing\": \"ProblemAuthHandlers\",\n      \"enclosing_id\": \"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java::ProblemAuthHandlers\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java::ProblemAuthHandlers.write\",\n      \"kind\": \"method\",\n      \"name\": \"write\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 34,\n      \"visibility\": \"private\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/domain/model/Address.java\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/domain/model/Address.java::withDetails\",\n      \"kind\": \"method\",\n      \"name\": \"withDetails\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 21,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/resources/db/migration/V1__identity_schema.sql\",\n      \"file_path\": \"account-service/src/main/resources/db/migration/V1__identity_schema.sql\",\n      \"id\": \"account-service/src/main/resources/db/migration/V1__identity_schema.sql::addresses\",\n      \"kind\": \"type\",\n      \"name\": \"addresses\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 19,\n      \"type_flavor\": \"table\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/resources/db/migration/V1__identity_schema.sql\",\n      \"file_path\": \"account-service/src/main/resources/db/migration/V1__identity_schema.sql\",\n      \"id\": \"account-service/src/main/resources/db/migration/V1__identity_schema.sql::addresses.postal_code\",\n      \"kind\": \"variable\",\n      \"name\": \"postal_code\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 27,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.create#param:postalCode@6\",\n      \"kind\": \"param\",\n      \"name\": \"postalCode\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 34,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/AddressController.java\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/api/AddressController.java\",\n      \"id\": \"account-service/annotation::java::ApiResponses\",\n      \"kind\": \"type\",\n      \"name\": \"ApiResponses\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 49,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/domain/model/Address.java\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/domain/model/Address.java::withDetails#param:postalCode@5\",\n      \"kind\": \"param\",\n      \"name\": \"postalCode\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 22,\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/AuthController.java\",\n      \"enclosing\": \"AuthController\",\n      \"enclosing_id\": \"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/api/AuthController.java\",\n      \"id\": \"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.refresh\",\n      \"kind\": \"method\",\n      \"name\": \"refresh\",\n      \"project_id\": \"account-service\",\n      \"repo_prefix\": \"account-service\",\n      \"start_line\": 55,\n      \"visibility\": \"package\",\n      \"workspace_id\": \"poc-estate\"\n    },\n    {\n      \"absolute_file_path\": \"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\n      \"file_path\": \"account-service/src/main/java/com/poc/account/api/GlobalExceptionHa\n[truncated at 8192 bytes]",
+      "output_sha256": "2a2d1ba27a9cb4374a32b1ce3dacda35842ae0996ea941a86c59b656cee65b5a",
+      "output_bytes": 8192,
+      "output_full_bytes": 10208,
+      "truncated": true,
+      "output_normalized": "{\"query_class\":\"symbol\",\"results\":[{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/mvnw\",\"file_path\":\"account-service/mvnw\",\"id\":\"account-service/mvnw::hash_string\",\"kind\":\"function\",\"name\":\"hash_string\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":82,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/AddressController.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"id\":\"account-service/annotation::java::ApiResponse\",\"kind\":\"type\",\"name\":\"ApiResponse\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":43,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/AddressController.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"id\":\"account-service/annotation::java::ApiResponses\",\"kind\":\"type\",\"name\":\"ApiResponses\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":49,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/AuthController.java\",\"enclosing\":\"AuthController\",\"enclosing_id\":\"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController\",\"file_path\":\"account-service/src/main/java/com/poc/account/api/AuthController.java\",\"id\":\"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.refresh\",\"kind\":\"method\",\"name\":\"refresh\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":55,\"visibility\":\"package\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\"enclosing\":\"GlobalExceptionHandler\",\"enclosing_id\":\"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler\",\"file_path\":\"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\"id\":\"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler.problem\",\"kind\":\"method\",\"name\":\"problem\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":56,\"visibility\":\"package\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\"id\":\"account-service/src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler.problem#param:code@3\",\"kind\":\"param\",\"name\":\"code\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":57,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"enclosing\":\"AddressBookService\",\"enclosing_id\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService\",\"file_path\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"id\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.create\",\"kind\":\"method\",\"name\":\"create\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":32,\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"enclosing\":\"AddressBookService\",\"enclosing_id\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService\",\"file_path\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"id\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.update\",\"kind\":\"method\",\"name\":\"update\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":41,\"visibility\":\"public\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"id\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.create#param:postalCode@6\",\"kind\":\"param\",\"name\":\"postalCode\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":34,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java\",\"id\":\"account-service/src/main/java/com/poc/account/application/AddressBookService.java::AddressBookService.update#param:postalCode@7\",\"kind\":\"param\",\"name\":\"postalCode\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":43,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"id\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java::withDetails\",\"kind\":\"method\",\"name\":\"withDetails\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":21,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java\",\"id\":\"account-service/src/main/java/com/poc/account/domain/model/Address.java::withDetails#param:postalCode@5\",\"kind\":\"param\",\"name\":\"postalCode\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":22,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java\",\"enclosing\":\"ProblemAuthHandlers\",\"enclosing_id\":\"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java::ProblemAuthHandlers\",\"file_path\":\"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java\",\"id\":\"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java::ProblemAuthHandlers.write\",\"kind\":\"method\",\"name\":\"write\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":34,\"visibility\":\"private\",\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java\",\"file_path\":\"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java\",\"id\":\"account-service/src/main/java/com/poc/account/infrastructure/security/ProblemAuthHandlers.java::ProblemAuthHandlers.write#param:code@4\",\"kind\":\"param\",\"name\":\"code\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"start_line\":35,\"workspace_id\":\"poc-estate\"},{\"absolute_file_path\":\"/Users/rajmohan/Projects/POC/POC-order-microservices/account-service/src/main/resources/db/migration/V1__identity_schema.sql\",\"file_path\":\"account-service/src/main/resources/db/migration/V1__identity_schema.sql\",\"id\":\"account-service/src/main/resources/db/migration/V1__identity_schema.sql::addresses\",\"kind\":\"type\",\"name\":\"addresses\",\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\"\n[truncated at 8192 bytes]",
+      "output_normalized_sha256": "cef7255fe6fc9f88ed8767e287ca6270b3ac8549788e27849eace26030730199",
+      "duration_ms": 58,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "gortex_query",
+      "operation": "usages",
+      "parameters": {
+        "operation": "usages",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"caveat\": {\n    \"class\": \"possible_extraction_gap\",\n    \"message\": \"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like \\u003crepo\\u003e/\\u003cpath\\u003e::\\u003csymbol\\u003e, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"\n  },\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "c82b1ad913777b030f7c4b8bfb7ff6d5d1af8b79c6a966a03c572affc07151a2",
+      "output_bytes": 478,
+      "output_full_bytes": 478,
+      "truncated": false,
+      "output_normalized": "{\"caveat\":{\"class\":\"possible_extraction_gap\",\"message\":\"no symbol with this id is in the graph — the id is probably mistyped or missing its repo prefix (ids look like <repo>/<path>::<symbol>, e.g. gortex/internal/x.go::Foo). Run a symbol search to get the exact id; treat this empty result as unverified, not as proof of no usages.\"},\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "b6b6f2773a8d44eb7473ea20b6ef7eb3a3b5bc6394a69a2e3fd1870d5bb942d4",
+      "duration_ms": 43.5,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "gortex_query",
+      "operation": "dependents",
+      "parameters": {
+        "operation": "dependents",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"edges\": [],\n  \"nodes\": [],\n  \"total_edges\": 0,\n  \"total_nodes\": 0,\n  \"truncated\": false\n}",
+      "output_sha256": "918dff31d9ed9777183369f6d2840e8709446daf196930c1bbae4e749ec4db69",
+      "output_bytes": 94,
+      "output_full_bytes": 94,
+      "truncated": false,
+      "output_normalized": "{\"edges\":[],\"nodes\":[],\"total_edges\":0,\"total_nodes\":0,\"truncated\":false}",
+      "output_normalized_sha256": "66c93a5ef9beeec26edaf0e0d8ca0aa4b9878b8abd9fd08e45eebf55184870dc",
+      "duration_ms": 42.5,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "gortex_contracts",
+      "operation": "list",
+      "parameters": {
+        "action": "list",
+        "repo": "account-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\n  \"by_repo\": {\n    \"account-service\": {\n      \"contracts\": {\n        \"di\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::PasswordEncoder\",\n            \"line\": 23,\n            \"meta\": {\n              \"bean\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig.passwordEncoder\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::JwtDecoder\",\n            \"line\": 28,\n            \"meta\": {\n              \"bean\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig.jwtDecoder\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java\",\n            \"id\": \"di::SecurityFilterChain\",\n            \"line\": 35,\n            \"meta\": {\n              \"bean\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig.filterChain\",\n              \"binding\": \"bean\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig\",\n            \"type\": \"di\",\n            \"workspace_id\": \"poc-estate\"\n          }\n        ],\n        \"http\": [\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AddressController.java\",\n            \"id\": \"http::PUT::/{p1}\",\n            \"line\": 75,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"PUT\",\n              \"original_path\": \"/{addressId}\",\n              \"path\": \"/{p1}\",\n              \"path_param_names\": [\n                \"addressId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"request_type\": \"AddressRequest\",\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/api/AddressController.java::AddressController.update\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AddressController.java\",\n            \"id\": \"http::DELETE::/{p1}\",\n            \"line\": 89,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"DELETE\",\n              \"original_path\": \"/{addressId}\",\n              \"path\": \"/{p1}\",\n              \"path_param_names\": [\n                \"addressId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"none\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/api/AddressController.java::AddressController.delete\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AuthController.java\",\n            \"id\": \"http::POST::/signup\",\n            \"line\": 40,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"POST\",\n              \"original_path\": \"/signup\",\n              \"path\": \"/signup\",\n              \"request_type\": \"SignupRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.signup\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AddressController.java\",\n            \"id\": \"http::GET::/{p1}\",\n            \"line\": 54,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"GET\",\n              \"original_path\": \"/{addressId}\",\n              \"path\": \"/{p1}\",\n              \"path_param_names\": [\n                \"addressId\"\n              ],\n              \"path_params\": [\n                \"p1\"\n              ],\n              \"route_kind\": \"parametric\",\n              \"schema_source\": \"none\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/api/AddressController.java::AddressController.get\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AuthController.java\",\n            \"id\": \"http::POST::/login\",\n            \"line\": 50,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"POST\",\n              \"original_path\": \"/login\",\n              \"path\": \"/login\",\n              \"request_type\": \"LoginRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.login\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AuthController.java\",\n            \"id\": \"http::POST::/refresh\",\n            \"line\": 60,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\": \"POST\",\n              \"original_path\": \"/refresh\",\n              \"path\": \"/refresh\",\n              \"request_type\": \"RefreshRequest\",\n              \"route_kind\": \"static\",\n              \"schema_source\": \"extracted\"\n            },\n            \"project_id\": \"account-service\",\n            \"repo_prefix\": \"account-service\",\n            \"role\": \"provider\",\n            \"symbol_id\": \"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.refresh\",\n            \"type\": \"http\",\n            \"workspace_id\": \"poc-estate\"\n          },\n          {\n            \"confidence\": 0.9,\n            \"file_path\": \"account-service/src/main/java/com/poc/account/api/AddressController.java\",\n            \"id\": \"http::ANY::/api/v1/addresses\",\n            \"line\": 32,\n            \"meta\": {\n              \"framework\": \"spring\",\n              \"method\":\n[truncated at 8192 bytes]",
+      "output_sha256": "d0c8cb915c2df7b94a187b7973687e91f916bf589a0a98f5f99a1e777650d65e",
+      "output_bytes": 8192,
+      "output_full_bytes": 15941,
+      "truncated": true,
+      "output_normalized": "{\"by_repo\":{\"account-service\":{\"contracts\":{\"di\":[{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java\",\"id\":\"di::JwtDecoder\",\"line\":28,\"meta\":{\"bean\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig.jwtDecoder\",\"binding\":\"bean\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java\",\"id\":\"di::PasswordEncoder\",\"line\":23,\"meta\":{\"bean\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig.passwordEncoder\",\"binding\":\"bean\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java\",\"id\":\"di::SecurityFilterChain\",\"line\":35,\"meta\":{\"bean\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig.filterChain\",\"binding\":\"bean\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/infrastructure/security/SecurityConfig.java::SecurityConfig\",\"type\":\"di\",\"workspace_id\":\"poc-estate\"}],\"http\":[{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"id\":\"http::ANY::/api/v1/addresses\",\"line\":32,\"meta\":{\"framework\":\"spring\",\"method\":\"ANY\",\"original_path\":\"/api/v1/addresses\",\"path\":\"/api/v1/addresses\",\"request_type\":\"AddressRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"id\":\"http::DELETE::/{p1}\",\"line\":89,\"meta\":{\"framework\":\"spring\",\"method\":\"DELETE\",\"original_path\":\"/{addressId}\",\"path\":\"/{p1}\",\"path_param_names\":[\"addressId\"],\"path_params\":[\"p1\"],\"route_kind\":\"parametric\",\"schema_source\":\"none\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/api/AddressController.java::AddressController.delete\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"id\":\"http::GET::/{p1}\",\"line\":54,\"meta\":{\"framework\":\"spring\",\"method\":\"GET\",\"original_path\":\"/{addressId}\",\"path\":\"/{p1}\",\"path_param_names\":[\"addressId\"],\"path_params\":[\"p1\"],\"route_kind\":\"parametric\",\"schema_source\":\"none\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/api/AddressController.java::AddressController.get\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"id\":\"http::PUT::/{p1}\",\"line\":75,\"meta\":{\"framework\":\"spring\",\"method\":\"PUT\",\"original_path\":\"/{addressId}\",\"path\":\"/{p1}\",\"path_param_names\":[\"addressId\"],\"path_params\":[\"p1\"],\"request_type\":\"AddressRequest\",\"route_kind\":\"parametric\",\"schema_source\":\"extracted\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/api/AddressController.java::AddressController.update\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AuthController.java\",\"id\":\"http::ANY::/api/v1/auth\",\"line\":26,\"meta\":{\"framework\":\"spring\",\"method\":\"ANY\",\"original_path\":\"/api/v1/auth\",\"path\":\"/api/v1/auth\",\"request_type\":\"SignupRequest\",\"response_type\":\"TokenResponse\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AuthController.java\",\"id\":\"http::POST::/login\",\"line\":50,\"meta\":{\"framework\":\"spring\",\"method\":\"POST\",\"original_path\":\"/login\",\"path\":\"/login\",\"request_type\":\"LoginRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.login\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AuthController.java\",\"id\":\"http::POST::/refresh\",\"line\":60,\"meta\":{\"framework\":\"spring\",\"method\":\"POST\",\"original_path\":\"/refresh\",\"path\":\"/refresh\",\"request_type\":\"RefreshRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.refresh\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.9,\"file_path\":\"account-service/src/main/java/com/poc/account/api/AuthController.java\",\"id\":\"http::POST::/signup\",\"line\":40,\"meta\":{\"framework\":\"spring\",\"method\":\"POST\",\"original_path\":\"/signup\",\"path\":\"/signup\",\"request_type\":\"SignupRequest\",\"route_kind\":\"static\",\"schema_source\":\"extracted\"},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"account-service/src/main/java/com/poc/account/api/AuthController.java::AuthController.signup\",\"type\":\"http\",\"workspace_id\":\"poc-estate\"}],\"openapi\":[{\"confidence\":0.95,\"file_path\":\"account-service/openapi/account.yaml\",\"id\":\"http::DELETE::/api/v1/addresses/{p1}\",\"line\":41,\"meta\":{\"method\":\"DELETE\",\"path\":\"/api/v1/addresses/{p1}\",\"response_type\":\"ProblemDetail\",\"schema_source\":\"extracted\",\"status_codes\":[204,404]},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"account-service/openapi/account.yaml\",\"id\":\"http::GET::/api/v1/addresses\",\"line\":10,\"meta\":{\"method\":\"GET\",\"path\":\"/api/v1/addresses\",\"response_type\":\"AddressResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200]},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"account-service/openapi/account.yaml\",\"id\":\"http::GET::/api/v1/addresses/{p1}\",\"line\":41,\"meta\":{\"method\":\"GET\",\"path\":\"/api/v1/addresses/{p1}\",\"response_type\":\"AddressResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,404]},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"account-service/openapi/account.yaml\",\"id\":\"http::POST::/api/v1/addresses\",\"line\":10,\"meta\":{\"method\":\"POST\",\"path\":\"/api/v1/addresses\",\"request_type\":\"AddressRequest\",\"response_type\":\"AddressResponse\",\"schema_source\":\"extracted\",\"status_codes\":[201]},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_path\":\"account-service/openapi/account.yaml\",\"id\":\"http::POST::/api/v1/auth/login\",\"line\":116,\"meta\":{\"method\":\"POST\",\"path\":\"/api/v1/auth/login\",\"request_type\":\"LoginRequest\",\"response_type\":\"TokenResponse\",\"schema_source\":\"extracted\",\"status_codes\":[200,401]},\"project_id\":\"account-service\",\"repo_prefix\":\"account-service\",\"role\":\"provider\",\"symbol_id\":\"\",\"type\":\"openapi\",\"workspace_id\":\"poc-estate\"},{\"confidence\":0.95,\"file_\n[truncated at 8192 bytes]",
+      "output_normalized_sha256": "43afb99f9dc43217de9b7d556882e9d9b4dc4f215dfc7f7a888e50891aab39c8",
+      "duration_ms": 53.9,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "gortex",
+    "version": "v0.63.10",
+    "commit": "5b299072c44457751cd339c00aabb0e5d2356ad3",
+    "binary_sha256": "30566ec81f2b4335b7e84e5664f508ae43238f0f037be7d2100543e211a05532",
+    "artifact_sha256": "34e1a77f49060482622221bc3a0357bc52481910a72f53b87cda832559c5a59f",
+    "manifest_sha256": null,
+    "query_surface": [
+      "symbol",
+      "usages",
+      "callers",
+      "calls",
+      "dependents",
+      "deps",
+      "implementations",
+      "contracts",
+      "route_impact",
+      "symbol_impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.1.0",
+    "config_sha256": "d9cd33199f9cb7ea2e85ffb4e8125b9900cac6bfef467a328fbaaac9c49ea702",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 162301,
+  "cost_usd": 0.1644424,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "bf33c4615197a2f702e8b5e13c6fb27567fd05f45d075dc74d605c97f1074312",
+  "contestant_config_sha256": "9aa43e33dd8bf1e73fabe496f0ad97a29c0f3ba9b6b110a3ea19938964ece6c4",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "66fabbacb2b0476266ee5f4629561bd4d23f328632c0cb70d223d80893e588df",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

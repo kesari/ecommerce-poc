@@ -1,0 +1,174 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService.java:58-59 emits EXPIRED on inventory.reservation-rejected."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "asyncapi/order-service.yaml:43-46 subscribes to the provider's rejection topic."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService.java:58-59 constructs the rejection payload with reason EXPIRED."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaResultListener.java:32-34 consumes the rejection topic but does not read reason."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "SagaTransitions.java:33-34 maps every rejection event to REJECTED_OUT_OF_STOCK."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1#/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "Both schemas enumerate only OUT_OF_STOCK at inventory-service and order-service asyncapi schemas line 6."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryIntegrationTest.java:134-135 expects the emitted rejection reason OUT_OF_STOCK."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 2,
+  "run_started_at": "2026-09-05T08:09:55.433Z",
+  "elapsed_seconds": 76.9,
+  "tool_calls": 32,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 8,
+      "succeeded": 8,
+      "failed": 0
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "read": {
+      "calls": 19,
+      "succeeded": 19,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 0,
+    "succeeded": 0,
+    "failed": 0
+  },
+  "product_playbook": null,
+  "product_tool_receipts": [],
+  "product_assisted_eligible": null,
+  "index_sha256": "none",
+  "product_provenance": null,
+  "tokens_consumed": 79437,
+  "cost_usd": 0.137936,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "b608a3c7afa0e36835274a26cc1592b35de59712f863e12a6352b81d1da39e9d",
+  "contestant_config_sha256": "2a2a675cc0a6d2de8a1105ba178eb9651c488a35aad09a70e99c28a3965a7881",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

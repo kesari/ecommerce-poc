@@ -1,0 +1,216 @@
+{
+  "change_id": "INT-003",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressDtoMapper.java:15 serializes Address.line2 into the address response."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "AccountClient.java:33-40 binds account line2 and carries it into AddressSnapshot."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressDtoMapper.java:15 maps line2 into AddressResponse."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressResponse.java:7-18 declares the externally serialized line2 component."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "AccountClient.java:24,40 name-binds line2 and snapshots its value."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressSnapshot.java:3 declares the propagated line2 component."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaOrchestrator.java:108 writes snapshot line2 into order.confirmed payload."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account.yaml:41-60 declares GET while AccountClient.java:33 calls it."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "account.yaml:201-220 declares AddressResponse line2 as string; AccountClient.java:24 binds it."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/line2",
+        "consumer_repos": [
+          "basket-service",
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "SagaOrchestrator.java:108 emits line2 and order.confirmed.v1.json:16 permits string or null."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AccountFlowComponentTest.java:112-130 creates an address without line2 through the response path."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "ContractValidationTest.java:85-96 validates an order.confirmed payload with line2 null."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 2,
+  "run_started_at": "2026-09-05T06:52:29.986Z",
+  "elapsed_seconds": 130.7,
+  "tool_calls": 47,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 8,
+      "succeeded": 8,
+      "failed": 0
+    },
+    "find": {
+      "calls": 9,
+      "succeeded": 9,
+      "failed": 0
+    },
+    "read": {
+      "calls": 29,
+      "succeeded": 29,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 0,
+    "succeeded": 0,
+    "failed": 0
+  },
+  "product_playbook": null,
+  "product_tool_receipts": [],
+  "product_assisted_eligible": null,
+  "index_sha256": "none",
+  "product_provenance": null,
+  "tokens_consumed": 110486,
+  "cost_usd": 0.1594756,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "ca7926c47f8c0cefadfbd14810f194551cd1c28c5deeeedcba83d3bbaaaa348d",
+  "contestant_config_sha256": "2a2a675cc0a6d2de8a1105ba178eb9651c488a35aad09a70e99c28a3965a7881",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

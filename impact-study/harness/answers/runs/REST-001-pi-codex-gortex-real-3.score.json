@@ -1,0 +1,159 @@
+{
+  "change_id": "REST-001",
+  "contestant": "gortex",
+  "metrics": {
+    "symbol_recall": 0.25,
+    "test_recall": 0.6667,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.3846,
+    "evidence_quality": 0.7692,
+    "latency": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8846
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 4,
+      "reported": 4,
+      "matched": 4,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 9,
+      "matched": 1,
+      "false_positives": 2,
+      "invalid": 6
+    },
+    "contracts": {
+      "ground_truth": 3,
+      "reported": 6,
+      "matched": 3,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 7,
+      "matched": 2,
+      "false_positives": 5,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 3,
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressrequest",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.account.api.dto.addressresponse",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.infrastructure.client.accountclient",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.sagaorchestrator"
+    ],
+    "contracts": [
+      "openapi openapi:account.yaml#/components/schemas/addressrequest",
+      "rest get /api/v1/addresses",
+      "rest get /api/v1/addresses/{addressid}"
+    ],
+    "tests": [
+      "commerce-web app.test",
+      "order-service contractvalidationtest",
+      "shipment-service asyncapicontracttest",
+      "shipment-service openapicontracttest",
+      "shipment-service shipmentintegrationtest"
+    ]
+  },
+  "invalid_findings": [
+    {
+      "kind": "symbols",
+      "index": 0,
+      "errors": [
+        "findings.symbols[0].evidence_tier: 'product_direct' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 1,
+      "errors": [
+        "findings.symbols[1].evidence_tier: 'product_direct' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 2,
+      "errors": [
+        "findings.symbols[2].evidence_tier: 'product_direct' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 6,
+      "errors": [
+        "findings.symbols[6].evidence_tier: 'product_direct' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 7,
+      "errors": [
+        "findings.symbols[7].evidence_tier: 'product_direct' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 8,
+      "errors": [
+        "findings.symbols[8].evidence_tier: 'product_direct' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    }
+  ],
+  "provenance_distribution": {
+    "schema_invalid": 6,
+    "extracted": 11,
+    "contract_matched": 9
+  },
+  "raw": {
+    "elapsed_seconds": 91.3,
+    "tokens_consumed": 217192
+  },
+  "answer_sha256": "63113961c0a2cc0540738e3f0497b24e2947ee2bd44bce58941eacff5d3ed2f5",
+  "ground_truth_sha256": "6cf8351836bb975f4582232bbaca720fedde280d0eac1cb91d0862928acee9f8",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "73bbf78236f193ed07486b7a959e7175a9f966cfcc41473333444f5dc555d015"
+}

@@ -1,0 +1,373 @@
+{
+  "change_id": "DB-002",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service/src/main/resources/db/migration/V1__order_schema.sql:33 declares orders.address_snapshot."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.row.OrderRow",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "OrderRow.java:6 is the insert/select row that must carry addressCountry."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.repository.MyBatisOrderRepository",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "MyBatisOrderRepository.java:28 constructs OrderRow from the order address snapshot."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.persistence.mapper.OrderMapper",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "OrderMapper.xml:35 and :51 insert and select the orders address snapshot."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "db",
+        "identifier": "order.orders.address_country",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "V1__order_schema.sql:33 owns the adjacent orders.address_snapshot column."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "OrderSagaIntegrationTest.java:221 saves an order and :253 reloads it through persistence."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 5,
+  "run_started_at": "2026-09-05T06:29:36.527Z",
+  "elapsed_seconds": 134,
+  "tool_calls": 59,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 16,
+      "succeeded": 16,
+      "failed": 0
+    },
+    "find": {
+      "calls": 10,
+      "succeeded": 10,
+      "failed": 0
+    },
+    "read": {
+      "calls": 29,
+      "succeeded": 27,
+      "failed": 2
+    },
+    "scip_search": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 7,
+    "succeeded": 7,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "address_country"
+      },
+      "requested_query": "address_country",
+      "executed_query": "address_country",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_sha256": "261d40f30818557e8e66e52b419e271fda08b0994e973c6d0378e44b477409d5",
+      "output_bytes": 114,
+      "output_full_bytes": 114,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_normalized_sha256": "66b6c4d5c21004c646008f9468062da7d509c55b9fff124d6698c6c4dfb36b66",
+      "duration_ms": 75.2,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "address_country"
+      },
+      "requested_query": "address_country",
+      "executed_query": "address_country",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 33.8,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "address_country"
+      },
+      "requested_query": "address_country",
+      "executed_query": "address_country",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 23.1,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "address_country"
+      },
+      "requested_query": "address_country",
+      "executed_query": "address_country",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 21,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "com.poc.order.infrastructure.persistence.row.OrderRow"
+      },
+      "requested_query": "com.poc.order.infrastructure.persistence.row.OrderRow",
+      "executed_query": "OrderRow",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java\",\"range\":[4,52,60],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java\",\"range\":[25,21,29],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java\",\"range\":[29,13,21],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[8,52,60],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#`\\u003cinit\\u003e`().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#`\\u003cinit\\u003e`().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[28,31,39],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#addressSnapshot.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#currency.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#orderId.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentId.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentMethod.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentToken.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#quoteId.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#status.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#totalMinor.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#userId.\",\"references\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#`\\u003cinit\\u003e`().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#addressSnapshot.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#currency.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#orderId.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentId.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentMethod.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentToken.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#quoteId.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#status.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#totalMinor.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#userId.\"]}",
+      "output_sha256": "2deb072a91fe8b7d500e75f154b219029a09245dbc6e91e85376e9cd8275bc06",
+      "output_bytes": 4897,
+      "output_full_bytes": 4897,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#addressSnapshot.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#currency.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#orderId.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentId.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentMethod.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentToken.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#quoteId.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#status.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#totalMinor.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#userId.\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java\",\"range\":[25,21,29],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java\",\"range\":[29,13,21],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java\",\"range\":[4,52,60],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[8,52,60],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[28,31,39],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#`<init>`().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#`<init>`().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#`<init>`().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#addressSnapshot.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#basketVersion.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#currency.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#orderId.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentId.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentMethod.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#paymentToken.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#quoteId.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#status.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#totalMinor.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/row/OrderRow#userId.\"]}",
+      "output_normalized_sha256": "a840a0299e2d1b1b84cf70e035dfe584543e7320604f7033f03592c0ea54b6c8",
+      "duration_ms": 143.3,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "com.poc.order.infrastructure.persistence.repository.MyBatisOrderRepository"
+      },
+      "requested_query": "com.poc.order.infrastructure.persistence.repository.MyBatisOrderRepository",
+      "executed_query": "MyBatisOrderRepository",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#`\\u003cinit\\u003e`().\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#appendHistory().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[88,15,28],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[94,15,28],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[61,19,32],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[64,15,28],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[223,15,28],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#findById().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[62,26,34],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[96,22,30],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[101,22,30],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[42,39,47],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[67,35,43],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[124,22,30],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[253,34,42],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#history().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#history().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[139,26,33],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#history().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[205,34,41],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[23,13,17],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[29,62,66],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[42,37,41],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[22,13,19],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[28,8,14],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[32,8,14],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[40,15,21],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[43,16,22],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[53,8,14],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[58,8,14],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[63,8,14],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[68,15,21],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#recordPaymentId().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#recordPaymentId().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[56,19,34],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#save().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#save().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[87,15,19],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#save().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[221,15,19],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#updateStatus().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#updateStatus().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[93,15,27],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#updateStatus().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[63,15,27],\"roles\":0}]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#`\\u003cinit\\u003e`().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#appendHistory().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#findById().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#history().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#recordPaymentId().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#save().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#updateStatus().\"]}",
+      "output_sha256": "cfd23eeecb82de4bfda07885085bcfe3a3e453ce7547587001275e94fa462604",
+      "output_bytes": 11432,
+      "output_full_bytes": 11432,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#`<init>`().\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[101,22,30],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[62,26,34],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[96,22,30],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[124,22,30],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[42,39,47],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[67,35,43],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[253,34,42],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#findById().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#findById().\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[87,15,19],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#save().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[221,15,19],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#save().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#save().\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[88,15,28],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[94,15,28],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[61,19,32],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[64,15,28],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[223,15,28],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#appendHistory().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#appendHistory().\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/OrderService.java\",\"range\":[93,15,27],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#updateStatus().\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[63,15,27],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#updateStatus().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#updateStatus().\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[56,19,34],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#recordPaymentId().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#recordPaymentId().\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[22,13,19],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[28,8,14],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[32,8,14],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[40,15,21],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[43,16,22],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[53,8,14],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[58,8,14],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[63,8,14],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[68,15,21],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[23,13,17],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[29,62,66],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java\",\"range\":[42,37,41],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\"},{\"references\":[{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[139,26,33],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#history().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[205,34,41],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/port/OrderRepository#history().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#history().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#`<init>`().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#appendHistory().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#findById().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#history().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#json.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#mapper.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#recordPaymentId().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#save().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository#updateStatus().\"]}",
+      "output_normalized_sha256": "2b8937fc5926d84f447b061e73ccb084e082094fdbcb85fce15564a90fe486e3",
+      "duration_ms": 68,
+      "error": null
+    },
+    {
+      "id": "r7",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "com.poc.order.domain.model.AddressSnapshot"
+      },
+      "requested_query": "com.poc.order.domain.model.AddressSnapshot",
+      "executed_query": "AddressSnapshot",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/CheckoutService.java\",\"range\":[6,34,49],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/CheckoutService.java\",\"range\":[42,8,23],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/AccountPort.java\",\"range\":[2,34,49],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/AccountPort.java\",\"range\":[8,4,19],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,40,55],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,67,82],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[3,34,49],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[29,11,26],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[4,34,49],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[16,24,39],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[24,11,26],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[26,48,63],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[14,34,49],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[343,15,30],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[6,34,49],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[213,8,23],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`\\u003cinit\\u003e`().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`\\u003cinit\\u003e`().\",\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[39,23,38],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`\\u003cinit\\u003e`().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[219,20,35],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`\\u003cinit\\u003e`().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[344,23,38],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`\\u003cinit\\u003e`().\",\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[213,38,53],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#city.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#country.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#fullName.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line1.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line2.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#state.\",\"references\":[]}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`\\u003cinit\\u003e`().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#city.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#country.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#fullName.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line1.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line2.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#state.\"]}",
+      "output_sha256": "996d00a4156f5efae4ce7c9e6525155a34ba9a0fed7a94cda6d7824af6a8b065",
+      "output_bytes": 6965,
+      "output_full_bytes": 6965,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#city.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#country.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#fullName.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line1.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line2.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\"},{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#state.\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/CheckoutService.java\",\"range\":[42,8,23],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/CheckoutService.java\",\"range\":[6,34,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/AccountPort.java\",\"range\":[2,34,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/port/AccountPort.java\",\"range\":[8,4,19],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Order.java\",\"range\":[6,40,55],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/domain/model/Quote.java\",\"range\":[6,67,82],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[29,11,26],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[3,34,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[16,24,39],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[24,11,26],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[26,48,63],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java\",\"range\":[4,34,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[14,34,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[343,15,30],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[213,8,23],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[6,34,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\"},{\"references\":[{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[39,23,38],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`<init>`().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[219,20,35],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`<init>`().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderApiMockedTest.java\",\"range\":[344,23,38],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`<init>`().\"},{\"documentPath\":\"order-service/src/test/java/com/poc/order/OrderSagaIntegrationTest.java\",\"range\":[213,38,53],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`<init>`().\"}],\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`<init>`().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#`<init>`().\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#city.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#country.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#fullName.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line1.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#line2.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#postalCode.\",\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/domain/model/AddressSnapshot#state.\"]}",
+      "output_normalized_sha256": "4a8c6951288079e05ec6b6a1f86f0a8483e1ce35b16046f9f9bb282c7b3f8eed",
+      "duration_ms": 33.2,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 200710,
+  "cost_usd": 0.1956736,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "fa51c339f648d61086b2a29cc917f420a4e0117a87ff1ad22a471df03f06621d",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

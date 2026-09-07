@@ -1,0 +1,209 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "agent-only",
+  "findings": {
+    "repositories": [
+      {
+        "name": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService.java:59 emits OUT_OF_STOCK and the provider schema fixes reason to that sole enum at line 6."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "order-service.yaml:43 subscribes to inventory.reservation-rejected.v1 using its local schema."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService.java:58-59 creates the rejected payload with reason OUT_OF_STOCK."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaResultListener.java:63-68 reads orderId but drops payload.reason before calling the saga."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "SagaOrchestrator.java:38-50 accepts no rejection reason and selects transitions only by event type and status."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "SagaTransitions.java:33-34 maps every reservation rejection to REJECTED_OUT_OF_STOCK."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.OrderStatus",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "OrderStatus.java:3-20 has only REJECTED_OUT_OF_STOCK for an inventory rejection terminal state."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1#/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "file_search",
+        "evidence": "inventory schema line 6 and order-service schema line 6 both restrict reason to OUT_OF_STOCK."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryIntegrationTest.java:135 asserts the rejected event reason is OUT_OF_STOCK."
+      },
+      {
+        "repo": "inventory-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "ContractValidationTest.java:66-67 validates the frozen rejected-event contract sample."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "OrderSagaIntegrationTest.java:150-153 covers only OUT_OF_STOCK mapping to REJECTED_OUT_OF_STOCK."
+      },
+      {
+        "repo": "order-service",
+        "suite": "SagaTransitionsTest",
+        "evidence_tier": "inferred",
+        "attribution": "file_search",
+        "evidence": "SagaTransitionsTest.java:37-39 asserts all reservation rejections end as REJECTED_OUT_OF_STOCK."
+      }
+    ]
+  },
+  "runner": "pi-codex",
+  "run_index": 3,
+  "run_started_at": "2026-09-05T08:11:12.712Z",
+  "elapsed_seconds": 86,
+  "tool_calls": 25,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 5,
+      "succeeded": 5,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    },
+    "read": {
+      "calls": 16,
+      "succeeded": 16,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 0,
+    "succeeded": 0,
+    "failed": 0
+  },
+  "product_playbook": null,
+  "product_tool_receipts": [],
+  "product_assisted_eligible": null,
+  "index_sha256": "none",
+  "product_provenance": null,
+  "tokens_consumed": 64370,
+  "cost_usd": 0.0953484,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "b608a3c7afa0e36835274a26cc1592b35de59712f863e12a6352b81d1da39e9d",
+  "contestant_config_sha256": "2a2a675cc0a6d2de8a1105ba178eb9651c488a35aad09a70e99c28a3965a7881",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

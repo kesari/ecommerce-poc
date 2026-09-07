@@ -1,0 +1,419 @@
+{
+  "change_id": "INT-003",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressDtoMapper.java:15 changes the AddressResponse line2 value."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "AccountClient.java:40 snapshots provider line2, which SagaOrchestrator.java:108 emits."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r5",
+        "evidence": "AddressDtoMapper is declared in account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java:8."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r6",
+        "evidence": "AddressController invokes mapper.toResponse for address GETs at AddressController.java:45 and :55."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AccountClient.java:24-40 binds line2 and copies it into AddressSnapshot."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressSnapshot.java:3 declares the line2 value carried from AccountClient."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaOrchestrator.java:108 writes snapshot line2 into order.confirmed payload."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account.yaml:41 defines the response and AccountClient.java:32-40 consumes its line2."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/line2",
+        "consumer_repos": [
+          "basket-service",
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "SagaOrchestrator.java:108 emits line2; basket-service.yaml:12 and shipment-service.yaml:12 consume the topic."
+      }
+    ],
+    "tests": []
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 4,
+  "run_started_at": "2026-09-05T07:08:18.872Z",
+  "elapsed_seconds": 137.5,
+  "tool_calls": 50,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 9,
+      "succeeded": 9,
+      "failed": 0
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "read": {
+      "calls": 32,
+      "succeeded": 32,
+      "failed": 0
+    },
+    "scip_search": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 8,
+    "succeeded": 8,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_sha256": "261d40f30818557e8e66e52b419e271fda08b0994e973c6d0378e44b477409d5",
+      "output_bytes": 114,
+      "output_full_bytes": 114,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_normalized_sha256": "66b6c4d5c21004c646008f9468062da7d509c55b9fff124d6698c6c4dfb36b66",
+      "duration_ms": 83.7,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 36.6,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 21.5,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 23.9,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "com.poc.account.infrastructure.mapping.AddressDtoMapper"
+      },
+      "requested_query": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+      "executed_query": "AddressDtoMapper",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"AddressDtoMapper\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[9,27,37]}}]}",
+      "output_sha256": "cc83557eb193eaa862fda75b807543379943478e00769d20995796fbe2662412",
+      "output_bytes": 1582,
+      "output_full_bytes": 1582,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]},\"matchSource\":\"displayName\",\"matchText\":\"AddressDtoMapper\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[9,27,37]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"}]}",
+      "output_normalized_sha256": "1d135143f65943a977561e1c4b5ac31559741a3573ecfbce9a85634d0097d8f1",
+      "duration_ms": 131.9,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "com.poc.account.infrastructure.mapping.AddressDtoMapper"
+      },
+      "requested_query": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+      "executed_query": "AddressDtoMapper",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[6,46,62],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[35,18,34],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[37,59,75],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[45,70,80],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[55,22,32],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[66,69,79],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[78,22,32],\"roles\":0}]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"]}",
+      "output_sha256": "1a618b3b8b65891e29f8c91d527e30ed3a358ae08ba0f0ccf03b70ea1deb6d81",
+      "output_bytes": 2689,
+      "output_full_bytes": 2689,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[35,18,34],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[37,59,75],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[6,46,62],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[45,70,80],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[55,22,32],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[66,69,79],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[78,22,32],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"]}",
+      "output_normalized_sha256": "61b58a45ce023e22ad96ada65882cf06ae3992b5ed2568f5375e6e896914f011",
+      "duration_ms": 86.3,
+      "error": null
+    },
+    {
+      "id": "r7",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "com.poc.order.infrastructure.client.AccountClient"
+      },
+      "requested_query": "com.poc.order.infrastructure.client.AccountClient",
+      "executed_query": "AccountClient",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"AccountClient\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[14,13,26]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,11,26]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#`\\u003cinit\\u003e`().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#`\\u003cinit\\u003e`().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,11,26]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#addressId.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#addressId.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,32,41]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#city.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#city.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,34,38]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#country.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#country.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,80,87]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#fullName.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#fullName.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,50,58]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#line1.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#line1.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,67,72]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#line2.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#line2.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,81,86]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#phoneNumber.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#phoneNumber.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[25,34,45]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#state.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#state.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,47,52]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#`\\u003cinit\\u003e`().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#`\\u003cinit\\u003e`().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[18,11,24]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#address().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#address().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[29,27,34]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#client.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#client.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[16,29,35]}}]}",
+      "output_sha256": "8cb5984bd8098a7296174869cdabf80a8256fe5305e459fc25aac4907d056ec1",
+      "output_bytes": 7548,
+      "output_full_bytes": 7548,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[14,13,26]},\"matchSource\":\"displayName\",\"matchText\":\"AccountClient\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[16,29,35]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#client.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#client.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[18,11,24]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#`<init>`().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#`<init>`().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,11,26]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,11,26]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#`<init>`().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#`<init>`().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,32,41]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#addressId.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#addressId.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,50,58]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#fullName.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#fullName.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,67,72]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#line1.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#line1.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[23,81,86]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#line2.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#line2.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,34,38]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#city.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#city.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,47,52]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#state.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#state.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,61,71]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#postalCode.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[24,80,87]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#country.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#country.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[25,34,45]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#AddressResponse#phoneNumber.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#AddressResponse#phoneNumber.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"range\":[29,27,34]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/infrastructure/client/AccountClient#address().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/infrastructure/client/AccountClient#address().\"}]}",
+      "output_normalized_sha256": "1ed662aee0b44990f5482cfb1c45dc11e5f10b272e150ab9f4c191a5aeae9904",
+      "duration_ms": 43.9,
+      "error": null
+    },
+    {
+      "id": "r8",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "com.poc.order.application.SagaOrchestrator"
+      },
+      "requested_query": "com.poc.order.application.SagaOrchestrator",
+      "executed_query": "SagaOrchestrator",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"SagaOrchestrator\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[20,13,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#`\\u003cinit\\u003e`().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#`\\u003cinit\\u003e`().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[29,11,27]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#addressPayload().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#addressPayload().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[103,39,53]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#clock.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#clock.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[27,24,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#inbox.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#inbox.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[25,34,39]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#itemPayload().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#itemPayload().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[115,39,50]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#log.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#log.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[22,32,35]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#onResultEvent().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#onResultEvent().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[38,16,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#orders.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#orders.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[24,34,40]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#outbox.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#outbox.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[26,35,41]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#payloadFor().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#payloadFor().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[73,32,42]}},{\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#statusOf().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#statusOf().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[123,23,31]}}]}",
+      "output_sha256": "ee3074521051f5aeab84a603c2636f931b3a3e645cf296a15e63f0cc9eab8df7",
+      "output_bytes": 5566,
+      "output_full_bytes": 5566,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[103,39,53]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#addressPayload().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#addressPayload().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[115,39,50]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#itemPayload().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#itemPayload().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[123,23,31]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#statusOf().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#statusOf().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[20,13,29]},\"matchSource\":\"displayName\",\"matchText\":\"SagaOrchestrator\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[22,32,35]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#log.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#log.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[24,34,40]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#orders.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#orders.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[25,34,39]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#inbox.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#inbox.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[26,35,41]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#outbox.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#outbox.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[27,24,29]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#clock.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#clock.\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[29,11,27]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#`<init>`().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#`<init>`().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[38,16,29]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#onResultEvent().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#onResultEvent().\"},{\"definition\":{\"documentPath\":\"order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java\",\"range\":[73,32,42]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/order/application/SagaOrchestrator#payloadFor().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/order_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/order_service 0.1.0 com/poc/order/application/SagaOrchestrator#payloadFor().\"}]}",
+      "output_normalized_sha256": "0d45a59fa5e01b66f0a358843dc3e76c9ebf6ea328b6f9922a2b3183cd37d7bb",
+      "duration_ms": 21.9,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 202527,
+  "cost_usd": 0.1850836,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "ad447f83575a9745da6a07e493861c9a289c08bc4a3d644217c5e10e0c1a7075",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

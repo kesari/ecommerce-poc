@@ -1,0 +1,118 @@
+{
+  "change_id": "REST-003",
+  "contestant": "scip-first",
+  "metrics": {
+    "symbol_recall": 0.6429,
+    "test_recall": 0.3333,
+    "cross_repo_recall": 0.7692,
+    "contract_recall": 1.0,
+    "precision": 0.4118,
+    "evidence_quality": 1.0,
+    "latency": 1.0,
+    "critical_penalty": 0.75,
+    "composite": 0.7935
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 3,
+      "reported": 2,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 9,
+      "matched": 3,
+      "false_positives": 6,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 1,
+      "critical_runtime_dependency": 1,
+      "test_suite": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "commerce-web",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.basket.domain.model.basket",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service ordersagaintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.order.application.checkoutservice",
+      "com.poc.order.application.orderservice",
+      "com.poc.order.application.port.basketport",
+      "com.poc.order.domain.model.order",
+      "com.poc.order.infrastructure.persistence.repository.mybatisorderrepository",
+      "com.poc.order.infrastructure.persistence.repository.mybatisquoterepository"
+    ],
+    "contracts": [
+      "openapi openapi:basket.yaml#/components/schemas/basketresponse"
+    ],
+    "tests": [
+      "basket-service basketapimockedtest",
+      "basket-service openapicontracttest",
+      "order-service orderapimockedtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "extracted": 8,
+    "contract_matched": 3,
+    "compiler": 3,
+    "inferred": 3
+  },
+  "raw": {
+    "elapsed_seconds": 144,
+    "tokens_consumed": 230281
+  },
+  "answer_sha256": "8479de63b2e333e9c09bdeaebc6358620aee9e65cf813d8c0255d3f5054b6d08",
+  "ground_truth_sha256": "a7eada35561526fa3b000b8813772062d9edbb8a845499e4bb5818e27316d229",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}

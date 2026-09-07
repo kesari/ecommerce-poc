@@ -1,0 +1,355 @@
+{
+  "change_id": "DB-001",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressMapper.xml:8,14,39 still query/write postal_code after V1__identity_schema.sql:27 renames it."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.persistence.mapper.AddressMapper",
+        "repo": "account-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressMapper.xml:8,14,39 retains postal_code in select, insert, and update SQL."
+      },
+      {
+        "fqn": "com.poc.account.infrastructure.persistence.repository.MyBatisAddressRepository",
+        "repo": "account-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "MyBatisAddressRepository.java:26,33,39,45 delegates CRUD to the stale mapper."
+      }
+    ],
+    "contracts": [],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "AccountFlowComponentTest.java:118-143 exercises address create, read, and update against PostgreSQL."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 1,
+  "run_started_at": "2026-09-05T05:33:14.844Z",
+  "elapsed_seconds": 95.2,
+  "tool_calls": 43,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 9,
+      "succeeded": 9,
+      "failed": 0
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "read": {
+      "calls": 26,
+      "succeeded": 25,
+      "failed": 1
+    },
+    "scip_search": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 7,
+    "succeeded": 7,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "postal_code"
+      },
+      "requested_query": "postal_code",
+      "executed_query": "postal_code",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_sha256": "261d40f30818557e8e66e52b419e271fda08b0994e973c6d0378e44b477409d5",
+      "output_bytes": 114,
+      "output_full_bytes": 114,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_normalized_sha256": "66b6c4d5c21004c646008f9468062da7d509c55b9fff124d6698c6c4dfb36b66",
+      "duration_ms": 71.6,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "postal_code"
+      },
+      "requested_query": "postal_code",
+      "executed_query": "postal_code",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 34,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "postal_code"
+      },
+      "requested_query": "postal_code",
+      "executed_query": "postal_code",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 21.1,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "postal_code"
+      },
+      "requested_query": "postal_code",
+      "executed_query": "postal_code",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 21,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "com.poc.account.infrastructure.persistence.mapper.AddressMapper"
+      },
+      "requested_query": "com.poc.account.infrastructure.persistence.mapper.AddressMapper",
+      "executed_query": "AddressMapper",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"AddressMapper\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[11,17,30]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[21,8,27]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[17,21,36]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[15,25,42]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[13,9,15]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[19,8,14]}}]}",
+      "output_sha256": "0129fd2532a2a813393382503ff248032383fcfbcc5349f4f84dc817d40acfc6",
+      "output_bytes": 3246,
+      "output_full_bytes": 3246,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[11,17,30]},\"matchSource\":\"displayName\",\"matchText\":\"AddressMapper\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[13,9,15]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[15,25,42]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[17,21,36]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[19,8,14]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/mapper/AddressMapper.java\",\"range\":[21,8,27]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\"}]}",
+      "output_normalized_sha256": "8d3a29dc13722dd9998073286297083a665d5fdc754a666b88e98265f20f8329",
+      "duration_ms": 99.9,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "com.poc.account.infrastructure.persistence.mapper.AddressMapper"
+      },
+      "requested_query": "com.poc.account.infrastructure.persistence.mapper.AddressMapper",
+      "executed_query": "AddressMapper",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[4,57,70],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[16,18,31],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[18,36,49],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[50,22,41],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[38,22,37],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[32,22,39],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[25,15,21],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[44,22,28],\"roles\":0}]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\"]}",
+      "output_sha256": "d47f27a030c09149fac9faf7b001ccee1f3ed39524c27fbe21cafcaa7ff9afab",
+      "output_bytes": 4282,
+      "output_full_bytes": 4282,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[16,18,31],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[18,36,49],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[4,57,70],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[25,15,21],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[32,22,39],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[38,22,37],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[44,22,28],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[50,22,41],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#deleteByIdAndUserId().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findAllByUserId().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#findByIdAndUserId().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#insert().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/mapper/AddressMapper#update().\"]}",
+      "output_normalized_sha256": "fe5659699f91df299ab92bc3aa8dab0d62b2cc796d8ae8452ba6d3e9d269c75a",
+      "duration_ms": 62.3,
+      "error": null
+    },
+    {
+      "id": "r7",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "com.poc.account.infrastructure.persistence.repository.MyBatisAddressRepository"
+      },
+      "requested_query": "com.poc.account.infrastructure.persistence.repository.MyBatisAddressRepository",
+      "executed_query": "MyBatisAddressRepository",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"MyBatisAddressRepository\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[14,13,37]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#`\\u003cinit\\u003e`().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#`\\u003cinit\\u003e`().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[18,11,35]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#deleteByIdAndUserId().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#deleteByIdAndUserId().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[49,19,38]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findAllByUserId().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findAllByUserId().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[37,25,40]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findByIdAndUserId().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findByIdAndUserId().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[31,29,46]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#mapper.\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#mapper.\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[16,32,38]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#save().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#save().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[24,19,23]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toDomain().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toDomain().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[59,27,35]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toRow().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toRow().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[53,30,35]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#update().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#update().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[43,19,25]}}]}",
+      "output_sha256": "05cbdc5797e6e0e6ec1393fafc45846c1de2a940b7e58a620fbd1517e975f9e0",
+      "output_bytes": 5805,
+      "output_full_bytes": 5805,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[14,13,37]},\"matchSource\":\"displayName\",\"matchText\":\"MyBatisAddressRepository\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[16,32,38]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#mapper.\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#mapper.\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[18,11,35]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#`<init>`().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#`<init>`().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[24,19,23]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#save().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#save().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[31,29,46]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findByIdAndUserId().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findByIdAndUserId().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[37,25,40]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findAllByUserId().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#findAllByUserId().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[43,19,25]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#update().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#update().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[49,19,38]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#deleteByIdAndUserId().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#deleteByIdAndUserId().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[53,30,35]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toRow().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toRow().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"range\":[59,27,35]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toDomain().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository#toDomain().\"}]}",
+      "output_normalized_sha256": "42931c3a040bc1433abb3775edee5453e2026c4e9c1387955d71f7ba7b2cb3a7",
+      "duration_ms": 22.7,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 128165,
+  "cost_usd": 0.140348,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "a8a838d0408ba1281dd6b0a9dfd823fc817696811c8afea34fd60df5ffa2b9a3",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

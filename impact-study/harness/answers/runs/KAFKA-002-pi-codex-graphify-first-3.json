@@ -1,0 +1,364 @@
+{
+  "change_id": "KAFKA-002",
+  "contestant": "graphify-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService.java:59 emits OUT_OF_STOCK and the schema limits reason to that value at line 6."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "order-service.yaml:43 subscribes to the provider's rejection topic with its copied one-value schema."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.inventory.application.InventoryService",
+        "repo": "inventory-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryService.java:58-59 constructs the changed rejection payload."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaResultListener.java:63-64 forwards eventType and orderId but drops payload.reason."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "SagaOrchestrator.java:35 accepts no rejection reason, so EXPIRED cannot reach saga decisions."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaTransitions",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaTransitions.java:33-34 maps every rejection event to REJECTED_OUT_OF_STOCK."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "kafka",
+        "identifier": "inventory.reservation-rejected.v1#/reason",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "inventory-service schema line 6 and order-service's copied schema line 6 both allow only OUT_OF_STOCK."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "inventory-service",
+        "suite": "InventoryIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "InventoryIntegrationTest.java:135 asserts the emitted reason is OUT_OF_STOCK."
+      },
+      {
+        "repo": "inventory-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "ContractValidationTest.java:66-67 has the frozen rejection sample and needs EXPIRED coverage."
+      },
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "OrderSagaIntegrationTest.java:150-153 tests only OUT_OF_STOCK and its resulting status."
+      },
+      {
+        "repo": "order-service",
+        "suite": "SagaTransitionsTest",
+        "evidence_tier": "inferred",
+        "attribution": "agent_inferred",
+        "evidence": "SagaTransitionsTest.java:37-39 asserts all rejection events end as REJECTED_OUT_OF_STOCK."
+      }
+    ]
+  },
+  "runner": "pi-codex-graphify-first",
+  "run_index": 3,
+  "run_started_at": "2026-09-05T08:31:34.816Z",
+  "elapsed_seconds": 96.4,
+  "tool_calls": 30,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 6,
+      "succeeded": 6,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    },
+    "read": {
+      "calls": 20,
+      "succeeded": 20,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 5,
+    "succeeded": 5,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "tests",
+      "tool": "graphify_query",
+      "operation": "query",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "inventory-service OUT_OF_STOCK consumers across repositories"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['stock', 'OUT_OF_STOCK', 'InventoryService', 'InventoryIntegrationTest.java', '.commitOfExpiredReservationRestoresStockAndFails()', 'OutboxRepository', '.service()'] | 268 nodes found\n\n[!] TRUNCATED: showing 56 of 268 nodes (~2000-token budget). The answer may be among the 212 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE stock [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=L1 community=]\nNODE OUT_OF_STOCK [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L6 community=]\nNODE InventoryService [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L24 community=]\nNODE InventoryIntegrationTest.java [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L1 community=]\nNODE .commitOfExpiredReservationRestoresStockAndFails() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L195 community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE InventoryIntegrationTest [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L46 community=]\nNODE InventoryService.java [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L1 community=]\nNODE inventory-service::uuid [src= loc= community=]\nNODE InventoryCommandListener.java [src=src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java loc=L1 community=]\nNODE OrderService [src=src/main/java/com/poc/order/application/OrderService.java loc=L31 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE ReservationItem [src=src/main/java/com/poc/inventory/domain/model/ReservationItem.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE SagaOrchestrator [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L20 community=]\nNODE InventoryCommandListener [src=src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java loc=L21 community=]\nNODE inventory-service::list [src= loc= community=]\nNODE OutboxRepository [src=src/main/java/com/poc/inventory/application/port/OutboxRepository.java loc=L8 community=]\nNODE StockRepository [src=src/main/java/com/poc/inventory/application/port/StockRepository.java loc=L9 community=]\nNODE ReservationRepository [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L11 community=]\nNODE MyBatisOutboxRepository [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L14 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE .commit() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L76 community=]\nNODE .reserve() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L44 community=]\nNODE MyBatisOutboxRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L1 community=]\nNODE .release() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L107 community=]\nNODE ReservationStatus [src=src/main/java/com/poc/inventory/domain/model/ReservationStatus.java loc=L3 community=]\nNODE .awaitEvent() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L285 community=]\nNODE com.fasterxml.jackson.databind.JsonNode [src= loc= community=]\nNODE inventory-service::instant [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L15 community=]\nNODE .availableOf() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L238 community=]\nNODE .publishReserve() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L246 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE .emit() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L144 community=]\nNODE InboxRepository [src=src/main/java/com/poc/inventory/application/port/InboxRepository.java loc=L5 community=]\nNODE OutboxPublisher.java [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L1 community=]\nNODE OutboxPublisher [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L10 community=]\nNODE FakeOutboxRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L316 community=]\nNODE inventory-service::map [src= loc= community=]\nNODE .publishCommand() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L255 community=]\nNODE .OrderService() [src=src/main/java/com/poc/order/application/OrderService.java loc=L41 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.apache.kafka.clients.consumer.ConsumerRecord [src= loc= community=]\nNODE .InventoryService() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L35 community=]\nNODE .returnStock() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L135 community=]\nNODE V1__inventory_schema.sql [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=None community=]\nNODE inventory-service::clock [src= loc= community=]\nNODE org.springframework.context.annotation.Bean [src= loc= community=]\nNODE .commitFailed() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L139 community=]\nNODE .InventoryCommandListener() [src=src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java loc=L31 community=]\nNODE OutboxRepository.java [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L1 community=]\nNODE .append() [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L10 community=]\n... (truncated — 212 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "c1bcceb8017d5cda9347be139db2906c8180c2a3d7d2c21fcb826bc632126cdc",
+      "output_bytes": 6859,
+      "output_full_bytes": 6859,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['stock', 'OUT_OF_STOCK', 'InventoryService', 'InventoryIntegrationTest.java', '.commitOfExpiredReservationRestoresStockAndFails()', 'OutboxRepository', '.service()'] | 268 nodes found\n\n[!] TRUNCATED: showing 56 of 268 nodes (~2000-token budget). The answer may be among the 212 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE stock [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=L1 community=]\nNODE OUT_OF_STOCK [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L6 community=]\nNODE InventoryService [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L24 community=]\nNODE InventoryIntegrationTest.java [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L1 community=]\nNODE .commitOfExpiredReservationRestoresStockAndFails() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L195 community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE InventoryIntegrationTest [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L46 community=]\nNODE InventoryService.java [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L1 community=]\nNODE inventory-service::uuid [src= loc= community=]\nNODE InventoryCommandListener.java [src=src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java loc=L1 community=]\nNODE OrderService [src=src/main/java/com/poc/order/application/OrderService.java loc=L31 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE ReservationItem [src=src/main/java/com/poc/inventory/domain/model/ReservationItem.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE SagaOrchestrator [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L20 community=]\nNODE InventoryCommandListener [src=src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java loc=L21 community=]\nNODE inventory-service::list [src= loc= community=]\nNODE OutboxRepository [src=src/main/java/com/poc/inventory/application/port/OutboxRepository.java loc=L8 community=]\nNODE StockRepository [src=src/main/java/com/poc/inventory/application/port/StockRepository.java loc=L9 community=]\nNODE ReservationRepository [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L11 community=]\nNODE MyBatisOutboxRepository [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L14 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE .commit() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L76 community=]\nNODE .reserve() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L44 community=]\nNODE MyBatisOutboxRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L1 community=]\nNODE .release() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L107 community=]\nNODE ReservationStatus [src=src/main/java/com/poc/inventory/domain/model/ReservationStatus.java loc=L3 community=]\nNODE .awaitEvent() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L285 community=]\nNODE com.fasterxml.jackson.databind.JsonNode [src= loc= community=]\nNODE inventory-service::instant [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L15 community=]\nNODE .availableOf() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L238 community=]\nNODE .publishReserve() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L246 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE .emit() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L144 community=]\nNODE InboxRepository [src=src/main/java/com/poc/inventory/application/port/InboxRepository.java loc=L5 community=]\nNODE OutboxPublisher.java [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L1 community=]\nNODE OutboxPublisher [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L10 community=]\nNODE FakeOutboxRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L316 community=]\nNODE inventory-service::map [src= loc= community=]\nNODE .publishCommand() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L255 community=]\nNODE .OrderService() [src=src/main/java/com/poc/order/application/OrderService.java loc=L41 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.apache.kafka.clients.consumer.ConsumerRecord [src= loc= community=]\nNODE .InventoryService() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L35 community=]\nNODE .returnStock() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L135 community=]\nNODE V1__inventory_schema.sql [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=None community=]\nNODE inventory-service::clock [src= loc= community=]\nNODE org.springframework.context.annotation.Bean [src= loc= community=]\nNODE .commitFailed() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L139 community=]\nNODE .InventoryCommandListener() [src=src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java loc=L31 community=]\nNODE OutboxRepository.java [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L1 community=]\nNODE .append() [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L10 community=]\n... (truncated — 212 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "dc34f247a2f1128d7476aabc60291047a4ae8b7b6d380b40e94075af1b83c340",
+      "duration_ms": 215.1,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "graphify_query",
+      "operation": "affected",
+      "parameters": {
+        "operation": "affected",
+        "query": "OUT_OF_STOCK"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "No unique node match for OUT_OF_STOCK",
+      "output_sha256": "9c7129500762a2ab706c4364643f3b139b3289834065f17b377ead2c2a52e580",
+      "output_bytes": 37,
+      "output_full_bytes": 37,
+      "truncated": false,
+      "output_normalized": "No unique node match for OUT_OF_STOCK",
+      "output_normalized_sha256": "1c51a4e0daa5b610d2bee19ececdf89cb861ff3a6e1915661bb88d324a42291c",
+      "duration_ms": 106.6,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "graphify_query",
+      "operation": "explain",
+      "parameters": {
+        "operation": "explain",
+        "query": "OUT_OF_STOCK"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Node: OUT_OF_STOCK\n  ID:        inventory-service::ref_out_of_stock\n  Source:    asyncapi/schemas/inventory.reservation-rejected.v1.json L6\n  Type:      concept\n  Community: \n  Degree:    1\n\nConnections (1):\n  <-- enum [extends] [EXTRACTED] asyncapi/schemas/inventory.reservation-rejected.v1.json:L6",
+      "output_sha256": "14815f500650917f98a0249c58e90d426f112cbe8d9c3b7cc6ec1dcaa96efce7",
+      "output_bytes": 299,
+      "output_full_bytes": 299,
+      "truncated": false,
+      "output_normalized": "Node: OUT_OF_STOCK\n  ID:        inventory-service::ref_out_of_stock\n  Source:    asyncapi/schemas/inventory.reservation-rejected.v1.json L6\n  Type:      concept\n  Community: \n  Degree:    1\n\nConnections (1):\n  <-- enum [extends] [EXTRACTED] asyncapi/schemas/inventory.reservation-rejected.v1.json:L6",
+      "output_normalized_sha256": "900f636ace91668ca5dfb15fa66b5338ffb25fe59cf1065dd674b31e95ded162",
+      "duration_ms": 182.8,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "What breaks across repositories if inventory.reservation-rejected gains a new EXPIRED reason alongside OUT_OF_STOCK?"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['REJECTED_OUT_OF_STOCK', 'inventory.reservation-rejected.v1.json', 'reason', 'EXPIRED', '.frozenContractSamplesValidateAgainstSchemas()', 'InventoryIntegrationTest.java', '.newRefreshMaterial()', '.commitOfExpiredReservationRestoresStockAndFails()', 'OutboxRepository', 'REJECTED_PAYMENT', 'Reservation', 'stock'] | 333 nodes found\n\n[!] TRUNCATED: showing 56 of 333 nodes (~2000-token budget). The answer may be among the 277 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE REJECTED_OUT_OF_STOCK [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L11 community=]\nNODE inventory.reservation-rejected.v1.json [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L1 community=]\nNODE reason [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L5 community=]\nNODE EXPIRED [src=asyncapi/schemas/inventory.release.requested.v1.json loc=L8 community=]\nNODE .frozenContractSamplesValidateAgainstSchemas() [src=src/test/java/com/poc/inventory/ContractValidationTest.java loc=L57 community=]\nNODE InventoryIntegrationTest.java [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L1 community=]\nNODE .newRefreshMaterial() [src=src/main/java/com/poc/account/application/TokenService.java loc=L32 community=]\nNODE .commitOfExpiredReservationRestoresStockAndFails() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L195 community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\nNODE REJECTED_PAYMENT [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L14 community=]\nNODE Reservation [src=src/main/java/com/poc/inventory/domain/model/Reservation.java loc=L7 community=]\nNODE stock [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=L1 community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE InventoryIntegrationTest [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L46 community=]\nNODE InventoryService.java [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L1 community=]\nNODE inventory-service::uuid [src= loc= community=]\nNODE OrderService [src=src/main/java/com/poc/order/application/OrderService.java loc=L31 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE ReservationItem [src=src/main/java/com/poc/inventory/domain/model/ReservationItem.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE SagaOrchestrator [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L20 community=]\nNODE inventory-service::list [src= loc= community=]\nNODE MyBatisReservationRepository.java [src=src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisReservationRepository.java loc=L1 community=]\nNODE StockRepository [src=src/main/java/com/poc/inventory/application/port/StockRepository.java loc=L9 community=]\nNODE TokenService [src=src/main/java/com/poc/account/application/TokenService.java loc=L16 community=]\nNODE ReservationRepository [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L11 community=]\nNODE MyBatisOutboxRepository [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L14 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE ContractValidationTest [src=src/test/java/com/poc/inventory/ContractValidationTest.java loc=L20 community=]\nNODE MyBatisOutboxRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L1 community=]\nNODE ReservationStatus [src=src/main/java/com/poc/inventory/domain/model/ReservationStatus.java loc=L3 community=]\nNODE .awaitEvent() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L285 community=]\nNODE .issueTokens() [src=src/main/java/com/poc/account/application/AuthService.java loc=L87 community=]\nNODE com.fasterxml.jackson.databind.JsonNode [src= loc= community=]\nNODE inventory-service::instant [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L15 community=]\nNODE .availableOf() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L238 community=]\nNODE .publishReserve() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L246 community=]\nNODE ReservationRepository.java [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L1 community=]\nNODE OutboxPublisher.java [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L1 community=]\nNODE OutboxPublisher [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L10 community=]\nNODE FakeOutboxRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L316 community=]\nNODE inventory-service::map [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisReservationRepository.java loc=L36 community=]\nNODE .publishCommand() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L255 community=]\nNODE .OrderService() [src=src/main/java/com/poc/order/application/OrderService.java loc=L41 community=]\nNODE org.apache.kafka.clients.consumer.ConsumerRecord [src= loc= community=]\nNODE .returnStock() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L135 community=]\nNODE V1__inventory_schema.sql [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=None community=]\nNODE enum [src=asyncapi/schemas/inventory.release.requested.v1.json loc=L8 community=]\nNODE inventory-service::clock [src= loc= community=]\nNODE org.springframework.context.annotation.Bean [src= loc= community=]\n... (truncated — 277 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "f37c03b812bd36c86d007f9379cf799de94dce775c9cbe019ee3e5a3793b0a45",
+      "output_bytes": 6916,
+      "output_full_bytes": 6916,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['REJECTED_OUT_OF_STOCK', 'inventory.reservation-rejected.v1.json', 'reason', 'EXPIRED', '.frozenContractSamplesValidateAgainstSchemas()', 'InventoryIntegrationTest.java', '.newRefreshMaterial()', '.commitOfExpiredReservationRestoresStockAndFails()', 'OutboxRepository', 'REJECTED_PAYMENT', 'Reservation', 'stock'] | 333 nodes found\n\n[!] TRUNCATED: showing 56 of 333 nodes (~2000-token budget). The answer may be among the 277 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE REJECTED_OUT_OF_STOCK [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L11 community=]\nNODE inventory.reservation-rejected.v1.json [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L1 community=]\nNODE reason [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L5 community=]\nNODE EXPIRED [src=asyncapi/schemas/inventory.release.requested.v1.json loc=L8 community=]\nNODE .frozenContractSamplesValidateAgainstSchemas() [src=src/test/java/com/poc/inventory/ContractValidationTest.java loc=L57 community=]\nNODE InventoryIntegrationTest.java [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L1 community=]\nNODE .newRefreshMaterial() [src=src/main/java/com/poc/account/application/TokenService.java loc=L32 community=]\nNODE .commitOfExpiredReservationRestoresStockAndFails() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L195 community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\nNODE REJECTED_PAYMENT [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L14 community=]\nNODE Reservation [src=src/main/java/com/poc/inventory/domain/model/Reservation.java loc=L7 community=]\nNODE stock [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=L1 community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderStatus [src=src/main/java/com/poc/order/domain/model/OrderStatus.java loc=L3 community=]\nNODE SagaTransitionsTest.java [src=src/test/java/com/poc/order/SagaTransitionsTest.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE SagaTransitions.java [src=src/main/java/com/poc/order/application/SagaTransitions.java loc=L1 community=]\nNODE InventoryIntegrationTest [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L46 community=]\nNODE InventoryService.java [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L1 community=]\nNODE inventory-service::uuid [src= loc= community=]\nNODE OrderService [src=src/main/java/com/poc/order/application/OrderService.java loc=L31 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE ReservationItem [src=src/main/java/com/poc/inventory/domain/model/ReservationItem.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE SagaOrchestrator [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L20 community=]\nNODE inventory-service::list [src= loc= community=]\nNODE MyBatisReservationRepository.java [src=src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisReservationRepository.java loc=L1 community=]\nNODE StockRepository [src=src/main/java/com/poc/inventory/application/port/StockRepository.java loc=L9 community=]\nNODE TokenService [src=src/main/java/com/poc/account/application/TokenService.java loc=L16 community=]\nNODE ReservationRepository [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L11 community=]\nNODE MyBatisOutboxRepository [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L14 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE ContractValidationTest [src=src/test/java/com/poc/inventory/ContractValidationTest.java loc=L20 community=]\nNODE MyBatisOutboxRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L1 community=]\nNODE ReservationStatus [src=src/main/java/com/poc/inventory/domain/model/ReservationStatus.java loc=L3 community=]\nNODE .awaitEvent() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L285 community=]\nNODE .issueTokens() [src=src/main/java/com/poc/account/application/AuthService.java loc=L87 community=]\nNODE com.fasterxml.jackson.databind.JsonNode [src= loc= community=]\nNODE inventory-service::instant [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L15 community=]\nNODE .availableOf() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L238 community=]\nNODE .publishReserve() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L246 community=]\nNODE ReservationRepository.java [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L1 community=]\nNODE OutboxPublisher.java [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L1 community=]\nNODE OutboxPublisher [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L10 community=]\nNODE FakeOutboxRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L316 community=]\nNODE inventory-service::map [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisReservationRepository.java loc=L36 community=]\nNODE .publishCommand() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L255 community=]\nNODE .OrderService() [src=src/main/java/com/poc/order/application/OrderService.java loc=L41 community=]\nNODE org.apache.kafka.clients.consumer.ConsumerRecord [src= loc= community=]\nNODE .returnStock() [src=src/main/java/com/poc/inventory/application/InventoryService.java loc=L135 community=]\nNODE V1__inventory_schema.sql [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=None community=]\nNODE enum [src=asyncapi/schemas/inventory.release.requested.v1.json loc=L8 community=]\nNODE inventory-service::clock [src= loc= community=]\nNODE org.springframework.context.annotation.Bean [src= loc= community=]\n... (truncated — 277 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "0aea6f0a81a17aee9ee686981de489a59ef1046f74505365ee823556d6c644a2",
+      "duration_ms": 222.1,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "graphify_query",
+      "operation": "query",
+      "parameters": {
+        "operation": "query",
+        "query": "OUT_OF_STOCK test coverage in inventory-service"
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['stock', 'OUT_OF_STOCK', 'test', 'InventoryIntegrationTest.java', '.commitOfExpiredReservationRestoresStockAndFails()', 'OutboxRepository', '.service()'] | 244 nodes found\n\n[!] TRUNCATED: showing 62 of 244 nodes (~2000-token budget). The answer may be among the 182 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE stock [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=L1 community=]\nNODE OUT_OF_STOCK [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L6 community=]\nNODE test [src=package.json loc=L11 community=]\nNODE InventoryIntegrationTest.java [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L1 community=]\nNODE .commitOfExpiredReservationRestoresStockAndFails() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L195 community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE InventoryIntegrationTest [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L46 community=]\nNODE inventory-service::uuid [src= loc= community=]\nNODE OrderService [src=src/main/java/com/poc/order/application/OrderService.java loc=L31 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE ReservationItem [src=src/main/java/com/poc/inventory/domain/model/ReservationItem.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE SagaOrchestrator [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L20 community=]\nNODE inventory-service::list [src= loc= community=]\nNODE StockRepository [src=src/main/java/com/poc/inventory/application/port/StockRepository.java loc=L9 community=]\nNODE ReservationRepository [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L11 community=]\nNODE MyBatisOutboxRepository [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L14 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE MyBatisOutboxRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L1 community=]\nNODE ReservationStatus [src=src/main/java/com/poc/inventory/domain/model/ReservationStatus.java loc=L3 community=]\nNODE .awaitEvent() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L285 community=]\nNODE com.fasterxml.jackson.databind.JsonNode [src= loc= community=]\nNODE inventory-service::instant [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L15 community=]\nNODE .availableOf() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L238 community=]\nNODE .publishReserve() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L246 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE OutboxPublisher.java [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L1 community=]\nNODE OutboxPublisher [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L10 community=]\nNODE FakeOutboxRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L316 community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE inventory-service::map [src= loc= community=]\nNODE .publishCommand() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L255 community=]\nNODE .OrderService() [src=src/main/java/com/poc/order/application/OrderService.java loc=L41 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.apache.kafka.clients.consumer.ConsumerRecord [src= loc= community=]\nNODE V1__inventory_schema.sql [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=None community=]\nNODE inventory-service::clock [src= loc= community=]\nNODE org.springframework.context.annotation.Bean [src= loc= community=]\nNODE OutboxRepository.java [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L1 community=]\nNODE .append() [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L10 community=]\nNODE PendingEvent [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L16 community=]\nNODE .SagaOrchestrator() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L30 community=]\nNODE .findUnpublished() [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L12 community=]\nNODE .OutboxPublisher() [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L19 community=]\nNODE inventory-service::assertthat [src= loc= community=]\nNODE enum [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L6 community=]\nNODE inventory-service::duration [src= loc= community=]\nNODE org.apache.kafka.clients.producer.KafkaProducer [src= loc= community=]\nNODE org.junit.jupiter.api.BeforeAll [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.boot.test.context.TestConfiguration [src= loc= community=]\nNODE org.springframework.context.annotation.Primary [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE inventory-service::producerrecord [src= loc= community=]\nNODE .advance() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L325 community=]\n... (truncated — 182 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_sha256": "dc6729b4c4474995b113f44c17391e0cc2ad57d9a511ae85b904699b23131a9b",
+      "output_bytes": 6812,
+      "output_full_bytes": 6812,
+      "truncated": false,
+      "output_normalized": "Graph: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/graphify/merged-graph.json (4028 nodes) | Traversal: BFS depth=2 | Start: ['stock', 'OUT_OF_STOCK', 'test', 'InventoryIntegrationTest.java', '.commitOfExpiredReservationRestoresStockAndFails()', 'OutboxRepository', '.service()'] | 244 nodes found\n\n[!] TRUNCATED: showing 62 of 244 nodes (~2000-token budget). The answer may be among the 182 cut nodes — raise the token budget (CLI: --budget) or narrow the query (e.g. context_filter=['call'], or get_node for a specific symbol).\n\nNODE stock [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=L1 community=]\nNODE OUT_OF_STOCK [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L6 community=]\nNODE test [src=package.json loc=L11 community=]\nNODE InventoryIntegrationTest.java [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L1 community=]\nNODE .commitOfExpiredReservationRestoresStockAndFails() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L195 community=]\nNODE OutboxRepository [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L8 community=]\nNODE .service() [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L12 community=]\nNODE OrderApiMockedTest.java [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L1 community=]\nNODE OrderService.java [src=src/main/java/com/poc/order/application/OrderService.java loc=L1 community=]\nNODE InventoryIntegrationTest [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L46 community=]\nNODE inventory-service::uuid [src= loc= community=]\nNODE OrderService [src=src/main/java/com/poc/order/application/OrderService.java loc=L31 community=]\nNODE org.junit.jupiter.api.Test [src= loc= community=]\nNODE ReservationItem [src=src/main/java/com/poc/inventory/domain/model/ReservationItem.java loc=L5 community=]\nNODE SagaOrchestrator.java [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L1 community=]\nNODE SagaOrchestrator [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L20 community=]\nNODE inventory-service::list [src= loc= community=]\nNODE StockRepository [src=src/main/java/com/poc/inventory/application/port/StockRepository.java loc=L9 community=]\nNODE ReservationRepository [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L11 community=]\nNODE MyBatisOutboxRepository [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L14 community=]\nNODE com.fasterxml.jackson.databind.ObjectMapper [src= loc= community=]\nNODE MyBatisOutboxRepository.java [src=src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java loc=L1 community=]\nNODE ReservationStatus [src=src/main/java/com/poc/inventory/domain/model/ReservationStatus.java loc=L3 community=]\nNODE .awaitEvent() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L285 community=]\nNODE com.fasterxml.jackson.databind.JsonNode [src= loc= community=]\nNODE inventory-service::instant [src= loc= community=]\nNODE .findByOrderId() [src=src/main/java/com/poc/inventory/application/port/ReservationRepository.java loc=L15 community=]\nNODE .availableOf() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L238 community=]\nNODE .publishReserve() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L246 community=]\nNODE .downstreamUnavailable() [src=src/main/java/com/poc/bff/api/GlobalExceptionHandler.java loc=L23 community=]\nNODE OutboxPublisher.java [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L1 community=]\nNODE OutboxPublisher [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L10 community=]\nNODE FakeOutboxRepository [src=src/test/java/com/poc/order/OrderApiMockedTest.java loc=L316 community=]\nNODE scripts [src=package.json loc=L6 community=]\nNODE inventory-service::map [src= loc= community=]\nNODE .publishCommand() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L255 community=]\nNODE .OrderService() [src=src/main/java/com/poc/order/application/OrderService.java loc=L41 community=]\nNODE DownstreamUnavailableException [src=src/main/java/com/poc/bff/infrastructure/client/DownstreamUnavailableException.java loc=L3 community=]\nNODE org.apache.kafka.clients.consumer.ConsumerRecord [src= loc= community=]\nNODE V1__inventory_schema.sql [src=src/main/resources/db/migration/V1__inventory_schema.sql loc=None community=]\nNODE inventory-service::clock [src= loc= community=]\nNODE org.springframework.context.annotation.Bean [src= loc= community=]\nNODE OutboxRepository.java [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L1 community=]\nNODE .append() [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L10 community=]\nNODE PendingEvent [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L16 community=]\nNODE .SagaOrchestrator() [src=src/main/java/com/poc/order/application/SagaOrchestrator.java loc=L30 community=]\nNODE .findUnpublished() [src=src/main/java/com/poc/order/application/port/OutboxRepository.java loc=L12 community=]\nNODE .OutboxPublisher() [src=src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java loc=L19 community=]\nNODE inventory-service::assertthat [src= loc= community=]\nNODE enum [src=asyncapi/schemas/inventory.reservation-rejected.v1.json loc=L6 community=]\nNODE inventory-service::duration [src= loc= community=]\nNODE org.apache.kafka.clients.producer.KafkaProducer [src= loc= community=]\nNODE org.junit.jupiter.api.BeforeAll [src= loc= community=]\nNODE org.springframework.boot.test.context.SpringBootTest [src= loc= community=]\nNODE org.springframework.boot.test.context.TestConfiguration [src= loc= community=]\nNODE org.springframework.context.annotation.Primary [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertyRegistry [src= loc= community=]\nNODE org.springframework.test.context.DynamicPropertySource [src= loc= community=]\nNODE org.testcontainers.containers.PostgreSQLContainer [src= loc= community=]\nNODE org.testcontainers.junit.jupiter.Testcontainers [src= loc= community=]\nNODE inventory-service::producerrecord [src= loc= community=]\nNODE .advance() [src=src/test/java/com/poc/inventory/InventoryIntegrationTest.java loc=L325 community=]\n... (truncated — 182 more nodes cut by ~2000-token budget. Narrow with context_filter=['call'] or use get_node for a specific symbol)\n[graphify] note: this graph uses the pre-#1504 node-ID scheme; rebuild with `graphify extract --force` to get path-qualified IDs (fixes same-name-file collisions).",
+      "output_normalized_sha256": "b63d5e02ec80493e7aa701ea53a8b34a3aa006a61275a0e8f1f1043c692d1ca7",
+      "duration_ms": 213.5,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "graphify",
+    "version": "0.9.53",
+    "commit": null,
+    "binary_sha256": "5201bbf13d9959ab9ce913c2adb891be75fee0d9454ab3d93208625257e90b2f",
+    "artifact_sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f",
+    "manifest_sha256": "71b2cccdf485ce96c39253f4180f30c79ccb54bbe95db259fbd6796806f5d02f",
+    "query_surface": [
+      "query",
+      "explain",
+      "path",
+      "affected"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "ee6e66d04d14c9720f5973a9dd53ca5c44801f9af2029134f44eb943c5b0a5e5",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 130502,
+  "cost_usd": 0.1286964,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "fc252aefdbfae5611a0acd1fce201c485f80ba9cda62f4008a07f30985650c14",
+  "contestant_config_sha256": "a3cabf9a2097e289cfbe45daf66ab522824489c03b116a3b77ad4e5f9c354067",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

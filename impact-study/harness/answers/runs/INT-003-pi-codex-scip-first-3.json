@@ -1,0 +1,396 @@
+{
+  "change_id": "INT-003",
+  "contestant": "scip-first",
+  "findings": {
+    "repositories": [
+      {
+        "name": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r5",
+        "evidence": "r5 defines AddressDtoMapper in account-service."
+      },
+      {
+        "name": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AccountClient.java:32-40 binds account line2 into an address snapshot."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r5",
+        "evidence": "r5 defines AddressDtoMapper."
+      },
+      {
+        "fqn": "com.poc.account.api.AddressController",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "receipt_id": "r6",
+        "evidence": "r6 shows AddressController references AddressDtoMapper."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AccountClient.java:32-40 deserializes line2 and copies it to AddressSnapshot."
+      },
+      {
+        "fqn": "com.poc.order.domain.model.AddressSnapshot",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AddressSnapshot.java:3 declares the propagated line2 component."
+      },
+      {
+        "fqn": "com.poc.order.application.SagaOrchestrator",
+        "repo": "order-service",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "SagaOrchestrator.java:104-113 writes snapshot line2 into confirmed events."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account.yaml:41-76 and AccountClient.java:32-40 match the address-detail call."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account.yaml:225-251 defines line2 as string; AccountClient.java:24 binds it."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/line2",
+        "consumer_repos": [
+          "basket-service",
+          "shipment-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "SagaOrchestrator.java:104-113 emits line2; both AsyncAPI schemas allow string or null."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "account-service",
+        "suite": "AccountFlowComponentTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "AccountFlowComponentTest.java:110-130 creates an address without line2 through the mapper path."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-first",
+  "run_index": 3,
+  "run_started_at": "2026-09-05T07:05:23.343Z",
+  "elapsed_seconds": 175,
+  "tool_calls": 53,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 16,
+      "succeeded": 16,
+      "failed": 0
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "read": {
+      "calls": 30,
+      "succeeded": 29,
+      "failed": 1
+    },
+    "scip_search": {
+      "calls": 2,
+      "succeeded": 2,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 6,
+    "succeeded": 6,
+    "failed": 0
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "scip_search",
+      "operation": "references",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "callers",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "scip_search",
+      "operation": "impact",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_sha256": "261d40f30818557e8e66e52b419e271fda08b0994e973c6d0378e44b477409d5",
+      "output_bytes": 114,
+      "output_full_bytes": 114,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[]}",
+      "output_normalized_sha256": "66b6c4d5c21004c646008f9468062da7d509c55b9fff124d6698c6c4dfb36b66",
+      "duration_ms": 79.9,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 38.9,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "callers",
+      "parameters": {
+        "operation": "callers",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 21.2,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "impact",
+      "parameters": {
+        "operation": "impact",
+        "name": "nullToEmpty"
+      },
+      "requested_query": "nullToEmpty",
+      "executed_query": "nullToEmpty",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_sha256": "ced8e65045015b8dd649e1fc1a4401d9953305399149b9a0dcd8fe67d0fee6b3",
+      "output_bytes": 127,
+      "output_full_bytes": 127,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[],\"symbols\":[]}",
+      "output_normalized_sha256": "f84dd2c02d489bea4744bdae69ee215d46df3c32200aeddd8927a23b5230e1b4",
+      "duration_ms": 22,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "com.poc.account.infrastructure.mapping.AddressDtoMapper"
+      },
+      "requested_query": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+      "executed_query": "AddressDtoMapper",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"AddressDtoMapper\",\"matchSource\":\"displayName\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]}},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"scheme\":\"semanticdb\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"matchSource\":\"descriptor\",\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[9,27,37]}}]}",
+      "output_sha256": "cc83557eb193eaa862fda75b807543379943478e00769d20995796fbe2662412",
+      "output_bytes": 1582,
+      "output_full_bytes": 1582,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"symbols\":[{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[7,13,29]},\"matchSource\":\"displayName\",\"matchText\":\"AddressDtoMapper\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"definition\":{\"documentPath\":\"account-service/src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"range\":[9,27,37]},\"matchSource\":\"descriptor\",\"matchText\":\"com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"packageManager\":\"maven\",\"packageName\":\"maven/com.poc/account_service\",\"packageVersion\":\"0.1.0\",\"scheme\":\"semanticdb\",\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"}]}",
+      "output_normalized_sha256": "1d135143f65943a977561e1c4b5ac31559741a3573ecfbce9a85634d0097d8f1",
+      "duration_ms": 91.8,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "scip_search",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "name": "com.poc.account.infrastructure.mapping.AddressDtoMapper"
+      },
+      "requested_query": "com.poc.account.infrastructure.mapping.AddressDtoMapper",
+      "executed_query": "AddressDtoMapper",
+      "success": true,
+      "output": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[6,46,62],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[35,18,34],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[37,59,75],\"roles\":0}]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"references\":[]},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"references\":[{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[45,70,80],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[55,22,32],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[66,69,79],\"roles\":0},{\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\",\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[78,22,32],\"roles\":0}]}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`\\u003cinit\\u003e`().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"]}",
+      "output_sha256": "1a618b3b8b65891e29f8c91d527e30ed3a358ae08ba0f0ccf03b70ea1deb6d81",
+      "output_bytes": 2689,
+      "output_full_bytes": 2689,
+      "truncated": false,
+      "output_normalized": "{\"project_root\":\"file:///private/var/folders/0w/__ch7d055w74fhw6vgkjgllw0000gn/T/scip-estate.TcXlxT\",\"queries\":[{\"references\":[],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[35,18,34],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[37,59,75],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[6,46,62],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\"},{\"references\":[{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[45,70,80],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[55,22,32],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[66,69,79],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"},{\"documentPath\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"range\":[78,22,32],\"roles\":0,\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"}],\"symbol\":\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"}],\"symbols\":[\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#`<init>`().\",\"semanticdb maven maven/com.poc/account_service 0.1.0 com/poc/account/infrastructure/mapping/AddressDtoMapper#toResponse().\"]}",
+      "output_normalized_sha256": "61b58a45ce023e22ad96ada65882cf06ae3992b5ed2568f5375e6e896914f011",
+      "duration_ms": 41.6,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.2.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 283540,
+  "cost_usd": 0.22863399999999995,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "ad447f83575a9745da6a07e493861c9a289c08bc4a3d644217c5e10e0c1a7075",
+  "contestant_config_sha256": "5bd228dee1a50802e81bfe62f5e661a5c9a810b319f8b392ab9e297049d8c613",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "d7d64583037ca51dd54660345e0dc92f548025c5948980ededda3b1139edaecb",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

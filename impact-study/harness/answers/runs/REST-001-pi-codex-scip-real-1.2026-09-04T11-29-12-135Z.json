@@ -1,0 +1,392 @@
+{
+  "change_id": "REST-001",
+  "contestant": "scip",
+  "findings": {
+    "repositories": [
+      {
+        "name": "order-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "order-service AccountClient.java:30 binds GET /api/v1/addresses/{addressId} response to AddressResponse.postalCode."
+      },
+      {
+        "name": "shipment-service",
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "shipment-service OrderConfirmedListener.java:37 reads address.postalCode from order.confirmed.v1 emitted by order-service."
+      },
+      {
+        "name": "commerce-web",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web CheckoutPage.tsx:119 posts addressInput.postalCode when creating addresses."
+      },
+      {
+        "name": "commerce-platform",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-platform e2e-bruno/run-e2e.sh:136 creates addresses with postalCode in JSON."
+      }
+    ],
+    "symbols": [
+      {
+        "fqn": "com.poc.account.api.dto.AddressRequest",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "evidence": "scip AddressRequest is defined in account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:6."
+      },
+      {
+        "fqn": "com.poc.account.api.dto.AddressResponse",
+        "repo": "account-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "evidence": "scip AddressResponse is defined in account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:5."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "evidence": "scip AccountClient is defined in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:14."
+      },
+      {
+        "fqn": "com.poc.order.infrastructure.client.AccountClient$AddressResponse",
+        "repo": "order-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "evidence": "scip nested AddressResponse is defined in order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:23."
+      },
+      {
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+        "repo": "shipment-service",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "evidence": "scip OrderConfirmedListener is defined in shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:14."
+      },
+      {
+        "fqn": "com.poc.bff.api.AddressProxyController",
+        "repo": "commerce-bff",
+        "evidence_tier": "compiler",
+        "attribution": "product_direct",
+        "evidence": "scip AddressProxyController is defined in commerce-bff/src/main/java/com/poc/bff/api/AddressProxyController.java:24."
+      }
+    ],
+    "contracts": [
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressRequest",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account-service openapi/account.yaml:217 defines postalCode; consumers send it in CheckoutPage.tsx:119 and run-e2e.sh:136."
+      },
+      {
+        "type": "openapi",
+        "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+        "consumer_repos": [
+          "order-service",
+          "commerce-web"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "account-service openapi/account.yaml:246 defines postalCode; order AccountClient.java:37 and web CheckoutPage.tsx:112 read it."
+      },
+      {
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "consumer_repos": [
+          "order-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "order-service AccountClient.java:30 calls /api/v1/addresses/{addressId} and maps postalCode from the response."
+      },
+      {
+        "type": "rest",
+        "identifier": "POST /api/v1/addresses",
+        "consumer_repos": [
+          "commerce-web",
+          "commerce-platform"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "commerce-web api/checkout.ts:8 and commerce-platform run-e2e.sh:135 post address JSON carrying postalCode."
+      },
+      {
+        "type": "kafka",
+        "identifier": "order.confirmed.v1#/address/postalCode",
+        "consumer_repos": [
+          "shipment-service",
+          "basket-service"
+        ],
+        "evidence_tier": "contract_matched",
+        "attribution": "agent_inferred",
+        "evidence": "order-service asyncapi schema line 10 requires address.postalCode; shipment and basket asyncapi schemas mirror it."
+      }
+    ],
+    "tests": [
+      {
+        "repo": "order-service",
+        "suite": "OrderSagaIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service OrderSagaIntegrationTest.java:136 asserts confirmed.address.postalCode equals 560001."
+      },
+      {
+        "repo": "order-service",
+        "suite": "ContractValidationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "order-service ContractValidationTest.java:155 validates order.confirmed.v1 with address.postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "ShipmentIntegrationTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service ShipmentIntegrationTest.java:171 builds confirmed-order address with postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "AsyncApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service AsyncApiContractTest.java:55 validates order.confirmed payload containing postalCode."
+      },
+      {
+        "repo": "shipment-service",
+        "suite": "OpenApiContractTest",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "shipment-service OpenApiContractTest.java:81 asserts generated OpenAPI contains postalCode."
+      },
+      {
+        "repo": "commerce-web",
+        "suite": "app.test.tsx",
+        "evidence_tier": "extracted",
+        "attribution": "file_search",
+        "evidence": "commerce-web src/test/app.test.tsx:46 defines mocked checkout address with postalCode."
+      }
+    ]
+  },
+  "runner": "pi-codex-scip-real",
+  "run_index": 1,
+  "run_started_at": "2026-09-04T11:29:12.135Z",
+  "elapsed_seconds": 80.9,
+  "tool_calls": 47,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 10,
+      "succeeded": 10,
+      "failed": 0
+    },
+    "find": {
+      "calls": 3,
+      "succeeded": 3,
+      "failed": 0
+    },
+    "read": {
+      "calls": 27,
+      "succeeded": 27,
+      "failed": 0
+    },
+    "scip_search": {
+      "calls": 6,
+      "succeeded": 6,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 6,
+    "succeeded": 6,
+    "failed": 0
+  },
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "AccountClient"
+      },
+      "success": true,
+      "output_sha256": "8cb5984bd8098a7296174869cdabf80a8256fe5305e459fc25aac4907d056ec1",
+      "duration_ms": 152.1,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "OrderConfirmedListener"
+      },
+      "success": true,
+      "output_sha256": "71d261b98177f855ff68243d718459581c571da00609bb0dbde5049783dcf64b",
+      "duration_ms": 113.8,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "AddressProxyController"
+      },
+      "success": true,
+      "output_sha256": "6e065bc6950fb3273544f343a31268a09a14e080813c2f246d990875b1c36e5b",
+      "duration_ms": 88.1,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "CheckoutPage"
+      },
+      "success": true,
+      "output_sha256": "261d40f30818557e8e66e52b419e271fda08b0994e973c6d0378e44b477409d5",
+      "duration_ms": 65.3,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "AddressRequest"
+      },
+      "success": true,
+      "output_sha256": "707ed9891f5d4afc9d7cf6405cc7e9c19aaf239f39ef45056e7eb6f6a19da7c2",
+      "duration_ms": 43.3,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "scip_search",
+      "operation": "symbols",
+      "parameters": {
+        "operation": "symbols",
+        "name": "AddressResponse"
+      },
+      "success": true,
+      "output_sha256": "9d96aeec4f06880bee530ba0aa3b9fe71cd9d0105c5fa7f4bd6618d0feb4aeec",
+      "duration_ms": 22.1,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "scip-java+scip-search",
+    "version": "0.10.4+v0.2.0",
+    "commit": "e476c4ab50eb37b900c85dfb990fbfd13140f3e0",
+    "binary_sha256": "61ff5732ac9ef33a32241f0b474f8108d1afec5bde4ad7762d59ed0d97feeffd",
+    "artifact_sha256": "315c50f138cc52923b3e60f07f9b37d2847a6660586ab8cd30305787946a14f2",
+    "manifest_sha256": "241c23df34b76b804b28381327abc2f23f1b3093a273b796901265112a37d7a0",
+    "query_surface": [
+      "symbols",
+      "references",
+      "implementations",
+      "graph",
+      "callers",
+      "callees",
+      "impact"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.0.0",
+    "config_sha256": "6160f82a000b4dfb536227a65f58ab2fb5e39800b45e6eea837f2ee0b75c4787",
+    "index_built_at": null,
+    "index_duration_seconds": null,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 126291,
+  "cost_usd": 0.1497775,
+  "model": "openai-codex/gpt-5.4",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "6da4659ec7aee7128eeecbb08a207209a460272ec798dd313f7f4027e1b99196",
+  "contestant_config_sha256": "5f32320bbdf68846aa9d787b3707c16d8fdc96f5a1281c9348169470df6abb12",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "ce3199bafadabdff4c183c63a46085825521ae54e07cc2f18bab598a6bf4f588",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

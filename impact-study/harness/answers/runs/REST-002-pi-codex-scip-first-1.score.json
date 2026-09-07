@@ -1,0 +1,161 @@
+{
+  "change_id": "REST-002",
+  "contestant": "scip-first",
+  "metrics": {
+    "symbol_recall": 0.0,
+    "test_recall": 0.3333,
+    "cross_repo_recall": 0.4762,
+    "contract_recall": 1.0,
+    "precision": 0.2105,
+    "evidence_quality": 0.8947,
+    "latency": 1.0,
+    "critical_penalty": 0.0,
+    "composite": 0.5377
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.35,
+    "contract_recall": 0.2,
+    "precision": 0.15,
+    "evidence_quality": 0.1,
+    "latency": 0.05,
+    "critical_penalty": 0.15
+  },
+  "excluded_components": [
+    "freshness",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 5,
+      "reported": 3,
+      "matched": 2,
+      "false_positives": 0,
+      "invalid": 1
+    },
+    "symbols": {
+      "ground_truth": 4,
+      "reported": 10,
+      "matched": 0,
+      "false_positives": 9,
+      "invalid": 1
+    },
+    "contracts": {
+      "ground_truth": 1,
+      "reported": 2,
+      "matched": 1,
+      "false_positives": 1,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 3,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "contract_consumer": 3,
+      "critical_runtime_dependency": 4,
+      "test_suite": 2
+    }
+  },
+  "missed": [
+    {
+      "kind": "repository",
+      "key": "commerce-web",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "repository",
+      "key": "order-service",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "repository",
+      "key": "payment-service",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.basket.application.basketpricing",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.catalog.domain.model.product",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.order.domain.model.pricebreakdown",
+      "severity": "critical_runtime_dependency"
+    },
+    {
+      "kind": "symbol",
+      "key": "com.poc.payment.domain.payment",
+      "severity": "contract_consumer"
+    },
+    {
+      "kind": "test",
+      "key": "commerce-platform e2e-bruno/01-signup-to-confirmed-order",
+      "severity": "test_suite"
+    },
+    {
+      "kind": "test",
+      "key": "order-service orderpricingtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [],
+    "symbols": [
+      "com.poc.basket.application.port.catalogport",
+      "com.poc.basket.infrastructure.catalog.catalogclient",
+      "com.poc.basket.infrastructure.catalog.catalogproductresponse",
+      "com.poc.catalog.api.dto.priceupdaterequest",
+      "com.poc.catalog.api.dto.productresponse",
+      "com.poc.catalog.api.productcontroller",
+      "com.poc.catalog.application.catalogservice",
+      "commerce-web.api.types.product",
+      "commerce-web.pages.productspage"
+    ],
+    "contracts": [
+      "openapi openapi:catalog.yaml#/components/schemas/productresponse"
+    ],
+    "tests": [
+      "basket-service basketapimockedtest",
+      "basket-service basketintegrationtest",
+      "catalog-service openapicontracttest"
+    ]
+  },
+  "invalid_findings": [
+    {
+      "kind": "repositories",
+      "index": 2,
+      "errors": [
+        "findings.repositories[2].evidence_tier: 'agent_inferred' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "index": 7,
+      "errors": [
+        "findings.symbols[7].evidence_tier: 'agent_inferred' is not one of ['compiler', 'extracted', 'contract_matched', 'inferred', 'hypothesis']"
+      ]
+    }
+  ],
+  "provenance_distribution": {
+    "schema_invalid": 2,
+    "extracted": 12,
+    "contract_matched": 3,
+    "compiler": 2
+  },
+  "raw": {
+    "elapsed_seconds": 166.1,
+    "tokens_consumed": 249873
+  },
+  "answer_sha256": "d443b7bd1ba17a384a50bec77db26e1d64f48e3d1819d6c442a641170552e943",
+  "ground_truth_sha256": "6dc4570d7e07053b07ad42f5f443ba211f95c5ebc9d1155c5d213151db5da150",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "4be8d4e2613018067ba702a684123d06937edec9976fa09a1cebf3a9137615f2"
+}
