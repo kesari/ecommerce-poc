@@ -156,14 +156,28 @@ switching to `--one-line`, raised total cost by 76% because the agent then made
 other, and turn count wins. If a ceiling is reinstated it should be justified
 by a measured run, not by the byte counts alone.
 
-### A universal miss turned out to be a ground-truth artifact
+### CORRECTION: the universal miss is real, not an artifact
 
-`test commerce-platform e2e-bruno/01-signup-to-confirmed-order` was missed by
-every product in every Track B and Track C run, and was recorded as a shared
-gap in all three indexes. It is not. No file of that name exists — the only
-match in `commerce-platform` is `e2e-bruno/run-e2e.sh`. Nothing can find it by
-name, so it cannot discriminate between contestants and inflates every miss
-count equally.
+An earlier version of this note claimed that
+`test commerce-platform e2e-bruno/01-signup-to-confirmed-order` names a file
+that does not exist, and that no contestant could therefore find it.
+
+That was wrong. It exists:
+
+    commerce-platform/e2e-bruno/01-signup-to-confirmed-order/01-signup.bru
+
+The check behind the claim was `grep -ril "signup-to-confirmed-order"`, which
+searches file contents and cannot match a directory name. The correct check is
+`find -name`. Every harness run missing this item is a real miss.
+
+The unharnessed run below found it immediately, together with four other Bruno
+scenarios and the payloads in `run-e2e.sh`. So the gap is not in the ground
+truth and not in SCIP — it is that the harnessed agent does not look there.
+
+This does not change the v4 reversal, which rests on `test_recall` staying at
+0.33 across three runs *despite* v4 telling the agent to search
+`commerce-platform`. The instruction was right and still did not work. Why it
+did not work is now the open question.
 
 ### The index cannot link services, and the skill must say so
 
@@ -175,9 +189,41 @@ is therefore agent reasoning over contracts and schemas, and an empty
 cross-service result is not evidence of no impact — it is evidence the compiler
 did not link the two, which is the situation the study exists to examine.
 
+## Running without the harness
+
+The same question, put to `codex exec` directly in the estate with no harness,
+no skill, no index and no answer schema:
+
+| | harness (v3 skill) | no harness |
+|---|---|---|
+| tokens | 260,854 | **77,819** |
+| affected repositories | 4 of 4 scored | 6 named, including `commerce-platform` |
+| `e2e-bruno/01-signup-to-confirmed-order` | missed in every run | found, with four siblings |
+
+3.3x cheaper, and it found the item no harnessed run has ever found. It also
+reasoned correctly that `AddressSnapshot.postalCode` and the frozen
+`order.confirmed.v1` schemas should be left alone — a distinction the scored
+runs make inconsistently.
+
+This is not like-for-like. The unharnessed run answers in prose rather than the
+scored JSON schema, has no isolated-estate copy, is not blind to the repository
+holding the ground truth, and was not scored. But the token gap is large enough
+and the found-item difference sharp enough that the harness is now a suspect in
+both the cost and the misses — not just the skill or the product.
+
+Worth testing next: whether the restricted `read/grep/find/ls` toolset, the
+answer-schema requirement, or the prompt length accounts for the difference.
+
 ## Method notes
 
-Two mistakes worth not repeating.
+Three mistakes worth not repeating.
+
+**A false negative was published as a finding.** `grep -ril` was used to test
+whether a filename existed; it searches contents, not names, so it could never
+have matched the directory that does exist. The conclusion reached this note
+and two commit messages. Check existence with `find -name`, and hold "X does
+not exist" to the same standard as any other claim.
+
 
 **A batch was analysed before it finished.** v4 was reported at n=2 as median
 0.82 with a 60% token increase; at n=3 it is 0.91 with the same token cost as
