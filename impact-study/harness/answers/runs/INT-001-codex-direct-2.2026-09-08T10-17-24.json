@@ -1,0 +1,136 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:21 narrows the runtime PIN acceptance boundary while its REST DTO still permits four digits."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:34 posts the address postal code to shipment-service."
+   },
+   {
+    "name": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 accepts three-to-twelve-character postal codes, including newly rejected four- and five-digit values."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 collects postal codes with only required validation, allowing newly rejected four- and five-digit values into checkout."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.account.api.dto.AddressRequest",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 declares the permissive postalCode input constraint."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java:13 declares postalCode returned to order-service."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24 declares the typed response binding for account postalCode."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:40 copies the bound postalCode into AddressSnapshot."
+   },
+   {
+    "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest",
+    "repo": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java:8 still validates postalCode with the four-digit minimum."
+   },
+   {
+    "fqn": "com.poc.shipment.application.DeliveryEstimator",
+    "repo": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:21 is the narrowed PIN guard."
+   },
+   {
+    "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+    "repo": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 binds order.confirmed.address.postalCode."
+   },
+   {
+    "fqn": "com.poc.shipment.domain.model.DeliveryAddress",
+    "repo": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java:3 holds the event postalCode before ShipmentService invokes the estimator."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service/openapi/shipment-service.yaml:72 permits four-to-ten digits while order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:34 posts to this resource."
+   },
+   {
+    "type": "openapi",
+    "identifier": "openapi:account.yaml#/components/schemas/AddressResponse",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:246 exposes postalCode in AddressResponse and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:24 binds it."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/asyncapi/schemas/order.confirmed.v1.json:19 permits four-to-ten digits and shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 feeds that value to the narrowed guard."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "account-service/src/test/java/com/poc/account/AccountFlowComponentTest.java:128 asserts the postalCode returned from address creation."
+   },
+   {
+    "repo": "order-service",
+    "suite": "ContractValidationTest",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:90 validates the order.confirmed address postalCode contract."
+   },
+   {
+    "repo": "shipment-service",
+    "suite": "ShipmentIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/test/java/com/poc/shipment/ShipmentIntegrationTest.java:110 exercises delivery-estimate postalCode validation."
+   },
+   {
+    "repo": "commerce-platform",
+    "suite": "e2e-bruno/01-signup-to-confirmed-order",
+    "evidence_tier": "extracted",
+    "evidence": "commerce-platform/e2e-bruno/01-signup-to-confirmed-order/04-create-address.bru:23 posts the postalCode in the full checkout flow."
+   }
+  ]
+ },
+ "change_id": "INT-001",
+ "contestant": "codex-direct",
+ "runner": "codex-direct",
+ "agent_sha256": "4a50d31c1629f84be3d905a219d14b8bfd5c197277e6db50425d38ff722b834e",
+ "tokens_consumed": 99903
+}

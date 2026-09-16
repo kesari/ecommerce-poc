@@ -1,0 +1,107 @@
+{
+  "change_id": "INT-001",
+  "contestant": "scip",
+  "metrics": {
+    "symbol_recall": 1.0,
+    "test_recall": 0.5,
+    "cross_repo_recall": 1.0,
+    "contract_recall": 1.0,
+    "precision": 0.2,
+    "evidence_quality": 1.0,
+    "critical_penalty": 1.0,
+    "composite": 0.8737
+  },
+  "weights_applied": {
+    "cross_repo_recall": 0.3684,
+    "contract_recall": 0.2105,
+    "precision": 0.1579,
+    "evidence_quality": 0.1053,
+    "critical_penalty": 0.1579
+  },
+  "excluded_components": [
+    "freshness",
+    "latency",
+    "operational_cost"
+  ],
+  "counts": {
+    "repositories": {
+      "ground_truth": 1,
+      "reported": 4,
+      "matched": 1,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "symbols": {
+      "ground_truth": 2,
+      "reported": 10,
+      "matched": 2,
+      "false_positives": 8,
+      "invalid": 0
+    },
+    "contracts": {
+      "ground_truth": 0,
+      "reported": 3,
+      "matched": 0,
+      "false_positives": 3,
+      "invalid": 0
+    },
+    "tests": {
+      "ground_truth": 2,
+      "reported": 3,
+      "matched": 1,
+      "false_positives": 2,
+      "invalid": 0
+    },
+    "missed_by_severity": {
+      "test_suite": 1
+    }
+  },
+  "missed": [
+    {
+      "kind": "test",
+      "key": "shipment-service shipmentintegrationtest",
+      "severity": "test_suite"
+    }
+  ],
+  "false_positives": {
+    "repositories": [
+      "account-service",
+      "commerce-web",
+      "order-service"
+    ],
+    "symbols": [
+      "com.poc.account.api.dto.addressrequest",
+      "com.poc.account.api.dto.addressresponse",
+      "com.poc.order.domain.model.addresssnapshot",
+      "com.poc.order.infrastructure.client.accountclient",
+      "com.poc.order.infrastructure.client.shipmentclient",
+      "com.poc.shipment.api.dto.deliveryestimaterequest",
+      "com.poc.shipment.domain.model.deliveryaddress",
+      "com.poc.shipment.infrastructure.messaging.orderconfirmedlistener"
+    ],
+    "contracts": [
+      "kafka order.confirmed.v1#/address/postalcode",
+      "rest post /api/v1/addresses",
+      "rest post /api/v1/delivery-estimates"
+    ],
+    "tests": [
+      "account-service accountflowcomponenttest",
+      "order-service ordersagaintegrationtest"
+    ]
+  },
+  "invalid_findings": [],
+  "provenance_distribution": {
+    "compiler": 4,
+    "contract_matched": 6,
+    "inferred": 7,
+    "extracted": 3
+  },
+  "raw": {
+    "elapsed_seconds": null,
+    "tokens_consumed": 137561
+  },
+  "answer_sha256": "bc3196d818f4e8738b8ad15ce407e3c1b51c59d84f796b56e3f0f307d1177910",
+  "ground_truth_sha256": "8e43062dc760360d5d439dac7ca715cfe94f5ad5c195b25db59d90a9065e22fc",
+  "scorer_sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7",
+  "answer_schema_sha256": "095e07b11a3fa42328719cd53d343fadd53c423b95bd8531634411fd432b4ffc"
+}

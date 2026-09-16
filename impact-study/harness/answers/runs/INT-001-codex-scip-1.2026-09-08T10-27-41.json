@@ -1,0 +1,142 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "DeliveryEstimator.java:21 narrows the resolved estimator guard reached by ShipmentService."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "ShipmentClient.java:34 posts its postalCode to shipment-service's delivery-estimates resource."
+   },
+   {
+    "name": "account-service",
+    "evidence_tier": "inferred",
+    "evidence": "AddressRequest.java:13 admits 4- and 5-character postal codes that can now fail during checkout."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "inferred",
+    "evidence": "CheckoutPage.tsx:119 accepts postalCode with only required validation, allowing newly rejected lengths into the checkout flow."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.shipment.application.DeliveryEstimator",
+    "repo": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "DeliveryEstimator.java:21 contains the resolved PIN-length guard."
+   },
+   {
+    "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest",
+    "repo": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "DeliveryEstimateRequest.java:8 still validates postalCode with the 4-to-10 pattern."
+   },
+   {
+    "fqn": "com.poc.shipment.application.ShipmentService",
+    "repo": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "ShipmentService.java:45 and ShipmentService.java:62 are compiler-resolved calls to DeliveryEstimator.estimate."
+   },
+   {
+    "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+    "repo": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "OrderConfirmedListener.java:37 reads address.postalCode from order.confirmed.v1 into shipment creation."
+   },
+   {
+    "fqn": "com.poc.shipment.domain.model.DeliveryAddress",
+    "repo": "shipment-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "OrderConfirmedListener.java:36 constructs DeliveryAddress from the event postalCode before it reaches the estimator."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "contract_matched",
+    "evidence": "ShipmentClient.java:34-37 sends postalCode to POST /api/v1/delivery-estimates."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "AccountClient.java:24-41 binds account postalCode and assigns it into AddressSnapshot."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "CheckoutService.java:52 passes AddressSnapshot.postalCode to ShipmentPort.estimate."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressRequest",
+    "repo": "account-service",
+    "evidence_tier": "inferred",
+    "evidence": "AddressRequest.java:13 permits postal codes from length 3 through 12."
+   },
+   {
+    "fqn": "com.poc.account.api.dto.AddressResponse",
+    "repo": "account-service",
+    "evidence_tier": "inferred",
+    "evidence": "AddressResponse.java:13 declares the postalCode returned to order-service's typed client."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service.yaml:72 advertises [0-9]{4,10}, while ShipmentClient.java:34-37 posts to that resource."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service's order.confirmed.v1.json:19 permits 4-to-10 digits and OrderConfirmedListener.java:37 consumes the field."
+   },
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/addresses",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "inferred",
+    "evidence": "AddressRequest.java:13 permits 4- and 5-character values that AccountClient.java:40-41 carries into checkout."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "shipment-service",
+    "suite": "DeliveryEstimatorTest",
+    "evidence_tier": "extracted",
+    "evidence": "DeliveryEstimatorTest.java:54-56 asserts rejected PINs but does not cover the newly invalid 4- and 5-digit values."
+   },
+   {
+    "repo": "order-service",
+    "suite": "OrderSagaIntegrationTest",
+    "evidence_tier": "extracted",
+    "evidence": "OrderSagaIntegrationTest.java:135-136 asserts the postalCode carried into order.confirmed.v1."
+   },
+   {
+    "repo": "account-service",
+    "suite": "AccountFlowComponentTest",
+    "evidence_tier": "extracted",
+    "evidence": "AccountFlowComponentTest.java:123-128 posts and asserts the address postalCode lifecycle."
+   }
+  ]
+ },
+ "change_id": "INT-001",
+ "contestant": "scip",
+ "runner": "codex-scip",
+ "agent_sha256": "2112a9434de4fd6fedcd5c8a3acf559a4abeb903e9b4b9c805e2cf5a1073b099",
+ "tokens_consumed": 137561
+}

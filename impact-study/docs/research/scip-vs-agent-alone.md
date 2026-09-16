@@ -106,12 +106,66 @@ at a fifth of the cost. The null is now a much stronger statement: not "the
 products do not help a hobbled agent", but **"a real compiler index adds
 nothing to a competent one, and costs 29% more."**
 
+## INT-001: the record where the index should have won
+
+REST-001 is a weak test for SCIP, so the obvious objection was that the index
+lost on a record built to defeat it. `INT-001` removes that objection. It
+narrows a PIN validation regex inside `shipment-service`: **one repository,
+two Java symbols, zero contracts, two Java test classes.** No YAML, no `.bru`,
+no TypeScript, no cross-service boundary. Every blind spot blamed above is
+absent.
+
+| | control (n=3) | SCIP (n=3) |
+|---|---|---|
+| composite | 0.83 | **0.84** |
+| tokens | 99,903 | **137,561** |
+| symbol_recall | 0.50 | 0.50 |
+| test_recall | 0.50 | 0.50 |
+| precision | 0.14 | 0.20 |
+| scip calls | 0 | 11 |
+
+Control composites: 0.83, 0.83, 0.83. SCIP: 0.87, 0.83, 0.84.
+
+**+0.01 composite for +38% tokens.** The index does exactly the one thing text
+search cannot: `ShipmentService` is reachable only by following a call from
+`DeliveryEstimator`, and SCIP found it in 1 of 3 runs against the control's 0
+of 3. It then lost `ShipmentIntegrationTest` in 3 of 3, which the control
+found. The gain and the loss cancel.
+
+So the result holds on the record designed to favour the index as well as the
+one designed against it.
+
+## The agent is overfit to REST-001
+
+The more consequential finding on INT-001 is not about SCIP.
+
+| | REST-001 | INT-001 |
+|---|---|---|
+| composite | 0.98 | 0.83 |
+| symbol_recall | 1.00 | 0.50 |
+| test_recall | 1.00 | 0.50 |
+| **precision** | **0.88** | **0.14** |
+
+Precision collapsed from 0.88 to 0.14 — roughly sevenfold over-reporting
+against a four-item ground truth — and the control's composites are 0.83, 0.83,
+0.83, so this is not variance. Seven rounds of tuning against a fourteen-item
+cross-service field rename produced an agent that sweeps the whole estate and
+reports the wide blast radius that record taught it to expect. On a
+single-service refactor, that is mostly noise.
+
+The instructions that generalised are the structural ones — sweep first,
+ownership over string equality, close the repository set. What did not
+generalise is the expectation of breadth.
+
+**This matters more than the product comparison.** The agent needs generality
+work before any further product evaluation is worth running, because a
+benchmark whose baseline is tuned to one record measures the tuning.
+
 ## Limits of this result
 
-- **One record.** Everything here is REST-001, a REST field rename. A change
-  that is purely Java-internal, with no contract or e2e component, is the case
-  where an index should win, and it has not been tested. `INT-001` or `DB-001`
-  would be the honest next test.
+- **Two records**, REST-001 and INT-001, chosen as the cases where the index
+  should respectively lose and win. `DB-001` and the Kafka records are
+  untested.
 - **n=5 against n=3**, and `symbol_recall` and `test_recall` are unweighted in
   the composite, which is why the composites tie despite the gap.
 - **This is SCIP only.** Gortex and Graphify have not been run under the agent

@@ -1,0 +1,118 @@
+{
+ "findings": {
+  "repositories": [
+   {
+    "name": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:21 is the narrowed acceptance guard."
+   },
+   {
+    "name": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/application/CheckoutService.java:51 forwards the saved address postal code to shipment estimation."
+   },
+   {
+    "name": "account-service",
+    "evidence_tier": "inferred",
+    "evidence": "account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java:13 still admits 3\u201312-character postal codes, including newly rejected 4- and 5-digit values."
+   },
+   {
+    "name": "commerce-web",
+    "evidence_tier": "inferred",
+    "evidence": "commerce-web/src/pages/CheckoutPage.tsx:119 accepts an unrestricted postal-code input before saving the address."
+   }
+  ],
+  "symbols": [
+   {
+    "fqn": "com.poc.shipment.application.DeliveryEstimator",
+    "repo": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves DeliveryEstimator, declared at shipment-service/src/main/java/com/poc/shipment/application/DeliveryEstimator.java:10."
+   },
+   {
+    "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest",
+    "repo": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves DeliveryEstimateRequest, whose postal-code validation remains 4\u201310 at shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java:8."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.AccountClient",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:40 copies the bound account response postal code into AddressSnapshot."
+   },
+   {
+    "fqn": "com.poc.order.domain.model.AddressSnapshot",
+    "repo": "order-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves AddressSnapshot, whose postalCode is forwarded to shipment at order-service/src/main/java/com/poc/order/application/CheckoutService.java:52."
+   },
+   {
+    "fqn": "com.poc.order.infrastructure.client.ShipmentClient",
+    "repo": "order-service",
+    "evidence_tier": "inferred",
+    "evidence": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 sends postalCode to shipment-service."
+   },
+   {
+    "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener",
+    "repo": "shipment-service",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 extracts postalCode from order.confirmed.v1."
+   },
+   {
+    "fqn": "com.poc.shipment.domain.model.DeliveryAddress",
+    "repo": "shipment-service",
+    "evidence_tier": "compiler",
+    "evidence": "SCIP resolves DeliveryAddress, constructed with the event postal code at shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:36."
+   }
+  ],
+  "contracts": [
+   {
+    "type": "rest",
+    "identifier": "POST /api/v1/delivery-estimates",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "shipment-service/openapi/shipment-service.yaml:72 advertises 4\u201310 digits while order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java:36 sends that field."
+   },
+   {
+    "type": "rest",
+    "identifier": "GET /api/v1/addresses/{addressId}",
+    "consumer_repos": [
+     "order-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "account-service/openapi/account.yaml:246 exposes AddressResponse.postalCode and order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java:36 binds the response."
+   },
+   {
+    "type": "kafka",
+    "identifier": "order.confirmed.v1#/address/postalCode",
+    "consumer_repos": [
+     "shipment-service"
+    ],
+    "evidence_tier": "contract_matched",
+    "evidence": "order-service/asyncapi/schemas/order.confirmed.v1.json:19 permits 4\u201310 digits and shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java:37 consumes the field."
+   }
+  ],
+  "tests": [
+   {
+    "repo": "shipment-service",
+    "suite": "DeliveryEstimatorTest",
+    "evidence_tier": "extracted",
+    "evidence": "shipment-service/src/test/java/com/poc/shipment/DeliveryEstimatorTest.java:55 is the rejection matrix and lacks newly invalid 4- and 5-digit cases."
+   },
+   {
+    "repo": "order-service",
+    "suite": "ContractValidationTest",
+    "evidence_tier": "extracted",
+    "evidence": "order-service/src/test/java/com/poc/order/ContractValidationTest.java:85 validates the order.confirmed.v1 payload contract."
+   }
+  ]
+ },
+ "change_id": "INT-001",
+ "contestant": "scip",
+ "runner": "codex-scip",
+ "agent_sha256": "2112a9434de4fd6fedcd5c8a3acf559a4abeb903e9b4b9c805e2cf5a1073b099",
+ "tokens_consumed": 79115
+}
