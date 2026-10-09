@@ -15,9 +15,9 @@ import { extractAnswer } from "./answer.ts";
 import { countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
 import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, productEligible, productSummary, withTimeout } from "./run.ts";
-import { candidateSection } from "./playbook.ts";
+import { candidateSection, playbookFor } from "./playbook.ts";
 import { createRealProduct } from "./products.ts";
-import { verifyHeads, canonicalizeOutput, scipQueryName } from "./products.ts";
+import { verifyHeads, canonicalizeOutput, codebaseMemoryRelationQuery, repowiseJson, scipQueryName } from "./products.ts";
 import { validateFile } from "./scoring.ts";
 
 test("parseArgs accepts repeated records and positive numeric values", () => {
@@ -233,14 +233,34 @@ test("productSummary counts attempts, successes, and failures", () => {
 	);
 });
 
+test("Codebase Memory relationship queries use its supported typed-edge syntax", () => {
+	const query = codebaseMemoryRelationQuery("Address'Response", "CROSS_HTTP_CALLS");
+	assert.match(query, /\[r:CROSS_HTTP_CALLS\]/);
+	assert.doesNotMatch(query, /type\(r\).*WHERE/);
+	assert.match(query, /Address\\'Response/);
+	assert.throws(() => codebaseMemoryRelationQuery("AddressResponse", "CROSS_*"));
+});
+
+test("RepoWise JSON extraction ignores command banners and trailing notices", () => {
+	assert.deepEqual(repowiseJson('banner\n{"value":"a}b","nested":{"ok":true}}\nnotice'), {
+		value: "a}b",
+		nested: { ok: true },
+	});
+});
+
 test("productEligible is null off-product and success-gated on-product", () => {
 	const agent = { label: "agent-only", provider: "x", model: "y" } as any;
 	const real = { label: "scip", provider: "x", model: "y", product: { kind: "scip" } } as any;
+	const first = { ...real, label: "scip-first", product_first: true } as any;
 	assert.equal(productEligible(agent, []), null);
 	assert.equal(productEligible(agent, undefined), null);
 	assert.equal(productEligible(real, []), false);
 	assert.equal(productEligible(real, [{ success: false }]), false);
 	assert.equal(productEligible(real, [{ success: true }]), true);
+	assert.equal(productEligible(first, [{ success: true }], undefined), false);
+	assert.equal(productEligible(first, [{ success: true }], [{ error: "no such tool: product" }]), false);
+	assert.equal(productEligible(first, [{ success: false }], [{ ok: false, error: "product failed" }]), false);
+	assert.equal(productEligible(first, [{ success: false }, { success: true }], [{ ok: false }, { ok: true }]), true);
 });
 
 test("withTimeout rejects at the deadline and invokes cancellation", async () => {	let cancelled = false;
@@ -480,6 +500,16 @@ test("candidateSection embeds canonicalized output, so the prompt hash is stable
 	const b = candidateSection(anchor as any, receipt('{"nodes":[{"id":"b"},{"id":"a"}]}'));
 	assert.equal(a, b);
 	assert.match(a, /\{"nodes":\[\{"id":"a"\},\{"id":"b"\}\]\}/);
+});
+
+test("new product playbooks force cross-repo expansion before the model runs", () => {
+	const anchor = { primary: "AddressResponse", removed: ["AddressResponse"], added: ["DeliveryAddress"], repo: "account-service", usable: true } as any;
+	const repowise = playbookFor("repowise", anchor);
+	assert.deepEqual(new Set(repowise.map((step) => step.intention)), new Set(["locate", "references", "expand", "tests"]));
+	assert.ok(repowise.some((step) => step.tool === "repowise_blast_radius"));
+	const memory = playbookFor("codebase-memory", anchor);
+	assert.deepEqual(new Set(memory.map((step) => step.intention)), new Set(["locate", "references", "expand", "tests"]));
+	assert.ok(memory.some((step) => step.params.operation === "cross_repo"));
 });
 
 test("scipQueryName narrows an FQN to the declaring type, leaves partials alone", () => {

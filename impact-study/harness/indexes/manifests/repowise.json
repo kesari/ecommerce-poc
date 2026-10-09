@@ -1,0 +1,96 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1689,
+      "name": "workspace_config",
+      "path": "repowise/workspace/.repowise-workspace.yaml",
+      "sha256": "5dc26f0d10d028fc5dfa0365f81fb39369274cc3d74cbdd7bfdde0338d6ed6bf"
+    },
+    {
+      "bytes": 45722,
+      "name": "system_graph",
+      "path": "repowise/workspace/.repowise-workspace/system_graph.json",
+      "sha256": "2244b1f070d065db6d04401cef3d82cf52a63ba04096c44153c48c27c94a2b8f"
+    },
+    {
+      "bytes": 3600384,
+      "name": "account-service",
+      "path": "repowise/workspace/account-service/.repowise/wiki.db",
+      "sha256": "f8488f89acdd28c537991c7909ceeb3424ec8585dd1e2e5d32456cb94347ea8f"
+    },
+    {
+      "bytes": 4153344,
+      "name": "basket-service",
+      "path": "repowise/workspace/basket-service/.repowise/wiki.db",
+      "sha256": "7d1dd75785777c55483573f1cfc5ff42af090c1ee614c93ccae55a075cbe6912"
+    },
+    {
+      "bytes": 1929216,
+      "name": "catalog-service",
+      "path": "repowise/workspace/catalog-service/.repowise/wiki.db",
+      "sha256": "b91497ef27536209ecfdf8324c8e999099750a9883e1fe5f1c37f011d5fdfbe7"
+    },
+    {
+      "bytes": 1949696,
+      "name": "commerce-bff",
+      "path": "repowise/workspace/commerce-bff/.repowise/wiki.db",
+      "sha256": "e156a896afaea83bd03f59d532ab120fb364368c902114531a44c2844e10e966"
+    },
+    {
+      "bytes": 823296,
+      "name": "commerce-platform",
+      "path": "repowise/workspace/commerce-platform/.repowise/wiki.db",
+      "sha256": "2ed71b6010cc23b2f5e2f5e5b24560af3d7ac652cbbd2d1ca9028eceb7040049"
+    },
+    {
+      "bytes": 1527808,
+      "name": "commerce-web",
+      "path": "repowise/workspace/commerce-web/.repowise/wiki.db",
+      "sha256": "436dbe8d944aee663d9c653b2e9f8955beb204cee4a10a3349ca81bc11a6cc4a"
+    },
+    {
+      "bytes": 2727936,
+      "name": "inventory-service",
+      "path": "repowise/workspace/inventory-service/.repowise/wiki.db",
+      "sha256": "5bf0cf36963c93711cfe84e38bb9b8f4f7056f77505f761c4677f1b1e81aa2f8"
+    },
+    {
+      "bytes": 5812224,
+      "name": "order-service",
+      "path": "repowise/workspace/order-service/.repowise/wiki.db",
+      "sha256": "fe80256a57642a5d07f44ddbb162b8fa402067eb3c62bd2fcc9aa9b6082f604d"
+    },
+    {
+      "bytes": 2473984,
+      "name": "payment-service",
+      "path": "repowise/workspace/payment-service/.repowise/wiki.db",
+      "sha256": "b9528c16a5e607bd26df986420651b8f0e3d2ab73692999b4a6054c2603dd0e3"
+    },
+    {
+      "bytes": 3506176,
+      "name": "shipment-service",
+      "path": "repowise/workspace/shipment-service/.repowise/wiki.db",
+      "sha256": "59018286abb4fe9bbceeb00f8c9b4a87eef344f9dbf81ca0cda8f9f397696457"
+    }
+  ],
+  "metadata": {
+    "duration_seconds": 1400,
+    "workspace": "repowise/workspace"
+  },
+  "pins_sha256": "a77b2fa1caef1d81b1aaacbdf3788915807aaf18f0496f916843f37473304c93",
+  "product": "repowise",
+  "product_pin_sha256": "dd70314475a2128fbb013d50beb2411f2528e303f4b73eaf88833770fc8d9857",
+  "repository_revisions": {
+    "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+    "basket-service": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+    "catalog-service": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+    "commerce-bff": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+    "commerce-platform": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+    "commerce-web": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+    "inventory-service": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+    "order-service": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+    "payment-service": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+    "shipment-service": "a7a8a067559b5e62a6c53699939cf9ec31686f25"
+  },
+  "schema_version": 1
+}

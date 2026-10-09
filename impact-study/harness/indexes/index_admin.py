@@ -129,7 +129,7 @@ def verify_gortex(estate, binary, require_daemon):
     print(f"verified Gortex {expected_tool['gortex']} over {len(indexed)} fresh repositories")
 
 
-def write_manifest(product, artifacts, metadata, output):
+def write_manifest(product, artifacts, metadata, output, product_pin=None):
     pins = load_pins()
     artifact_records = []
     for raw in artifacts:
@@ -158,6 +158,8 @@ def write_manifest(product, artifacts, metadata, output):
         "artifacts": artifact_records,
         "metadata": values,
     }
+    if product_pin is not None:
+        manifest["product_pin_sha256"] = sha256_file(product_pin)
     target = Path(output)
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
@@ -182,6 +184,7 @@ def main():
     manifest.add_argument("--artifact", action="append", default=[])
     manifest.add_argument("--metadata", action="append", default=[])
     manifest.add_argument("--output", required=True)
+    manifest.add_argument("--product-pin", type=Path)
     args = parser.parse_args()
     if args.command == "verify-estate":
         verify_estate(args.estate.resolve())
@@ -194,7 +197,7 @@ def main():
         verify_estate(args.estate.resolve())
         verify_gortex(args.estate.resolve(), args.binary.resolve(), args.require_daemon)
     else:
-        write_manifest(args.product, args.artifact, args.metadata, args.output)
+        write_manifest(args.product, args.artifact, args.metadata, args.output, args.product_pin)
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ import { ESTATE_REPOSITORIES } from "./estate.ts";
 import type { EstateSnapshot } from "./estate.ts";
 import { HARNESS } from "./paths.ts";
 
-export type ProductKind = "scip" | "gortex" | "graphify";
+export type ProductKind = "scip" | "gortex" | "graphify" | "repowise" | "codebase-memory";
 
 export interface ProductConfig {
 	kind: ProductKind;
@@ -34,7 +34,7 @@ export interface ProductReceipt {
  *  hash, SCIP FQN translation, Gortex route/symbol split.
  *  1.2.0 — output ceilings removed: an 8KB per-call bound discarded the tail
  *  of Gortex's richest answer, and with it three affected repositories. */
-const ADAPTER_VERSION = "1.2.0";
+const ADAPTER_VERSION = "1.4.0";
 
 function configSha(value: unknown) {
 	return sha256(JSON.stringify(value));
@@ -42,6 +42,7 @@ function configSha(value: unknown) {
 
 const INDEXES = join(HARNESS, "indexes");
 const PINS = join(INDEXES, "pins.json");
+const PRODUCT_PINS = join(INDEXES, "product-pins");
 const MAX_OUTPUT = 1024 * 1024;
 
 function sha256(value: string | Buffer) {
@@ -60,12 +61,22 @@ function executable(name: string, environmentName: string) {
 	return result.stdout.trim();
 }
 
-function run(binary: string, args: string[]) {
-	const result = spawnSync(binary, args, { encoding: "utf8", maxBuffer: MAX_OUTPUT });
+function run(binary: string, args: string[], options: { cwd?: string; env?: NodeJS.ProcessEnv } = {}) {
+	const result = spawnSync(binary, args, { encoding: "utf8", maxBuffer: MAX_OUTPUT, timeout: 60_000, ...options });
 	if (result.error) throw result.error;
 	const output = `${result.stdout ?? ""}${result.stderr ?? ""}`.trim();
 	if (result.status !== 0) throw new Error(output || `${binary} exited ${result.status}`);
 	return output || "No results.";
+}
+
+async function productExecutable(localPath: string, command: string, environmentName: string) {
+	if (process.env[environmentName]) return process.env[environmentName] as string;
+	try {
+		await access(localPath);
+		return localPath;
+	} catch {
+		return executable(command, environmentName);
+	}
 }
 
 function result(text: string) {
@@ -115,6 +126,13 @@ function assertRepo(value: unknown) {
 		throw new Error("repo must be one of the pinned estate repositories");
 	}
 	return value;
+}
+
+function assertDepth(value: unknown) {
+	if (!Number.isInteger(value) || Number(value) < 1 || Number(value) > 8) {
+		throw new Error("max_depth must be an integer from 1 to 8");
+	}
+	return Number(value);
 }
 
 export interface ProductInvocationReceipt {
@@ -310,6 +328,184 @@ function graphifyTool(binary: string, graph: string, receipts: ProductInvocation
 	};
 }
 
+function repowiseSearchTool(binary: string, workspace: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
+	const modes = ["symbol", "path"];
+	return {
+		name: "repowise_search",
+		label: "RepoWise search",
+		description: "Query the real RepoWise workspace index across one repository or the complete estate.",
+		parameters: schema({
+			query: textParameter("Identifier, path, or code concept to search for."),
+			mode: stringEnum(modes),
+			repo: stringEnum(["all", ...ESTATE_REPOSITORIES], "Repository alias, or all for a workspace-wide search."),
+		}, ["query", "mode", "repo"]),
+		execute: async (_id: string, params: any) => {
+			const query = assertQuery(params.query, "query");
+			const mode = assertQuery(params.mode, "mode");
+			if (!modes.includes(mode)) throw new Error("unsupported RepoWise search mode");
+			const repo = params.repo === "all" ? "all" : assertRepo(params.repo);
+			const args = ["search", query, workspace, "--mode", mode, "--limit", "10", "--format", "json"];
+			args.push(repo === "all" ? "--all" : "--repo", ...(repo === "all" ? [] : [repo]));
+			return invokeWithReceipt(receipts, takeId, "repowise_search", mode, { query, mode, repo },
+				() => result(run(binary, args)), { requested: query, executed: query });
+		},
+	};
+}
+
+export function repowiseJson(output: string) {
+	const start = output.indexOf("{");
+	if (start < 0) throw new Error("RepoWise returned no JSON payload");
+	let depth = 0;
+	let quoted = false;
+	let escaped = false;
+	for (let index = start; index < output.length; index++) {
+		const character = output[index];
+		if (quoted) {
+			if (escaped) escaped = false;
+			else if (character === "\\") escaped = true;
+			else if (character === '"') quoted = false;
+			continue;
+		}
+		if (character === '"') quoted = true;
+		else if (character === "{") depth += 1;
+		else if (character === "}") {
+			depth -= 1;
+			if (depth === 0) return JSON.parse(output.slice(start, index + 1));
+		}
+	}
+	throw new Error("RepoWise returned incomplete JSON");
+}
+
+function repowiseContextTool(binary: string, workspace: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
+	return {
+		name: "repowise_context",
+		label: "RepoWise symbol context",
+		description: "Resolve a symbol in RepoWise and return its native caller, callee, and usage context.",
+		parameters: schema({
+			query: textParameter("Exact symbol name to resolve."),
+			repo: stringEnum([...ESTATE_REPOSITORIES], "Repository alias containing the changed symbol."),
+		}, ["query", "repo"]),
+		execute: async (_id: string, params: any) => {
+			const query = assertQuery(params.query, "query");
+			const repo = assertRepo(params.repo);
+			return invokeWithReceipt(receipts, takeId, "repowise_context", "symbol_context", { query, repo }, () => {
+				const lookupText = run(binary, ["search", query, workspace, "--mode", "symbol", "--limit", "10", "--format", "json", "--repo", repo]);
+				const lookup = repowiseJson(lookupText);
+				const matches = Array.isArray(lookup.results) ? lookup.results : [];
+				const exact = matches.find((item: any) => item?.name === query && ["class", "interface", "record", "enum"].includes(item?.kind))
+					?? matches.find((item: any) => item?.name === query);
+				if (!exact?.symbol_id) return result(JSON.stringify({ lookup, context: null }));
+				const contextText = run(binary, ["context", exact.symbol_id, "--include", "callers", "--include", "callees", "--path", workspace, "--repo", repo, "--format", "json"]);
+				return result(JSON.stringify({ lookup, context: repowiseJson(contextText) }));
+			}, { requested: query, executed: query });
+		},
+	};
+}
+
+function repowiseBlastRadiusTool(baseUrl: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
+	return {
+		name: "repowise_blast_radius",
+		label: "RepoWise blast radius",
+		description: "Call RepoWise's native workspace blast-radius endpoint for cross-repository structural and behavioral impact.",
+		parameters: schema({
+			target: stringEnum([...ESTATE_REPOSITORIES], "Repository alias to expand from."),
+			max_depth: { type: "integer", minimum: 1, maximum: 8 },
+			include_behavioral: { type: "boolean" },
+		}, ["target", "max_depth", "include_behavioral"]),
+		execute: async (_id: string, params: any) => {
+			const target = assertRepo(params.target);
+			const maxDepth = assertDepth(params.max_depth);
+			const includeBehavioral = Boolean(params.include_behavioral);
+			const url = new URL("/api/workspace/blast-radius", baseUrl);
+			url.searchParams.set("target", target);
+			url.searchParams.set("max_depth", String(maxDepth));
+			url.searchParams.set("include_behavioral", String(includeBehavioral));
+			return invokeWithReceipt(receipts, takeId, "repowise_blast_radius", "blast_radius",
+				{ target, max_depth: maxDepth, include_behavioral: includeBehavioral }, async () => {
+					const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
+					const body = await response.text();
+					if (!response.ok) throw new Error(`RepoWise HTTP ${response.status}: ${body.slice(0, 500)}`);
+					return result(body || "No results.");
+				});
+		},
+	};
+}
+
+function regexLiteral(value: string) {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function cypherLiteral(value: string) {
+	return value.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+}
+
+export function codebaseMemoryRelationQuery(query: string, relation: string) {
+	if (!/^[A-Z][A-Z0-9_]*$/.test(relation)) throw new Error("invalid Codebase Memory relationship type");
+	const literal = cypherLiteral(query);
+	return `MATCH (a)-[r:${relation}]->(b) WHERE (a.name CONTAINS '${literal}' OR a.qualified_name CONTAINS '${literal}' OR b.name CONTAINS '${literal}' OR b.qualified_name CONTAINS '${literal}') RETURN a.name, labels(a), type(r), b.name, labels(b), properties(r) LIMIT 100`;
+}
+
+function codebaseMemoryTool(binary: string, cache: string, receipts: ProductInvocationReceipt[], takeId: () => string) {
+	const operations = ["search", "references", "trace", "cross_repo", "tests", "schema"];
+	const environment = { ...process.env, CBM_CACHE_DIR: cache };
+	return {
+		name: "codebase_memory_query",
+		label: "Codebase Memory query",
+		description: "Query the real Codebase Memory graph using its one-shot CLI, including CROSS_* edges created by its cross-repo indexing pass.",
+		parameters: schema({
+			operation: stringEnum(operations),
+			query: textParameter("Symbol, route, topic, or other changed identifier."),
+			repo: stringEnum([...ESTATE_REPOSITORIES], "Indexed Codebase Memory project."),
+		}, ["operation", "query", "repo"]),
+			execute: async (_id: string, params: any) => {
+			const operation = assertQuery(params.operation, "operation");
+			if (!operations.includes(operation)) throw new Error("unsupported Codebase Memory operation");
+			const query = assertQuery(params.query, "query");
+			const repo = assertRepo(params.repo);
+			let tool: string;
+			let args: string[];
+			if (operation === "search") {
+				tool = "search_graph";
+				args = ["--project", repo, "--name-pattern", `.*${regexLiteral(query)}.*`, "--format", "json"];
+			} else if (operation === "trace") {
+				tool = "trace_path";
+				args = ["--project", repo, "--function-name", query, "--direction", "both", "--max-depth", "5", "--format", "json"];
+			} else if (operation === "references") {
+				tool = "query_graph";
+				const literal = cypherLiteral(query);
+				const cypher = `MATCH (a)-[r]->(b) WHERE (a.name CONTAINS '${literal}' OR a.qualified_name CONTAINS '${literal}' OR b.name CONTAINS '${literal}' OR b.qualified_name CONTAINS '${literal}') RETURN a.name, labels(a), type(r), b.name, labels(b), properties(r) LIMIT 100`;
+				args = ["--project", repo, "--query", cypher, "--format", "json"];
+			} else if (operation === "schema") {
+				tool = "get_graph_schema";
+				args = ["--project", repo, "--format", "json"];
+			} else if (operation === "tests") {
+				tool = "query_graph";
+				args = ["--project", repo, "--query", codebaseMemoryRelationQuery(query, "TESTS"), "--format", "json"];
+			} else {
+				tool = "query_graph";
+				args = [];
+			}
+			return invokeWithReceipt(receipts, takeId, "codebase_memory_query", operation,
+				{ operation, query, repo }, () => {
+					if (operation !== "cross_repo") {
+						return result(run(binary, ["cli", "--quiet", tool, ...args], { env: environment }));
+					}
+					const schemaText = run(binary, ["cli", "--quiet", "get_graph_schema", "--project", repo, "--format", "json"], { env: environment });
+					const graphSchema = JSON.parse(schemaText);
+					const edgeTypes = (Array.isArray(graphSchema.edge_types) ? graphSchema.edge_types : [])
+						.map((edge: any) => edge?.type)
+						.filter((edge: unknown): edge is string => typeof edge === "string" && /^CROSS_[A-Z0-9_]+$/.test(edge));
+					const responses = edgeTypes.map((edgeType: string) => {
+						const output = run(binary, ["cli", "--quiet", "query_graph", "--project", repo, "--query", codebaseMemoryRelationQuery(query, edgeType), "--format", "json"], { env: environment });
+						return { edge_type: edgeType, response: JSON.parse(output) };
+					});
+					return result(JSON.stringify({ edge_types: edgeTypes, results: responses }));
+				},
+				{ requested: query, executed: query });
+		},
+	};
+}
+
 export function verifyHeads(estate: string, pins: any) {
 	// Fast per-query drift guard: the full clean/dirty check runs once at
 	// setup; here only HEAD movement matters, since the model holds
@@ -425,6 +621,20 @@ async function verifyManifest(path: string, expectedProduct: string) {
 	return { manifest, sha256: sha256(bytes) };
 }
 
+async function readProductPin(name: string) {
+	const path = join(PRODUCT_PINS, `${name}.json`);
+	const bytes = await readFile(path);
+	return { path, pin: JSON.parse(bytes.toString("utf8")), sha256: sha256(bytes) };
+}
+
+async function verifyProductManifest(path: string, expectedProduct: string, productPinSha: string) {
+	const verified = await verifyManifest(path, expectedProduct);
+	if (verified.manifest.product_pin_sha256 !== productPinSha) {
+		throw new Error(`manifest was built from a different ${expectedProduct} pin: ${path}`);
+	}
+	return verified;
+}
+
 export async function createRealProduct(
 	config: ProductConfig,
 	estate: string,
@@ -436,6 +646,60 @@ export async function createRealProduct(
 	const receipts: ProductInvocationReceipt[] = [];
 	let receiptSeq = 0;
 	const takeId = () => `r${++receiptSeq}`;
+	if (config.kind === "repowise") {
+		const productPin = await readProductPin("repowise");
+		const binary = await productExecutable(join(INDEXES, "tools", "repowise-venv", "bin", "repowise"), "repowise", "REPOWISE_BIN");
+		const version = run(binary, ["--version"]);
+		if (!version.includes(productPin.pin.version)) throw new Error("RepoWise version differs from its product pin");
+		const wheel = join(INDEXES, "tools", productPin.pin.distribution.name);
+		if (await fileSha(wheel) !== productPin.pin.distribution.sha256) throw new Error("RepoWise wheel SHA-256 differs from its product pin");
+		const dependencyLock = join(PRODUCT_PINS, productPin.pin.dependency_lock.name);
+		if (await fileSha(dependencyLock) !== productPin.pin.dependency_lock.sha256) throw new Error("RepoWise dependency lock SHA-256 differs from its product pin");
+		const verified = await verifyProductManifest(join(INDEXES, "manifests", "repowise.json"), "repowise", productPin.sha256);
+		const workspace = join(INDEXES, "repowise", "workspace");
+		const baseUrl = process.env.REPOWISE_URL ?? "http://127.0.0.1:7337";
+		const querySurface = ["search:symbol", "search:path", "symbol:context", "workspace:blast-radius"];
+		return {
+			tools: [repowiseSearchTool(binary, workspace, receipts, takeId), repowiseContextTool(binary, workspace, receipts, takeId), repowiseBlastRadiusTool(baseUrl, receipts, takeId)],
+			receipt: {
+				mode: "real_product", product: "repowise", version: productPin.pin.version, commit: productPin.pin.commit,
+				binary_sha256: productPin.pin.distribution.sha256, artifact_sha256: verified.sha256,
+				manifest_sha256: verified.sha256, query_surface: querySurface, freshness: "verified",
+				adapter_version: ADAPTER_VERSION,
+				config_sha256: configSha({ product: "repowise", workspace: "repowise/workspace", base_url: baseUrl, query_surface: querySurface }),
+				index_built_at: verified.manifest.metadata.built_at ?? null,
+				index_duration_seconds: verified.manifest.metadata.duration_seconds ?? null,
+				indexed_estate_sha256: snapshot.sha256 ?? null,
+			},
+			prompt: "Use RepoWise's search and blast-radius evidence first. Attribute only candidates present in a receipt as product_direct; verified extensions are file_search or agent_inferred.",
+			receipts,
+		};
+	}
+	if (config.kind === "codebase-memory") {
+		const productPin = await readProductPin("codebase-memory");
+		const binary = await productExecutable(join(INDEXES, "tools", "codebase-memory-mcp"), "codebase-memory-mcp", "CODEBASE_MEMORY_BIN");
+		if (await fileSha(binary) !== productPin.pin.binary_sha256) throw new Error("Codebase Memory binary SHA-256 differs from its product pin");
+		const version = run(binary, ["--version"]);
+		if (!version.includes(productPin.pin.version)) throw new Error("Codebase Memory version differs from its product pin");
+		const verified = await verifyProductManifest(join(INDEXES, "manifests", "codebase-memory.json"), "codebase-memory-mcp", productPin.sha256);
+		const cache = join(INDEXES, "codebase-memory", "cache");
+		const querySurface = ["search_graph", "query_graph:references", "trace_path:functions", "query_graph:CROSS_*", "query_graph:TESTS", "get_graph_schema"];
+		return {
+			tools: [codebaseMemoryTool(binary, cache, receipts, takeId)],
+			receipt: {
+				mode: "real_product", product: "codebase-memory-mcp", version: productPin.pin.version, commit: productPin.pin.commit,
+				binary_sha256: productPin.pin.binary_sha256, artifact_sha256: verified.sha256,
+				manifest_sha256: verified.sha256, query_surface: querySurface, freshness: "verified",
+				adapter_version: ADAPTER_VERSION,
+				config_sha256: configSha({ product: "codebase-memory-mcp", cache: "codebase-memory/cache", query_surface: querySurface }),
+				index_built_at: verified.manifest.metadata.built_at ?? null,
+				index_duration_seconds: verified.manifest.metadata.duration_seconds ?? null,
+				indexed_estate_sha256: snapshot.sha256 ?? null,
+			},
+			prompt: "Use Codebase Memory's structural, traversal, and CROSS_* evidence first. Attribute only rows present in a receipt as product_direct; verified extensions are file_search or agent_inferred.",
+			receipts,
+		};
+	}
 	if (config.kind === "scip") {
 		const binary = executable("scip-search", "SCIP_SEARCH_BIN");
 		if (await fileSha(binary) !== pins.toolchain["scip-search-sha256"]) throw new Error("scip-search binary SHA-256 differs from pins");

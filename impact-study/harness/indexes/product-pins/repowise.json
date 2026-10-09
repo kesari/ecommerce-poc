@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "product": "repowise",
+  "version": "0.51.0",
+  "commit": "e9e58fcdc4d35ba35d8ebb31eb60803bc900a6f6",
+  "license": "AGPL-3.0",
+  "source_url": "https://github.com/repowise-dev/repowise",
+  "release_url": "https://github.com/repowise-dev/repowise/releases/tag/v0.51.0",
+  "distribution": {
+    "name": "repowise-0.51.0-py3-none-any.whl",
+    "url": "https://files.pythonhosted.org/packages/c5/84/98e5ebbb7e3ceaea176bde1b44b3f0f4866cf2b1f3f795adb056e514d0ed/repowise-0.51.0-py3-none-any.whl",
+    "sha256": "99f8c925cdb514266db69c1cb1c9b68f85de1c6cc83778d4b600539d8dee4e0d"
+  },
+  "dependency_lock": {
+    "name": "repowise-requirements.lock",
+    "sha256": "e170d5d654e2cfac40282beccd91042eb6750f6a347c80d19cdcabea30408602"
+  },
+  "python": "3.13.13"
+}

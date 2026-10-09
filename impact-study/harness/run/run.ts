@@ -136,12 +136,18 @@ export function productSummary(receipts: any[] | undefined) {
 	return { attempted: receipts.length, succeeded, failed: receipts.length - succeeded };
 }
 
-/** A product run counts as product-assisted only with at least one
- * successful product call. Zero-use runs are kept and scored but marked
- * ineligible, so they feed adoption-rate analysis without polluting
- * product-assisted comparisons. Non-product contestants get null (N/A). */
-export function productEligible(contestant: Contestant, receipts: any[] | undefined) {
+/** Natural-adoption runs need one successful call. Product-first runs must
+ * reach the real adapter for every scheduled step, persist every attempt, and
+ * get at least one answer. Zero-use or bypassed runs remain available for
+ * diagnostics without polluting product-assisted comparisons. */
+export function productEligible(contestant: Contestant, receipts: any[] | undefined, playbook?: any[]) {
 	if (!contestant.product) return null;
+	if (contestant.product_first) {
+		return Boolean(playbook?.length)
+			&& (receipts ?? []).length >= (playbook?.length ?? 0)
+			&& playbook!.every((entry: any) => !String(entry.error ?? "").startsWith("no such tool:"))
+			&& (receipts ?? []).some((receipt: any) => receipt.success);
+	}
 	return (receipts ?? []).some((receipt: any) => receipt.success);
 }
 
@@ -361,7 +367,7 @@ function stampProvenance(answer: any, options: {
 			}))
 			: null,
 		product_tool_receipts: productReceipts ?? null,
-		product_assisted_eligible: productEligible(contestant, productReceipts),
+		product_assisted_eligible: productEligible(contestant, productReceipts, options.playbook),
 		index_sha256: indexSha ?? "none",
 		product_provenance: productReceipt ?? null,
 		tokens_consumed: stats?.tokens.total,

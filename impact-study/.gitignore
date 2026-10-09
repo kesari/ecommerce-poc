@@ -7,3 +7,6 @@ harness/indexes/scip/
 harness/indexes/graphify/merged-graph.json
 harness/indexes/graphify/diagnose.json
 harness/indexes/graphify/cache/
+harness/indexes/repowise/
+harness/indexes/codebase-memory/
+harness/indexes/tools/

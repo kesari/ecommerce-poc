@@ -61,6 +61,14 @@ python3 score.py marginal --ground-truth ../records/REST-001.json \
 Tests, from the harness root: `python3 scoring/test_score.py`,
 `python3 run/test_aggregate.py`, and `npm test` in `run/`.
 
+Historical reports retain the schema and scorer hashes used when they were
+created. The current aggregator rejects reports whose hashes differ from the
+current files; this is an integrity check, not a new model failure. Preserve
+those reports and analyze them with their original committed harness. Start
+fresh cohorts under the checkpointed harness rather than editing old hashes
+or mixing old and new scores. See the
+[checkpoint and restart plan](../docs/methodology/2026-10-09-checkpoint-and-restart.md).
+
 ## Contestants
 
 A contestant is a provider/model entry in `run/contestants.json`, resolved by
@@ -71,25 +79,30 @@ the [pi coding agent](https://pi.dev) SDK:
                "model": "claude-sonnet-4-5" }
 ```
 
-The active product-backed contestants add a `product` entry:
+Product-backed contestants add a `product` entry:
 
 ```json
-"pi-codex-scip-real": { "label": "scip", "provider": "openai-codex",
-                         "model": "gpt-5.6-terra", "product": {"kind": "scip"} },
-"pi-codex-gortex-real": { "label": "gortex", "provider": "openai-codex",
-                           "model": "gpt-5.6-terra", "product": {"kind": "gortex"} }
+"pi-codex-repowise-first": { "label": "repowise-first",
+  "provider": "openai-codex", "model": "gpt-5.6-terra",
+  "product": {"kind": "repowise"}, "product_first": true },
+"pi-codex-codebase-memory-first": { "label": "codebase-memory-first",
+  "provider": "openai-codex", "model": "gpt-5.6-terra",
+  "product": {"kind": "codebase-memory"}, "product_first": true }
 ```
 
-The real integrations query pinned open-source scip-java plus scip-search,
-Gortex, and Graphify artifacts described in `indexes/README.md`. Before a model
+The real integrations query pinned open-source Gortex, RepoWise, Codebase
+Memory, SCIP, and Graphify artifacts described in `indexes/README.md`. SCIP and
+Graphify are historical; RepoWise and Codebase Memory passed Gate 0 on
+2026-09-18 and are active only in the product-first matrix. Before a model
 can run, the harness verifies repository revisions, dirty state, product binary
-or package identity, artifact hashes, and Gortex freshness. Each answer carries
+or distribution identity, artifact hashes, and product freshness. Each answer carries
 a `product_provenance` receipt. Product-backed findings also distinguish
 `product_direct`, `agent_inferred`, and `file_search` attribution.
 
 ## Product-first runs
 
-A contestant with `"product_first": true` runs Track C instead of natural
+A contestant with `"product_first": true` runs the primary product-quality
+track instead of natural
 adoption. The harness queries the product before the model exists, so product
 evidence is guaranteed to enter the analysis rather than depending on the agent
 choosing to ask — in the natural-adoption pilot it usually did not.
@@ -113,10 +126,22 @@ Every answer carries `product_playbook`, which is `null` on a natural-adoption
 run. Do not compare the two: one measures whether the agent asks, the other
 measures what the product returns when it is asked for it.
 
+A product-first run is comparison-eligible only if every scheduled playbook
+step reached a real product adapter, every attempt produced a receipt, and at
+least one call succeeded. A single ceremonial call is insufficient. Product
+failures remain evidence about the product; a missing or bypassed tool makes
+the run ineligible.
+
+Each product subprocess is capped at 60 seconds. A timeout is persisted as a
+failed product receipt and cannot silently stall or disappear from a run.
+
 Attribution is not the utilization metric here. Phase B asks the agent to verify
 candidates, and verification re-attributes them, so `product_direct` under-counts
 badly — a run can carry every playbook item into its answer and still report
 zero. Measure overlap between the playbook's output and the final findings.
+
+The complete current protocol, gates, staged run order, and interpretation
+rules are in `../docs/methodology/product-first-real-product-evaluation.md`.
 
 `run/indexes.ts` contains the old harness-built simulations. They are disabled
 by default and their contestant descriptions say `LEGACY SIMULATION`. Historical

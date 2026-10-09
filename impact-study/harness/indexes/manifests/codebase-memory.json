@@ -1,0 +1,90 @@
+{
+  "artifacts": [
+    {
+      "bytes": 12288,
+      "name": "store_1",
+      "path": "codebase-memory/cache/_config.db",
+      "sha256": "e8f7566de75fe3f6eb3c3d6e1b5197e3dc0de775b7418412dc59c37d6b4cf385"
+    },
+    {
+      "bytes": 3342336,
+      "name": "store_2",
+      "path": "codebase-memory/cache/account-service.db",
+      "sha256": "5927c028788324859f11dd27ec1ef04f0ecd0f9bae7b96f47d25c9dd405d1bcc"
+    },
+    {
+      "bytes": 3735552,
+      "name": "store_3",
+      "path": "codebase-memory/cache/basket-service.db",
+      "sha256": "60375344a767f0f3e13362e38e2d6e059c7eeb985967b7f7ae8556367ac7ea26"
+    },
+    {
+      "bytes": 2818048,
+      "name": "store_4",
+      "path": "codebase-memory/cache/catalog-service.db",
+      "sha256": "cbc42630a71b97c082329e54bd8bf7a8e75f4a875fc8a4390b31cbd1c8c52cd6"
+    },
+    {
+      "bytes": 3211264,
+      "name": "store_5",
+      "path": "codebase-memory/cache/commerce-bff.db",
+      "sha256": "2cbf341de9e2d446cacddcbe593d07377250499bc61e5ebc3c68ecf5e944bf07"
+    },
+    {
+      "bytes": 2293760,
+      "name": "store_6",
+      "path": "codebase-memory/cache/commerce-platform.db",
+      "sha256": "ab66f1da8b910f0232abf6cfcb68d1b589273a1b8f1042d98b908d830ea6879d"
+    },
+    {
+      "bytes": 2686976,
+      "name": "store_7",
+      "path": "codebase-memory/cache/commerce-web.db",
+      "sha256": "f2d72e6f950361a77aa2939dbfbc570ddadb2f321cf66f53b4e4c957eeb1ed85"
+    },
+    {
+      "bytes": 3342336,
+      "name": "store_8",
+      "path": "codebase-memory/cache/inventory-service.db",
+      "sha256": "1dd51031e6d442514e9255d0cfed7e2cba090078f99813c2788a584663cf011a"
+    },
+    {
+      "bytes": 4915200,
+      "name": "store_9",
+      "path": "codebase-memory/cache/order-service.db",
+      "sha256": "cf4b0b9b6017288ebefbf7da60c8196b40b3c16114aca076017a6666d2e40ef0"
+    },
+    {
+      "bytes": 3342336,
+      "name": "store_10",
+      "path": "codebase-memory/cache/payment-service.db",
+      "sha256": "0fe23d52ec174a31aec2c17cafa75ab91831d85459150c9298388e29bb68307d"
+    },
+    {
+      "bytes": 3407872,
+      "name": "store_11",
+      "path": "codebase-memory/cache/shipment-service.db",
+      "sha256": "e0ac3406dafaa58d89e021df69f55f60af78d0082356b585c11b0109d4128939"
+    }
+  ],
+  "metadata": {
+    "cache": "codebase-memory/cache",
+    "duration_seconds": 117
+  },
+  "pins_sha256": "a77b2fa1caef1d81b1aaacbdf3788915807aaf18f0496f916843f37473304c93",
+  "product": "codebase-memory-mcp",
+  "product_pin_sha256": "b5c8797c0f0d142e7b12ddbcb221cb434de78f57536a85285e9f7aa79059cc8f",
+  "repository_revisions": {
+    "account-service": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+    "basket-service": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+    "catalog-service": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+    "commerce-bff": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+    "commerce-platform": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+    "commerce-web": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+    "inventory-service": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+    "order-service": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+    "payment-service": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+    "shipment-service": "a7a8a067559b5e62a6c53699939cf9ec31686f25"
+  },
+  "schema_version": 1
+}

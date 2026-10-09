@@ -27,9 +27,11 @@
         "synthetic-combined",
         "scip-first",
         "gortex-first",
-        "graphify-first"
+        "graphify-first",
+        "repowise-first",
+        "codebase-memory-first"
       ],
-      "description": "scip/gortex/graphify/combined name real-product natural-adoption runs; *-first name Track C product-first runs; synthetic-* names experimental controls. Older answers keep their original labels."
+      "description": "scip/gortex/graphify name historical real-product natural-adoption runs; *-first names product-first runs; synthetic-* names experimental controls. Older answers keep their original labels."
     },
     "runner": {
       "type": "string"
@@ -267,7 +269,7 @@
         "boolean",
         "null"
       ],
-      "description": "True when a product contestant has at least one successful product call. False means keep the run for adoption-rate analysis but exclude it from product-assisted comparisons. Null for non-product contestants."
+      "description": "For natural-adoption runs, true after one successful product call. For product-first runs, true only when every frozen playbook step reached a real product tool, every attempt has a receipt, and at least one call succeeded. False runs remain useful for adoption or failure analysis but are excluded from product-assisted comparisons. Null for non-product contestants."
     },
     "index_sha256": {
       "type": "string",

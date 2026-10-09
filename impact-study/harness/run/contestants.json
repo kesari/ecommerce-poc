@@ -3,7 +3,8 @@
     "label": "agent-only",
     "description": "pi SDK, read-only tools, local qwen3-coder via ollama",
     "provider": "ollama",
-    "model": "qwen3-coder:30b-a3b-q8_0"
+    "model": "qwen3-coder:30b-a3b-q8_0",
+    "enabled": false
   },
   "pi-scip": {
     "label": "synthetic-symbol-index",
@@ -29,7 +30,8 @@
     "label": "agent-only",
     "description": "pi SDK, read-only tools, Claude Haiku via Anthropic subscription (OAuth)",
     "provider": "anthropic",
-    "model": "claude-haiku-4-5"
+    "model": "claude-haiku-4-5",
+    "enabled": false
   },
   "pi-haiku-scip": {
     "label": "synthetic-symbol-index",
@@ -61,7 +63,8 @@
     "label": "agent-only",
     "description": "pi SDK, read-only tools, Luna via Codex subscription (OAuth)",
     "provider": "openai-codex",
-    "model": "gpt-5.6-luna"
+    "model": "gpt-5.6-luna",
+    "enabled": false
   },
   "pi-codex-scip": {
     "label": "synthetic-symbol-index",
@@ -111,7 +114,8 @@
     "model": "gpt-5.6-terra",
     "product": {
       "kind": "scip"
-    }
+    },
+    "enabled": false
   },
   "pi-codex-gortex-real": {
     "label": "gortex",
@@ -120,7 +124,8 @@
     "model": "gpt-5.6-terra",
     "product": {
       "kind": "gortex"
-    }
+    },
+    "enabled": false
   },
   "pi-codex-graphify-real": {
     "label": "graphify",
@@ -129,7 +134,8 @@
     "model": "gpt-5.6-terra",
     "product": {
       "kind": "graphify"
-    }
+    },
+    "enabled": false
   },
   "pi-codex-scip-first": {
     "label": "scip-first",
@@ -139,7 +145,8 @@
     "product": {
       "kind": "scip"
     },
-    "product_first": true
+    "product_first": true,
+    "enabled": false
   },
   "pi-codex-gortex-first": {
     "label": "gortex-first",
@@ -158,6 +165,27 @@
     "model": "gpt-5.6-terra",
     "product": {
       "kind": "graphify"
+    },
+    "product_first": true,
+    "enabled": false
+  },
+  "pi-codex-repowise-first": {
+    "label": "repowise-first",
+    "description": "Track C: a frozen RepoWise structural workspace playbook runs before the model, which then verifies the candidates",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "repowise"
+    },
+    "product_first": true
+  },
+  "pi-codex-codebase-memory-first": {
+    "label": "codebase-memory-first",
+    "description": "Track C: a frozen Codebase Memory graph playbook runs before the model, which then verifies the candidates",
+    "provider": "openai-codex",
+    "model": "gpt-5.6-terra",
+    "product": {
+      "kind": "codebase-memory"
     },
     "product_first": true
   }

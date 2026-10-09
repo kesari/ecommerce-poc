@@ -7,10 +7,10 @@
       "sha256": "c21372346dd0eba5281004a2e56b5384431ac48962b8e4919d68e4bea0dec37f"
     },
     {
-      "bytes": 3181,
+      "bytes": 3190,
       "name": "diagnostics",
       "path": "graphify/diagnose.json",
-      "sha256": "33382b2a8b74717b6260ca0e70e208f0697e58d465a028eb3209ef32d3c094e0"
+      "sha256": "45a1133a35013adab20cc59fa4aae7e2ed917092429bc111b868b54dd7d59eb5"
     }
   ],
   "metadata": {

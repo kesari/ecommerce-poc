@@ -5,6 +5,16 @@
 **Primary decision:** Determine whether a maintained code/system graph adds enough incremental change-impact recall and evidence quality to justify its operational complexity over compiler indexing plus agent-driven retrieval.  
 **Primary use case:** Cross-repository change-impact analysis in a large Java/Spring microservice estate, including REST, event, schema, shared-library, and internal-code changes.
 
+> **September 2026 execution update:** The active POC no longer treats SCIP or
+> Graphify as candidates. Real-product pilots showed overlapping quality ranges,
+> high model variance, and little actual product contribution; SCIP also emitted
+> no cross-root references across the separately compiled Maven services. The
+> active product-first matrix is agent-only, Gortex, RepoWise, and Codebase
+> Memory. Harness-built indexes remain mechanism controls only. See
+> [Real-product, product-first evaluation](../methodology/product-first-real-product-evaluation.md)
+> for the controlling protocol. The original proposal below is preserved as
+> design history and must not be read as the current run plan.
+
 ---
 
 # 1. Executive Summary

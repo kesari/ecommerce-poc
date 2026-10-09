@@ -1,5 +1,12 @@
 # Gortex vs Graphify vs SCIP/Sourcegraph vs Claude Code/Codex for Cross-Repo Change Impact
 
+> **Historical assessment:** This document predates the real-product pilots.
+> SCIP and Graphify are no longer in the active matrix, and the numerical ranks
+> below are architectural opinions rather than measured POC outcomes. Current
+> evaluation compares agent-only, Gortex, RepoWise, and Codebase Memory using a
+> mandatory, receipt-backed product-first protocol. See
+> [Real-product, product-first evaluation](../methodology/product-first-real-product-evaluation.md).
+
 Looking specifically at **cross-repository change impact**, these tools fall into two fundamentally different families:
 
 > **SCIP/Sourcegraph tells you what is statically true.**  

@@ -89,7 +89,7 @@ export interface PlaybookStep {
  *  A product with no native answer for an intention simply has no step for it;
  *  that absence is a finding, not a gap to paper over. */
 export function playbookFor(
-	kind: "scip" | "gortex" | "graphify",
+	kind: "scip" | "gortex" | "graphify" | "repowise" | "codebase-memory",
 	anchor: ChangeAnchor,
 	/** The record's frozen question, written before any testing. Every
 	 *  contestant already receives this text in its prompt, so spending it on a
@@ -122,6 +122,23 @@ export function playbookFor(
 			{ intention: "expand", tool: "gortex_contracts", params: { action: "list", repo: anchor.repo } },
 			{ intention: "expand", tool: "gortex_contracts", params: { action: "bridge_rank", query: name, repo: anchor.repo } },
 			{ intention: "expand", tool: "gortex_query", params: { operation: "dependents", query: name, repo: anchor.repo } },
+		];
+	}
+	if (kind === "repowise") {
+		return [
+			{ intention: "locate", tool: "repowise_search", params: { query: name, mode: "symbol", repo: "all" } },
+			{ intention: "references", tool: "repowise_context", params: { query: name, repo: anchor.repo } },
+			{ intention: "expand", tool: "repowise_blast_radius", params: { target: anchor.repo, max_depth: 3, include_behavioral: false } },
+			{ intention: "tests", tool: "repowise_search", params: { query: `${name} tests`, mode: "path", repo: "all" } },
+		];
+	}
+	if (kind === "codebase-memory") {
+		return [
+			{ intention: "locate", tool: "codebase_memory_query", params: { operation: "schema", query: name, repo: anchor.repo } },
+			{ intention: "locate", tool: "codebase_memory_query", params: { operation: "search", query: name, repo: anchor.repo } },
+			{ intention: "references", tool: "codebase_memory_query", params: { operation: "references", query: name, repo: anchor.repo } },
+			{ intention: "expand", tool: "codebase_memory_query", params: { operation: "cross_repo", query: name, repo: anchor.repo } },
+			{ intention: "tests", tool: "codebase_memory_query", params: { operation: "tests", query: name, repo: anchor.repo } },
 		];
 	}
 	// Graphify's query surface is natural-language and traverses from every term
