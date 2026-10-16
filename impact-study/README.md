@@ -10,6 +10,8 @@ repositories are pinned and clean; 15 ground-truth scenarios are frozen.
 RepoWise and Codebase Memory have setup smoke evidence but no saved scored
 model runs. See the [9 October status and restart plan](docs/methodology/2026-10-09-checkpoint-and-restart.md)
 for verification, historical score limitations, and the next milestone.
+The checkpoint and restart branch are published; the 16 October handoff is
+recorded in that plan. The fresh evaluation pilot remains pending.
 
 ## Documentation
 

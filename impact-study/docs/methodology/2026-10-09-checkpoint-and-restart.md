@@ -5,6 +5,30 @@ evaluation resumes on `codex/restart-product-evaluation`. It is a continuation
 from the committed checkpoint; the implementation and historical answers remain
 available.
 
+## Publication and handoff — 16 October 2026
+
+The 9 October checkpoint was committed locally as `d290b841` and published as
+[`cc853138`](https://github.com/kesari/ecommerce-poc/commit/cc853138) on
+`feat/track-c-product-first`. The published `codex/restart-product-evaluation`
+branch starts from that checkpoint. Its `impact-study/` tree was verified to
+match the standalone study workspace before this documentation update.
+
+There are no additional implementation changes at this handoff. The saved
+answers still contain no RepoWise or Codebase Memory model runs; the latest
+recorded model-run start remains 2026-09-07. The fresh REST-001 pilot is pending.
+The test results below are the 9 October results, not a new 16 October test run.
+
+Publish this documentation update on `codex/restart-product-evaluation`, then
+return the workspace to its existing `main` branch. Returning to `main` does
+not merge the evaluation branch; resume evaluation from the published restart
+branch when ready.
+
+This local repository contains the standalone study tree. GitHub's
+`kesari/ecommerce-poc` repository contains it under `impact-study/`, alongside
+the services and website. Publish study changes within that subtree while
+preserving the other directories. A direct push of this standalone tree over
+a monorepo branch would replace its layout and is not the publishing workflow.
+
 ## Verified status
 
 | Area | Status on 2026-10-09 |
@@ -50,8 +74,8 @@ The historical runs do not establish a winner in the current comparison.
 
 ## Restart sequence
 
-1. Commit and push this checkpoint on the current development branch, then
-   create `codex/restart-product-evaluation` from that commit.
+1. Completed on 2026-10-09: committed and pushed the checkpoint, then created
+   and published `codex/restart-product-evaluation` from it.
 2. Restore Gortex and RepoWise service availability. Recheck pins, product
    identity, artifacts, and a deterministic REST-001 native playbook smoke for
    each active product. Record failures before starting model runs.
