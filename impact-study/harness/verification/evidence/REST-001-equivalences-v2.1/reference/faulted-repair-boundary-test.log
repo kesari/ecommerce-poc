@@ -1,0 +1,69 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.poc:order_service >------------------------
+[INFO] Building order-service 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ order_service ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 5 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ order_service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 64 source files with javac [debug parameters release 21] to target/classes
+[WARNING] The following options were not recognized by any processor: '[mapstruct.unmappedTargetPolicy, mapstruct.defaultComponentModel]'
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ order_service ---
+[INFO] skip non existing resourceDirectory /private/tmp/cross-repo-rest001-verification-loopback/faulted-repair/order-service/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ order_service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 9 source files with javac [debug parameters release 21] to target/test-classes
+[WARNING] The following options were not recognized by any processor: '[mapstruct.unmappedTargetPolicy, mapstruct.defaultComponentModel]'
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ order_service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.poc.order.verification.Rest001BoundaryTest
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.234 s <<< FAILURE! -- in com.poc.order.verification.Rest001BoundaryTest
+[ERROR] com.poc.order.verification.Rest001BoundaryTest.accountResponseBindingAndCheckoutBoundary -- Time elapsed: 0.226 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: REPAIR_BINDING ==> expected: <560001> but was: <null>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1156)
+	at com.poc.order.verification.Rest001BoundaryTest.accountResponseBindingAndCheckoutBoundary(Rest001BoundaryTest.java:119)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   Rest001BoundaryTest.accountResponseBindingAndCheckoutBoundary:119 REPAIR_BINDING ==> expected: <560001> but was: <null>
+[INFO] 
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.960 s
+[INFO] Finished at: 2026-10-16T14:28:04+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project order_service: There are test failures.
+[ERROR] 
+[ERROR] See /private/tmp/cross-repo-rest001-verification-loopback/faulted-repair/order-service/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

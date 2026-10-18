@@ -1,0 +1,424 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "contestant-answer-v2",
+  "type": "object",
+  "required": [
+    "protocol_version",
+    "change_id",
+    "snapshot_sha256",
+    "findings"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": 2,
+      "type": "integer"
+    },
+    "change_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "findings": {
+      "type": "object",
+      "required": [
+        "repositories",
+        "obligations",
+        "symbols",
+        "edges",
+        "actions"
+      ],
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "repo",
+              "runtime_status"
+            ],
+            "properties": {
+              "repo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "runtime_status": {
+                "type": "string",
+                "enum": [
+                  "broken",
+                  "unchanged",
+                  "unresolved"
+                ]
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "receipt_id": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "obligations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "repo",
+              "obligation"
+            ],
+            "properties": {
+              "repo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "obligation": {
+                "type": "string",
+                "enum": [
+                  "production_edit",
+                  "validation_only",
+                  "unaffected",
+                  "unresolved"
+                ]
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "receipt_id": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "repo",
+              "fqn"
+            ],
+            "properties": {
+              "repo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "fqn": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "receipt_id": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "provider",
+              "consumer",
+              "type",
+              "identifier",
+              "field"
+            ],
+            "properties": {
+              "provider": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "consumer": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "rest",
+                  "kafka",
+                  "grpc",
+                  "db",
+                  "local"
+                ]
+              },
+              "identifier": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "field": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "receipt_id": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "repo",
+              "target",
+              "operation",
+              "before",
+              "after"
+            ],
+            "properties": {
+              "repo": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "target": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "read_json_field",
+                  "subscribe_topic",
+                  "publish_topic",
+                  "retain_json_alias"
+                ]
+              },
+              "before": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "after": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "citations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "path"
+                  ],
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "pattern": "\\S"
+                    },
+                    "sha256": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{64}$"
+                    },
+                    "line": {
+                      "type": "integer",
+                      "minimum": 1
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "receipt_id": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "synthetic": {
+      "type": "boolean"
+    },
+    "budget_policy": {
+      "type": "object",
+      "required": [
+        "timeout_seconds",
+        "max_tokens",
+        "max_cost_usd",
+        "cost_enforcement",
+        "token_enforcement",
+        "retries",
+        "compaction"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "timeout_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_cost_usd": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "cost_enforcement": {
+          "type": "string",
+          "const": "catalog_context_reservation"
+        },
+        "token_enforcement": {
+          "type": "string",
+          "const": "context_window_reservation"
+        },
+        "retries": {
+          "type": "boolean",
+          "const": false
+        },
+        "compaction": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "tokens_consumed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cost_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "elapsed_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "run_started_at": {
+      "type": "string",
+      "pattern": "\\S"
+    }
+  },
+  "additionalProperties": true,
+  "allOf": [
+    {
+      "if": {
+        "required": [
+          "run_started_at"
+        ]
+      },
+      "then": {
+        "required": [
+          "budget_policy"
+        ]
+      }
+    }
+  ]
+}

@@ -62,6 +62,32 @@ export async function assertDirectory(path: string, label: string) {
 	if (!value.isDirectory()) throw new Error(`${label} is not a directory: ${path}`);
 }
 
+/** Reject benchmark-only material before any product can inspect the source estate.
+ * Ordinary service tests remain public; protected verifier bundles live under
+ * canonical harness directories, outside the allowlisted repositories. */
+export async function assertBlindEstate(estate: string, repositories: readonly string[] = ESTATE_REPOSITORIES) {
+	const protectedDirectories = new Set([".benchmark-oracles", ".benchmark-verifier"]);
+	const protectedHarness = new Set(["records", "records-v2", "oracles", "verifier", "verification"]);
+	const visit = async (directory: string, parts: string[]) => {
+		for (const entry of await readdir(directory, { withFileTypes: true })) {
+			if (IGNORED.has(entry.name)) continue;
+			const path = join(directory, entry.name);
+			const segments = [...parts, entry.name];
+			const protectedPath = protectedDirectories.has(entry.name) || ["verification", "verifier", "oracles", "records-v2"].includes(entry.name)
+				|| (parts.at(-1) === "harness" && protectedHarness.has(entry.name))
+				|| (parts.at(-1) === "records" && entry.name.endsWith(".json"))
+				|| /^(REST|KAFKA|INT|DB|SEM)-[0-9]+\.json$/.test(entry.name);
+			if (protectedPath) throw new Error(`ground-truth leak in estate: ${segments.join("/")}`);
+			if (entry.isSymbolicLink()) {
+				// Product indexers may follow links even when the read tools refuse them.
+				throw new Error(`symlink is not allowed in benchmark estate: ${segments.join("/")}`);
+			}
+			if (entry.isDirectory()) await visit(path, segments);
+		}
+	};
+	for (const repository of repositories) await visit(join(estate, repository), [repository]);
+}
+
 /** Copy the allowlisted repositories into scratch, without their build output. */
 export async function isolate(
 	estate: string,
@@ -72,6 +98,7 @@ export async function isolate(
 	for (const name of repositories) {
 		await assertDirectory(join(estate, name), `estate repository ${name}`);
 	}
+	await assertBlindEstate(estate, repositories);
 	const target = join(scratch, "estate");
 	await mkdir(target);
 	for (const name of repositories) {
@@ -236,6 +263,7 @@ export async function captureEstateSnapshot(
 	estate: string,
 	repositories: readonly string[] = ESTATE_REPOSITORIES,
 ): Promise<EstateSnapshot> {
+	await assertBlindEstate(estate, repositories);
 	const hash = createHash("sha256");
 	const revisions: EstateRevision[] = [];
 	for (const name of repositories) {
@@ -248,4 +276,12 @@ export async function captureEstateSnapshot(
 		revisions.push({ name, commit, dirty: statusText === null ? null : statusText.length > 0 });
 	}
 	return { sha256: hash.digest("hex"), repositories: [...repositories], revisions };
+}
+
+/** Recheck content before exposure; copied estates intentionally have no Git metadata. */
+export async function assertEstateSnapshot(estate: string, expected: EstateSnapshot, copied = false) {
+	const actual = await captureEstateSnapshot(estate, expected.repositories);
+	if (actual.sha256 !== expected.sha256 || (!copied && JSON.stringify(actual.revisions) !== JSON.stringify(expected.revisions))) {
+		throw new Error("estate changed after snapshot; refusing stale benchmark provenance");
+	}
 }

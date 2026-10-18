@@ -1,0 +1,27 @@
+{
+  "phase" : "baseline",
+  "wire_response" : {
+    "id" : "00000000-0000-0000-0000-000000000001",
+    "fullName" : "Test User",
+    "line1" : "1 Test Street",
+    "line2" : null,
+    "city" : "Bengaluru",
+    "state" : "KA",
+    "postalCode" : "560001",
+    "country" : "IN",
+    "phoneNumber" : "9000000000",
+    "createdAt" : 1.7672256E9,
+    "updatedAt" : 1.7672256E9
+  },
+  "bound_postal_code" : "560001",
+  "account_http_requests" : 2,
+  "shipment_http_requests" : 1,
+  "shipment_request" : {
+    "itemCount" : 1,
+    "subtotalMinor" : 10000,
+    "postalCode" : "560001"
+  },
+  "quote_saved" : true,
+  "checkout_failure" : null,
+  "checkout_failure_frames" : [ ]
+}

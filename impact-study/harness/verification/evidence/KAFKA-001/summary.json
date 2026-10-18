@@ -1,0 +1,17 @@
+{
+  "protocol_version": 2,
+  "scenario": "KAFKA-001-topic-rename",
+  "status": "passed",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "criteria_sha256": "09f8d989c7f92bd9f37397cea66501890e67a691ba0334801563efc4ee589a36",
+  "test_sha256": "a78b3e84311432e79973717f4e218ec9ce993898663e3e4cab23510da3193649",
+  "manifest_sha256": "465980d020d1137dd461b95170c8302af9e76ae80e983cc64d82134f51cb6a01",
+  "scope": "Actual EventEnvelope topic + OutboxPublisher and actual Spring Kafka listeners + application services over isolated real Kafka; controlled unrelated persistence ports",
+  "conclusion": "Producer-only v2 rename delivers to broker but disconnects both v1 subscriptions in bounded 2-second window; unchanged old-topic positive control proves consumers live. Migrated subscriptions deliver; leaving Basket old is caught.",
+  "unresolved": [
+    "PostgreSQL persistence and transaction behavior",
+    "retry/DLQ migration",
+    "dual publish migration alternative",
+    "whole estate E2E"
+  ]
+}

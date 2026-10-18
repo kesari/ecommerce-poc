@@ -1,0 +1,10 @@
+--- a/order-service/src/main/java/com/poc/order/application/EventEnvelope.java
++++ b/order-service/src/main/java/com/poc/order/application/EventEnvelope.java
+@@ -21,6 +21,6 @@
+     }
+ 
+     public String topic() {
+-        return eventType + ".v1";
++        return eventType.equals("order.confirmed") ? "order.confirmed.v2" : eventType + ".v1";
+     }
+ }

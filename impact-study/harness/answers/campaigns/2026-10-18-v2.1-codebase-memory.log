@@ -1,0 +1,1196 @@
+estate d621514949e1 (10 repositories)
+
+running REST-001-pi-codex-codebase-memory-first-1 ...
+{
+  "status": "scored",
+  "benchmark_eligible": true,
+  "evaluation_revision": "2.1",
+  "scoring_policy": {
+    "mode": "scoped_reference_v1"
+  },
+  "satisfies_required_actions": true,
+  "satisfies_any_repair": true,
+  "metrics": {
+    "actions": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "affected_downstream_repositories": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "downstream_repositories": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "edges": {
+      "correct": 0,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0,
+      "recall": 0,
+      "reported": 2
+    },
+    "obligations": {
+      "correct": 2,
+      "expected": 2,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 2
+    },
+    "origin_repository": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "production_edit_obligations": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "repositories": {
+      "correct": 2,
+      "expected": 2,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 2
+    },
+    "symbols": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0.14285714285714285,
+      "recall": 1,
+      "reported": 7
+    },
+    "unaffected_obligations": {
+      "correct": 0,
+      "expected": 0,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 0
+    },
+    "unresolved_obligations": {
+      "correct": 0,
+      "expected": 0,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 0
+    },
+    "validation_only_obligations": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    }
+  },
+  "critical_downstream_action_misses": []
+}
+
+--- scorecard across every scored run ---
+
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "oracle_bundle_sha256": "d6ed60fa90d5183dc6b6582effdbfef99d4cb88f9436ae64dbccc0c015d3b317",
+  "cohorts": [
+    {
+      "cohort_sha256": "1a241f750d5e4ae38f5db46d9e6bdafb793e8ff8a264364fa9604e0f7fcdd17c",
+      "identity": {
+        "model": "openai-codex/gpt-5.6-terra",
+        "model_digest": null,
+        "pi_version": "0.84.4",
+        "harness_sha256": "b9f840ed6926090bcbfb25cd61c0942b5ba6ccde8700c33b6c1317a1870f9742",
+        "prompt_sha256": "1bb36b2d9a495cc7079f3601940aea34ab01f7000228d432dadd5f8c2a07d71a",
+        "contestant_config_sha256": "1f4148144cf6dab25ce767185ceb6b3d0ef3b9401bf8401480866d1f8bfb41fd",
+        "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+        "index_sha256": "63ff27f1c751007a16a7acbf68da6a21da525701959bc448f6c497dd9a7a2d09",
+        "budget_policy": {
+          "timeout_seconds": 300,
+          "max_tokens": 2000000,
+          "max_cost_usd": 5,
+          "cost_enforcement": "catalog_context_reservation",
+          "token_enforcement": "context_window_reservation",
+          "retries": false,
+          "compaction": false
+        },
+        "evaluation_revision": "2.1",
+        "scoring_policy": {
+          "mode": "scoped_reference_v1"
+        },
+        "protocol_version": 2,
+        "change_id": "REST-001",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "oracle_bundle_sha256": "d6ed60fa90d5183dc6b6582effdbfef99d4cb88f9436ae64dbccc0c015d3b317",
+        "ground_truth_sha256": "0f57f3cbcc77aafee0b4a73726549aca2a825fd22192aae732e5822ef878ba72",
+        "scorer_sha256": "a3a38450a6d5630761cb679ae6542bb2d79f89d6b39aa4fd0c73dfb00dbc8218",
+        "answer_schema_sha256": "150d655b676f5069db87da03f0891d89ea9bbdb14c406fba6262145010fcf9d9",
+        "runner": "pi-codex-repowise-first",
+        "contestant": "repowise-first",
+        "treatment": "product-first"
+      },
+      "runs": 1,
+      "metrics": {
+        "repositories": {
+          "expected": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "reported": {
+            "observed": 1,
+            "median": 3,
+            "min": 3,
+            "max": 3
+          },
+          "correct": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "reported": {
+            "observed": 1,
+            "median": 3,
+            "min": 3,
+            "max": 3
+          },
+          "correct": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.6666666666666666,
+            "min": 0.6666666666666666,
+            "max": 0.6666666666666666
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "symbols": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 6,
+            "min": 6,
+            "max": 6
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.16666666666666666,
+            "min": 0.16666666666666666,
+            "max": 0.16666666666666666
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "edges": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.5,
+            "min": 0.5,
+            "max": 0.5
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "actions": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "downstream_repositories": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.5,
+            "min": 0.5,
+            "max": 0.5
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "origin_repository": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "affected_downstream_repositories": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "production_edit_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "validation_only_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.5,
+            "min": 0.5,
+            "max": 0.5
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "unaffected_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "reported": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "correct": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "unresolved_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "reported": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "correct": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        }
+      },
+      "satisfies_required_actions": 1,
+      "satisfies_any_repair": 1,
+      "critical_downstream_action_miss_count": {
+        "observed": 1,
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "critical_downstream_action_misses": [],
+      "efficiency": {
+        "tokens_consumed": {
+          "observed": 1,
+          "median": 128111,
+          "min": 128111,
+          "max": 128111,
+          "missing": 0
+        },
+        "cost_usd": {
+          "observed": 1,
+          "median": 0.1289108,
+          "min": 0.1289108,
+          "max": 0.1289108,
+          "missing": 0
+        },
+        "elapsed_seconds": {
+          "observed": 1,
+          "median": 107.906897333,
+          "min": 107.906897333,
+          "max": 107.906897333,
+          "missing": 0
+        }
+      },
+      "reports": [
+        "REST-001-pi-codex-repowise-first-1.score.json"
+      ]
+    },
+    {
+      "cohort_sha256": "567769c3fb0452c3fd698d4d68149701606e6778a8f114ac0fe004e1145e4137",
+      "identity": {
+        "model": "openai-codex/gpt-5.6-terra",
+        "model_digest": null,
+        "pi_version": "0.84.4",
+        "harness_sha256": "b9f840ed6926090bcbfb25cd61c0942b5ba6ccde8700c33b6c1317a1870f9742",
+        "prompt_sha256": "81e9a949506392e539d20e350458a204eaa8087afb115420f258299fbbd35801",
+        "contestant_config_sha256": "7117350de8321927529cf526b1afd27bcf1925dbb418c325d727cf75831c0ae4",
+        "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+        "index_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+        "budget_policy": {
+          "timeout_seconds": 300,
+          "max_tokens": 2000000,
+          "max_cost_usd": 4.8710892,
+          "cost_enforcement": "catalog_context_reservation",
+          "token_enforcement": "context_window_reservation",
+          "retries": false,
+          "compaction": false
+        },
+        "evaluation_revision": "2.1",
+        "scoring_policy": {
+          "mode": "scoped_reference_v1"
+        },
+        "protocol_version": 2,
+        "change_id": "REST-001",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "oracle_bundle_sha256": "d6ed60fa90d5183dc6b6582effdbfef99d4cb88f9436ae64dbccc0c015d3b317",
+        "ground_truth_sha256": "0f57f3cbcc77aafee0b4a73726549aca2a825fd22192aae732e5822ef878ba72",
+        "scorer_sha256": "a3a38450a6d5630761cb679ae6542bb2d79f89d6b39aa4fd0c73dfb00dbc8218",
+        "answer_schema_sha256": "150d655b676f5069db87da03f0891d89ea9bbdb14c406fba6262145010fcf9d9",
+        "runner": "pi-codex-codebase-memory-first",
+        "contestant": "codebase-memory-first",
+        "treatment": "product-first"
+      },
+      "runs": 1,
+      "metrics": {
+        "repositories": {
+          "expected": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "reported": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "correct": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "reported": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "correct": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "symbols": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 7,
+            "min": 7,
+            "max": 7
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.14285714285714285,
+            "min": 0.14285714285714285,
+            "max": 0.14285714285714285
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "edges": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 2,
+            "min": 2,
+            "max": 2
+          },
+          "correct": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          }
+        },
+        "actions": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "downstream_repositories": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "origin_repository": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "affected_downstream_repositories": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "production_edit_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "validation_only_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "reported": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "correct": {
+            "observed": 1,
+            "median": 1,
+            "min": 1,
+            "max": 1
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "unaffected_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "reported": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "correct": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        },
+        "unresolved_obligations": {
+          "expected": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "reported": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "correct": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "invalid": {
+            "observed": 1,
+            "median": 0,
+            "min": 0,
+            "max": 0
+          },
+          "precision": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "recall": {
+            "observed": 1,
+            "median": 1.0,
+            "min": 1.0,
+            "max": 1.0
+          }
+        }
+      },
+      "satisfies_required_actions": 1,
+      "satisfies_any_repair": 1,
+      "critical_downstream_action_miss_count": {
+        "observed": 1,
+        "median": 0,
+        "min": 0,
+        "max": 0
+      },
+      "critical_downstream_action_misses": [],
+      "efficiency": {
+        "tokens_consumed": {
+          "observed": 1,
+          "median": 131987,
+          "min": 131987,
+          "max": 131987,
+          "missing": 0
+        },
+        "cost_usd": {
+          "observed": 1,
+          "median": 0.15416760000000002,
+          "min": 0.15416760000000002,
+          "max": 0.15416760000000002,
+          "missing": 0
+        },
+        "elapsed_seconds": {
+          "observed": 1,
+          "median": 197.21023825,
+          "min": 197.21023825,
+          "max": 197.21023825,
+          "missing": 0
+        }
+      },
+      "reports": [
+        "REST-001-pi-codex-codebase-memory-first-1.score.json"
+      ]
+    }
+  ],
+  "outcomes": {
+    "scored": 2,
+    "rejected": 0,
+    "failure_states": {}
+  },
+  "cost_accounting": {
+    "known_attempts": 2,
+    "observed_cost_usd": 0.2830784,
+    "exposure_upper_bound_usd": 0.2830784,
+    "unknown_usage_attempts": 0,
+    "failures_without_cost_evidence": 0
+  },
+  "rejected": [],
+  "excluded": []
+}

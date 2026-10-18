@@ -1,0 +1,108 @@
+{
+  "protocol_version": 2,
+  "status": "budget_exhausted",
+  "evidence": {
+    "attempt_evidence": {
+      "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/REST-001-pi-codex-repowise-first-1.2026-10-17T20-54-36-036Z.attempt.json",
+      "sha256": "2d189ede933eb4c9f0d252c553bb7bd866c12715e835177a4f5bba59f30e526e"
+    },
+    "run_started_at": "2026-10-17T20:54:36.036Z",
+    "usage": {
+      "tokens_consumed": 54893,
+      "cost_usd": 0.0574972,
+      "elapsed_seconds": 639.084219917
+    },
+    "exposure": {
+      "unknown_usage": true,
+      "pending_request": {
+        "api": "openai-codex-responses",
+        "model": "gpt-5.6-terra",
+        "context_window": 272000,
+        "max_output_tokens": 128000,
+        "catalog_rates_usd_per_million": {
+          "input": 2,
+          "output": 12,
+          "cacheRead": 0.2,
+          "cacheWrite": 2.5,
+          "tiers": [
+            {
+              "inputTokensAbove": 272000,
+              "input": 4,
+              "output": 18,
+              "cacheRead": 0.4,
+              "cacheWrite": 5
+            }
+          ]
+        },
+        "output_limit": "model_catalog_maximum",
+        "maximum_request_cost_usd": 3.6639999999999997,
+        "prior_tokens": 54893,
+        "prior_cost_usd": 0.0574972
+      },
+      "exposure_upper_bound_usd": 3.7214971999999995
+    },
+    "run_receipt_bundle": {
+      "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/receipts/REST-001-pi-codex-repowise-first-2026-10-17T20-54-36-036Z.json",
+      "sha256": "c8ad9f75be83d3f70241f21a30e81c6082c3da12d7095bbb48c986df81b3dd7f"
+    },
+    "budget_policy": {
+      "timeout_seconds": 300,
+      "max_tokens": 2000000,
+      "max_cost_usd": 4.6894516,
+      "cost_enforcement": "catalog_context_reservation",
+      "token_enforcement": "context_window_reservation",
+      "retries": false,
+      "compaction": false
+    }
+  },
+  "usage": {
+    "tokens_consumed": 54893,
+    "cost_usd": 0.0574972,
+    "elapsed_seconds": 639.084219917
+  },
+  "budget_exposure": {
+    "unknown_usage": true,
+    "pending_request": {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 54893,
+      "prior_cost_usd": 0.0574972
+    },
+    "exposure_upper_bound_usd": 3.7214971999999995
+  },
+  "budget_policy": {
+    "timeout_seconds": 300,
+    "max_tokens": 2000000,
+    "max_cost_usd": 4.6894516,
+    "cost_enforcement": "catalog_context_reservation",
+    "token_enforcement": "context_window_reservation",
+    "retries": false,
+    "compaction": false
+  },
+  "change_id": "REST-001",
+  "runner": "pi-codex-repowise-first",
+  "run_index": 1,
+  "run_started_at": "2026-10-17T20:54:36.036Z",
+  "reason": "total attempt deadline exhausted; attempt evidence: /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/REST-001-pi-codex-repowise-first-1.2026-10-17T20-54-36-036Z.attempt.json",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8"
+}

@@ -1,0 +1,15 @@
+{
+  "protocol_version": 2,
+  "scenario": "INT-002-cache-namespace",
+  "scope": "Real Valkey cache adapter plus actual ShipmentService.estimate; no HTTP/DB/full estate claim",
+  "expected_estimate": {"shippingMinor": 10000, "currency": "INR", "window": {"from": [2026, 1, 3], "to": [2026, 1, 4]}},
+  "phases": {
+    "baseline": {"first_hits": 1.0, "first_misses": 0.0, "total_hits": 2.0, "new_entry_exists": false},
+    "changed": {"first_hits": 0.0, "first_misses": 1.0, "total_hits": 1.0, "new_entry_exists": true},
+    "repaired": {"first_hits": 0.0, "first_misses": 1.0, "total_hits": 1.0, "new_entry_exists": true},
+    "faulted-repair": {"first_hits": 0.0, "first_misses": 1.0, "total_hits": 1.0, "new_entry_exists": true}
+  },
+  "expected_test_exit": {"baseline": 0, "changed": 0, "repaired": 0, "faulted-repair": 1},
+  "repair": "None required; repaired is deliberately identical to changed",
+  "fault": "Return null after recomputing a cache miss; unchanged ESTIMATE_COMPATIBILITY assertion must reject it"
+}

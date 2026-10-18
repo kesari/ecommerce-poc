@@ -1,0 +1,10 @@
+{
+  "phase" : "repaired",
+  "producer_topic" : "order.confirmed.v2",
+  "broker_records" : 1,
+  "publisher_acknowledged" : 1,
+  "shipment_handler_saves" : 1,
+  "basket_handler_checkouts" : 1,
+  "consumer_liveness_control_passed" : true,
+  "subscription_topics" : [ [ "order.confirmed.v2" ], [ "order.confirmed.v2", "order.confirmed.v1.retry.1", "order.confirmed.v1.retry.2" ] ]
+}

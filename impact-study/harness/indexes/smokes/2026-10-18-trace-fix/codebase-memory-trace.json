@@ -1,0 +1,131 @@
+{
+  "kind": "native_adapter_smoke",
+  "date": "2026-10-18",
+  "provider_calls": 0,
+  "product": {
+    "mode": "real_product",
+    "product": "codebase-memory-mcp",
+    "version": "0.11.0",
+    "commit": "8972ea69c6ad94b1ef1d4ffbf0a92d78d2db1798",
+    "binary_sha256": "a67b7ccead5d2ca852051f8619458ab96af41393257b56fb36e523a110265d48",
+    "artifact_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+    "manifest_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+    "query_surface": [
+      "search_graph",
+      "query_graph:references",
+      "trace_path:functions",
+      "query_graph:CROSS_*",
+      "query_graph:TESTS",
+      "get_graph_schema"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.4.1",
+    "config_sha256": "4bcf17b2c68852b9e5bada7a20a10465f09a6310ce3dd8e090fca25cf031224e",
+    "index_built_at": null,
+    "index_duration_seconds": 117,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "estate": {
+    "sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+    "repositories": [
+      "account-service",
+      "basket-service",
+      "catalog-service",
+      "commerce-bff",
+      "commerce-platform",
+      "commerce-web",
+      "inventory-service",
+      "order-service",
+      "payment-service",
+      "shipment-service"
+    ],
+    "revisions": [
+      {
+        "name": "account-service",
+        "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+        "dirty": false
+      },
+      {
+        "name": "basket-service",
+        "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+        "dirty": false
+      },
+      {
+        "name": "catalog-service",
+        "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+        "dirty": false
+      },
+      {
+        "name": "commerce-bff",
+        "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+        "dirty": false
+      },
+      {
+        "name": "commerce-platform",
+        "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+        "dirty": false
+      },
+      {
+        "name": "commerce-web",
+        "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+        "dirty": false
+      },
+      {
+        "name": "inventory-service",
+        "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+        "dirty": false
+      },
+      {
+        "name": "order-service",
+        "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+        "dirty": false
+      },
+      {
+        "name": "payment-service",
+        "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+        "dirty": false
+      },
+      {
+        "name": "shipment-service",
+        "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+        "dirty": false
+      }
+    ]
+  },
+  "parameters": {
+    "operation": "trace",
+    "query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+    "repo": "order-service"
+  },
+  "receipts": [
+    {
+      "id": "r1",
+      "tool": "codebase_memory_query",
+      "operation": "trace",
+      "parameters": {
+        "operation": "trace",
+        "query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+        "repo": "order-service"
+      },
+      "requested_query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+      "executed_query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+      "success": true,
+      "output": "{\"function\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address\",\"direction\":\"both\",\"callees_total\":11,\"callees_total_relation\":\"eq\",\"callees\":{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client\",\"rows\":[[\"DownstreamUnavailableException\",1]]},{\"qn_prefix\":\"order-service.asyncapi.schemas.order.confirmed.v1\",\"rows\":[[\"country\",1],[\"postalCode\",1],[\"state\",1],[\"city\",1],[\"line2\",1],[\"line1\",1],[\"fullName\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.messaging.RetryRouter\",\"rows\":[[\"header\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.domain.model\",\"rows\":[[\"AddressSnapshot\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]}]},\"callers_total\":2,\"callers_total_relation\":\"eq\",\"callers\":{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository\",\"rows\":[[\"save\",1]]}]}}",
+      "output_sha256": "6825a00a20dd1996acfaa3998ae32b936a952b6d44537abb06789fb7191e4666",
+      "output_bytes": 1330,
+      "output_full_bytes": 1330,
+      "truncated": false,
+      "output_normalized": "{\"callees\":{\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.asyncapi.schemas.order.confirmed.v1\",\"rows\":[[\"country\",1],[\"postalCode\",1],[\"state\",1],[\"city\",1],[\"line2\",1],[\"line1\",1],[\"fullName\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.domain.model\",\"rows\":[[\"AddressSnapshot\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client\",\"rows\":[[\"DownstreamUnavailableException\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.messaging.RetryRouter\",\"rows\":[[\"header\",1]]}],\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\"},\"callees_total\":11,\"callees_total_relation\":\"eq\",\"callers\":{\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository\",\"rows\":[[\"save\",1]]}],\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\"},\"callers_total\":2,\"callers_total_relation\":\"eq\",\"direction\":\"both\",\"function\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address\"}",
+      "output_normalized_sha256": "82bdf0e08448d631787bdd103782a9eb23bcddf8ddf2d58aa2401cfd5c0a068d",
+      "duration_ms": 4853.6,
+      "error": null
+    }
+  ],
+  "observations": {
+    "function": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+    "direction": "both",
+    "callers_total": 2,
+    "callees_total": 11
+  },
+  "limitation": "Successful native graph traversal and receipt integrity; graph relationships are not independently established source truth."
+}

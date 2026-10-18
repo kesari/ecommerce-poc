@@ -1,0 +1,14 @@
+{
+  "protocol_version": 2,
+  "scenario": "REST-001-response-rename",
+  "scope": "Account response DTO field only; request field remains postalCode",
+  "phases": {
+    "baseline": {"bound_postal_code": "560001", "shipment_http_requests": 1, "quote_saved": true, "checkout_failure": null},
+    "changed": {"bound_postal_code": null, "shipment_http_requests": 0, "quote_saved": false, "checkout_failure": "java.lang.NullPointerException"},
+    "repaired": {"bound_postal_code": "560001", "shipment_http_requests": 1, "quote_saved": true, "checkout_failure": null},
+    "faulted-repair": {"bound_postal_code": null, "shipment_http_requests": 0, "quote_saved": false, "checkout_failure": "java.lang.NullPointerException"}
+  },
+  "expected_test_exit": {"baseline": 0, "changed": 0, "repaired": 0, "faulted-repair": 1},
+  "fault_detection": "The same success assertions used for repaired must reject faulted-repair at REPAIR_BINDING",
+  "unresolved": ["full provider Spring HTTP routing/security", "database persistence", "Kafka delivery", "whole estate end-to-end flow", "frontend and BFF compatibility"]
+}

@@ -1,0 +1,11 @@
+--- a/account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java
++++ b/account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java
+@@ -10,7 +10,7 @@
+         String line2,
+         String city,
+         String state,
+-        String postalCode,
++        String postcode,
+         String country,
+         String phoneNumber,
+         Instant createdAt,

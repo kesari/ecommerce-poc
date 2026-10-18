@@ -1,0 +1,43 @@
+{
+  "kind": "native_adapter_smoke_only",
+  "provider_calls": 0,
+  "scenario": "REST-001",
+  "protocol_version": 2,
+  "source_files": {
+    "harness/run/estate.ts": "d4aacea1bc589e94300cf92061dc199da5bbd7dea29100b210a0c81cdf4ba783",
+    "harness/run/playbook.ts": "68008a6385103d198a34b62540537b6e7fd9198672ba5e036041492e73e5570d",
+    "harness/run/products.ts": "9bf23ce50bcb783f84fb3166d74376d1040ce7b3b2fa94f07eee5c7f6551bfe7"
+  },
+  "attempts": [
+    {
+      "product": "codebase-memory",
+      "path": "codebase-memory-2026-10-16T10-42-22-709Z.json",
+      "sha256": "acaafe55343b1143d54babbd07eafffbfa168f153f9666ba2bc7142d20403517",
+      "steps": 5,
+      "receipts": 5,
+      "succeeded": 5,
+      "product_config_sha256": "4bcf17b2c68852b9e5bada7a20a10465f09a6310ce3dd8e090fca25cf031224e",
+      "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8"
+    },
+    {
+      "product": "gortex",
+      "path": "gortex-2026-10-16T10-42-18-463Z.json",
+      "sha256": "43450d8b427cbed6120c4d718336388e4dada64d1059e4a56f2cec5bea87318f",
+      "steps": 5,
+      "receipts": 5,
+      "succeeded": 5,
+      "product_config_sha256": "d9cd33199f9cb7ea2e85ffb4e8125b9900cac6bfef467a328fbaaac9c49ea702",
+      "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8"
+    },
+    {
+      "product": "repowise",
+      "path": "repowise-2026-10-16T10-42-19-924Z.json",
+      "sha256": "38085909445d9190ecd07aa30075df37d8c2c903400aa7061d22c3e31c4b864d",
+      "steps": 4,
+      "receipts": 4,
+      "succeeded": 4,
+      "product_config_sha256": "de186abaf2738c59b41cc55f2695f1b1d7e205fa8a4fc4c5048d785c8326f40d",
+      "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8"
+    }
+  ]
+}

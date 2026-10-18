@@ -16,6 +16,16 @@ run/       run.ts       the pipeline, one stage per module:
 scoring/   score.py   scoring, schema validation, and the readable report
 ```
 
+Protocol 1 is historical. Protocol 2 adds independently pinned executable
+evidence and scores downstream edits separately from runtime impact.
+REST-001, INT-002 and KAFKA-001 have verified scoped records and pinned oracle
+bundles. See the
+[implementation status](../docs/methodology/implementation-status-v2.md).
+For corrected REST repair matching, use the
+[revision 2.1 protocol](../docs/methodology/2026-10-18-scorer-v2.1-repair.md) and
+its separately pinned oracle. The original scorer/score replay is preserved in
+`history/2026-10-18-original-v2/`.
+
 One run is: isolate the estate → restrict the tools → prompt the model →
 extract the answer → stamp provenance → validate → score. A run that fails a
 stage is reported and skipped; the others continue.
@@ -33,11 +43,52 @@ node run.ts --record all --runs 3   # every contestant in contestants.json
 python3 aggregate.py                # the scorecard again, without re-running
 ```
 
-Runs below either floor — fewer than `--min-tool-calls` guarded tool calls
-(default 10) or fewer than `--min-tokens` tokens consumed (default 8000) — are
-rejected as thin runs. The answer is kept for diagnosis with a `.rejected.json`
-stub but never scored. This prevents a zero-search answer from passing merely
-because it was verbose.
+The historical minimum tool-call and token floors have been removed. Efficient
+answers are eligible; correctness and product participation are checked
+separately. The commands above default to protocol 1 and do not create v2 runs.
+
+For a v2 run, explicitly select the protocol and supply the reviewed oracle:
+
+```bash
+node run.ts --protocol 2 --record REST-001 --contestant pi-codex --runs 1 \
+  --max-tokens 2000000 --max-cost-usd 5 --timeout 300 \
+  --oracle-bundle ../verification/evidence/REST-001/oracle-bundle.json \
+  --trusted-oracle-sha256 33b42c1fca9396918b35c584076cca9cb5351ceb09d59889d5c195fd050d12d6 \
+  --artifact-root ../verification/evidence/REST-001
+```
+
+Confirm the contestant name against `contestants.json` before invoking a paid
+provider. Oracle preflight can be run without any model call; the exact command
+is in the [v2 implementation status](../docs/methodology/implementation-status-v2.md).
+V2 requires explicit `--max-tokens`, `--max-cost-usd` and `--timeout` values.
+These are **per-attempt** ceilings; repeated/multi-contestant CLI runs do not
+create a shared campaign allowance. A detached worker lets the parent enforce
+the total deadline across setup, product playbook and model execution, even
+while a native adapter blocks. A bounded 100ms abort grace preserves evidence.
+Native product subprocesses also retain their own 60-second caps.
+
+Before each provider request, the harness reserves the full catalog context
+window and bounded output at the largest base/tier USD rates. Codex reserves
+its full catalog output limit because its adapter ignores a smaller output
+cap. Capped Codex requests use SSE without transport fallback; retry and
+compaction are disabled. Unsupported/insufficient reservations fail before a
+request. These bounds assume provider catalog limits/rates; SDK cost is a
+catalog estimate, not an invoice. Aborted/failed requests retain their pending
+reservation as unknown usage for conservative campaign accounting.
+
+V2 answers, reports and runner-owned receipt envelopes live under
+`answers/runs/v2/`. The runner checks pinned clean revisions, rechecks estate
+identity around attempts and product calls, and rejects evaluator artifacts
+inside the searchable estate. `aggregate_v2.py` independently regrades reports,
+checks receipt and artifact hashes, rejects replayed attempts, and separates
+cohorts by model, prompt, harness, estate, index, oracle and budget policy.
+Use `--run-group <label>` to place revised runs under a separate
+`answers/runs/v2/<label>/` directory. The label accepts letters, digits,
+underscores and hyphens, up to 64 characters, and cannot escape its parent.
+Aggregation also exposes the evaluation revision and trusted scoring policy.
+The scorecard's `cost_accounting` includes verified failed-attempt costs and
+unsettled exposure. If a failure has no trustworthy cost evidence, its total
+exposure bound is reported as unavailable, rather than zero.
 
 Scoring is automatic. Each run prints its own score breakdown, and the corpus
 scorecard prints once at the end — `aggregate.py` is only needed to re-read it
@@ -59,7 +110,12 @@ python3 score.py marginal --ground-truth ../records/REST-001.json \
 ```
 
 Tests, from the harness root: `python3 scoring/test_score.py`,
-`python3 run/test_aggregate.py`, and `npm test` in `run/`.
+`python3 scoring/test_score_v2.py`, `python3 run/test_aggregate.py`,
+`python3 run/test_aggregate_v2.py`,
+`python3 -m unittest discover -s verification -p 'test_*.py'`,
+`python3 scoring/test_saved_repairs.py`, `python3 history/test_original_replay.py`,
+and `npm test` in `run/`. Executable Java boundary checks run separately as
+described in [verification/README.md](verification/README.md).
 
 Historical reports retain the schema and scorer hashes used when they were
 created. The current aggregator rejects reports whose hashes differ from the
@@ -115,12 +171,11 @@ absence is a result. Phase B gives the model the question, the candidate set and
 every receipt, plus file-search tools and `PHASE_B_PRODUCT_BUDGET` further
 product calls, and asks it to verify rather than rediscover.
 
-The anchor is derived mechanically — the symmetric difference of identifiers
-across the diff's changed lines, with quoted literals taken whole or not at all
-— so no judgement about the expected answer can leak into what the product is
-asked. A diff that renames nothing yields no anchor and a product-first run
-refuses to start: `INT-001`, `INT-002` and `KAFKA-004` change only a literal or
-a comment and are outside Track C.
+The anchor is derived mechanically from the supplied diff: changed identifier,
+then changed literal, shared source context, or repository name as a fallback.
+Diff headers do not become symbols. Literal-only and comment-only changes,
+including `INT-001`, `INT-002` and `KAFKA-004`, remain eligible; the anchor never
+uses hidden expected findings.
 
 Every answer carries `product_playbook`, which is `null` on a natural-adoption
 run. Do not compare the two: one measures whether the agent asks, the other
@@ -155,6 +210,21 @@ model, prompt and estate hashes, index hash, tool-call count, and the commit
 state of every fixture repo.
 
 ## Scoring
+
+V2 uses exact repository-qualified symbols, directed contract edges and
+structured remediation predicates. It reports precision/recall, complete repair
+alternatives and critical downstream action misses. Independent oracle
+attestations and live product receipts are separate evidence channels. There is
+no composite that trades correctness against cost. Free-text explanations and
+arbitrary source citation truth are not automatically verified. See the
+[v2 scoring contract](../docs/methodology/v2-scoring-contract.md).
+Revision 2.1 permits exact, independently proved equivalences through a trusted
+oracle; it does not perform fuzzy normalization. Scoped-reference mode separates
+required actions from full-plan correctness, labels supporting extras unverified,
+and describes precision as reference overlap. Wrong protected identities/values
+and established contradictions remain failures.
+
+The following describes the unchanged **historical v1 scorer**:
 
 Composite score, with weights renormalized when a manual rubric input is
 missing:

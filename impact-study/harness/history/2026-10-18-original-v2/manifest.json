@@ -1,0 +1,53 @@
+{
+  "purpose": "Original v2 scorer/schema replay snapshot before ambiguity fixes; model-run artifacts remain at their original paths.",
+  "files": [
+    {
+      "path": "scoring/score.py",
+      "sha256": "daca1d4fef1da7abcd4cfdbbe49fde423d4f67072a8c94d4492b86afa7d23ae7"
+    },
+    {
+      "path": "scoring/score_v2.py",
+      "sha256": "6bc3bafaa2a443ba8e59ea77f5097364c98fa79eb766796bbae8da3ff5008f8c"
+    },
+    {
+      "path": "run/aggregate.py",
+      "sha256": "e43b7f7e50d5bbc8d98802119a114f6bd9abfa7ebe4083e5426bb8557f97e962"
+    },
+    {
+      "path": "run/aggregate_v2.py",
+      "sha256": "d2d0228b0db552a1358168ee4e3cfc61ea7dbff658a1fbb08e08b5d8b15b8ccd"
+    },
+    {
+      "path": "run/prompt-template-v2.md",
+      "sha256": "0dab96dbf2daa7dc8f0700d16003d0eeaa9db21172bcfc33d59c7dd0cadcbf04"
+    },
+    {
+      "path": "schema/contestant-answer-v2.schema.json",
+      "sha256": "150d655b676f5069db87da03f0891d89ea9bbdb14c406fba6262145010fcf9d9"
+    },
+    {
+      "path": "schema/change-ground-truth.schema.json",
+      "sha256": "b633335c90f91de7c4236c311cf72746081a846d2239805474b2355e40b3753e"
+    },
+    {
+      "path": "schema/oracle-bundle-v2.schema.json",
+      "sha256": "f35622fc3b2fafeea1c0ffe4a3677afeb04aff7ce8683155e5f161ff0c542226"
+    },
+    {
+      "path": "schema/run-receipts-v2.schema.json",
+      "sha256": "4199551f24aae827066c2e6aa25f4831261f95f636d8caacba06434d099c90f2"
+    },
+    {
+      "path": "schema/change-ground-truth-v2.schema.json",
+      "sha256": "353f5b703df600b00191e213ad74338ce81ce429976de09b525f1b6d3158b5f9"
+    },
+    {
+      "path": "schema/contestant-answer.schema.json",
+      "sha256": "e6d1dfe69242f69aa64f7740c575e010f3647daa824ca1da693455caac2b7a3f"
+    },
+    {
+      "path": "records/v2/REST-001.json",
+      "sha256": "0f57f3cbcc77aafee0b4a73726549aca2a825fd22192aae732e5822ef878ba72"
+    }
+  ]
+}

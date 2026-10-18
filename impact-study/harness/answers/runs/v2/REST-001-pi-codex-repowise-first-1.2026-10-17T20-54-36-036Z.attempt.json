@@ -1,0 +1,478 @@
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "runner": "pi-codex-repowise-first",
+  "run_started_at": "2026-10-17T20:54:36.036Z",
+  "status": "budget_exhausted",
+  "reason": "total attempt deadline exhausted",
+  "budget_policy": {
+    "timeout_seconds": 300,
+    "max_tokens": 2000000,
+    "max_cost_usd": 4.6894516,
+    "cost_enforcement": "catalog_context_reservation",
+    "token_enforcement": "context_window_reservation",
+    "retries": false,
+    "compaction": false
+  },
+  "usage": {
+    "tokens_consumed": 54893,
+    "cost_usd": 0.0574972,
+    "elapsed_seconds": 639.084219917
+  },
+  "run_receipt_bundle": {
+    "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/receipts/REST-001-pi-codex-repowise-first-2026-10-17T20-54-36-036Z.json",
+    "sha256": "c8ad9f75be83d3f70241f21a30e81c6082c3da12d7095bbb48c986df81b3dd7f"
+  },
+  "raw": "",
+  "stats": {
+    "tokens": {
+      "input": 19039,
+      "output": 1038,
+      "cacheRead": 34816,
+      "cacheWrite": 0,
+      "total": 54893
+    },
+    "cost": 0.0574972
+  },
+  "productReceipts": [
+    {
+      "id": "r1",
+      "tool": "repowise_search",
+      "operation": "symbol",
+      "parameters": {
+        "query": "postalCode",
+        "mode": "symbol",
+        "repo": "all"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\n  \"query\": \"postalCode\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1428,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/domain/model/Address.java\",\n      \"line\": 6,\n      \"symbol_id\": \"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.2212,\n      \"name\": \"code\",\n      \"qualified_name\": \"src/main/java/com/poc/basket/domain/model/Coupon.java.Coupon.code\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/domain/model/Coupon.java\",\n      \"line\": 3,\n      \"symbol_id\": \"src/main/java/com/poc/basket/domain/model/Coupon.java::Coupon::code\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.2127,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java.BatchLookupRequest.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java\",\n      \"line\": 9,\n      \"symbol_id\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java::BatchLookupRequest::hashCode\",\n      \"repo\": \"catalog-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1983,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java.DownstreamProperties.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties::hashCode\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1408,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java.EventEnvelope.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java\",\n      \"line\": 9,\n      \"symbol_id\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java::EventEnvelope::hashCode\",\n      \"repo\": \"inventory-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.0662,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java.AddressResponse.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 24,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AddressResponse::postalCode\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1531,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/payment/application/ChargeRequested.java.ChargeRequested.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/payment/application/ChargeRequested.java\",\n      \"line\": 7,\n      \"symbol_id\": \"src/main/java/com/poc/payment/application/ChargeRequested.java::ChargeRequested::hashCode\",\n      \"repo\": \"payment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1582,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java.DeliveryAddress.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\n      \"line\": 3,\n      \"symbol_id\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java::DeliveryAddress::postalCode\",\n      \"repo\": \"shipment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1355,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\n      \"line\": 7,\n      \"symbol_id\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::postalCode\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.1049,\n      \"name\": \"code\",\n      \"qualified_name\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java.CouponRequest.code\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java::CouponRequest::code\",\n      \"repo\": \"basket-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/domain/model/Address.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/domain/model/Coupon.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/payment/application/ChargeRequested.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_sha256": "575f5b67a7bd1119709d44b094f7944c0f6c91168454e7750dca407eee2fd6ff",
+      "output_bytes": 5772,
+      "output_full_bytes": 5772,
+      "truncated": false,
+      "output_normalized": "{\n  \"query\": \"postalCode\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1428,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/domain/model/Address.java\",\n      \"line\": 6,\n      \"symbol_id\": \"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.2212,\n      \"name\": \"code\",\n      \"qualified_name\": \"src/main/java/com/poc/basket/domain/model/Coupon.java.Coupon.code\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/domain/model/Coupon.java\",\n      \"line\": 3,\n      \"symbol_id\": \"src/main/java/com/poc/basket/domain/model/Coupon.java::Coupon::code\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.2127,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java.BatchLookupRequest.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java\",\n      \"line\": 9,\n      \"symbol_id\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java::BatchLookupRequest::hashCode\",\n      \"repo\": \"catalog-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1983,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java.DownstreamProperties.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties::hashCode\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1408,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java.EventEnvelope.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java\",\n      \"line\": 9,\n      \"symbol_id\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java::EventEnvelope::hashCode\",\n      \"repo\": \"inventory-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.0662,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java.AddressResponse.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 24,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AddressResponse::postalCode\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1531,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/payment/application/ChargeRequested.java.ChargeRequested.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/payment/application/ChargeRequested.java\",\n      \"line\": 7,\n      \"symbol_id\": \"src/main/java/com/poc/payment/application/ChargeRequested.java::ChargeRequested::hashCode\",\n      \"repo\": \"payment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1582,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java.DeliveryAddress.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\n      \"line\": 3,\n      \"symbol_id\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java::DeliveryAddress::postalCode\",\n      \"repo\": \"shipment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1355,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\n      \"line\": 7,\n      \"symbol_id\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::postalCode\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.1049,\n      \"name\": \"code\",\n      \"qualified_name\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java.CouponRequest.code\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java::CouponRequest::code\",\n      \"repo\": \"basket-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/domain/model/Address.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/domain/model/Coupon.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/payment/application/ChargeRequested.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_normalized_sha256": "b352e33c9452274a1e72a6008274e03571ab8c53055ac16441f97771420c16d9",
+      "duration_ms": 778.4,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "repowise_context",
+      "operation": "symbol_context",
+      "parameters": {
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"lookup\":{\"query\":\"postalCode\",\"mode\":\"symbol\",\"results\":[{\"type\":\"symbol\",\"score\":160.1428,\"name\":\"postalCode\",\"qualified_name\":\"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/domain/model/Address.java\",\"line\":6,\"symbol_id\":\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\"},{\"type\":\"symbol\",\"score\":160.1355,\"name\":\"postalCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.postalCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"line\":7,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::postalCode\"},{\"type\":\"symbol\",\"score\":160.1146,\"name\":\"postalCode\",\"qualified_name\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java.AddressRow.postalCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"line\":6,\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java::AddressRow::postalCode\"},{\"type\":\"symbol\",\"score\":160.1133,\"name\":\"postalCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java.AddressResponse.postalCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"line\":6,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java::AddressResponse::postalCode\"},{\"type\":\"symbol\",\"score\":15.1037,\"name\":\"hashCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.hashCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"line\":7,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::hashCode\"},{\"type\":\"symbol\",\"score\":15.1037,\"name\":\"hashCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java.AddressResponse.hashCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"line\":6,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java::AddressResponse::hashCode\"},{\"type\":\"symbol\",\"score\":15.1037,\"name\":\"hashCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java.LoginRequest.hashCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java\",\"line\":6,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java::LoginRequest::hashCode\"},{\"type\":\"symbol\",\"score\":15.1037,\"name\":\"hashCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java.RefreshRequest.hashCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java\",\"line\":5,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java::RefreshRequest::hashCode\"},{\"type\":\"symbol\",\"score\":15.1037,\"name\":\"hashCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java.SignupRequest.hashCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java\",\"line\":7,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java::SignupRequest::hashCode\"},{\"type\":\"symbol\",\"score\":15.1037,\"name\":\"hashCode\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java.TokenResponse.hashCode\",\"kind\":\"method\",\"path\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java\",\"line\":3,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java::TokenResponse::hashCode\"}],\"candidates\":[{\"path\":\"src/main/java/com/poc/account/domain/model/Address.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\"},{\"path\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java\"}],\"exact_match\":true,\"index\":{\"indexed_commit\":\"0336d5dac2f4\",\"live_head\":\"0336d5dac2f4\",\"index_age_days\":30}},\"context\":{\"targets\":{\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\":{\"target\":\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\"type\":\"symbol\",\"docs\":{\"name\":\"postalCode\",\"kind\":\"method\",\"file_path\":\"src/main/java/com/poc/account/domain/model/Address.java\",\"qualified_name\":\"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\"signature\":\"public String postalCode()\",\"file_summary\":\"`src/main/java/com/poc/account/domain/model/Address.java` is a java source file in the Service layer.\",\"used_by\":[\"src/main/java/com/poc/account/application/port/AddressRepository.java\",\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"src/main/java/com/poc/account/application/AddressBookService.java\",\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"src/main/java/com/poc/account/api/AddressController.java\"]},\"stale\":false,\"callers\":[{\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java::AddressDtoMapper::toResponse\",\"name\":\"toResponse\",\"kind\":\"method\",\"file\":\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"line\":10,\"confidence\":0.88,\"edge_type\":\"calls\",\"via\":\"receiver_typed_import\"},{\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java::MyBatisAddressRepository::toRow\",\"name\":\"toRow\",\"kind\":\"method\",\"file\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"line\":54,\"confidence\":0.88,\"edge_type\":\"calls\",\"via\":\"receiver_typed_import\"},{\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java::MyBatisAddressRepository::toDomain\",\"name\":\"toDomain\",\"kind\":\"method\",\"file\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"line\":60,\"confidence\":0.85,\"edge_type\":\"calls\",\"via\":\"import_merged\"}],\"callees_basis\":{\"language\":\"java\",\"resolved_call_edges\":228,\"guessed_share\":0.01,\"unresolved_call_sites\":null,\"note\":\"Call sites the resolver could not bind are not counted, so an empty list means no resolved edge reaches this symbol, not proof that nothing calls it.\"}}},\"index\":{\"indexed_commit\":\"0336d5dac2f4\",\"live_head\":\"0336d5dac2f4\",\"index_age_days\":30}}}",
+      "output_sha256": "ed1da6f7d518b00502020a0421673791abb91ea7a0541ecbefd4ef4a3e8a7d0e",
+      "output_bytes": 6622,
+      "output_full_bytes": 6622,
+      "truncated": false,
+      "output_normalized": "{\"context\":{\"index\":{\"index_age_days\":30,\"indexed_commit\":\"0336d5dac2f4\",\"live_head\":\"0336d5dac2f4\"},\"targets\":{\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\":{\"callees_basis\":{\"guessed_share\":0.01,\"language\":\"java\",\"note\":\"Call sites the resolver could not bind are not counted, so an empty list means no resolved edge reaches this symbol, not proof that nothing calls it.\",\"resolved_call_edges\":228,\"unresolved_call_sites\":null},\"callers\":[{\"confidence\":0.85,\"edge_type\":\"calls\",\"file\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"kind\":\"method\",\"line\":60,\"name\":\"toDomain\",\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java::MyBatisAddressRepository::toDomain\",\"via\":\"import_merged\"},{\"confidence\":0.88,\"edge_type\":\"calls\",\"file\":\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"kind\":\"method\",\"line\":10,\"name\":\"toResponse\",\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java::AddressDtoMapper::toResponse\",\"via\":\"receiver_typed_import\"},{\"confidence\":0.88,\"edge_type\":\"calls\",\"file\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"kind\":\"method\",\"line\":54,\"name\":\"toRow\",\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java::MyBatisAddressRepository::toRow\",\"via\":\"receiver_typed_import\"}],\"docs\":{\"file_path\":\"src/main/java/com/poc/account/domain/model/Address.java\",\"file_summary\":\"`src/main/java/com/poc/account/domain/model/Address.java` is a java source file in the Service layer.\",\"kind\":\"method\",\"name\":\"postalCode\",\"qualified_name\":\"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\"signature\":\"public String postalCode()\",\"used_by\":[\"src/main/java/com/poc/account/application/port/AddressRepository.java\",\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"src/main/java/com/poc/account/application/AddressBookService.java\",\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"src/main/java/com/poc/account/api/AddressController.java\"]},\"stale\":false,\"target\":\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\"type\":\"symbol\"}}},\"lookup\":{\"candidates\":[{\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java\"},{\"path\":\"src/main/java/com/poc/account/domain/model/Address.java\"},{\"path\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\"}],\"exact_match\":true,\"index\":{\"index_age_days\":30,\"indexed_commit\":\"0336d5dac2f4\",\"live_head\":\"0336d5dac2f4\"},\"mode\":\"symbol\",\"query\":\"postalCode\",\"results\":[{\"kind\":\"method\",\"line\":3,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java.TokenResponse.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java::TokenResponse::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":5,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java.RefreshRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java::RefreshRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java.AddressResponse.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java::AddressResponse::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java.LoginRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java::LoginRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java.AddressResponse.postalCode\",\"score\":160.1133,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java::AddressResponse::postalCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/domain/model/Address.java\",\"qualified_name\":\"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\"score\":160.1428,\"symbol_id\":\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"qualified_name\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java.AddressRow.postalCode\",\"score\":160.1146,\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java::AddressRow::postalCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":7,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":7,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java.SignupRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java::SignupRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":7,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.postalCode\",\"score\":160.1355,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::postalCode\",\"type\":\"symbol\"}]}}",
+      "output_normalized_sha256": "287c659119fc94a023059e4cbb5bc3bbc7537f93d6507695e1dac228be766925",
+      "duration_ms": 924.6,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "repowise_blast_radius",
+      "operation": "blast_radius",
+      "parameters": {
+        "target": "account-service",
+        "max_depth": 3,
+        "include_behavioral": false
+      },
+      "requested_query": null,
+      "executed_query": null,
+      "success": true,
+      "output": "{\"targets\":[\"account-service\"],\"target_repos\":[\"account-service\"],\"impacted\":[{\"id\":\"commerce-web\",\"repo\":\"commerce-web\",\"name\":\"commerce-web\",\"kind\":\"service\",\"distance\":1,\"score\":0.306,\"structural\":true,\"edge_kinds\":[\"http\"]}],\"impacted_repos\":[\"commerce-web\"],\"structural_count\":1,\"behavioral_count\":0,\"max_distance\":1,\"total_impacted\":1,\"unresolved_targets\":[]}",
+      "output_sha256": "e4a4bd5f668debcd662d300dff0a73fe4de7f53e9445e23582c8e1fb633f2906",
+      "output_bytes": 365,
+      "output_full_bytes": 365,
+      "truncated": false,
+      "output_normalized": "{\"behavioral_count\":0,\"impacted\":[{\"distance\":1,\"edge_kinds\":[\"http\"],\"id\":\"commerce-web\",\"kind\":\"service\",\"name\":\"commerce-web\",\"repo\":\"commerce-web\",\"score\":0.306,\"structural\":true}],\"impacted_repos\":[\"commerce-web\"],\"max_distance\":1,\"structural_count\":1,\"target_repos\":[\"account-service\"],\"targets\":[\"account-service\"],\"total_impacted\":1,\"unresolved_targets\":[]}",
+      "output_normalized_sha256": "ef7cf0f4f7fce6fdbafc73c796e43a4526db1807b763a0ff8536c02856574688",
+      "duration_ms": 70.8,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "repowise_search",
+      "operation": "path",
+      "parameters": {
+        "query": "postalCode tests",
+        "mode": "path",
+        "repo": "all"
+      },
+      "requested_query": "postalCode tests",
+      "executed_query": "postalCode tests",
+      "success": true,
+      "output": "{\n  \"query\": \"postalCode tests\",\n  \"mode\": \"path\",\n  \"results\": [],\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (path) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_sha256": "d313d806a91181ac3a9146064f2b361a46a0744e4d68e74a9464e51737ee9364",
+      "output_bytes": 204,
+      "output_full_bytes": 204,
+      "truncated": false,
+      "output_normalized": "{\n  \"query\": \"postalCode tests\",\n  \"mode\": \"path\",\n  \"results\": [],\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (path) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_normalized_sha256": "0c4be875c8b3506b267abd33cecb65aee60128f31589b252ad2b8e6d5ec087fc",
+      "duration_ms": 627.6,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "repowise_search",
+      "operation": "symbol",
+      "parameters": {
+        "query": "ShipmentClient",
+        "mode": "symbol",
+        "repo": "all"
+      },
+      "requested_query": "ShipmentClient",
+      "executed_query": "ShipmentClient",
+      "success": true,
+      "output": "{\n  \"query\": \"ShipmentClient\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1478,\n      \"name\": \"clientIp\",\n      \"qualified_name\": \"src.main.java.com.poc.account.infrastructure.security.RateLimitFilter.RateLimitFilter.clientIp\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\",\n      \"line\": 62,\n      \"symbol_id\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java::RateLimitFilter::clientIp\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1814,\n      \"name\": \"lookup\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.lookup\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 43,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::lookup\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.0117,\n      \"name\": \"DownstreamProperties\",\n      \"qualified_name\": \"src.main.java.com.poc.bff.infrastructure.client.DownstreamProperties.DownstreamProperties\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 18.503,\n      \"name\": \"apiRequest\",\n      \"qualified_name\": \"src.api.client.apiRequest\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 104,\n      \"symbol_id\": \"src/api/client.ts::apiRequest\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"ShipmentClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.ShipmentClient.ShipmentClient\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\",\n      \"line\": 15,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java::ShipmentClient\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.2936,\n      \"name\": \"Shipment\",\n      \"qualified_name\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java.Shipment.Shipment\",\n      \"kind\": \"function\",\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java\",\n      \"line\": 6,\n      \"symbol_id\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java::Shipment::Shipment\",\n      \"repo\": \"shipment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1653,\n      \"name\": \"fetch\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.fetch\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 55,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::fetch\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.9739,\n      \"name\": \"headers\",\n      \"qualified_name\": \"src.main.java.com.poc.bff.infrastructure.client.DownstreamRelay.DownstreamRelay.headers\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java\",\n      \"line\": 74,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java::DownstreamRelay::headers\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.1385,\n      \"name\": \"isApiError\",\n      \"qualified_name\": \"src.api.client.isApiError\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 122,\n      \"symbol_id\": \"src/api/client.ts::isApiError\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"ShipmentClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.ShipmentClient.ShipmentClient.ShipmentClient\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\",\n      \"line\": 20,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java::ShipmentClient::ShipmentClient\",\n      \"repo\": \"order-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/api/client.ts\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_sha256": "9aa3dbad3825abeb0b4df09777fa4a342971f495cbc07ae333552f75a5ec99eb",
+      "output_bytes": 5318,
+      "output_full_bytes": 5318,
+      "truncated": false,
+      "output_normalized": "{\n  \"query\": \"ShipmentClient\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1478,\n      \"name\": \"clientIp\",\n      \"qualified_name\": \"src.main.java.com.poc.account.infrastructure.security.RateLimitFilter.RateLimitFilter.clientIp\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\",\n      \"line\": 62,\n      \"symbol_id\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java::RateLimitFilter::clientIp\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1814,\n      \"name\": \"lookup\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.lookup\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 43,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::lookup\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.0117,\n      \"name\": \"DownstreamProperties\",\n      \"qualified_name\": \"src.main.java.com.poc.bff.infrastructure.client.DownstreamProperties.DownstreamProperties\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 18.503,\n      \"name\": \"apiRequest\",\n      \"qualified_name\": \"src.api.client.apiRequest\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 104,\n      \"symbol_id\": \"src/api/client.ts::apiRequest\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"ShipmentClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.ShipmentClient.ShipmentClient\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\",\n      \"line\": 15,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java::ShipmentClient\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.2936,\n      \"name\": \"Shipment\",\n      \"qualified_name\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java.Shipment.Shipment\",\n      \"kind\": \"function\",\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java\",\n      \"line\": 6,\n      \"symbol_id\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java::Shipment::Shipment\",\n      \"repo\": \"shipment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1653,\n      \"name\": \"fetch\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.fetch\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 55,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::fetch\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.9739,\n      \"name\": \"headers\",\n      \"qualified_name\": \"src.main.java.com.poc.bff.infrastructure.client.DownstreamRelay.DownstreamRelay.headers\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java\",\n      \"line\": 74,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java::DownstreamRelay::headers\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.1385,\n      \"name\": \"isApiError\",\n      \"qualified_name\": \"src.api.client.isApiError\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 122,\n      \"symbol_id\": \"src/api/client.ts::isApiError\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"ShipmentClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.ShipmentClient.ShipmentClient.ShipmentClient\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\",\n      \"line\": 20,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java::ShipmentClient::ShipmentClient\",\n      \"repo\": \"order-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/api/client.ts\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/Shipment.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamRelay.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_normalized_sha256": "a973a82827cb98e08aa9e2592e80214dee13203ec2f19b7ad205600e0c86d623",
+      "duration_ms": 789.1,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "repowise_search",
+      "operation": "path",
+      "parameters": {
+        "query": "AddressResponse",
+        "mode": "path",
+        "repo": "all"
+      },
+      "requested_query": "AddressResponse",
+      "executed_query": "AddressResponse",
+      "success": true,
+      "output": "{\n  \"query\": \"AddressResponse\",\n  \"mode\": \"path\",\n  \"results\": [\n    {\n      \"type\": \"file\",\n      \"score\": 59.942,\n      \"title\": \"File: src/main/java/com/poc/account/api/dto/AddressResponse.java\",\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\n      \"repo\": \"account-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressResponse.java\"\n    }\n  ],\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (path) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_sha256": "5f492853f6aaf156e03fa2d62ba3d03796dda84dbe6af26a4a953e81b4d7b768",
+      "output_bytes": 564,
+      "output_full_bytes": 564,
+      "truncated": false,
+      "output_normalized": "{\n  \"query\": \"AddressResponse\",\n  \"mode\": \"path\",\n  \"results\": [\n    {\n      \"type\": \"file\",\n      \"score\": 59.942,\n      \"title\": \"File: src/main/java/com/poc/account/api/dto/AddressResponse.java\",\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\n      \"repo\": \"account-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressResponse.java\"\n    }\n  ],\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (path) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_normalized_sha256": "085410856ae68f2646308b72be018bdf1f86a63588548a377b5b9e4b9613a23d",
+      "duration_ms": 661.2,
+      "error": null
+    },
+    {
+      "id": "r7",
+      "tool": "repowise_search",
+      "operation": "symbol",
+      "parameters": {
+        "query": "AccountClient",
+        "mode": "symbol",
+        "repo": "all"
+      },
+      "requested_query": "AccountClient",
+      "executed_query": "AccountClient",
+      "success": true,
+      "output": "{\n  \"query\": \"AccountClient\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 50.1478,\n      \"name\": \"clientIp\",\n      \"qualified_name\": \"src.main.java.com.poc.account.infrastructure.security.RateLimitFilter.RateLimitFilter.clientIp\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\",\n      \"line\": 62,\n      \"symbol_id\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java::RateLimitFilter::clientIp\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1814,\n      \"name\": \"lookup\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.lookup\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 43,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::lookup\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 90.232,\n      \"name\": \"account\",\n      \"qualified_name\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java.DownstreamProperties.account\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties::account\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 18.503,\n      \"name\": \"apiRequest\",\n      \"qualified_name\": \"src.api.client.apiRequest\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 104,\n      \"symbol_id\": \"src/api/client.ts::apiRequest\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"AccountClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.AccountClient.AccountClient\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 14,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AccountClient\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.5909,\n      \"name\": \"problem\",\n      \"qualified_name\": \"src.main.java.com.poc.account.api.GlobalExceptionHandler.GlobalExceptionHandler.problem\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\n      \"line\": 56,\n      \"symbol_id\": \"src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler::problem\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1653,\n      \"name\": \"fetch\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.fetch\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 55,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::fetch\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.0117,\n      \"name\": \"DownstreamProperties\",\n      \"qualified_name\": \"src.main.java.com.poc.bff.infrastructure.client.DownstreamProperties.DownstreamProperties\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.1385,\n      \"name\": \"isApiError\",\n      \"qualified_name\": \"src.api.client.isApiError\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 122,\n      \"symbol_id\": \"src/api/client.ts::isApiError\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"AccountClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.AccountClient.AccountClient.AccountClient\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 19,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AccountClient::AccountClient\",\n      \"repo\": \"order-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/api/client.ts\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/account/api/GlobalExceptionHandler.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_sha256": "e5f3a5559a7676f4f3f1142f0247b40f48218ecc3c67df7accac6af9b66ee590",
+      "output_bytes": 5266,
+      "output_full_bytes": 5266,
+      "truncated": false,
+      "output_normalized": "{\n  \"query\": \"AccountClient\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 50.1478,\n      \"name\": \"clientIp\",\n      \"qualified_name\": \"src.main.java.com.poc.account.infrastructure.security.RateLimitFilter.RateLimitFilter.clientIp\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\",\n      \"line\": 62,\n      \"symbol_id\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java::RateLimitFilter::clientIp\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1814,\n      \"name\": \"lookup\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.lookup\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 43,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::lookup\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 90.232,\n      \"name\": \"account\",\n      \"qualified_name\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java.DownstreamProperties.account\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties::account\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 18.503,\n      \"name\": \"apiRequest\",\n      \"qualified_name\": \"src.api.client.apiRequest\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 104,\n      \"symbol_id\": \"src/api/client.ts::apiRequest\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"AccountClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.AccountClient.AccountClient\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 14,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AccountClient\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.5909,\n      \"name\": \"problem\",\n      \"qualified_name\": \"src.main.java.com.poc.account.api.GlobalExceptionHandler.GlobalExceptionHandler.problem\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\n      \"line\": 56,\n      \"symbol_id\": \"src/main/java/com/poc/account/api/GlobalExceptionHandler.java::GlobalExceptionHandler::problem\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1653,\n      \"name\": \"fetch\",\n      \"qualified_name\": \"src.main.java.com.poc.basket.infrastructure.catalog.CatalogClient.CatalogClient.fetch\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\",\n      \"line\": 55,\n      \"symbol_id\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java::CatalogClient::fetch\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.0117,\n      \"name\": \"DownstreamProperties\",\n      \"qualified_name\": \"src.main.java.com.poc.bff.infrastructure.client.DownstreamProperties.DownstreamProperties\",\n      \"kind\": \"class\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 16.1385,\n      \"name\": \"isApiError\",\n      \"qualified_name\": \"src.api.client.isApiError\",\n      \"kind\": \"function\",\n      \"path\": \"src/api/client.ts\",\n      \"line\": 122,\n      \"symbol_id\": \"src/api/client.ts::isApiError\",\n      \"repo\": \"commerce-web\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.057,\n      \"name\": \"AccountClient\",\n      \"qualified_name\": \"src.main.java.com.poc.order.infrastructure.client.AccountClient.AccountClient.AccountClient\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 19,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AccountClient::AccountClient\",\n      \"repo\": \"order-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/infrastructure/security/RateLimitFilter.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/infrastructure/catalog/CatalogClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/api/client.ts\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/account/api/GlobalExceptionHandler.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)",
+      "output_normalized_sha256": "34a334ada85aa692eb277e17d78971a4bae335f2415aa0d3f438c72da3d8bc2f",
+      "duration_ms": 692.1,
+      "error": null
+    }
+  ],
+  "reservations": [
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 0,
+      "prior_cost_usd": 0
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 5944,
+      "prior_cost_usd": 0.013007999999999999
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 14900,
+      "prior_cost_usd": 0.021092399999999997
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 24073,
+      "prior_cost_usd": 0.025521199999999997
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 36715,
+      "prior_cost_usd": 0.037578
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 54893,
+      "prior_cost_usd": 0.0574972
+    }
+  ],
+  "exposure": {
+    "unknown_usage": true,
+    "pending_request": {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 54893,
+      "prior_cost_usd": 0.0574972
+    },
+    "exposure_upper_bound_usd": 3.7214971999999995
+  },
+  "effectivePrompt": "Analyze the proposed change across the repositories available to you. Report\nwhat behavior changes, what downstream edits are necessary, and which\nrepositories need validation without production edits. Use only source and\nproduct evidence available to this run. The proposed change is assumed applied;\ndo not count merely implementing that supplied diff as downstream remediation.\n\nQuestion: Account's address GET response changes its JSON field postalCode to postcode; request bodies retain postalCode. Under the supplied diff, determine the effect on Order's real HTTP address binding and normal quote creation before any later order-confirmed event. Identify the field-level consumer repair needed to preserve successful quote creation while the provider emits only postcode. Limit runtime claims to this Account-to-Order boundary and Order's Shipment estimate call; full provider routing/security, Shipment server behavior, persistence, UI and Kafka execution are outside this bounded check.\n\nOrigin repository: account-service\n\n```diff\n--- a/src/main/java/com/poc/account/api/dto/AddressResponse.java\n+++ b/src/main/java/com/poc/account/api/dto/AddressResponse.java\n@@ -10,7 +10,7 @@\n         String line2,\n         String city,\n         String state,\n-        String postalCode,\n+        String postcode,\n         String country,\n         String phoneNumber,\n         Instant createdAt,\n\n```\n\nReport causal dependencies only when you can support their direction, contract,\nand relevant field or topic. Identifier similarity alone does not establish a\ndependency or a required edit. Distinguish an observed or supported failure\nfrom a possible consequence. Use `unresolved` when evidence is insufficient.\nWhen the question explicitly limits the evaluated boundary, keep structured\nruntime statuses and obligations within that boundary. Put uncertainties about\nexcluded behavior in an optional top-level `limitations` array of strings;\nexcluded behavior has not been established as either broken or unchanged.\n\nChoose one coherent repair strategy preserving the requested upstream change.\nDo not combine mutually exclusive strategies. A broken downstream behavior may\nbe restored by repairing its upstream input; that does not establish that every\ndownstream implementation needs editing. Runtime statuses describe the state\nafter the proposed change and before your suggested repair. Obligations describe\nyour chosen repair strategy.\n\nProduce one JSON object with `protocol_version: 2`, `change_id: \"REST-001\"`,\nand `findings` containing these five arrays:\n\n- `repositories`: `{repo, runtime_status}` with status `broken`, `unchanged`, or\n  `unresolved`. Describe the origin separately from downstream repositories.\n- `obligations`: `{repo, obligation}` where obligation is `production_edit`,\n  `validation_only`, `unaffected`, or `unresolved` under your repair strategy.\n- `symbols`: `{repo, fqn}`. Include the exact declaring member for a member-level\n  claim. A shared class prefix does not prove a member-level claim.\n- `edges`: `{provider, consumer, type, identifier, field}`. Type is `rest`,\n  `kafka`, `grpc`, `db`, or `local`. Use `METHOD /path` for REST identifiers and\n  the exact topic for Kafka. `field` is the relevant serialized field or empty\n  when no field-specific claim is made. Provider -> consumer is the direction\n  of data supplied, even if the consumer initiates the HTTP call.\n- `actions`: `{repo, target, operation, before, after}`. Use the exact declaring\n  member or contract location as target and the old/new contract values.\n  Public operations are `read_json_field`, `subscribe_topic`, `publish_topic`,\n  and `retain_json_alias`.\n  Describe an equivalent alias/read-mapping repair as `read_json_field`; the\n  predicate concerns behavior rather than one particular patch implementation.\n\nEach claim may include a short `evidence` explanation, `citations` as objects\n`{path, line?, sha256?}` naming source locations, and a `receipt_id` when a product result supports it. A matching\nreceipt proves the product returned data, not that the interpretation is true.\nDo not invent oracle or expected-answer identifiers. The runner supplies source\nsnapshot metadata independently.\n\nUse an empty array when you have no supported claims of a kind. Keep claims\nprecise and concise. Return JSON only, with no surrounding prose or fence.\n\n\n## Product evidence already gathered\n\nThe change anchor is `postalCode` in `account-service`.\nAnchor kind: symbol. An unsupported query or empty result is a product limitation.\nBefore you were asked, the harness ran a fixed query playbook against the\nproduct and recorded every result below. This evidence is already yours —\nyou do not need to rediscover it.\n\nYour job is to verify it. Confirm the candidates that are genuinely in the\nblast radius, reject the ones that are not, and find whatever the product\nmissed. Cite a receipt id on any finding you take from this evidence, and\nattribute anything you establish yourself as `file_search` or `agent_inferred`.\nAn empty or failed product result is a real result; report it as such rather\nthan treating it as a reason to distrust the rest.\n\n### [receipt r1] repowise_search · symbol\nasked: postalCode\n```\n{\n  \"query\": \"postalCode\",\n  \"mode\": \"symbol\",\n  \"results\": [\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1428,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/domain/model/Address.java\",\n      \"line\": 6,\n      \"symbol_id\": \"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.2212,\n      \"name\": \"code\",\n      \"qualified_name\": \"src/main/java/com/poc/basket/domain/model/Coupon.java.Coupon.code\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/domain/model/Coupon.java\",\n      \"line\": 3,\n      \"symbol_id\": \"src/main/java/com/poc/basket/domain/model/Coupon.java::Coupon::code\",\n      \"repo\": \"basket-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.2127,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java.BatchLookupRequest.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java\",\n      \"line\": 9,\n      \"symbol_id\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java::BatchLookupRequest::hashCode\",\n      \"repo\": \"catalog-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1983,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java.DownstreamProperties.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java::DownstreamProperties::hashCode\",\n      \"repo\": \"commerce-bff\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1408,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java.EventEnvelope.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java\",\n      \"line\": 9,\n      \"symbol_id\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java::EventEnvelope::hashCode\",\n      \"repo\": \"inventory-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.0662,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java.AddressResponse.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\n      \"line\": 24,\n      \"symbol_id\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java::AddressResponse::postalCode\",\n      \"repo\": \"order-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 15.1531,\n      \"name\": \"hashCode\",\n      \"qualified_name\": \"src/main/java/com/poc/payment/application/ChargeRequested.java.ChargeRequested.hashCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/payment/application/ChargeRequested.java\",\n      \"line\": 7,\n      \"symbol_id\": \"src/main/java/com/poc/payment/application/ChargeRequested.java::ChargeRequested::hashCode\",\n      \"repo\": \"payment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1582,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java.DeliveryAddress.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\",\n      \"line\": 3,\n      \"symbol_id\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java::DeliveryAddress::postalCode\",\n      \"repo\": \"shipment-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 160.1355,\n      \"name\": \"postalCode\",\n      \"qualified_name\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.postalCode\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\n      \"line\": 7,\n      \"symbol_id\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::postalCode\",\n      \"repo\": \"account-service\"\n    },\n    {\n      \"type\": \"symbol\",\n      \"score\": 55.1049,\n      \"name\": \"code\",\n      \"qualified_name\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java.CouponRequest.code\",\n      \"kind\": \"method\",\n      \"path\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java\",\n      \"line\": 5,\n      \"symbol_id\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java::CouponRequest::code\",\n      \"repo\": \"basket-service\"\n    }\n  ],\n  \"candidates\": [\n    {\n      \"path\": \"src/main/java/com/poc/account/domain/model/Address.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/domain/model/Coupon.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/catalog/api/dto/BatchLookupRequest.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/bff/infrastructure/client/DownstreamProperties.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/inventory/application/EventEnvelope.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/order/infrastructure/client/AccountClient.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/payment/application/ChargeRequested.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/account/api/dto/AddressRequest.java\"\n    },\n    {\n      \"path\": \"src/main/java/com/poc/basket/api/dto/CouponRequest.java\"\n    }\n  ],\n  \"exact_match\": true,\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (symbol) across 10 repos in workspace\n  (path argument is a workspace root)\n```\n\n### [receipt r2] repowise_context · symbol_context\nasked: postalCode\n```\n{\"context\":{\"index\":{\"index_age_days\":30,\"indexed_commit\":\"0336d5dac2f4\",\"live_head\":\"0336d5dac2f4\"},\"targets\":{\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\":{\"callees_basis\":{\"guessed_share\":0.01,\"language\":\"java\",\"note\":\"Call sites the resolver could not bind are not counted, so an empty list means no resolved edge reaches this symbol, not proof that nothing calls it.\",\"resolved_call_edges\":228,\"unresolved_call_sites\":null},\"callers\":[{\"confidence\":0.85,\"edge_type\":\"calls\",\"file\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"kind\":\"method\",\"line\":60,\"name\":\"toDomain\",\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java::MyBatisAddressRepository::toDomain\",\"via\":\"import_merged\"},{\"confidence\":0.88,\"edge_type\":\"calls\",\"file\":\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"kind\":\"method\",\"line\":10,\"name\":\"toResponse\",\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java::AddressDtoMapper::toResponse\",\"via\":\"receiver_typed_import\"},{\"confidence\":0.88,\"edge_type\":\"calls\",\"file\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"kind\":\"method\",\"line\":54,\"name\":\"toRow\",\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java::MyBatisAddressRepository::toRow\",\"via\":\"receiver_typed_import\"}],\"docs\":{\"file_path\":\"src/main/java/com/poc/account/domain/model/Address.java\",\"file_summary\":\"`src/main/java/com/poc/account/domain/model/Address.java` is a java source file in the Service layer.\",\"kind\":\"method\",\"name\":\"postalCode\",\"qualified_name\":\"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\"signature\":\"public String postalCode()\",\"used_by\":[\"src/main/java/com/poc/account/application/port/AddressRepository.java\",\"src/main/java/com/poc/account/infrastructure/persistence/repository/MyBatisAddressRepository.java\",\"src/main/java/com/poc/account/application/AddressBookService.java\",\"src/main/java/com/poc/account/infrastructure/mapping/AddressDtoMapper.java\",\"src/main/java/com/poc/account/api/AddressController.java\"]},\"stale\":false,\"target\":\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\"type\":\"symbol\"}}},\"lookup\":{\"candidates\":[{\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java\"},{\"path\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java\"},{\"path\":\"src/main/java/com/poc/account/domain/model/Address.java\"},{\"path\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\"}],\"exact_match\":true,\"index\":{\"index_age_days\":30,\"indexed_commit\":\"0336d5dac2f4\",\"live_head\":\"0336d5dac2f4\"},\"mode\":\"symbol\",\"query\":\"postalCode\",\"results\":[{\"kind\":\"method\",\"line\":3,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java.TokenResponse.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/TokenResponse.java::TokenResponse::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":5,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java.RefreshRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/RefreshRequest.java::RefreshRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java.AddressResponse.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java::AddressResponse::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java.LoginRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/LoginRequest.java::LoginRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java.AddressResponse.postalCode\",\"score\":160.1133,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java::AddressResponse::postalCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/domain/model/Address.java\",\"qualified_name\":\"src/main/java/com/poc/account/domain/model/Address.java.Address.postalCode\",\"score\":160.1428,\"symbol_id\":\"src/main/java/com/poc/account/domain/model/Address.java::Address::postalCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":6,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java\",\"qualified_name\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java.AddressRow.postalCode\",\"score\":160.1146,\"symbol_id\":\"src/main/java/com/poc/account/infrastructure/persistence/row/AddressRow.java::AddressRow::postalCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":7,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":7,\"name\":\"hashCode\",\"path\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java.SignupRequest.hashCode\",\"score\":15.1037,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/SignupRequest.java::SignupRequest::hashCode\",\"type\":\"symbol\"},{\"kind\":\"method\",\"line\":7,\"name\":\"postalCode\",\"path\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"qualified_name\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java.AddressRequest.postalCode\",\"score\":160.1355,\"symbol_id\":\"src/main/java/com/poc/account/api/dto/AddressRequest.java::AddressRequest::postalCode\",\"type\":\"symbol\"}]}}\n```\n\n### [receipt r3] repowise_blast_radius · blast_radius\nasked: {\"target\":\"account-service\",\"max_depth\":3,\"include_behavioral\":false}\n```\n{\"behavioral_count\":0,\"impacted\":[{\"distance\":1,\"edge_kinds\":[\"http\"],\"id\":\"commerce-web\",\"kind\":\"service\",\"name\":\"commerce-web\",\"repo\":\"commerce-web\",\"score\":0.306,\"structural\":true}],\"impacted_repos\":[\"commerce-web\"],\"max_distance\":1,\"structural_count\":1,\"target_repos\":[\"account-service\"],\"targets\":[\"account-service\"],\"total_impacted\":1,\"unresolved_targets\":[]}\n```\n\n### [receipt r4] repowise_search · path\nasked: postalCode tests\n```\n{\n  \"query\": \"postalCode tests\",\n  \"mode\": \"path\",\n  \"results\": [],\n  \"index\": {\n    \"index_age_days\": 30\n  }\n}\n[workspace] search (path) across 10 repos in workspace\n  (path argument is a workspace root)\n```\n\n\nUse RepoWise's search and blast-radius evidence first. Attribute only candidates present in a receipt as product_direct; verified extensions are file_search or agent_inferred.",
+  "toolCalls": 24,
+  "stage": "budget_or_provider_failure",
+  "productReceipt": {
+    "mode": "real_product",
+    "product": "repowise",
+    "version": "0.51.0",
+    "commit": "e9e58fcdc4d35ba35d8ebb31eb60803bc900a6f6",
+    "binary_sha256": "99f8c925cdb514266db69c1cb1c9b68f85de1c6cc83778d4b600539d8dee4e0d",
+    "artifact_sha256": "63ff27f1c751007a16a7acbf68da6a21da525701959bc448f6c497dd9a7a2d09",
+    "manifest_sha256": "63ff27f1c751007a16a7acbf68da6a21da525701959bc448f6c497dd9a7a2d09",
+    "query_surface": [
+      "search:symbol",
+      "search:path",
+      "symbol:context",
+      "workspace:blast-radius"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.4.0",
+    "config_sha256": "de186abaf2738c59b41cc55f2695f1b1d7e205fa8a4fc4c5048d785c8326f40d",
+    "index_built_at": null,
+    "index_duration_seconds": 1400,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "playbook": [
+    {
+      "step": {
+        "intention": "locate",
+        "tool": "repowise_search",
+        "params": {
+          "query": "postalCode",
+          "mode": "symbol",
+          "repo": "all"
+        }
+      },
+      "ok": true,
+      "receipt_id": "r1"
+    },
+    {
+      "step": {
+        "intention": "references",
+        "tool": "repowise_context",
+        "params": {
+          "query": "postalCode",
+          "repo": "account-service"
+        }
+      },
+      "ok": true,
+      "receipt_id": "r2"
+    },
+    {
+      "step": {
+        "intention": "expand",
+        "tool": "repowise_blast_radius",
+        "params": {
+          "target": "account-service",
+          "max_depth": 3,
+          "include_behavioral": false
+        }
+      },
+      "ok": true,
+      "receipt_id": "r3"
+    },
+    {
+      "step": {
+        "intention": "tests",
+        "tool": "repowise_search",
+        "params": {
+          "query": "postalCode tests",
+          "mode": "path",
+          "repo": "all"
+        }
+      },
+      "ok": true,
+      "receipt_id": "r4"
+    }
+  ],
+  "toolTelemetry": {
+    "total": 24,
+    "succeeded": 24,
+    "failed": 0,
+    "byName": {
+      "repowise_search": {
+        "calls": 3,
+        "succeeded": 3,
+        "failed": 0
+      },
+      "ls": {
+        "calls": 1,
+        "succeeded": 1,
+        "failed": 0
+      },
+      "read": {
+        "calls": 14,
+        "succeeded": 14,
+        "failed": 0
+      },
+      "grep": {
+        "calls": 6,
+        "succeeded": 6,
+        "failed": 0
+      }
+    }
+  },
+  "rejection_detail": null
+}

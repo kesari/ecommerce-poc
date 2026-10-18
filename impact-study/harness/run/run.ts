@@ -4,11 +4,11 @@
 //   answer -> stamp provenance -> validate -> score.
 // A run that fails any stage is reported and skipped; the rest keep going.
 // After every run, the corpus scorecard is printed.
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
 	createAgentSession,
@@ -18,9 +18,12 @@ import {
 	SessionManager,
 	SettingsManager,
 } from "@earendil-works/pi-coding-agent";
+import { AttemptBudget, AttemptError, superviseAttempt } from "./budget.ts";
+import type { BudgetPolicy } from "./budget.ts";
 import { extractAnswer } from "./answer.ts";
 import {
 	assertDirectory,
+	assertEstateSnapshot,
 	captureEstateSnapshot,
 	countToolCalls,
 	createRestrictedReadOnlyTools,
@@ -32,10 +35,10 @@ import type { EstateSnapshot } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection } from "./indexes.ts";
 import { candidateSection, deriveAnchor, playbookFor, runPlaybook } from "./playbook.ts";
 import type { ChangeAnchor } from "./playbook.ts";
-import { RECORDS, RUN_DIR, RUNS } from "./paths.ts";
+import { HARNESS, RECORDS, RUN_DIR, RUNS } from "./paths.ts";
 import { createRealProduct } from "./products.ts";
 import type { ProductConfig, ProductReceipt } from "./products.ts";
-import { aggregate, scoreAnswer, validateFile } from "./scoring.ts";
+import { aggregate, aggregateV2, preflightV2, scoreAnswer, validateFile } from "./scoring.ts";
 
 const PI_ENTRY = fileURLToPath(import.meta.resolve("@earendil-works/pi-coding-agent"));
 const PI_PACKAGE = resolve(dirname(PI_ENTRY), "..", "package.json");
@@ -67,14 +70,22 @@ interface RunnerArgs {
 	runs: number;
 	estate: string;
 	timeout: number;
-	minToolCalls: number;
-	minTokens: number;
+	protocol: 1 | 2;
+	oracleBundle?: string;
+	trustedOracleSha256?: string;
+	artifactRoot?: string;
+	maxTokens?: number;
+	maxCostUsd?: number;
+	runGroup?: string;
 }
 
 interface RunContext {
 	estate: EstateSnapshot;
 	piVersion: string;
 	harnessSha256: string;
+	outputDir: string;
+	budgetPolicy: BudgetPolicy;
+	oracleOptions?: { oracleBundle: string; trustedOracleSha256: string; artifactRoot: string };
 }
 
 const readJson = async (path: string) => JSON.parse(await readFile(path, "utf8"));
@@ -94,12 +105,11 @@ export function parseArgs(argv: string[]): RunnerArgs {
 		runs: 3,
 		estate: DEFAULT_ESTATE,
 		timeout: 1800,
-		minToolCalls: 10,
-		minTokens: 8000,
+		protocol: 1,
 	};
 	for (let index = 0; index < argv.length; index++) {
 		const flag = argv[index];
-		if (!["--record", "--contestant", "--runs", "--estate", "--timeout", "--min-tool-calls", "--min-tokens"].includes(flag)) {
+		if (!["--record", "--contestant", "--runs", "--estate", "--timeout", "--protocol", "--oracle-bundle", "--trusted-oracle-sha256", "--artifact-root", "--max-tokens", "--max-cost-usd", "--run-group"].includes(flag)) {
 			throw new Error(`unknown flag ${flag}`);
 		}
 		const value = argv[++index];
@@ -108,11 +118,37 @@ export function parseArgs(argv: string[]): RunnerArgs {
 		else if (flag === "--contestant") args.contestant.push(value);
 		else if (flag === "--runs") args.runs = positiveInteger(value, flag);
 		else if (flag === "--estate") args.estate = value;
-		else if (flag === "--min-tool-calls") args.minToolCalls = positiveInteger(value, flag);
-		else if (flag === "--min-tokens") args.minTokens = positiveInteger(value, flag);
+		else if (flag === "--protocol") {
+			if (value !== "1" && value !== "2") throw new Error("--protocol must be 1 or 2");
+			args.protocol = Number(value) as 1 | 2;
+		}
+		else if (flag === "--oracle-bundle") args.oracleBundle = value;
+		else if (flag === "--trusted-oracle-sha256") args.trustedOracleSha256 = value;
+		else if (flag === "--artifact-root") args.artifactRoot = value;
+		else if (flag === "--run-group") {
+			if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(value)) throw new Error("--run-group must be a directory-safe label of at most 64 characters");
+			args.runGroup = value;
+		}
+		else if (flag === "--max-tokens") args.maxTokens = positiveInteger(value, flag);
+		else if (flag === "--max-cost-usd") {
+			args.maxCostUsd = Number(value);
+			if (!Number.isFinite(args.maxCostUsd) || args.maxCostUsd <= 0) throw new Error("--max-cost-usd must be finite and positive");
+		}
 		else args.timeout = positiveInteger(value, flag);
 	}
 	if (args.record.length === 0) throw new Error("--record is required (change id, or 'all')");
+	if (args.record.some((id) => id !== "all" && !/^[A-Z]+-[0-9]+$/.test(id))) {
+		throw new Error("--record must be a change id or 'all'");
+	}
+	if (args.protocol === 2) {
+		if (!args.maxTokens || !args.maxCostUsd || !argv.includes("--timeout")) throw new Error("protocol 2 model runs require explicit --max-tokens, --max-cost-usd, and --timeout ceilings");
+		if (!args.oracleBundle || !args.trustedOracleSha256 || !args.artifactRoot) {
+			throw new Error("protocol 2 requires --oracle-bundle, --trusted-oracle-sha256, and --artifact-root before any model run");
+		}
+		if (!/^[a-f0-9]{64}$/.test(args.trustedOracleSha256)) throw new Error("--trusted-oracle-sha256 must be a SHA-256 digest");
+	} else if (args.oracleBundle || args.trustedOracleSha256 || args.artifactRoot || args.runGroup) {
+		throw new Error("oracle options and --run-group require --protocol 2");
+	}
 	return args;
 }
 
@@ -122,7 +158,8 @@ export function buildPrompt(record: any, template: string) {
 		.replaceAll("{{QUERY}}", record.query)
 		.replaceAll("{{CHANGE_REPO}}", change.repo ?? "unspecified")
 		.replaceAll("{{CHANGE_DIFF}}", change.diff ?? "(not supplied)")
-		.replaceAll("{{CHANGE_ID}}", record.change_id);
+		.replaceAll("{{CHANGE_ID}}", record.change_id)
+		.replaceAll("{{SNAPSHOT_SHA256}}", record.snapshot_sha256 ?? "");
 }
 
 function sha256(value: string | Buffer) {
@@ -142,13 +179,20 @@ export function productSummary(receipts: any[] | undefined) {
  * diagnostics without polluting product-assisted comparisons. */
 export function productEligible(contestant: Contestant, receipts: any[] | undefined, playbook?: any[]) {
 	if (!contestant.product) return null;
-	if (contestant.product_first) {
-		return Boolean(playbook?.length)
-			&& (receipts ?? []).length >= (playbook?.length ?? 0)
-			&& playbook!.every((entry: any) => !String(entry.error ?? "").startsWith("no such tool:"))
-			&& (receipts ?? []).some((receipt: any) => receipt.success);
-	}
-	return (receipts ?? []).some((receipt: any) => receipt.success);
+	const recorded = receipts ?? [];
+	if (!recorded.some((receipt: any) => receipt.success === true)) return false;
+	if (!contestant.product_first) return true;
+	if (!playbook?.length) return false;
+	const ids = new Set(recorded.map((receipt: any) => receipt.id));
+	if (ids.size !== recorded.length || recorded.some((receipt: any) => !receipt.id)) return false;
+	const used = new Set<string>();
+	return playbook.every((entry: any) => {
+		const receipt = recorded.find((candidate: any) => candidate.id === entry.receipt_id);
+		if (!receipt || used.has(receipt.id) || receipt.tool !== entry.step.tool || receipt.success !== entry.ok) return false;
+		used.add(receipt.id);
+		return Object.entries(entry.step.params).every(([key, value]) =>
+			JSON.stringify(stableValue(receipt.parameters?.[key])) === JSON.stringify(stableValue(value)));
+	});
 }
 
 function stableValue(value: any): any {
@@ -165,15 +209,54 @@ function stableHash(value: any) {
 
 async function harnessHash() {
 	const files = [
-		"answer.ts", "estate.ts", "indexes.ts", "playbook.ts", "products.ts", "run.ts", "scoring.ts",
-		"contestants.json", "prompt-template.md", "../scoring/score.py",
+		"answer.ts", "budget.ts", "estate.ts", "indexes.ts", "paths.ts", "playbook.ts", "products.ts", "run.ts", "scoring.ts",
+		"aggregate.py", "aggregate_v2.py", "package.json", "package-lock.json",
+		"contestants.json", "prompt-template.md", "prompt-template-v2.md", "../scoring/score.py", "../scoring/score_v2.py",
 		"../schema/contestant-answer.schema.json", "../schema/change-ground-truth.schema.json",
+		"../schema/contestant-answer-v2.schema.json", "../schema/change-ground-truth-v2.schema.json", "../schema/oracle-bundle-v2.schema.json",
+		"../schema/run-receipts-v2.schema.json",
 	];
 	const hash = createHash("sha256");
 	for (const file of files.sort()) {
 		hash.update(file).update("\0").update(await readFile(join(RUN_DIR, file))).update("\0");
 	}
 	return hash.digest("hex");
+}
+
+/** The v2 verifier identifies source snapshots by pinned commit and tree, not
+ * the runner's separate content fingerprint (which includes working files). */
+export function verifyPinnedSnapshot(estate: string, snapshot: EstateSnapshot, pins: any) {
+	const repositories = Object.keys(pins.repositories ?? {}).sort();
+	if (JSON.stringify([...snapshot.repositories].sort()) !== JSON.stringify(repositories)) {
+		throw new Error("v2 snapshot repository set differs from pins");
+	}
+	const verified: Record<string, { commit: string; tree: string }> = {};
+	for (const repo of repositories) {
+		const pin = pins.repositories[repo];
+		const revision = snapshot.revisions.find((entry) => entry.name === repo);
+		const identity = spawnSync("git", ["-C", join(estate, repo), "rev-parse", "HEAD", "HEAD^{tree}"], { encoding: "utf8" });
+		const status = spawnSync("git", ["-C", join(estate, repo), "status", "--porcelain", "--untracked-files=all", "--", "."], { encoding: "utf8" });
+		const [commit, tree] = identity.stdout.trim().split("\n");
+		if (!revision || revision.commit !== pin.commit || revision.dirty !== false || identity.status !== 0
+			|| commit !== pin.commit || tree !== pin.tree || status.status !== 0 || status.stdout.trim() !== "") {
+			throw new Error(`v2 snapshot drift at ${repo}: expected clean pinned commit and tree`);
+		}
+		verified[repo] = { commit: pin.commit, tree: pin.tree };
+	}
+	return stableHash(verified);
+}
+
+export async function assertVerifierOutsideEstate(estate: string, paths: string[], repositories: readonly string[] = ESTATE_REPOSITORIES) {
+	const roots = await Promise.all(repositories.map((repo) => realpath(join(estate, repo))));
+	for (const path of paths) {
+		const target = await realpath(path);
+		for (const root of roots) {
+			const fromRoot = relative(root, target);
+			if (fromRoot === "" || (!isAbsolute(fromRoot) && fromRoot !== ".." && !fromRoot.startsWith(`..${sep}`))) {
+				throw new Error(`v2 oracle artifact must be outside the searchable estate: ${path}`);
+			}
+		}
+	}
 }
 
 function modelDigest(contestant: Contestant) {
@@ -213,114 +296,195 @@ export function withTimeout<T>(operation: Promise<T>, timeoutSeconds: number, on
 	});
 }
 
-/** Prompt the model inside a throwaway copy of the estate; return its raw output. */
-async function ask(
-	prompt: string,
-	model: any,
-	modelRuntime: ModelRuntime,
-	estate: string,
-	timeoutSeconds: number,
-	indexes: readonly ("symbol" | "contract" | "concept")[] = [],
-	product?: ProductConfig,
-	snapshot?: EstateSnapshot,
-	anchor?: ChangeAnchor,
-	question?: string,
-) {
-	const scratch = await mkdtemp(join(tmpdir(), "poc-run-"));
+/** Runs inside a supervised process so synchronous native adapters cannot
+ * block the parent's total deadline. Every paid request crosses reserve(). */
+async function ask(payload: any, budget: AttemptBudget, signal: AbortSignal, emit: (value: any, durable?: boolean) => void | Promise<void>) {
+	const { prompt, contestant, estate, snapshot, anchor, question, scratch } = payload;
 	let session: Awaited<ReturnType<typeof createAgentSession>>["session"] | undefined;
 	let unsubscribe: (() => void) | undefined;
 	let raw = "";
+	let productReceipt: ProductReceipt | undefined;
+	let productReceipts: any[] = [];
+	let playbook: any[] | undefined;
+	let effectivePrompt = prompt;
+	let toolCalls: ReturnType<typeof countToolCalls> | undefined;
+	const indexShas: string[] = [];
+	const progress = (extra: any = {}, durable = false) => emit({ productReceipt, productReceipts, playbook, effectivePrompt,
+		stats: budget.stats, reservations: budget.reservations, toolCalls: toolCalls?.() ?? 0,
+		toolTelemetry: toolCalls?.telemetry(), exposure: budget.exposure(), ...extra }, durable);
 	try {
+		budget.check();
+		await mkdir(scratch);
+		progress({ stage: "setup" });
+		const modelRuntime = await ModelRuntime.create({ signal, allowModelNetwork: false, refreshOnCreate: false, ...(payload.protocol === 2 ? { modelsPath: null } : {}) });
+		const model = modelRuntime.getModel(contestant.provider, contestant.model);
+		if (!model) throw new AttemptError("setup_failed", `model not in pi registry: ${contestant.provider}/${contestant.model}`);
+		const stream = modelRuntime.streamSimple.bind(modelRuntime);
+		// SDK streamFn is async and awaits this result; ACK the reservation
+		// in the parent ledger before any HTTP request can begin.
+		(modelRuntime as any).streamSimple = async (model: any, context: any, options: any) => {
+			let limits;
+			try { limits = budget.reserve(model); }
+			catch (error: any) { budget.stop(error); throw error; }
+			await progress({ stage: "provider_request" }, true);
+			budget.check();
+			return stream(model, context, { ...options, ...limits, maxRetries: 0, ...(model.api === "openai-codex-responses" ? { transport: "sse" } : {}) });
+		};
+		budget.check();
+		if (snapshot) await assertEstateSnapshot(estate, snapshot);
+		budget.check();
 		const workdir = await isolate(estate, scratch);
-		// Deterministic indexes are built from the isolated copy, so an
-		// index-backed contestant sees the same blind estate as the baseline.
-		const indexShas: string[] = [];
-		if (indexes.includes("symbol")) {
-			indexShas.push((await buildSymbolIndex(workdir, ESTATE_REPOSITORIES)).sha256);
+		budget.check();
+		if (snapshot) await assertEstateSnapshot(workdir, snapshot, true);
+		for (const kind of contestant.indexes ?? []) {
+			budget.check();
+			if (kind === "symbol") indexShas.push((await buildSymbolIndex(workdir, ESTATE_REPOSITORIES)).sha256);
+			if (kind === "contract") indexShas.push((await buildContractGraph(workdir, ESTATE_REPOSITORIES)).sha256);
+			if (kind === "concept") indexShas.push((await buildConceptIndex(workdir, ESTATE_REPOSITORIES)).sha256);
 		}
-		if (indexes.includes("contract")) {
-			indexShas.push((await buildContractGraph(workdir, ESTATE_REPOSITORIES)).sha256);
-		}
-		if (indexes.includes("concept")) {
-			indexShas.push((await buildConceptIndex(workdir, ESTATE_REPOSITORIES)).sha256);
-		}
-		let productReceipt: ProductReceipt | undefined;
-		let productReceipts: any[] = [];
-		let playbook: any[] | undefined;
 		let productPrompt = "";
 		let productTools: any[] = [];
-		if (product) {
+		if (contestant.product) {
+			budget.check();
 			if (!snapshot) throw new Error("estate snapshot is required for a real product");
-			const integration = await createRealProduct(product, estate, snapshot);
+			const integration = await createRealProduct(contestant.product, estate, snapshot);
 			productReceipt = integration.receipt;
 			productReceipts = integration.receipts;
 			productPrompt = integration.prompt;
 			productTools = integration.tools;
-			// Track C phase A: query the product before the model exists, so its
-			// evidence is in the analysis whether or not the agent would have
-			// asked. Track B measured that choice; this measures the product.
+			for (const tool of productTools) {
+				const execute = tool.execute.bind(tool);
+				tool.execute = async (...args: any[]) => {
+					budget.check();
+					await assertEstateSnapshot(estate, snapshot);
+					budget.check();
+					try { return await execute(...args); }
+					finally {
+						// Preserve native receipt facts even when the following check fails.
+						progress({ stage: "product" });
+						budget.check();
+						await assertEstateSnapshot(estate, snapshot);
+					}
+				};
+			}
 			if (anchor) {
+				budget.check();
 				if (!anchor.usable) throw new Error(`no usable change anchor for a product-first run: ${anchor.repo}`);
-				playbook = await runPlaybook(productTools, playbookFor(product.kind, anchor, question ?? ""));
+				playbook = await runPlaybook(productTools, playbookFor(contestant.product.kind, anchor, question ?? ""), productReceipts);
+				budget.check();
 				productPrompt = `${candidateSection(anchor, productReceipts)}\n\n${productPrompt}`;
-				// Phase B keeps the product available, but on a budget: the
-				// playbook is the guaranteed evidence, not an opening bid.
 				const spent = productReceipts.length;
-				productTools = productTools.map((tool: any) => ({
-					...tool,
-					execute: async (id: string, params: any) => {
-						if (productReceipts.length - spent >= PHASE_B_PRODUCT_BUDGET) {
-							throw new Error(`product query budget spent (${PHASE_B_PRODUCT_BUDGET} beyond the playbook); use the evidence you have`);
-						}
-						return tool.execute(id, params);
-					},
-				}));
+				productTools = productTools.map((tool: any) => ({ ...tool, execute: async (id: string, params: any) => {
+					budget.check();
+					if (productReceipts.length - spent >= PHASE_B_PRODUCT_BUDGET) throw new Error(`product query budget spent (${PHASE_B_PRODUCT_BUDGET} beyond the playbook)`);
+					return tool.execute(id, params);
+				} }));
 			}
 		}
-		const tools = [...(await createRestrictedReadOnlyTools(workdir)) as any[], ...productTools];
-		const toolCalls = countToolCalls(tools);
-		// Product tools must be named in the allowlist or PI filters them
-		// out and the agent never sees them; a run that silently drops
-		// them scores agent/file-search work as product evidence.
+		budget.check();
+		const tools = [...await createRestrictedReadOnlyTools(workdir) as any[], ...productTools];
+		for (const tool of tools) {
+			const execute = tool.execute.bind(tool);
+			tool.execute = async (...args: any[]) => { budget.check(); return execute(...args); };
+		}
+		toolCalls = countToolCalls(tools);
 		const allowedTools = [...FIXED_TOOLS, ...productTools.map((tool: any) => tool.name)];
 		({ session } = await createAgentSession({
-			cwd: workdir,
-			model,
-			thinkingLevel: FIXED_THINKING,
-			tools: allowedTools,
-			customTools: tools as any,
-			modelRuntime,
-			sessionManager: SessionManager.inMemory(workdir),
-			settingsManager: SettingsManager.inMemory({}),
-			// No extensions, skills, templates, themes or CLAUDE.md/AGENTS.md discovery:
-			// a scored run must not inherit local PI configuration.
-			resourceLoader: new DefaultResourceLoader({
-				cwd: workdir,
-				agentDir: getAgentDir(),
-				noExtensions: true,
-				noSkills: true,
-				noPromptTemplates: true,
-				noThemes: true,
-				noContextFiles: true,
-			}),
+			cwd: workdir, model, thinkingLevel: FIXED_THINKING, tools: allowedTools, customTools: tools as any,
+			modelRuntime, sessionManager: SessionManager.inMemory(workdir),
+			settingsManager: SettingsManager.inMemory({ retry: { enabled: false, provider: { maxRetries: 0 } }, compaction: { enabled: false } }),
+			resourceLoader: new DefaultResourceLoader({ cwd: workdir, agentDir: getAgentDir(),
+				noExtensions: true, noSkills: true, noPromptTemplates: true, noThemes: true, noContextFiles: true }),
 		}));
+		signal.addEventListener("abort", () => { void session?.abort().catch(() => undefined); }, { once: true });
 		unsubscribe = session.subscribe((event: any) => {
 			if (event.type === "message_update" && event.assistantMessageEvent.type === "text_delta") {
 				raw += event.assistantMessageEvent.delta;
+				emit({ raw_delta: event.assistantMessageEvent.delta });
 			}
+			budget.observe(event);
+			if (event.type === "message_end") progress({ stage: "model" });
+			if (budget.failure) void session?.abort().catch(() => undefined);
 		});
-		const started = performance.now();
-		const effectivePrompt = productPrompt ? `${prompt}\n\n${productPrompt}` : prompt;
-		await withTimeout(session.prompt(effectivePrompt), timeoutSeconds, async () => {
-			await session?.abort().catch(() => undefined);
-		});
-		const elapsed = Math.round((performance.now() - started) / 100) / 10;
-		return { raw, elapsed, playbook, stats: session.getSessionStats(), toolCalls: toolCalls(), toolTelemetry: (toolCalls as any).telemetry(), indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length > 0 ? sha256(indexShas.join("\0")) : "none"), productReceipt, productReceipts, effectivePrompt, allowedTools };
+		effectivePrompt = productPrompt ? `${prompt}\n\n${productPrompt}` : prompt;
+		progress({ stage: "model" });
+		budget.check();
+		await session.prompt(effectivePrompt);
+		budget.check();
+		if (snapshot) { await assertEstateSnapshot(estate, snapshot); await assertEstateSnapshot(workdir, snapshot, true); }
+		budget.check();
+		return { raw, elapsed: (performance.now() - budget.started) / 1000, playbook, stats: budget.stats,
+			toolCalls: toolCalls(), toolTelemetry: toolCalls.telemetry(), reservations: budget.reservations,
+			indexSha: productReceipt?.artifact_sha256 ?? (indexShas.length ? sha256(indexShas.join("\0")) : "none"),
+			productReceipt, productReceipts, effectivePrompt, allowedTools };
+	} catch (error) {
+		progress({ stage: budget.failure ? "budget_or_provider_failure" : "setup_or_execution_failure" });
+		throw budget.failure ?? error;
 	} finally {
 		unsubscribe?.();
 		session?.dispose();
 		await rm(scratch, { recursive: true, force: true });
 	}
+}
+
+async function attemptWorker() {
+	if (!process.send) throw new Error("attempt worker requires a runner IPC channel");
+	const controller = new AbortController();
+	let budget: AttemptBudget | undefined;
+	const acknowledgements = new Map<number, () => void>();
+	let sequence = 0;
+	process.on("message", async (message: any) => {
+		if (message.type === "reservation_ack") { acknowledgements.get(message.id)?.(); acknowledgements.delete(message.id); return; }
+		if (message.type === "abort") {
+			budget?.stop(new AttemptError("budget_exhausted", "total attempt deadline exhausted"));
+			controller.abort();
+			return;
+		}
+		if (message.type !== "start" || budget) return;
+		budget = new AttemptBudget(message.payload.policy, message.payload.deadlineEpochMs);
+		try {
+			const value = await ask(message.payload, budget, controller.signal,
+				(value, durable) => {
+					if (!durable) { process.send?.({ type: "progress", value }); return; }
+					return new Promise<void>((resolve) => {
+						const id = ++sequence; acknowledgements.set(id, resolve);
+						process.send?.({ type: "reservation", id, value });
+					});
+				});
+			process.send?.({ type: "result", value });
+		} catch (error: any) {
+			process.send?.({ type: "failure", status: error.status ?? "setup_failed", reason: error.message, evidence: error.evidence });
+		}
+	});
+}
+
+function stampedPlaybook(playbook: any[] | undefined) {
+	return playbook ? playbook.map((entry: any) => ({
+		intention: entry.step.intention, tool: entry.step.tool,
+		operation: entry.step.params.operation ?? entry.step.params.action ?? null,
+		parameters: entry.step.params, receipt_id: entry.receipt_id ?? null,
+		ok: entry.ok, error: entry.error ?? null,
+	})) : null;
+}
+
+/** Persist trusted runtime output before parsing any model-authored JSON. */
+export async function persistRunReceipts(outputDir: string, record: any, name: string, runStartedAt: string, runtime: {
+	prompt: string; estateSha256: string; productReceipt?: any; productReceipts?: any[]; playbook?: any[];
+	budgetPolicy: BudgetPolicy; usage: { tokens_consumed: number; cost_usd: number; elapsed_seconds: number };
+}) {
+	if (!/^[A-Z]+-[0-9]+$/.test(record.change_id) || !/^[a-z0-9-]+$/i.test(name)) throw new Error("unsafe run identity");
+	const directory = join(outputDir, "receipts");
+	await mkdir(directory, { recursive: true });
+	const path = join(directory, `${record.change_id}-${name}-${runStartedAt.replace(/[:.]/g, "-")}.json`);
+	const envelope = {
+		protocol_version: 2, change_id: record.change_id, snapshot_sha256: record.snapshot_sha256,
+		run_started_at: runStartedAt, prompt_sha256: sha256(runtime.prompt), estate_sha256: runtime.estateSha256,
+		receipts: runtime.productReceipts ?? [], product_provenance: runtime.productReceipt ?? null,
+		product_playbook: stampedPlaybook(runtime.playbook), budget_policy: runtime.budgetPolicy, usage: runtime.usage,
+	};
+	const bytes = `${JSON.stringify(envelope, null, 2)}\n`;
+	await writeFile(path, bytes, { flag: "wx" });
+	return { path, sha256: sha256(bytes) };
 }
 
 /** Everything needed to reproduce or invalidate this measurement later. */
@@ -340,6 +504,10 @@ function stampProvenance(answer: any, options: {
 	productReceipt?: ProductReceipt;
 	productReceipts?: any[];
 	allowedTools?: string[];
+	runReceiptBundle?: { path: string; sha256: string };
+	playbook?: any[];
+	reservations?: any[];
+	attemptEvidence?: { path: string; sha256: string };
 }) {
 	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools } = options;
 	// Manual rubric scores must come from an out-of-band rubric file, never
@@ -347,6 +515,13 @@ function stampProvenance(answer: any, options: {
 	// their own composite or suppress weight renormalization.
 	delete answer.freshness_score;
 	delete answer.operational_cost_score;
+	if (record.protocol_version === 2) {
+		answer.protocol_version = 2;
+		answer.snapshot_sha256 = record.snapshot_sha256;
+	} else {
+		delete answer.protocol_version;
+		delete answer.snapshot_sha256;
+	}
 	return Object.assign(answer, {
 		change_id: record.change_id,
 		contestant: contestant.label,
@@ -354,18 +529,16 @@ function stampProvenance(answer: any, options: {
 		run_index: index,
 		run_started_at: runStartedAt,
 		elapsed_seconds: elapsed,
+		budget_policy: context.budgetPolicy,
+		budget_reservations: options.reservations ?? [],
+		attempt_evidence: options.attemptEvidence ?? null,
 		tool_calls: toolCalls ?? null,
 		tool_calls_by_name: toolTelemetry?.byName ?? null,
 		product_tool_calls: productSummary(productReceipts),
 		// Present only on a Track C run: which frozen playbook steps ran, so a
 		// product-first answer is never mistaken for a natural-adoption one.
-		product_playbook: options.playbook
-			? options.playbook.map((entry: any) => ({
-				intention: entry.step.intention, tool: entry.step.tool,
-				operation: entry.step.params.operation ?? entry.step.params.action ?? null,
-				ok: entry.ok, error: entry.error ?? null,
-			}))
-			: null,
+		product_playbook: stampedPlaybook(options.playbook),
+		run_receipt_bundle: options.runReceiptBundle ?? null,
 		product_tool_receipts: productReceipts ?? null,
 		product_assisted_eligible: productEligible(contestant, productReceipts, options.playbook),
 		index_sha256: indexSha ?? "none",
@@ -376,7 +549,7 @@ function stampProvenance(answer: any, options: {
 		model_digest: modelDigest(contestant),
 		pi_version: context.piVersion,
 		prompt_sha256: sha256(prompt),
-		contestant_config_sha256: stableHash({ contestant, tools: allowedTools ?? [...FIXED_TOOLS], thinking: FIXED_THINKING }),
+		contestant_config_sha256: stableHash({ contestant, tools: allowedTools ?? [...FIXED_TOOLS], thinking: FIXED_THINKING, budget_policy: context.budgetPolicy }),
 		estate_sha256: context.estate.sha256,
 		harness_sha256: context.harnessSha256,
 		estate_repositories: context.estate.repositories,
@@ -385,45 +558,74 @@ function stampProvenance(answer: any, options: {
 	});
 }
 
-async function runOnce(
-	record: any,
-	name: string,
-	contestant: Contestant,
-	modelRuntime: ModelRuntime,
-	estate: string,
-	index: number,
-	timeoutSeconds: number,
-	context: RunContext,
-) {
-	const model = modelRuntime.getModel(contestant.provider, contestant.model);
-	if (!model) throw new Error(`model not in pi registry: ${contestant.provider}/${contestant.model}`);
-	const template = await readFile(join(RUN_DIR, "prompt-template.md"), "utf8");
-	const section = indexPromptSection(contestant.indexes ?? []);
-	const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
-	const runStartedAt = new Date().toISOString();
-	const { raw, elapsed, playbook, stats, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, effectivePrompt, allowedTools } = await ask(
-		prompt, model, modelRuntime, estate, timeoutSeconds, contestant.indexes ?? [], contestant.product, context.estate,
-		contestant.product_first ? deriveAnchor(record.proposed_change?.repo ?? "", record.proposed_change?.diff ?? "") : undefined,
-		contestant.product_first ? record.query : undefined,
-	);
+export async function persistAttemptEvidence(outputDir: string, stem: string, startedAt: string, value: any) {
+	await mkdir(outputDir, { recursive: true });
+	const path = join(outputDir, `${stem}.${startedAt.replace(/[:.]/g, "-")}.attempt.json`);
+	const bytes = `${JSON.stringify(value, null, 2)}\n`;
+	await writeFile(path, bytes, { flag: "wx" });
+	return { path, sha256: sha256(bytes) };
+}
 
-	let answer: any;
+export async function runOnce(record: any, name: string, contestant: Contestant, estate: string, index: number, context: RunContext) {
+	const runStartedAt = new Date().toISOString();
+	const started = performance.now();
+	const scratch = join(tmpdir(), `poc-run-${randomUUID()}`);
+	const partial: any = { raw: "", stats: { tokens: { total: 0 }, cost: 0 }, productReceipts: [],
+		reservations: [], exposure: { unknown_usage: false, pending_request: null, exposure_upper_bound_usd: 0 } };
+	let runReceiptBundle: { path: string; sha256: string } | undefined;
+	let attemptEvidence: { path: string; sha256: string } | undefined;
+	let protectedUsage: { tokens_consumed: number; cost_usd: number; elapsed_seconds: number } | undefined;
 	try {
-		answer = extractAnswer(raw);
-	} catch (error) {
-		await mkdir(RUNS, { recursive: true });
-		const stamp = runStartedAt.replace(/[:.]/g, "-");
-		const rawPath = join(RUNS, `${record.change_id}-${name}-${index}.${stamp}.raw.txt`);
-		await writeFile(rawPath, raw);
-		// KNOWN GAP: a provider rejection (quota, retired model) reaches here as
-		// this same message over a 0-byte raw file, indistinguishable from a
-		// model that answered badly. Capturing the provider's own words needs
-		// the SDK's real error-event shape, taken from a live failure — an
-		// extractor written against an assumed shape was tried and silently
-		// caught nothing. See the state review of 7 September.
-		throw new Error(`${(error as Error).message}; raw output saved to ${rawPath}`);
-	}
-	return stampProvenance(answer, { record, name, contestant, index, prompt: effectivePrompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools, playbook });
+		const template = await readFile(join(RUN_DIR, record.protocol_version === 2 ? "prompt-template-v2.md" : "prompt-template.md"), "utf8");
+		const section = indexPromptSection(contestant.indexes ?? []);
+		const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
+		partial.effectivePrompt = prompt;
+		const remainingSeconds = context.budgetPolicy.timeout_seconds - (performance.now() - started) / 1000;
+		if (remainingSeconds <= 0) throw new AttemptError("budget_exhausted", "total attempt deadline exhausted");
+		const runtime = await superviseAttempt(fileURLToPath(import.meta.url), {
+			prompt, contestant, estate, snapshot: context.estate, policy: context.budgetPolicy, protocol: record.protocol_version ?? 1,
+			scratch, anchor: contestant.product_first ? deriveAnchor(record.proposed_change?.repo ?? "", record.proposed_change?.diff ?? "") : undefined,
+			question: contestant.product_first ? record.query : undefined,
+		}, { ...context.budgetPolicy, timeout_seconds: remainingSeconds }, (progress) => {
+			if (progress.raw_delta !== undefined) partial.raw += progress.raw_delta;
+			else Object.assign(partial, progress);
+		});
+		Object.assign(partial, runtime);
+		const elapsed = (performance.now() - started) / 1000;
+		const usage = { tokens_consumed: runtime.stats.tokens.total, cost_usd: runtime.stats.cost, elapsed_seconds: elapsed };
+		protectedUsage = usage;
+		if (record.protocol_version === 2) runReceiptBundle = await persistRunReceipts(context.outputDir, record, name, runStartedAt,
+			{ prompt: runtime.effectivePrompt, estateSha256: context.estate.sha256, productReceipt: runtime.productReceipt,
+				productReceipts: runtime.productReceipts, playbook: runtime.playbook, budgetPolicy: context.budgetPolicy, usage });
+		attemptEvidence = await persistAttemptEvidence(context.outputDir, `${record.change_id}-${name}-${index}`, runStartedAt, {
+			protocol_version: record.protocol_version ?? 1, change_id: record.change_id, runner: name, run_started_at: runStartedAt,
+			status: "runtime_completed", budget_policy: context.budgetPolicy, usage, run_receipt_bundle: runReceiptBundle ?? null, ...partial,
+		});
+		let answer: any;
+		try { answer = extractAnswer(runtime.raw); }
+		catch (error: any) { throw new AttemptError("invalid_output", error.message); }
+		return stampProvenance(answer, { record, name, contestant, index, prompt: runtime.effectivePrompt, elapsed,
+			stats: runtime.stats, context, runStartedAt, toolCalls: runtime.toolCalls, toolTelemetry: runtime.toolTelemetry,
+			indexSha: runtime.indexSha, productReceipt: runtime.productReceipt, productReceipts: runtime.productReceipts,
+			allowedTools: runtime.allowedTools, playbook: runtime.playbook, reservations: runtime.reservations, runReceiptBundle, attemptEvidence });
+	} catch (error: any) {
+		const usage = protectedUsage ?? { tokens_consumed: partial.stats.tokens.total, cost_usd: partial.stats.cost,
+			elapsed_seconds: (performance.now() - started) / 1000 };
+		if (record.protocol_version === 2 && !runReceiptBundle) runReceiptBundle = await persistRunReceipts(
+			context.outputDir, record, name, runStartedAt, { prompt: partial.effectivePrompt ?? "", estateSha256: context.estate.sha256,
+				productReceipt: partial.productReceipt, productReceipts: partial.productReceipts, playbook: partial.playbook,
+				budgetPolicy: context.budgetPolicy, usage });
+		const evidence = attemptEvidence ?? await persistAttemptEvidence(context.outputDir, `${record.change_id}-${name}-${index}`, runStartedAt, {
+			protocol_version: record.protocol_version ?? 1, change_id: record.change_id, runner: name,
+			run_started_at: runStartedAt, status: error.status ?? "setup_failed", reason: error.message,
+			budget_policy: context.budgetPolicy, usage, run_receipt_bundle: runReceiptBundle ?? null,
+			...partial, rejection_detail: error.evidence ?? null,
+		});
+		throw new AttemptError(error.status ?? "setup_failed", `${error.message}; attempt evidence: ${evidence.path}`, {
+			attempt_evidence: evidence, run_started_at: runStartedAt, usage, exposure: partial.exposure, run_receipt_bundle: runReceiptBundle ?? null,
+			budget_policy: context.budgetPolicy,
+		});
+	} finally { await rm(scratch, { recursive: true, force: true }); }
 }
 
 export async function main(argv = process.argv.slice(2)) {
@@ -433,68 +635,68 @@ export async function main(argv = process.argv.slice(2)) {
 	const unknown = chosen.filter((name) => !(name in contestants));
 	if (unknown.length > 0) throw new Error(`unknown contestant(s): ${unknown.join(", ")}`);
 
+	const recordsDir = args.protocol === 2 ? join(RECORDS, "v2") : RECORDS;
+	const outputDir = args.protocol === 2 ? join(RUNS, "v2", args.runGroup ?? "") : RUNS;
 	const recordPaths = args.record.includes("all")
-		? (await readdir(RECORDS)).filter((file) => file.endsWith(".json")).sort().map((file) => join(RECORDS, file))
-		: args.record.map((id) => join(RECORDS, `${id}.json`));
+		? (await readdir(recordsDir)).filter((file) => file.endsWith(".json")).sort().map((file) => join(recordsDir, file))
+		: args.record.map((id) => join(recordsDir, `${id}.json`));
 
+	if (recordPaths.length === 0) throw new Error("no records selected for the requested protocol");
 	const estate = resolve(args.estate);
 	await assertDirectory(estate, "estate");
 	const context: RunContext = {
 		estate: await captureEstateSnapshot(estate),
 		piVersion: (await readJson(PI_PACKAGE)).version,
 		harnessSha256: await harnessHash(),
+		outputDir,
+		budgetPolicy: { timeout_seconds: args.timeout, max_tokens: args.maxTokens ?? null, max_cost_usd: args.maxCostUsd ?? null,
+			cost_enforcement: "catalog_context_reservation", token_enforcement: "context_window_reservation", retries: false, compaction: false },
+		oracleOptions: args.protocol === 2 ? {
+			oracleBundle: resolve(args.oracleBundle!), trustedOracleSha256: args.trustedOracleSha256!, artifactRoot: resolve(args.artifactRoot!),
+		} : undefined,
 	};
-	await mkdir(RUNS, { recursive: true });
+	// Fail the entire requested cohort before authenticating or creating a model.
+	if (args.protocol === 2) {
+		const snapshotSha = verifyPinnedSnapshot(estate, context.estate, await readJson(join(HARNESS, "indexes", "pins.json")));
+		await assertVerifierOutsideEstate(estate, [context.oracleOptions!.oracleBundle, context.oracleOptions!.artifactRoot]);
+		for (const recordPath of recordPaths) {
+			validateFile("record", recordPath);
+			const record = await readJson(recordPath);
+			if (record.protocol_version !== 2 || record.status !== "verified") throw new Error(`v2 record is not independently verified: ${recordPath}`);
+			if (record.snapshot_sha256 !== snapshotSha) throw new Error(`v2 record snapshot does not match pinned estate: ${recordPath}`);
+			preflightV2(recordPath, context.oracleOptions!);
+		}
+	}
+	await mkdir(outputDir, { recursive: true });
+	if (args.protocol === 2) await assertVerifierOutsideEstate(estate, [outputDir]);
 	console.log(`estate ${context.estate.sha256.slice(0, 12)} (${context.estate.repositories.length} repositories)`);
 
-	const modelRuntime = await ModelRuntime.create();
 	let failures = 0;
 	for (const recordPath of recordPaths) {
 		validateFile("record", recordPath);
 		const record = await readJson(recordPath);
-		if (record.status !== "frozen") {
-			console.log(`skipping ${record.change_id}: status is ${record.status ?? "unset"}, only frozen records are scored`);
+		const requiredStatus = args.protocol === 2 ? "verified" : "frozen";
+		if (record.status !== requiredStatus) {
+			console.log(`skipping ${record.change_id}: status is ${record.status ?? "unset"}, only ${requiredStatus} records are scored`);
 			continue;
 		}
 		for (const name of chosen) {
 			for (let index = 1; index <= args.runs; index++) {
 				const stem = `${record.change_id}-${name}-${index}`;
 				console.log(`\nrunning ${stem} ...`);
+				let completedAnswer: any;
+				let failureStage = "run_failed";
 				try {
-					const answer = await runOnce(
-						record, name, contestants[name], modelRuntime, estate, index, args.timeout, context,
+					const answer = completedAnswer = await runOnce(
+						record, name, contestants[name], estate, index, context,
 					);
-					if ((answer.tool_calls ?? 0) < args.minToolCalls || (answer.tokens_consumed ?? 0) < args.minTokens) {
-						failures++;
-						const reason = `thin run: ${answer.tool_calls ?? 0} tool calls or ${answer.tokens_consumed ?? 0} tokens below minimums ${args.minToolCalls}/${args.minTokens}; answer kept for diagnosis but not scored`;
-						console.log(`  FAILED: ${reason}`);
-						const stamp = (answer.run_started_at ?? new Date().toISOString()).replace(/[:.]/g, "-");
-						await writeFile(join(RUNS, `${stem}.${stamp}.json`), `${JSON.stringify(answer, null, 2)}\n`);
-						let thinStub = join(RUNS, `${stem}.rejected.json`);
-						try {
-							await stat(thinStub);
-							thinStub = join(RUNS, `${stem}.${stamp}.rejected.json`);
-						} catch {
-							// No previous stub: use the canonical name.
-						}
-						await writeFile(thinStub, `${JSON.stringify({
-							change_id: record.change_id,
-							runner: name,
-							run_index: index,
-							run_started_at: answer.run_started_at ?? new Date().toISOString(),
-							tool_calls: answer.tool_calls ?? 0,
-							reason,
-							estate_sha256: context.estate.sha256,
-						}, null, 2)}\n`);
-						continue;
-					}
-					let answerPath = join(RUNS, `${stem}.json`);
+					let answerPath = join(outputDir, `${stem}.json`);
 					// Never overwrite a previous measurement undetectably. If the
 					// stem already exists, suffix with the run timestamp instead.
 					try {
 						await stat(answerPath);
 						const stamp = (answer.run_started_at ?? new Date().toISOString()).replace(/[:.]/g, "-");
-						answerPath = join(RUNS, `${stem}.${stamp}.json`);
+						answerPath = join(outputDir, `${stem}.${stamp}.json`);
 					} catch {
 						// No previous file: use the canonical stem.
 					}
@@ -502,26 +704,45 @@ export async function main(argv = process.argv.slice(2)) {
 					// so a failure below cannot leave a stale score paired with a fresh answer.
 					await rm(answerPath.replace(/\.json$/, ".score.json"), { force: true });
 					await writeFile(answerPath, `${JSON.stringify(answer, null, 2)}\n`);
+					failureStage = "invalid_output";
 					validateFile("answer", answerPath);
-					console.log((await scoreAnswer(answerPath, recordPath)).text);
+					failureStage = "setup_failed";
+					const scoringOptions = context.oracleOptions ? { ...context.oracleOptions,
+						runReceiptBundle: answer.run_receipt_bundle.path,
+						trustedRunReceiptsSha256: answer.run_receipt_bundle.sha256,
+					} : undefined;
+					console.log((await scoreAnswer(answerPath, recordPath, scoringOptions)).text);
 				} catch (error) {
 					failures++;
 					const reason = (error as Error).message;
 					console.log(`  FAILED: ${reason}`);
 					try {
+						const usage = (error as any).evidence?.usage ?? (completedAnswer ? {
+							tokens_consumed: completedAnswer.tokens_consumed, cost_usd: completedAnswer.cost_usd,
+							elapsed_seconds: completedAnswer.elapsed_seconds } : null);
+						const exposure = (error as any).evidence?.exposure ?? (completedAnswer ? {
+							unknown_usage: false, pending_request: null, exposure_upper_bound_usd: completedAnswer.cost_usd } : null);
+						const evidence = (error as any).evidence ?? (completedAnswer ? {
+							attempt_evidence: completedAnswer.attempt_evidence, run_started_at: completedAnswer.run_started_at,
+							run_receipt_bundle: completedAnswer.run_receipt_bundle, usage, exposure, budget_policy: context.budgetPolicy } : null);
 						const stub = {
+							protocol_version: args.protocol,
+							status: (error as any).status ?? failureStage,
+							evidence, usage, budget_exposure: exposure,
+							budget_policy: context.budgetPolicy,
 							change_id: record.change_id,
 							runner: name,
 							run_index: index,
-							run_started_at: new Date().toISOString(),
+							run_started_at: completedAnswer?.run_started_at ?? evidence?.run_started_at ?? new Date().toISOString(),
 							reason,
 							estate_sha256: context.estate.sha256,
+							snapshot_sha256: record.snapshot_sha256 ?? null,
 						};
-						let stubPath = join(RUNS, `${stem}.rejected.json`);
+						let stubPath = join(outputDir, `${stem}.rejected.json`);
 						try {
 							await stat(stubPath);
 							const stamp = (stub.run_started_at as string).replace(/[:.]/g, "-");
-							stubPath = join(RUNS, `${stem}.${stamp}.rejected.json`);
+							stubPath = join(outputDir, `${stem}.${stamp}.rejected.json`);
 						} catch {
 							// No previous stub: use the canonical name.
 						}
@@ -535,7 +756,8 @@ export async function main(argv = process.argv.slice(2)) {
 	}
 
 	console.log(`\n--- scorecard across every scored run ---\n`);
-	console.log(aggregate());
+	if (args.protocol === 1) console.log(aggregate());
+	else for (const recordPath of recordPaths) console.log(aggregateV2(recordPath, context.oracleOptions!, outputDir));
 	if (failures > 0) {
 		console.log(`\n${failures} run(s) failed and were not scored.`);
 		process.exitCode = 1;
@@ -543,7 +765,9 @@ export async function main(argv = process.argv.slice(2)) {
 }
 
 const invokedPath = process.argv[1] ? resolve(process.argv[1]) : "";
-if (invokedPath === fileURLToPath(import.meta.url)) {
+if (invokedPath === fileURLToPath(import.meta.url) && process.argv[2] === "--attempt-worker") {
+	void attemptWorker();
+} else if (invokedPath === fileURLToPath(import.meta.url)) {
 	main().catch((error) => {
 		console.error(`FAILED: ${(error as Error).message}`);
 		process.exitCode = 1;

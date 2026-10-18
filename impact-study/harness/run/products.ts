@@ -33,8 +33,9 @@ export interface ProductReceipt {
  *  1.1.0 — output persisted on every receipt, canonicalized reproducibility
  *  hash, SCIP FQN translation, Gortex route/symbol split.
  *  1.2.0 — output ceilings removed: an 8KB per-call bound discarded the tail
- *  of Gortex's richest answer, and with it three affected repositories. */
-const ADAPTER_VERSION = "1.4.0";
+ *  of Gortex's richest answer, and with it three affected repositories.
+ *  1.4.1 — use Codebase Memory 0.11.0's supported trace depth flag. */
+const ADAPTER_VERSION = "1.4.1";
 
 function configSha(value: unknown) {
 	return sha256(JSON.stringify(value));
@@ -454,7 +455,7 @@ function codebaseMemoryTool(binary: string, cache: string, receipts: ProductInvo
 		description: "Query the real Codebase Memory graph using its one-shot CLI, including CROSS_* edges created by its cross-repo indexing pass.",
 		parameters: schema({
 			operation: stringEnum(operations),
-			query: textParameter("Symbol, route, topic, or other changed identifier."),
+			query: textParameter("For trace, use the indexed function qualified_name returned by search. Other operations take a symbol, route, topic, or changed identifier."),
 			repo: stringEnum([...ESTATE_REPOSITORIES], "Indexed Codebase Memory project."),
 		}, ["operation", "query", "repo"]),
 			execute: async (_id: string, params: any) => {
@@ -469,7 +470,7 @@ function codebaseMemoryTool(binary: string, cache: string, receipts: ProductInvo
 				args = ["--project", repo, "--name-pattern", `.*${regexLiteral(query)}.*`, "--format", "json"];
 			} else if (operation === "trace") {
 				tool = "trace_path";
-				args = ["--project", repo, "--function-name", query, "--direction", "both", "--max-depth", "5", "--format", "json"];
+				args = ["--project", repo, "--function-name", query, "--direction", "both", "--depth", "5", "--format", "json"];
 			} else if (operation === "references") {
 				tool = "query_graph";
 				const literal = cypherLiteral(query);

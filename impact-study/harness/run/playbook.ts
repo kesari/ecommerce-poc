@@ -57,25 +57,31 @@ export interface ChangeAnchor {
 	removed: string[];
 	added: string[];
 	repo: string;
-	/** False when the diff renames nothing, so no product can be asked. */
+	kind?: "symbol" | "literal" | "context" | "repository";
+	/** False only when no public change or repository context is supplied. */
 	usable: boolean;
 }
 
 /** Derive the anchor mechanically, so no human judgement about the expected
- *  answer can leak into what the product is asked. A diff that renames nothing
- *  yields usable: false — INT-001, INT-002 and KAFKA-004 change only a literal
- *  or a comment, and are excluded from Track C rather than given a made-up
- *  starting word. */
+ *  answer can leak into what the product is asked. Literal and behavioral
+ *  changes remain in the common cohort even when a symbol index cannot answer
+ *  them. Empty results are product evidence, not a reason to drop a scenario. */
 export function deriveAnchor(repo: string, diff: string): ChangeAnchor {
 	const lines = diff.split("\n");
-	const minus = identifiers(lines.filter((line) => line.startsWith("-")));
-	const plus = identifiers(lines.filter((line) => line.startsWith("+")));
+	const before = lines.filter((line) => line.startsWith("-") && !line.startsWith("---"));
+	const after = lines.filter((line) => line.startsWith("+") && !line.startsWith("+++"));
+	const minus = identifiers(before);
+	const plus = identifiers(after);
 	const removed = [...minus].filter((token) => !plus.has(token));
 	const added = [...plus].filter((token) => !minus.has(token));
-	// Search for what the estate still contains: the pre-change name is the one
-	// with references, so it anchors retrieval better than the new name.
-	const primary = removed[0] ?? added[0] ?? null;
-	return { primary, removed, added, repo, usable: primary !== null };
+	const oldLiterals = before.flatMap((line) => [...line.matchAll(QUOTED)].map((m) => m[1]));
+	const newLiterals = new Set(after.flatMap((line) => [...line.matchAll(QUOTED)].map((m) => m[1])));
+	const literal = oldLiterals.find((value) => value.trim() && !newLiterals.has(value));
+	const symbol = removed[0] ?? added[0];
+	const context = [...minus][0];
+	const primary = symbol ?? literal ?? context ?? (repo.trim() || null);
+	const kind = symbol ? "symbol" : literal ? "literal" : context ? "context" : "repository";
+	return { primary, removed, added, repo, kind, usable: primary !== null };
 }
 
 export interface PlaybookStep {
@@ -157,20 +163,26 @@ export function playbookFor(
 /** Run the playbook against the product's own tools, recording a receipt per
  *  step. A step that fails is kept as negative product evidence and does not
  *  stop the rest — an empty or failing answer is a real product result. */
-export async function runPlaybook(tools: any[], steps: PlaybookStep[]) {
-	const outcomes: { step: PlaybookStep; ok: boolean; error?: string }[] = [];
+export async function runPlaybook(tools: any[], steps: PlaybookStep[], receipts?: any[]) {
+	const outcomes: { step: PlaybookStep; ok: boolean; error?: string; receipt_id?: string }[] = [];
 	for (const step of steps) {
 		const tool = tools.find((candidate: any) => candidate.name === step.tool);
 		if (!tool) {
 			outcomes.push({ step, ok: false, error: `no such tool: ${step.tool}` });
 			continue;
 		}
+		const receiptStart = receipts?.length;
+		const outcome: { step: PlaybookStep; ok: boolean; error?: string; receipt_id?: string } = { step, ok: false };
 		try {
 			await tool.execute("playbook", step.params);
-			outcomes.push({ step, ok: true });
+			outcome.ok = true;
 		} catch (error) {
-			outcomes.push({ step, ok: false, error: String((error as Error)?.message ?? error).slice(0, 200) });
+			outcome.error = String((error as Error)?.message ?? error).slice(0, 200);
 		}
+		if (receipts && receiptStart !== undefined && receipts.length === receiptStart + 1) {
+			outcome.receipt_id = receipts[receiptStart].id;
+		}
+		outcomes.push(outcome);
 	}
 	return outcomes;
 }
@@ -182,6 +194,7 @@ export function candidateSection(anchor: ChangeAnchor, receipts: any[]) {
 		"## Product evidence already gathered",
 		"",
 		`The change anchor is \`${anchor.primary}\` in \`${anchor.repo}\`.`,
+		`Anchor kind: ${anchor.kind ?? "symbol"}. An unsupported query or empty result is a product limitation.`,
 		"Before you were asked, the harness ran a fixed query playbook against the",
 		"product and recorded every result below. This evidence is already yours —",
 		"you do not need to rediscover it.",

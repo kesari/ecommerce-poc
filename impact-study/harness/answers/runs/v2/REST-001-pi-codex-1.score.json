@@ -1,0 +1,413 @@
+{
+  "benchmark_eligible": true,
+  "change_id": "REST-001",
+  "critical_downstream_action_misses": [
+    {
+      "after": "postcode",
+      "before": "postalCode",
+      "operation": "read_json_field",
+      "repo": "order-service",
+      "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+    }
+  ],
+  "differences": {
+    "actions": {
+      "false_positives": [
+        {
+          "after": "postcode",
+          "before": "postalCode",
+          "operation": "read_json_field",
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()"
+        }
+      ],
+      "missed": [
+        {
+          "after": "postcode",
+          "before": "postalCode",
+          "operation": "read_json_field",
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+        }
+      ]
+    },
+    "edges": {
+      "false_positives": [
+        {
+          "consumer": "order-service",
+          "field": "postcode",
+          "identifier": "GET /api/v1/addresses/{addressId}",
+          "provider": "account-service",
+          "type": "rest"
+        },
+        {
+          "consumer": "shipment-service",
+          "field": "postalCode",
+          "identifier": "POST /api/v1/delivery-estimates",
+          "provider": "order-service",
+          "type": "rest"
+        }
+      ],
+      "missed": [
+        {
+          "consumer": "order-service",
+          "field": "postalCode",
+          "identifier": "GET /api/v1/addresses/{addressId}",
+          "provider": "account-service",
+          "type": "rest"
+        }
+      ]
+    },
+    "obligations": {
+      "false_positives": [
+        {
+          "obligation": "validation_only",
+          "repo": "shipment-service"
+        }
+      ],
+      "missed": []
+    },
+    "repositories": {
+      "false_positives": [
+        {
+          "repo": "shipment-service",
+          "runtime_status": "unchanged"
+        }
+      ],
+      "missed": []
+    },
+    "symbols": {
+      "false_positives": [
+        {
+          "fqn": "com.poc.account.api.AddressController#get(org.springframework.security.oauth2.jwt.Jwt,java.util.UUID)",
+          "repo": "account-service"
+        },
+        {
+          "fqn": "com.poc.account.api.dto.AddressRequest#postalCode()",
+          "repo": "account-service"
+        },
+        {
+          "fqn": "com.poc.account.api.dto.AddressResponse#postcode()",
+          "repo": "account-service"
+        },
+        {
+          "fqn": "com.poc.order.application.CheckoutService#createQuote(java.lang.String,java.util.UUID,java.util.UUID)",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.order.infrastructure.client.AccountClient#address(java.lang.String,java.util.UUID)",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.order.infrastructure.client.ShipmentClient#estimate(java.lang.String,java.lang.String,int,long)",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.shipment.api.ShipmentController#estimate(com.poc.shipment.api.dto.DeliveryEstimateRequest)",
+          "repo": "shipment-service"
+        },
+        {
+          "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest#postalCode()",
+          "repo": "shipment-service"
+        }
+      ],
+      "missed": [
+        {
+          "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+          "repo": "order-service"
+        }
+      ]
+    }
+  },
+  "evidence": {
+    "actions": {
+      "invalid": 0,
+      "reported": 1,
+      "unverified": [
+        {
+          "after": "postcode",
+          "before": "postalCode",
+          "operation": "read_json_field",
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()"
+        }
+      ],
+      "verified_correct": 0
+    },
+    "edges": {
+      "invalid": 0,
+      "reported": 2,
+      "unverified": [
+        {
+          "consumer": "order-service",
+          "field": "postcode",
+          "identifier": "GET /api/v1/addresses/{addressId}",
+          "provider": "account-service",
+          "type": "rest"
+        },
+        {
+          "consumer": "shipment-service",
+          "field": "postalCode",
+          "identifier": "POST /api/v1/delivery-estimates",
+          "provider": "order-service",
+          "type": "rest"
+        }
+      ],
+      "verified_correct": 0
+    },
+    "obligations": {
+      "invalid": 0,
+      "reported": 3,
+      "unverified": [
+        {
+          "obligation": "validation_only",
+          "repo": "shipment-service"
+        }
+      ],
+      "verified_correct": 2
+    },
+    "repositories": {
+      "invalid": 0,
+      "reported": 3,
+      "unverified": [
+        {
+          "repo": "shipment-service",
+          "runtime_status": "unchanged"
+        }
+      ],
+      "verified_correct": 2
+    },
+    "symbols": {
+      "invalid": 0,
+      "reported": 9,
+      "unverified": [
+        {
+          "fqn": "com.poc.account.api.AddressController#get(org.springframework.security.oauth2.jwt.Jwt,java.util.UUID)",
+          "repo": "account-service"
+        },
+        {
+          "fqn": "com.poc.account.api.dto.AddressRequest#postalCode()",
+          "repo": "account-service"
+        },
+        {
+          "fqn": "com.poc.account.api.dto.AddressResponse#postcode()",
+          "repo": "account-service"
+        },
+        {
+          "fqn": "com.poc.order.application.CheckoutService#createQuote(java.lang.String,java.util.UUID,java.util.UUID)",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.order.infrastructure.client.AccountClient#address(java.lang.String,java.util.UUID)",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.order.infrastructure.client.ShipmentClient#estimate(java.lang.String,java.lang.String,int,long)",
+          "repo": "order-service"
+        },
+        {
+          "fqn": "com.poc.shipment.api.ShipmentController#estimate(com.poc.shipment.api.dto.DeliveryEstimateRequest)",
+          "repo": "shipment-service"
+        },
+        {
+          "fqn": "com.poc.shipment.api.dto.DeliveryEstimateRequest#postalCode()",
+          "repo": "shipment-service"
+        }
+      ],
+      "verified_correct": 0
+    }
+  },
+  "invalid_findings": [],
+  "metrics": {
+    "actions": {
+      "correct": 0,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0,
+      "recall": 0,
+      "reported": 1
+    },
+    "affected_downstream_repositories": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "downstream_repositories": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0.5,
+      "recall": 1,
+      "reported": 2
+    },
+    "edges": {
+      "correct": 0,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0,
+      "recall": 0,
+      "reported": 2
+    },
+    "obligations": {
+      "correct": 2,
+      "expected": 2,
+      "invalid": 0,
+      "precision": 0.6666666666666666,
+      "recall": 1,
+      "reported": 3
+    },
+    "origin_repository": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "production_edit_obligations": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 1
+    },
+    "repositories": {
+      "correct": 2,
+      "expected": 2,
+      "invalid": 0,
+      "precision": 0.6666666666666666,
+      "recall": 1,
+      "reported": 3
+    },
+    "symbols": {
+      "correct": 0,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0,
+      "recall": 0,
+      "reported": 9
+    },
+    "unaffected_obligations": {
+      "correct": 0,
+      "expected": 0,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 0
+    },
+    "unresolved_obligations": {
+      "correct": 0,
+      "expected": 0,
+      "invalid": 0,
+      "precision": 1,
+      "recall": 1,
+      "reported": 0
+    },
+    "validation_only_obligations": {
+      "correct": 1,
+      "expected": 1,
+      "invalid": 0,
+      "precision": 0.5,
+      "recall": 1,
+      "reported": 2
+    }
+  },
+  "oracle": {
+    "errors": [],
+    "receipt_ids": [],
+    "status": "verified"
+  },
+  "oracle_covers_expectations": true,
+  "product_provenance": {
+    "run_receipts": {
+      "errors": [],
+      "receipt_ids": [],
+      "status": "verified"
+    },
+    "status": "not_supplied",
+    "unverified_receipt_ids": []
+  },
+  "protocol_version": 2,
+  "record_status": "verified",
+  "repair_alternatives": [
+    {
+      "action_differences": {
+        "false_positives": [
+          {
+            "after": "postcode",
+            "before": "postalCode",
+            "operation": "read_json_field",
+            "repo": "order-service",
+            "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()"
+          }
+        ],
+        "missed": [
+          {
+            "after": "postcode",
+            "before": "postalCode",
+            "operation": "read_json_field",
+            "repo": "order-service",
+            "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+          }
+        ]
+      },
+      "actions": {
+        "correct": 0,
+        "expected": 1,
+        "invalid": 0,
+        "precision": 0,
+        "recall": 0,
+        "reported": 1
+      },
+      "complete": false,
+      "critical_downstream_action_misses": [
+        {
+          "after": "postcode",
+          "before": "postalCode",
+          "operation": "read_json_field",
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+        }
+      ],
+      "name": "consumer_reads_renamed_response_field",
+      "obligation_differences": {
+        "false_positives": [
+          {
+            "obligation": "validation_only",
+            "repo": "shipment-service"
+          }
+        ],
+        "missed": []
+      },
+      "obligations": {
+        "correct": 2,
+        "expected": 2,
+        "invalid": 0,
+        "precision": 0.6666666666666666,
+        "recall": 1,
+        "reported": 3
+      }
+    }
+  ],
+  "satisfies_any_repair": false,
+  "selected_repair": "consumer_reads_renamed_response_field",
+  "status": "scored",
+  "answer_sha256": "90d12591ee75923ed8ca0445cd396d64f2bec9695161bb62f657f47ed451938a",
+  "ground_truth_sha256": "0f57f3cbcc77aafee0b4a73726549aca2a825fd22192aae732e5822ef878ba72",
+  "scorer_sha256": "6bc3bafaa2a443ba8e59ea77f5097364c98fa79eb766796bbae8da3ff5008f8c",
+  "answer_schema_sha256": "150d655b676f5069db87da03f0891d89ea9bbdb14c406fba6262145010fcf9d9",
+  "oracle_bundle_sha256": "33b42c1fca9396918b35c584076cca9cb5351ceb09d59889d5c195fd050d12d6",
+  "run_receipt_bundle_sha256": "07c248ef53635edf27fd35f4f5d850f0ee84971ec84c3516cf5a68627d525c11"
+}

@@ -1,0 +1,39 @@
+{
+  "kind": "retrospective_reassessment",
+  "provider_calls": 0,
+  "evaluation_revision": "2.1",
+  "original_scores_overwritten": false,
+  "reports": [
+    {
+      "runner": "pi-codex",
+      "original_action_recall": 0,
+      "corrected_action_recall": 1.0,
+      "corrected_edge_recall": 1.0,
+      "satisfies_required_actions": true,
+      "satisfies_any_repair": true,
+      "contradictions": [],
+      "path": "harness/answers/reassessments/2026-10-18-v2.1/REST-001-pi-codex-1.reassessment.json",
+      "sha256": "92fe90b75ee9ebc713ae64f24227c2fd897b5875510dca592b26cfe0658698b3"
+    },
+    {
+      "runner": "pi-codex-gortex-first",
+      "original_action_recall": 0,
+      "corrected_action_recall": 1.0,
+      "corrected_edge_recall": 1.0,
+      "satisfies_required_actions": true,
+      "satisfies_any_repair": false,
+      "contradictions": [
+        {
+          "claim": {
+            "obligation": "production_edit",
+            "repo": "account-service"
+          },
+          "kind": "obligations",
+          "reason": "contradicts_established_in_scope_observation"
+        }
+      ],
+      "path": "harness/answers/reassessments/2026-10-18-v2.1/REST-001-pi-codex-gortex-first-1.reassessment.json",
+      "sha256": "e95b4c5fc4b70d6c7ccaa0964563f70920aeca9bf5cc374188a53a7e0f741495"
+    }
+  ]
+}

@@ -1,0 +1,257 @@
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "runner": "pi-codex",
+  "run_started_at": "2026-10-17T20:51:00.886Z",
+  "status": "runtime_completed",
+  "budget_policy": {
+    "timeout_seconds": 300,
+    "max_tokens": 2000000,
+    "max_cost_usd": 5,
+    "cost_enforcement": "catalog_context_reservation",
+    "token_enforcement": "context_window_reservation",
+    "retries": false,
+    "compaction": false
+  },
+  "usage": {
+    "tokens_consumed": 100979,
+    "cost_usd": 0.1183336,
+    "elapsed_seconds": 104.326268834
+  },
+  "run_receipt_bundle": {
+    "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/receipts/REST-001-pi-codex-2026-10-17T20-51-00-886Z.json",
+    "sha256": "07c248ef53635edf27fd35f4f5d850f0ee84971ec84c3516cf5a68627d525c11"
+  },
+  "raw": "{\"protocol_version\":2,\"change_id\":\"REST-001\",\"findings\":{\"repositories\":[{\"repo\":\"account-service\",\"runtime_status\":\"unchanged\",\"evidence\":\"Origin behavior intentionally changes only GET response serialization to `postcode`; address request DTOs retain `postalCode`.\"},{\"repo\":\"order-service\",\"runtime_status\":\"broken\",\"evidence\":\"`AccountClient` reads `postalCode`, while the proposed provider response emits only `postcode`. The resulting missing postal value reaches `ShipmentClient`, whose `Map.of` request body cannot contain a null value, so normal quote creation cannot reach its shipment-estimate HTTP call.\"},{\"repo\":\"shipment-service\",\"runtime_status\":\"unchanged\",\"evidence\":\"Its estimate request contract still binds `postalCode`; no shipment HTTP request is reached from the broken Order flow.\"}],\"obligations\":[{\"repo\":\"account-service\",\"obligation\":\"validation_only\",\"evidence\":\"Validate GET address output uses `postcode` and address request bodies continue to use `postalCode`.\"},{\"repo\":\"order-service\",\"obligation\":\"production_edit\",\"evidence\":\"Repair the Account GET-response field read from `postalCode` to `postcode` while preserving the internal `AddressSnapshot.postalCode` value consumed by quote creation.\"},{\"repo\":\"shipment-service\",\"obligation\":\"validation_only\",\"evidence\":\"Validate the restored Order estimate request continues to bind its existing `postalCode` request field.\"}],\"symbols\":[{\"repo\":\"account-service\",\"fqn\":\"com.poc.account.api.AddressController#get(org.springframework.security.oauth2.jwt.Jwt,java.util.UUID)\",\"citations\":[{\"path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"line\":54}]},{\"repo\":\"account-service\",\"fqn\":\"com.poc.account.api.dto.AddressResponse#postcode()\",\"citations\":[{\"path\":\"account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"line\":6}]},{\"repo\":\"account-service\",\"fqn\":\"com.poc.account.api.dto.AddressRequest#postalCode()\",\"citations\":[{\"path\":\"account-service/src/main/java/com/poc/account/api/dto/AddressRequest.java\",\"line\":6}]},{\"repo\":\"order-service\",\"fqn\":\"com.poc.order.infrastructure.client.AccountClient#address(java.lang.String,java.util.UUID)\",\"citations\":[{\"path\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"line\":28}]},{\"repo\":\"order-service\",\"fqn\":\"com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()\",\"citations\":[{\"path\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"line\":24}]},{\"repo\":\"order-service\",\"fqn\":\"com.poc.order.application.CheckoutService#createQuote(java.lang.String,java.util.UUID,java.util.UUID)\",\"citations\":[{\"path\":\"order-service/src/main/java/com/poc/order/application/CheckoutService.java\",\"line\":37}]},{\"repo\":\"order-service\",\"fqn\":\"com.poc.order.infrastructure.client.ShipmentClient#estimate(java.lang.String,java.lang.String,int,long)\",\"citations\":[{\"path\":\"order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\",\"line\":26}]},{\"repo\":\"shipment-service\",\"fqn\":\"com.poc.shipment.api.dto.DeliveryEstimateRequest#postalCode()\",\"citations\":[{\"path\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"line\":7}]},{\"repo\":\"shipment-service\",\"fqn\":\"com.poc.shipment.api.ShipmentController#estimate(com.poc.shipment.api.dto.DeliveryEstimateRequest)\",\"citations\":[{\"path\":\"shipment-service/src/main/java/com/poc/shipment/api/ShipmentController.java\",\"line\":39}]}],\"edges\":[{\"provider\":\"account-service\",\"consumer\":\"order-service\",\"type\":\"rest\",\"identifier\":\"GET /api/v1/addresses/{addressId}\",\"field\":\"postcode\",\"evidence\":\"Order invokes this GET and deserializes its response; the proposed Account response member is `postcode`.\",\"citations\":[{\"path\":\"account-service/src/main/java/com/poc/account/api/AddressController.java\",\"line\":54},{\"path\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"line\":31}]},{\"provider\":\"order-service\",\"consumer\":\"shipment-service\",\"type\":\"rest\",\"identifier\":\"POST /api/v1/delivery-estimates\",\"field\":\"postalCode\",\"evidence\":\"The Order client constructs this request field from the address snapshot; Shipment binds the same field. Before repair, the null input prevents construction of that request body, so this is the intended contract edge rather than an observed successful call.\",\"citations\":[{\"path\":\"order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java\",\"line\":32},{\"path\":\"shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java\",\"line\":7}]}],\"actions\":[{\"repo\":\"order-service\",\"target\":\"com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()\",\"operation\":\"read_json_field\",\"before\":\"postalCode\",\"after\":\"postcode\",\"evidence\":\"Map the provider's renamed GET JSON field into the existing Order postal-code value; `CheckoutService` then supplies that value to the unchanged Shipment request field.\",\"citations\":[{\"path\":\"order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java\",\"line\":24},{\"path\":\"order-service/src/main/java/com/poc/order/application/CheckoutService.java\",\"line\":47}]}]},\"limitations\":[\"Provider routing/security, Shipment server behavior, persistence, UI, and Kafka/event execution are outside the requested boundary and have not been established as broken or unchanged.\"]}",
+  "stats": {
+    "tokens": {
+      "input": 28384,
+      "output": 3987,
+      "cacheRead": 68608,
+      "cacheWrite": 0,
+      "total": 100979
+    },
+    "cost": 0.1183336
+  },
+  "productReceipts": [],
+  "reservations": [
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 0,
+      "prior_cost_usd": 0
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 1924,
+      "prior_cost_usd": 0.004698
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 6604,
+      "prior_cost_usd": 0.013183199999999999
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 19078,
+      "prior_cost_usd": 0.03375
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 33951,
+      "prior_cost_usd": 0.0475692
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 51854,
+      "prior_cost_usd": 0.060242000000000004
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 73943,
+      "prior_cost_usd": 0.0798672
+    }
+  ],
+  "exposure": {
+    "unknown_usage": false,
+    "pending_request": null,
+    "exposure_upper_bound_usd": 0.1183336
+  },
+  "effectivePrompt": "Analyze the proposed change across the repositories available to you. Report\nwhat behavior changes, what downstream edits are necessary, and which\nrepositories need validation without production edits. Use only source and\nproduct evidence available to this run. The proposed change is assumed applied;\ndo not count merely implementing that supplied diff as downstream remediation.\n\nQuestion: Account's address GET response changes its JSON field postalCode to postcode; request bodies retain postalCode. Under the supplied diff, determine the effect on Order's real HTTP address binding and normal quote creation before any later order-confirmed event. Identify the field-level consumer repair needed to preserve successful quote creation while the provider emits only postcode. Limit runtime claims to this Account-to-Order boundary and Order's Shipment estimate call; full provider routing/security, Shipment server behavior, persistence, UI and Kafka execution are outside this bounded check.\n\nOrigin repository: account-service\n\n```diff\n--- a/src/main/java/com/poc/account/api/dto/AddressResponse.java\n+++ b/src/main/java/com/poc/account/api/dto/AddressResponse.java\n@@ -10,7 +10,7 @@\n         String line2,\n         String city,\n         String state,\n-        String postalCode,\n+        String postcode,\n         String country,\n         String phoneNumber,\n         Instant createdAt,\n\n```\n\nReport causal dependencies only when you can support their direction, contract,\nand relevant field or topic. Identifier similarity alone does not establish a\ndependency or a required edit. Distinguish an observed or supported failure\nfrom a possible consequence. Use `unresolved` when evidence is insufficient.\nWhen the question explicitly limits the evaluated boundary, keep structured\nruntime statuses and obligations within that boundary. Put uncertainties about\nexcluded behavior in an optional top-level `limitations` array of strings;\nexcluded behavior has not been established as either broken or unchanged.\n\nChoose one coherent repair strategy preserving the requested upstream change.\nDo not combine mutually exclusive strategies. A broken downstream behavior may\nbe restored by repairing its upstream input; that does not establish that every\ndownstream implementation needs editing. Runtime statuses describe the state\nafter the proposed change and before your suggested repair. Obligations describe\nyour chosen repair strategy.\n\nProduce one JSON object with `protocol_version: 2`, `change_id: \"REST-001\"`,\nand `findings` containing these five arrays:\n\n- `repositories`: `{repo, runtime_status}` with status `broken`, `unchanged`, or\n  `unresolved`. Describe the origin separately from downstream repositories.\n- `obligations`: `{repo, obligation}` where obligation is `production_edit`,\n  `validation_only`, `unaffected`, or `unresolved` under your repair strategy.\n- `symbols`: `{repo, fqn}`. Include the exact declaring member for a member-level\n  claim. A shared class prefix does not prove a member-level claim.\n- `edges`: `{provider, consumer, type, identifier, field}`. Type is `rest`,\n  `kafka`, `grpc`, `db`, or `local`. Use `METHOD /path` for REST identifiers and\n  the exact topic for Kafka. `field` is the relevant serialized field or empty\n  when no field-specific claim is made. Provider -> consumer is the direction\n  of data supplied, even if the consumer initiates the HTTP call.\n- `actions`: `{repo, target, operation, before, after}`. Use the exact declaring\n  member or contract location as target and the old/new contract values.\n  Public operations are `read_json_field`, `subscribe_topic`, `publish_topic`,\n  and `retain_json_alias`.\n  Describe an equivalent alias/read-mapping repair as `read_json_field`; the\n  predicate concerns behavior rather than one particular patch implementation.\n\nEach claim may include a short `evidence` explanation, `citations` as objects\n`{path, line?, sha256?}` naming source locations, and a `receipt_id` when a product result supports it. A matching\nreceipt proves the product returned data, not that the interpretation is true.\nDo not invent oracle or expected-answer identifiers. The runner supplies source\nsnapshot metadata independently.\n\nUse an empty array when you have no supported claims of a kind. Keep claims\nprecise and concise. Return JSON only, with no surrounding prose or fence.\n",
+  "toolCalls": 31,
+  "stage": "model",
+  "toolTelemetry": {
+    "total": 31,
+    "succeeded": 31,
+    "failed": 0,
+    "byName": {
+      "ls": {
+        "calls": 1,
+        "succeeded": 1,
+        "failed": 0
+      },
+      "find": {
+        "calls": 7,
+        "succeeded": 7,
+        "failed": 0
+      },
+      "grep": {
+        "calls": 7,
+        "succeeded": 7,
+        "failed": 0
+      },
+      "read": {
+        "calls": 16,
+        "succeeded": 16,
+        "failed": 0
+      }
+    }
+  },
+  "elapsed": 104.01992991600001,
+  "indexSha": "none",
+  "allowedTools": [
+    "read",
+    "grep",
+    "find",
+    "ls"
+  ]
+}

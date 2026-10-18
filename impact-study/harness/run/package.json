@@ -6,7 +6,7 @@
     "node": ">=22.19.0"
   },
   "scripts": {
-    "test": "node --test run.test.ts"
+    "test": "node --test *.test.ts"
   },
   "dependencies": {
     "@earendil-works/pi-coding-agent": "0.84.4"

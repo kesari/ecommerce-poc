@@ -1,0 +1,21 @@
+--- a/order-service/src/main/java/com/poc/order/application/EventEnvelope.java
++++ b/order-service/src/main/java/com/poc/order/application/EventEnvelope.java
+@@ -21,6 +21,6 @@
+     }
+ 
+     public String topic() {
+-        return eventType + ".v1";
++        return eventType.equals("order.confirmed") ? "order.confirmed.v2" : eventType + ".v1";
+     }
+ }
+--- a/shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java
++++ b/shipment-service/src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java
+@@ -24,7 +24,7 @@
+         this.objectMapper = objectMapper;
+     }
+ 
+-    @KafkaListener(topics = "order.confirmed.v1", groupId = "shipment-service")
++    @KafkaListener(topics = "order.confirmed.v2", groupId = "shipment-service")
+     public void onOrderConfirmed(String message) {
+         try {
+             JsonNode envelope = objectMapper.readTree(message);

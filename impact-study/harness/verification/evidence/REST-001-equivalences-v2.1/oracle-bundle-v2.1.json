@@ -1,0 +1,915 @@
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "record_sha256": "7cea7df02d6b51d16ae8a5d1b50d7174b1a6d74e0690713a60050a72f2f19d2f",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "artifacts": [
+    {
+      "path": "reference/Rest001BoundaryTest.java",
+      "sha256": "0ec0abbcb2c5e9e4ce002f048421bc2da77522a799e018885b99176896527a54"
+    },
+    {
+      "path": "reference/baseline-boundary-test.log",
+      "sha256": "d0c8e39eb7bc243b3a96e620d8ec1c4909aad24df74b6913373f771261fd1ed7"
+    },
+    {
+      "path": "reference/baseline-junit.xml",
+      "sha256": "e898bdee04342e7bb7a00be3b0aac1c02704d6ccb9ffea9d3534ed88bba16130"
+    },
+    {
+      "path": "reference/baseline-observation.json",
+      "sha256": "94283c6a514d2852b3eb6c5b2239ca945cf9e63cb2e7a68b783a9ea1b94dadf3"
+    },
+    {
+      "path": "reference/baseline-producer-compile.log",
+      "sha256": "abe840f27f2c143fbe90b999ba908c7160b91c420be2b7df239350c022696c7f"
+    },
+    {
+      "path": "reference/baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "reference/changed-boundary-test.log",
+      "sha256": "619f4dcbaf8a43556993ae33041fd11f99f0d77465353deb4e594769a5e742da"
+    },
+    {
+      "path": "reference/changed-junit.xml",
+      "sha256": "917c55622dfaef80aa207407bae08d8eb6a7c59c7b9075a2d0e169109980013a"
+    },
+    {
+      "path": "reference/changed-observation.json",
+      "sha256": "a8257b3fdb164c555abd101cf0ec6e09d2ae9f63a9d875d725998447a9e567d6"
+    },
+    {
+      "path": "reference/changed-producer-compile.log",
+      "sha256": "2e284d7e3dd00e4440164b09b319ce0df880265a9385c4f53944ad2e7bde71aa"
+    },
+    {
+      "path": "reference/changed.patch",
+      "sha256": "d964135d9927990b9ac1f67be3144fb70332272bb7636315a3e939a1757dedd9"
+    },
+    {
+      "path": "reference/criteria.json",
+      "sha256": "597434b2d44770fe5e5e577f5287d7564ea527eefd234eee2c43a780655782dc"
+    },
+    {
+      "path": "reference/faulted-repair-boundary-test.log",
+      "sha256": "9edccec0405cc49221f816b667867c3ab7b9a8da0bea68d2706ebc2ceb928b58"
+    },
+    {
+      "path": "reference/faulted-repair-junit.xml",
+      "sha256": "bec74afb834479b3130999ac4e755adfa19d8a399f701575372196d8f4093bf5"
+    },
+    {
+      "path": "reference/faulted-repair-observation.json",
+      "sha256": "aada793be28798ec4873e325df2e20ab6d5195fff0a250294305fdcc3e5d8a06"
+    },
+    {
+      "path": "reference/faulted-repair-producer-compile.log",
+      "sha256": "4c187c3960d331d46d878e73dcef080449163fcbc87bdb35e41053d53e5d011e"
+    },
+    {
+      "path": "reference/faulted-repair.patch",
+      "sha256": "ddf18fb0fb77216b8d936612f7ebc771082c0fa86ec22eb4b95468b9b6cde237"
+    },
+    {
+      "path": "reference/java-version.log",
+      "sha256": "df99e73ba1f223def82468e35abb72b272fb5201d9ca3f00f0a3a18c6b58ce2b"
+    },
+    {
+      "path": "reference/manifest.json",
+      "sha256": "bf8e18e7bbe346faa89c20e3f0f969d7eb963e567cc8499fda69361e41420b27"
+    },
+    {
+      "path": "reference/maven-version.log",
+      "sha256": "5fe1d6184c6ddd05be3d7e4e3e2cc4fcb5d0d1b9a73ea97b0c3aabfcb5f5e246"
+    },
+    {
+      "path": "reference/repaired-boundary-test.log",
+      "sha256": "8428afbf379063e6d7e27b987a68bc6363ccdd9045731a4873d01ce8c479fa44"
+    },
+    {
+      "path": "reference/repaired-junit.xml",
+      "sha256": "70af1ca6e8ba8386b6baf53412547f17230bf66e15e5b15cf3e3af93e7f539b2"
+    },
+    {
+      "path": "reference/repaired-observation.json",
+      "sha256": "a20583f03fc117f4d395a87ec7fd3b4ef45c4926f39e530ba3c2c440f29cd8ff"
+    },
+    {
+      "path": "reference/repaired-producer-compile.log",
+      "sha256": "5b22dfa811c62fc363baf7a814f4d17c49ce8e7b887160fa285b575c02328554"
+    },
+    {
+      "path": "reference/repaired.patch",
+      "sha256": "8a58709f34cec0f557a257202b5a386314464b413b8a4889f16fa4213ed7bef8"
+    },
+    {
+      "path": "method-mapping/Rest001BoundaryTest.java",
+      "sha256": "0ec0abbcb2c5e9e4ce002f048421bc2da77522a799e018885b99176896527a54"
+    },
+    {
+      "path": "method-mapping/baseline-AccountClient.java",
+      "sha256": "b8f3f84e93ef46d5192d61cee2d04f7bcfddb1cb817b7fa1a75067141346f727"
+    },
+    {
+      "path": "method-mapping/baseline-boundary-test.log",
+      "sha256": "0ace92008ba727dbb88ff1ab9099958c4833aee0b33d846dcbd2f7689a47e870"
+    },
+    {
+      "path": "method-mapping/baseline-junit.xml",
+      "sha256": "9575b9f4f5c26ff34b20d305d8605e7b2a3783d1cce9e23ec04edf027d7b3489"
+    },
+    {
+      "path": "method-mapping/baseline-observation.json",
+      "sha256": "bad1d50be799cb9a65d4b864820e0a225c662700d589800608ba9098ea97c0c5"
+    },
+    {
+      "path": "method-mapping/baseline-producer-compile.log",
+      "sha256": "688b35213f6159f3862ee2078ca23ddaddd67846406354e49406470e54fa4473"
+    },
+    {
+      "path": "method-mapping/baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "method-mapping/changed-boundary-test.log",
+      "sha256": "478f2e23f703b4937ab7f30615971a724567f2d077b0d2393680169f74b128ea"
+    },
+    {
+      "path": "method-mapping/changed-junit.xml",
+      "sha256": "9a4c6922073e06d63739b9af2daf6a8feed5330864f876c724a5700aaf0ca7d5"
+    },
+    {
+      "path": "method-mapping/changed-observation.json",
+      "sha256": "a8257b3fdb164c555abd101cf0ec6e09d2ae9f63a9d875d725998447a9e567d6"
+    },
+    {
+      "path": "method-mapping/changed-producer-compile.log",
+      "sha256": "4f93e3ed70fbf4724304b80761d48e3bdea9dcbc9441e821e2fcdaca7104bb32"
+    },
+    {
+      "path": "method-mapping/changed.patch",
+      "sha256": "d964135d9927990b9ac1f67be3144fb70332272bb7636315a3e939a1757dedd9"
+    },
+    {
+      "path": "method-mapping/client-javap.log",
+      "sha256": "5752713ad8df88e7f7d338ad85cb6c9a61fcb1f3809d50ffe23eecf99f16c49f"
+    },
+    {
+      "path": "method-mapping/criteria.json",
+      "sha256": "597434b2d44770fe5e5e577f5287d7564ea527eefd234eee2c43a780655782dc"
+    },
+    {
+      "path": "method-mapping/faulted-repair-boundary-test.log",
+      "sha256": "00c8fb38ec68f8384cbb2fb820b7c6a1c08778d4292185130921aaf185ffde89"
+    },
+    {
+      "path": "method-mapping/faulted-repair-junit.xml",
+      "sha256": "19b8e262a388b586fe2c0da8b81c37e398ef7b6cd2719f21e98ca7abe4b31f90"
+    },
+    {
+      "path": "method-mapping/faulted-repair-observation.json",
+      "sha256": "aada793be28798ec4873e325df2e20ab6d5195fff0a250294305fdcc3e5d8a06"
+    },
+    {
+      "path": "method-mapping/faulted-repair-producer-compile.log",
+      "sha256": "f62630a16a4181ed105ad4e7ad179106a2162c7a114aaf59c7d9c7bd12098a00"
+    },
+    {
+      "path": "method-mapping/faulted-repair.patch",
+      "sha256": "c90af4ea0d1830c7c28100f113a6d30288187ca5ac7304d8c91d89d5c4958205"
+    },
+    {
+      "path": "method-mapping/java-version.log",
+      "sha256": "df99e73ba1f223def82468e35abb72b272fb5201d9ca3f00f0a3a18c6b58ce2b"
+    },
+    {
+      "path": "method-mapping/maven-version.log",
+      "sha256": "5fe1d6184c6ddd05be3d7e4e3e2cc4fcb5d0d1b9a73ea97b0c3aabfcb5f5e246"
+    },
+    {
+      "path": "method-mapping/original-runner-result.log",
+      "sha256": "8d82d66ff274800b10bd2c4b1b1612d19a972ca963dbaeab9d267627035519d5"
+    },
+    {
+      "path": "method-mapping/record-javap.log",
+      "sha256": "531af749a31df1bbd49fdea973817ec7af2ef6254f5d3228b8b7a43b719eb714"
+    },
+    {
+      "path": "method-mapping/repaired-boundary-test.log",
+      "sha256": "8442dba179eac8968d8cc9f522e83c845415453a95f1869c5c94c0e2484ae34e"
+    },
+    {
+      "path": "method-mapping/repaired-junit.xml",
+      "sha256": "6a4e13f0a39fb134e307c23db00753ca73ed10982b760c9541245a1a44ab3a75"
+    },
+    {
+      "path": "method-mapping/repaired-observation.json",
+      "sha256": "a20583f03fc117f4d395a87ec7fd3b4ef45c4926f39e530ba3c2c440f29cd8ff"
+    },
+    {
+      "path": "method-mapping/repaired-producer-compile.log",
+      "sha256": "45dc07d572f3b6d579c2a2d065a9ed2dd9cbdf49bcf0bb9e303835fc35aefa1e"
+    },
+    {
+      "path": "method-mapping/repaired.patch",
+      "sha256": "ac595e35ed82d36564a166c31e2e050ae0f917b2b4d61e468be803e40b1f794e"
+    },
+    {
+      "path": "method-mapping/source-identity.json",
+      "sha256": "28daaa3dac05fbbf53e59612de135434294a1eeb07e0d30823a41c7f4793b4d2"
+    },
+    {
+      "path": "method-mapping/verify_rest001_equivalence.py",
+      "sha256": "025ebc38f091e780c58de848ca94dacd50c130905965974dadb63bc02f48ca5a"
+    },
+    {
+      "path": "reference/oracle-bundle.json",
+      "sha256": "33b42c1fca9396918b35c584076cca9cb5351ceb09d59889d5c195fd050d12d6"
+    },
+    {
+      "path": "method-mapping/manifest.json",
+      "sha256": "8459ba53740421fe04b56078e0ad7fcc5c919c10fea62964fc2ae5ab440f72b3"
+    }
+  ],
+  "attestations": [
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "account-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "order-service",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "account-service",
+        "consumer": "order-service",
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "field": "postalCode"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "account-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "order-service",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "reference/criteria.json",
+        "reference/Rest001BoundaryTest.java",
+        "reference/manifest.json",
+        "reference/baseline-observation.json",
+        "reference/baseline-junit.xml",
+        "reference/baseline-boundary-test.log",
+        "reference/changed-observation.json",
+        "reference/changed-junit.xml",
+        "reference/changed-boundary-test.log",
+        "reference/repaired-observation.json",
+        "reference/repaired-junit.xml",
+        "reference/repaired-boundary-test.log",
+        "reference/faulted-repair-observation.json",
+        "reference/faulted-repair-junit.xml",
+        "reference/faulted-repair-boundary-test.log"
+      ]
+    }
+  ],
+  "equivalences": [
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode()",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.address",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient#address(java.lang.String,java.util.UUID)",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient#address(String,UUID)",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.address(java.lang.String,java.util.UUID)",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "alias": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.address(String,UUID)",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "alias": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse#postalCode()"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "alias": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode()"
+      },
+      "canonical": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "alias": {
+        "provider": "account-service",
+        "consumer": "order-service",
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "field": "postcode"
+      },
+      "canonical": {
+        "provider": "account-service",
+        "consumer": "order-service",
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "field": "postalCode"
+      },
+      "artifact_paths": [
+        "method-mapping/Rest001BoundaryTest.java",
+        "method-mapping/baseline-AccountClient.java",
+        "method-mapping/baseline-boundary-test.log",
+        "method-mapping/baseline-junit.xml",
+        "method-mapping/baseline-observation.json",
+        "method-mapping/baseline-producer-compile.log",
+        "method-mapping/baseline.patch",
+        "method-mapping/changed-boundary-test.log",
+        "method-mapping/changed-junit.xml",
+        "method-mapping/changed-observation.json",
+        "method-mapping/changed-producer-compile.log",
+        "method-mapping/changed.patch",
+        "method-mapping/client-javap.log",
+        "method-mapping/criteria.json",
+        "method-mapping/faulted-repair-boundary-test.log",
+        "method-mapping/faulted-repair-junit.xml",
+        "method-mapping/faulted-repair-observation.json",
+        "method-mapping/faulted-repair-producer-compile.log",
+        "method-mapping/faulted-repair.patch",
+        "method-mapping/java-version.log",
+        "method-mapping/maven-version.log",
+        "method-mapping/original-runner-result.log",
+        "method-mapping/record-javap.log",
+        "method-mapping/repaired-boundary-test.log",
+        "method-mapping/repaired-junit.xml",
+        "method-mapping/repaired-observation.json",
+        "method-mapping/repaired-producer-compile.log",
+        "method-mapping/repaired.patch",
+        "method-mapping/source-identity.json",
+        "method-mapping/verify_rest001_equivalence.py",
+        "method-mapping/manifest.json",
+        "reference/oracle-bundle.json"
+      ]
+    }
+  ],
+  "scoring_policy": {
+    "mode": "scoped_reference_v1"
+  }
+}

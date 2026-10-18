@@ -1,0 +1,40 @@
+{
+  "protocol_version": 2,
+  "scenario": "REST-001-response-rename",
+  "status": "passed",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "criteria_sha256": "597434b2d44770fe5e5e577f5287d7564ea527eefd234eee2c43a780655782dc",
+  "test_sha256": "0ec0abbcb2c5e9e4ce002f048421bc2da77522a799e018885b99176896527a54",
+  "manifest_sha256": "bf8e18e7bbe346faa89c20e3f0f969d7eb963e567cc8499fda69361e41420b27",
+  "first_failure": "Order ShipmentClient.estimate constructs Map.of with null postalCode; NPE occurs before shipment HTTP and quote save",
+  "verified_scope": "Actual Account Response JSON serialization, actual Order AccountClient deserialization, CheckoutService and ShipmentClient over loopback; Basket/QuoteRepository and Shipment estimate HTTP response are controlled fixtures",
+  "unresolved": [
+    "Spring Account controller/request validation/security",
+    "real Shipment server behavior",
+    "PostgreSQL persistence",
+    "Kafka event propagation",
+    "UI and BFF behavior"
+  ],
+  "phases": {
+    "baseline": {
+      "passed": true,
+      "fault_detected": false,
+      "observation_file": "baseline-observation.json"
+    },
+    "changed": {
+      "passed": true,
+      "fault_detected": false,
+      "observation_file": "changed-observation.json"
+    },
+    "repaired": {
+      "passed": true,
+      "fault_detected": false,
+      "observation_file": "repaired-observation.json"
+    },
+    "faulted-repair": {
+      "passed": true,
+      "fault_detected": true,
+      "observation_file": "faulted-repair-observation.json"
+    }
+  }
+}

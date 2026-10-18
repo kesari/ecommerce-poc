@@ -1,0 +1,758 @@
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "findings": {
+    "repositories": [
+      {
+        "repo": "account-service",
+        "runtime_status": "unchanged",
+        "evidence": "The supplied change intentionally renames only the GET response record component; AddressRequest continues to bind postalCode."
+      },
+      {
+        "repo": "order-service",
+        "runtime_status": "broken",
+        "evidence": "AccountClient binds postalCode, while the provider emits only postcode. The resulting null postal code reaches ShipmentClient's Map.of request construction, which rejects null before the estimate HTTP request; normal quote creation therefore cannot complete or save a quote."
+      }
+    ],
+    "obligations": [
+      {
+        "repo": "account-service",
+        "obligation": "validation_only",
+        "evidence": "Validate GET responses emit postcode and POST/PUT request bodies still accept postalCode."
+      },
+      {
+        "repo": "order-service",
+        "obligation": "production_edit",
+        "evidence": "Add a read mapping from Account's postcode response property into the existing local postalCode component; this preserves the downstream Shipment request contract."
+      }
+    ],
+    "symbols": [
+      {
+        "repo": "account-service",
+        "fqn": "com.poc.account.api.dto.AddressResponse.postalCode",
+        "evidence": "Baseline response record component renamed by the supplied diff.",
+        "citations": [
+          {
+            "path": "account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java",
+            "line": 13
+          }
+        ],
+        "receipt_id": "r7"
+      },
+      {
+        "repo": "account-service",
+        "fqn": "com.poc.account.api.dto.AddressRequest.postalCode",
+        "evidence": "Request DTO retains postalCode."
+      },
+      {
+        "repo": "account-service",
+        "fqn": "com.poc.account.api.AddressController.get",
+        "evidence": "GET /api/v1/addresses/{addressId} returns AddressResponse.",
+        "citations": [
+          {
+            "path": "account-service/src/main/java/com/poc/account/api/AddressController.java",
+            "line": 55
+          }
+        ]
+      },
+      {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "evidence": "The real HTTP response binding declares postalCode rather than postcode."
+      },
+      {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.AccountClient.address",
+        "evidence": "Reads the response postalCode into AddressSnapshot.",
+        "citations": [
+          {
+            "path": "order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java",
+            "line": 41
+          }
+        ],
+        "receipt_id": "r9"
+      },
+      {
+        "repo": "order-service",
+        "fqn": "com.poc.order.application.CheckoutService.createQuote",
+        "evidence": "Uses the address snapshot postalCode to obtain the shipment estimate before saving the quote.",
+        "citations": [
+          {
+            "path": "order-service/src/main/java/com/poc/order/application/CheckoutService.java",
+            "line": 52
+          }
+        ]
+      },
+      {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+        "evidence": "Constructs the Shipment request with postalCode using Map.of.",
+        "citations": [
+          {
+            "path": "order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java",
+            "line": 36
+          }
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "provider": "com.poc.account.api.AddressController.get",
+        "consumer": "com.poc.order.infrastructure.client.AccountClient.address",
+        "type": "rest",
+        "identifier": "GET /api/v1/addresses/{addressId}",
+        "field": "postalCode",
+        "evidence": "The original Account response component and Order response binding use postalCode; the supplied change alters only the provider's serialized response field."
+      },
+      {
+        "provider": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+        "consumer": "shipment-service /api/v1/delivery-estimates",
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "field": "postalCode",
+        "evidence": "Order's estimate request remains postalCode; after the consumer repair it receives the value read from Account's postcode."
+      }
+    ],
+    "actions": [
+      {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+        "operation": "read_json_field",
+        "before": "postalCode",
+        "after": "postcode",
+        "evidence": "Map Account's new postcode response property to Order's existing postalCode component, retaining CheckoutService and ShipmentClient's postalCode flow."
+      }
+    ]
+  },
+  "limitations": [
+    "Shipment server behavior, persistence, UI/BFF execution, provider routing/security, and Kafka/order-confirmed execution are outside the evaluated boundary. No Kafka edge is asserted: quote creation invokes the Shipment estimate before quote save and before later order-confirmed processing.",
+    "The exact Account OpenAPI document and Account response tests will be stale under the supplied source diff, but their update is documentation/test maintenance rather than a repair required to restore the bounded Account-to-Order quote path."
+  ],
+  "additional_recommendations": [
+    "Regenerate account-service/openapi/account.yaml and update AccountFlowComponentTest assertions to expect postcode in responses while retaining postalCode in request fixtures.",
+    "Add an Order HTTP-client integration/contract test whose Account response contains only postcode and whose Shipment request is asserted to contain postalCode."
+  ],
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "contestant": "codebase-memory-first",
+  "runner": "pi-codex-codebase-memory-first",
+  "run_index": 1,
+  "run_started_at": "2026-10-18T02:09:04.853Z",
+  "elapsed_seconds": 197.21023825,
+  "budget_policy": {
+    "timeout_seconds": 300,
+    "max_tokens": 2000000,
+    "max_cost_usd": 4.8710892,
+    "cost_enforcement": "catalog_context_reservation",
+    "token_enforcement": "context_window_reservation",
+    "retries": false,
+    "compaction": false
+  },
+  "budget_reservations": [
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 0,
+      "prior_cost_usd": 0
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 3239,
+      "prior_cost_usd": 0.007558
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 6919,
+      "prior_cost_usd": 0.01159
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 17440,
+      "prior_cost_usd": 0.030353999999999996
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 31652,
+      "prior_cost_usd": 0.04438759999999999
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 49601,
+      "prior_cost_usd": 0.06390559999999999
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 71143,
+      "prior_cost_usd": 0.0791668
+    },
+    {
+      "api": "openai-codex-responses",
+      "model": "gpt-5.6-terra",
+      "context_window": 272000,
+      "max_output_tokens": 128000,
+      "catalog_rates_usd_per_million": {
+        "input": 2,
+        "output": 12,
+        "cacheRead": 0.2,
+        "cacheWrite": 2.5,
+        "tiers": [
+          {
+            "inputTokensAbove": 272000,
+            "input": 4,
+            "output": 18,
+            "cacheRead": 0.4,
+            "cacheWrite": 5
+          }
+        ]
+      },
+      "output_limit": "model_catalog_maximum",
+      "maximum_request_cost_usd": 3.6639999999999997,
+      "prior_tokens": 98022,
+      "prior_cost_usd": 0.0980192
+    }
+  ],
+  "attempt_evidence": {
+    "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/v2-1-repair-fix-2026-10-18/REST-001-pi-codex-codebase-memory-first-1.2026-10-18T02-09-04-853Z.attempt.json",
+    "sha256": "c5a2107d6b53a1448430554e0ba6680a76b9beea4b427ef3a14004906357854f"
+  },
+  "tool_calls": 39,
+  "tool_calls_by_name": {
+    "ls": {
+      "calls": 1,
+      "succeeded": 1,
+      "failed": 0
+    },
+    "codebase_memory_query": {
+      "calls": 4,
+      "succeeded": 3,
+      "failed": 1
+    },
+    "find": {
+      "calls": 4,
+      "succeeded": 4,
+      "failed": 0
+    },
+    "grep": {
+      "calls": 7,
+      "succeeded": 7,
+      "failed": 0
+    },
+    "read": {
+      "calls": 23,
+      "succeeded": 23,
+      "failed": 0
+    }
+  },
+  "product_tool_calls": {
+    "attempted": 9,
+    "succeeded": 8,
+    "failed": 1
+  },
+  "product_playbook": [
+    {
+      "intention": "locate",
+      "tool": "codebase_memory_query",
+      "operation": "schema",
+      "parameters": {
+        "operation": "schema",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "receipt_id": "r1",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "locate",
+      "tool": "codebase_memory_query",
+      "operation": "search",
+      "parameters": {
+        "operation": "search",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "receipt_id": "r2",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "references",
+      "tool": "codebase_memory_query",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "receipt_id": "r3",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "expand",
+      "tool": "codebase_memory_query",
+      "operation": "cross_repo",
+      "parameters": {
+        "operation": "cross_repo",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "receipt_id": "r4",
+      "ok": true,
+      "error": null
+    },
+    {
+      "intention": "tests",
+      "tool": "codebase_memory_query",
+      "operation": "tests",
+      "parameters": {
+        "operation": "tests",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "receipt_id": "r5",
+      "ok": true,
+      "error": null
+    }
+  ],
+  "run_receipt_bundle": {
+    "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/v2-1-repair-fix-2026-10-18/receipts/REST-001-pi-codex-codebase-memory-first-2026-10-18T02-09-04-853Z.json",
+    "sha256": "a554eb66164baa25048f793e989b15471e2fcd62c58306dca606c6ad209fbea9"
+  },
+  "product_tool_receipts": [
+    {
+      "id": "r1",
+      "tool": "codebase_memory_query",
+      "operation": "schema",
+      "parameters": {
+        "operation": "schema",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"node_labels\":[{\"label\":\"Method\",\"count\":112},{\"label\":\"Class\",\"count\":80},{\"label\":\"File\",\"count\":57},{\"label\":\"Variable\",\"count\":55},{\"label\":\"Field\",\"count\":37},{\"label\":\"Folder\",\"count\":34},{\"label\":\"Decorator\",\"count\":30},{\"label\":\"Module\",\"count\":12},{\"label\":\"Route\",\"count\":12},{\"label\":\"Function\",\"count\":8},{\"label\":\"Interface\",\"count\":7},{\"label\":\"Section\",\"count\":3},{\"label\":\"Table\",\"count\":3},{\"label\":\"Branch\",\"count\":1},{\"label\":\"Project\",\"count\":1}],\"edge_types\":[{\"type\":\"DEFINES\",\"count\":368},{\"type\":\"USAGE\",\"count\":317},{\"type\":\"CALLS\",\"count\":126},{\"type\":\"DECORATES\",\"count\":115},{\"type\":\"DEFINES_METHOD\",\"count\":112},{\"type\":\"IMPORTS\",\"count\":61},{\"type\":\"CONTAINS_FILE\",\"count\":57},{\"type\":\"WRITES\",\"count\":24},{\"type\":\"CONTAINS_FOLDER\",\"count\":19},{\"type\":\"OVERRIDE\",\"count\":12},{\"type\":\"SEMANTICALLY_RELATED\",\"count\":10},{\"type\":\"HANDLES\",\"count\":8},{\"type\":\"IMPLEMENTS\",\"count\":5},{\"type\":\"THROWS\",\"count\":5},{\"type\":\"CALL_REFERENCE\",\"count\":4},{\"type\":\"HTTP_CALLS\",\"count\":3},{\"type\":\"CONFIGURES\",\"count\":2},{\"type\":\"CROSS_HTTP_CALLS\",\"count\":2},{\"type\":\"HAS_BRANCH\",\"count\":1}],\"total\":34,\"returned\":34,\"has_more\":false,\"adr_present\":false}",
+      "output_sha256": "ffeeedc78842b3e230eb5f13db1a2b0770379355652b873ce35eff3689e8e2e9",
+      "output_bytes": 1171,
+      "output_full_bytes": 1171,
+      "truncated": false,
+      "output_normalized": "{\"adr_present\":false,\"edge_types\":[{\"count\":1,\"type\":\"HAS_BRANCH\"},{\"count\":10,\"type\":\"SEMANTICALLY_RELATED\"},{\"count\":112,\"type\":\"DEFINES_METHOD\"},{\"count\":115,\"type\":\"DECORATES\"},{\"count\":12,\"type\":\"OVERRIDE\"},{\"count\":126,\"type\":\"CALLS\"},{\"count\":19,\"type\":\"CONTAINS_FOLDER\"},{\"count\":2,\"type\":\"CONFIGURES\"},{\"count\":2,\"type\":\"CROSS_HTTP_CALLS\"},{\"count\":24,\"type\":\"WRITES\"},{\"count\":3,\"type\":\"HTTP_CALLS\"},{\"count\":317,\"type\":\"USAGE\"},{\"count\":368,\"type\":\"DEFINES\"},{\"count\":4,\"type\":\"CALL_REFERENCE\"},{\"count\":5,\"type\":\"IMPLEMENTS\"},{\"count\":5,\"type\":\"THROWS\"},{\"count\":57,\"type\":\"CONTAINS_FILE\"},{\"count\":61,\"type\":\"IMPORTS\"},{\"count\":8,\"type\":\"HANDLES\"}],\"has_more\":false,\"node_labels\":[{\"count\":1,\"label\":\"Branch\"},{\"count\":1,\"label\":\"Project\"},{\"count\":112,\"label\":\"Method\"},{\"count\":12,\"label\":\"Module\"},{\"count\":12,\"label\":\"Route\"},{\"count\":3,\"label\":\"Section\"},{\"count\":3,\"label\":\"Table\"},{\"count\":30,\"label\":\"Decorator\"},{\"count\":34,\"label\":\"Folder\"},{\"count\":37,\"label\":\"Field\"},{\"count\":55,\"label\":\"Variable\"},{\"count\":57,\"label\":\"File\"},{\"count\":7,\"label\":\"Interface\"},{\"count\":8,\"label\":\"Function\"},{\"count\":80,\"label\":\"Class\"}],\"returned\":34,\"total\":34}",
+      "output_normalized_sha256": "49ce643051a5d82378f979ca4575e3e2c53193977591fbb4803a6bbea17f1d24",
+      "duration_ms": 4833.2,
+      "error": null
+    },
+    {
+      "id": "r2",
+      "tool": "codebase_memory_query",
+      "operation": "search",
+      "parameters": {
+        "operation": "search",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"groups\":[],\"hint\":\"No nodes match; check spelling or broaden the regex.\",\"total\":0,\"returned\":0,\"count\":0,\"has_more\":false,\"truncated\":false}",
+      "output_sha256": "c20d8a5c1fbfbc9a4262e1690881dc7dff18e2688b6d71c891d4733776cc3944",
+      "output_bytes": 255,
+      "output_full_bytes": 255,
+      "truncated": false,
+      "output_normalized": "{\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"count\":0,\"groups\":[],\"has_more\":false,\"hint\":\"No nodes match; check spelling or broaden the regex.\",\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"returned\":0,\"total\":0,\"truncated\":false}",
+      "output_normalized_sha256": "8b540174d9366f09ba73932050017c91b75a28124de671eec05def620c4ab769",
+      "duration_ms": 4814.4,
+      "error": null
+    },
+    {
+      "id": "r3",
+      "tool": "codebase_memory_query",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"rows\":[],\"returned\":0,\"total\":0,\"total_relation\":\"eq\",\"has_more\":false,\"truncated\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\"}",
+      "output_sha256": "c9d7231ad034db066dfd0bf046b8a4c463d8b855103918e373d3b62b490bbadf",
+      "output_bytes": 270,
+      "output_full_bytes": 270,
+      "truncated": false,
+      "output_normalized": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"has_more\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\",\"returned\":0,\"rows\":[],\"total\":0,\"total_relation\":\"eq\",\"truncated\":false}",
+      "output_normalized_sha256": "f1e9b73f5b5d167b646592b41e326ddf3cd8a5e4244973c0127b87f4ce79e883",
+      "duration_ms": 4838.9,
+      "error": null
+    },
+    {
+      "id": "r4",
+      "tool": "codebase_memory_query",
+      "operation": "cross_repo",
+      "parameters": {
+        "operation": "cross_repo",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"edge_types\":[\"CROSS_HTTP_CALLS\"],\"results\":[{\"edge_type\":\"CROSS_HTTP_CALLS\",\"response\":{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"rows\":[],\"returned\":0,\"total\":0,\"total_relation\":\"eq\",\"has_more\":false,\"truncated\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\"}}]}",
+      "output_sha256": "b16ef0a26304a39e222e86215fdb87ea4d972cbf2d7efa400740c774a0353759",
+      "output_bytes": 362,
+      "output_full_bytes": 362,
+      "truncated": false,
+      "output_normalized": "{\"edge_types\":[\"CROSS_HTTP_CALLS\"],\"results\":[{\"edge_type\":\"CROSS_HTTP_CALLS\",\"response\":{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"has_more\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\",\"returned\":0,\"rows\":[],\"total\":0,\"total_relation\":\"eq\",\"truncated\":false}}]}",
+      "output_normalized_sha256": "a1225d3b74c6d767a1608b1ca39ee85b6632b22b03132ae89bf838d31fe87843",
+      "duration_ms": 9698.9,
+      "error": null
+    },
+    {
+      "id": "r5",
+      "tool": "codebase_memory_query",
+      "operation": "tests",
+      "parameters": {
+        "operation": "tests",
+        "query": "postalCode",
+        "repo": "account-service"
+      },
+      "requested_query": "postalCode",
+      "executed_query": "postalCode",
+      "success": true,
+      "output": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"rows\":[],\"returned\":0,\"total\":0,\"total_relation\":\"eq\",\"has_more\":false,\"truncated\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\"}",
+      "output_sha256": "c9d7231ad034db066dfd0bf046b8a4c463d8b855103918e373d3b62b490bbadf",
+      "output_bytes": 270,
+      "output_full_bytes": 270,
+      "truncated": false,
+      "output_normalized": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"has_more\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\",\"returned\":0,\"rows\":[],\"total\":0,\"total_relation\":\"eq\",\"truncated\":false}",
+      "output_normalized_sha256": "f1e9b73f5b5d167b646592b41e326ddf3cd8a5e4244973c0127b87f4ce79e883",
+      "duration_ms": 4834.3,
+      "error": null
+    },
+    {
+      "id": "r6",
+      "tool": "codebase_memory_query",
+      "operation": "search",
+      "parameters": {
+        "operation": "search",
+        "query": "address quote shipment",
+        "repo": "order-service"
+      },
+      "requested_query": "address quote shipment",
+      "executed_query": "address quote shipment",
+      "success": true,
+      "output": "{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"groups\":[],\"hint\":\"No nodes match; check spelling or broaden the regex.\",\"total\":0,\"returned\":0,\"count\":0,\"has_more\":false,\"truncated\":false}",
+      "output_sha256": "c20d8a5c1fbfbc9a4262e1690881dc7dff18e2688b6d71c891d4733776cc3944",
+      "output_bytes": 255,
+      "output_full_bytes": 255,
+      "truncated": false,
+      "output_normalized": "{\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"count\":0,\"groups\":[],\"has_more\":false,\"hint\":\"No nodes match; check spelling or broaden the regex.\",\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"returned\":0,\"total\":0,\"truncated\":false}",
+      "output_normalized_sha256": "8b540174d9366f09ba73932050017c91b75a28124de671eec05def620c4ab769",
+      "duration_ms": 4828.3,
+      "error": null
+    },
+    {
+      "id": "r7",
+      "tool": "codebase_memory_query",
+      "operation": "search",
+      "parameters": {
+        "operation": "search",
+        "query": "AddressResponse",
+        "repo": "account-service"
+      },
+      "requested_query": "AddressResponse",
+      "executed_query": "AddressResponse",
+      "success": true,
+      "output": "{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"groups\":[{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto\",\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"rows\":[[\"AddressResponse\",\"Class\",\"6-19\",6,0]]},{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto.AddressResponse.java\",\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"rows\":[[\"__file__\",\"File\",\"\",0,0]]}],\"total\":2,\"returned\":2,\"count\":2,\"has_more\":false,\"truncated\":false}",
+      "output_sha256": "71e4e79de44ddfe3274b1b74f3d53e87bce5d4da238b6e250c0f6c8588b9cd5a",
+      "output_bytes": 573,
+      "output_full_bytes": 573,
+      "truncated": false,
+      "output_normalized": "{\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"count\":2,\"groups\":[{\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto\",\"rows\":[[\"AddressResponse\",\"Class\",\"6-19\",6,0]]},{\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto.AddressResponse.java\",\"rows\":[[\"__file__\",\"File\",\"\",0,0]]}],\"has_more\":false,\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"returned\":2,\"total\":2,\"truncated\":false}",
+      "output_normalized_sha256": "f078281dfa9191b72b74855809dd5b01dc05b5908d9e6bcd92910abfff3e80cb",
+      "duration_ms": 4826.3,
+      "error": null
+    },
+    {
+      "id": "r8",
+      "tool": "codebase_memory_query",
+      "operation": "trace",
+      "parameters": {
+        "operation": "trace",
+        "query": "AccountClient.address",
+        "repo": "order-service"
+      },
+      "requested_query": "AccountClient.address",
+      "executed_query": "AccountClient.address",
+      "success": false,
+      "output": null,
+      "output_sha256": null,
+      "output_bytes": null,
+      "output_full_bytes": null,
+      "truncated": false,
+      "output_normalized": null,
+      "output_normalized_sha256": null,
+      "duration_ms": 1778.9,
+      "error": "error: unknown flag --max-depth for this tool (did you mean --depth?) — run 'cli trace_path --help' for the supported flags"
+    },
+    {
+      "id": "r9",
+      "tool": "codebase_memory_query",
+      "operation": "references",
+      "parameters": {
+        "operation": "references",
+        "query": "AccountClient",
+        "repo": "order-service"
+      },
+      "requested_query": "AccountClient",
+      "executed_query": "AccountClient",
+      "success": true,
+      "output": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"rows\":[[\"client\",\"[\\\"Folder\\\"]\",\"CONTAINS_FILE\",\"AccountClient.java\",\"[\\\"File\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"client\",\"[\\\"Folder\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AccountClient\",\"[\\\"Class\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AccountClient\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"address\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"client\",\"[\\\"Field\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"client\",\"[\\\"Variable\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"IMPORTS\",\"OrderRepository.java\",\"[\\\"File\\\"]\",\"{\\\"local_name\\\":\\\"AccountPort\\\"}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"IMPORTS\",\"Order.java\",\"[\\\"File\\\"]\",\"{\\\"local_name\\\":\\\"AddressSnapshot\\\"}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"USAGE\",\"client\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"client\\\"}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"USAGE\",\"AccountPort\",\"[\\\"Interface\\\"]\",\"{\\\"callee\\\":\\\"AccountPort\\\"}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"DECORATES\",\"Component\",\"[\\\"Decorator\\\"]\",\"{\\\"decorator\\\":\\\"@Component\\\"}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"DEFINES_METHOD\",\"AccountClient\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"DEFINES_METHOD\",\"address\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"IMPLEMENTS\",\"AccountPort\",\"[\\\"Interface\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"USAGE\",\"Component\",\"[\\\"Decorator\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"CALLS\",\"build\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"builder.baseUrl(baseUrl).build\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":21}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"BasketClient\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.752,\\\"same_file\\\":false}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"ShipmentClient\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.757,\\\"same_file\\\":false}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"WRITES\",\"client\",\"[\\\"Variable\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"header\",\"[\\\"Method\\\"]\",\"{\\\"callee\\\":\\\"client.get()\\\\n                    .uri(\\\\\\\"/api/v1/addresses/{addressId}\\\\\\\", addressId).header\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"HttpHeaders.AUTHORIZATION\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"bearerToken\\\"}],\\\"line\\\":32}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"address\",\"[\\\"Method\\\"]\",\"{\\\"callee\\\":\\\"client.get\\\",\\\"confidence\\\":0.50,\\\"strategy\\\":\\\"callee_suffix\\\",\\\"candidates\\\":0,\\\"line\\\":32}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"DownstreamUnavailableException\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"DownstreamUnavailableException\\\",\\\"confidence\\\":0.90,\\\"strategy\\\":\\\"same_module\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"'account-service is unavailable'\\\",\\\"v\\\":\\\"account-service is unavailable\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"e\\\"}],\\\"line\\\":43}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"AddressSnapshot\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressSnapshot\\\",\\\"confidence\\\":0.75,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"response.fullName()\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"response.line1()\\\"},{\\\"i\\\":2,\\\"e\\\":\\\"response.line2()\\\"},{\\\"i\\\":3,\\\"e\\\":\\\"response.city()\\\"},{\\\"i\\\":4,\\\"e\\\":\\\"response.state()\\\"},{\\\"i\\\":5,\\\"e\\\":\\\"response.postalCode()\\\"},{\\\"i\\\":6,\\\"e\\\":\\\"response.country()\\\"}],\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"fullName\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.fullName\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"line1\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.line1\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"line2\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.line2\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"city\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.city\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"state\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.state\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"postalCode\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.postalCode\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"country\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.country\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"DECORATES\",\"Override\",\"[\\\"Decorator\\\"]\",\"{\\\"decorator\\\":\\\"@Override\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"DECORATES\",\"CircuitBreaker\",\"[\\\"Decorator\\\"]\",\"{\\\"decorator\\\":\\\"@CircuitBreaker(name = \\\\\\\"account\\\\\\\")\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"OVERRIDE\",\"address\",\"[\\\"Method\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"currentBasket\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.771,\\\"same_file\\\":false}\"],[\"address\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"estimate\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.775,\\\"same_file\\\":false}\"],[\"address\",\"[\\\"Method\\\"]\",\"THROWS\",\"DownstreamUnavailableException\",\"[\\\"Class\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressSnapshot\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressSnapshot\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"client\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"client\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"Override\",\"[\\\"Decorator\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"CircuitBreaker\",\"[\\\"Decorator\\\"]\",\"{}\"],[\"save\",\"[\\\"Method\\\"]\",\"CALLS\",\"address\",\"[\\\"Method\\\"]\",\"{\\\"callee\\\":\\\"quote.address\\\",\\\"confidence\\\":0.21,\\\"strategy\\\":\\\"suffix_match\\\",\\\"candidates\\\":4,\\\"line\\\":30}\"]],\"returned\":43,\"total\":43,\"total_relation\":\"eq\",\"has_more\":false,\"truncated\":false}",
+      "output_sha256": "7ad7e9127aa873559dd11da1c03b612ad6bc0b7a4f90bfa6362f54726918ae2b",
+      "output_bytes": 5839,
+      "output_full_bytes": 5839,
+      "truncated": false,
+      "output_normalized": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"has_more\":false,\"returned\":43,\"rows\":[[\"client\",\"[\\\"Folder\\\"]\",\"CONTAINS_FILE\",\"AccountClient.java\",\"[\\\"File\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"client\",\"[\\\"Folder\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AccountClient\",\"[\\\"Class\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AccountClient\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"address\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"client\",\"[\\\"Field\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"client\",\"[\\\"Variable\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"IMPORTS\",\"OrderRepository.java\",\"[\\\"File\\\"]\",\"{\\\"local_name\\\":\\\"AccountPort\\\"}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"IMPORTS\",\"Order.java\",\"[\\\"File\\\"]\",\"{\\\"local_name\\\":\\\"AddressSnapshot\\\"}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"USAGE\",\"client\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"client\\\"}\"],[\"AccountClient.java\",\"[\\\"File\\\"]\",\"USAGE\",\"AccountPort\",\"[\\\"Interface\\\"]\",\"{\\\"callee\\\":\\\"AccountPort\\\"}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"DECORATES\",\"Component\",\"[\\\"Decorator\\\"]\",\"{\\\"decorator\\\":\\\"@Component\\\"}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"DEFINES_METHOD\",\"AccountClient\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"DEFINES_METHOD\",\"address\",\"[\\\"Method\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"IMPLEMENTS\",\"AccountPort\",\"[\\\"Interface\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Class\\\"]\",\"USAGE\",\"Component\",\"[\\\"Decorator\\\"]\",\"{}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"CALLS\",\"build\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"builder.baseUrl(baseUrl).build\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":21}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"BasketClient\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.752,\\\"same_file\\\":false}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"ShipmentClient\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.757,\\\"same_file\\\":false}\"],[\"AccountClient\",\"[\\\"Method\\\"]\",\"WRITES\",\"client\",\"[\\\"Variable\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"header\",\"[\\\"Method\\\"]\",\"{\\\"callee\\\":\\\"client.get()\\\\n                    .uri(\\\\\\\"/api/v1/addresses/{addressId}\\\\\\\", addressId).header\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"HttpHeaders.AUTHORIZATION\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"bearerToken\\\"}],\\\"line\\\":32}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"address\",\"[\\\"Method\\\"]\",\"{\\\"callee\\\":\\\"client.get\\\",\\\"confidence\\\":0.50,\\\"strategy\\\":\\\"callee_suffix\\\",\\\"candidates\\\":0,\\\"line\\\":32}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"DownstreamUnavailableException\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"DownstreamUnavailableException\\\",\\\"confidence\\\":0.90,\\\"strategy\\\":\\\"same_module\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"'account-service is unavailable'\\\",\\\"v\\\":\\\"account-service is unavailable\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"e\\\"}],\\\"line\\\":43}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"AddressSnapshot\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressSnapshot\\\",\\\"confidence\\\":0.75,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"response.fullName()\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"response.line1()\\\"},{\\\"i\\\":2,\\\"e\\\":\\\"response.line2()\\\"},{\\\"i\\\":3,\\\"e\\\":\\\"response.city()\\\"},{\\\"i\\\":4,\\\"e\\\":\\\"response.state()\\\"},{\\\"i\\\":5,\\\"e\\\":\\\"response.postalCode()\\\"},{\\\"i\\\":6,\\\"e\\\":\\\"response.country()\\\"}],\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"fullName\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.fullName\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"line1\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.line1\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"line2\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.line2\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":40}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"city\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.city\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"state\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.state\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"postalCode\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.postalCode\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"CALLS\",\"country\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"response.country\\\",\\\"confidence\\\":0.38,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"line\\\":41}\"],[\"address\",\"[\\\"Method\\\"]\",\"DECORATES\",\"Override\",\"[\\\"Decorator\\\"]\",\"{\\\"decorator\\\":\\\"@Override\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"DECORATES\",\"CircuitBreaker\",\"[\\\"Decorator\\\"]\",\"{\\\"decorator\\\":\\\"@CircuitBreaker(name = \\\\\\\"account\\\\\\\")\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"OVERRIDE\",\"address\",\"[\\\"Method\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"currentBasket\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.771,\\\"same_file\\\":false}\"],[\"address\",\"[\\\"Method\\\"]\",\"SEMANTICALLY_RELATED\",\"estimate\",\"[\\\"Method\\\"]\",\"{\\\"score\\\":0.775,\\\"same_file\\\":false}\"],[\"address\",\"[\\\"Method\\\"]\",\"THROWS\",\"DownstreamUnavailableException\",\"[\\\"Class\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressSnapshot\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressSnapshot\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"client\",\"[\\\"Variable\\\"]\",\"{\\\"callee\\\":\\\"client\\\"}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"Override\",\"[\\\"Decorator\\\"]\",\"{}\"],[\"address\",\"[\\\"Method\\\"]\",\"USAGE\",\"CircuitBreaker\",\"[\\\"Decorator\\\"]\",\"{}\"],[\"save\",\"[\\\"Method\\\"]\",\"CALLS\",\"address\",\"[\\\"Method\\\"]\",\"{\\\"callee\\\":\\\"quote.address\\\",\\\"confidence\\\":0.21,\\\"strategy\\\":\\\"suffix_match\\\",\\\"candidates\\\":4,\\\"line\\\":30}\"]],\"total\":43,\"total_relation\":\"eq\",\"truncated\":false}",
+      "output_normalized_sha256": "f0dca597dfa78461ee407f163583ea18d48d2c7eae18cb40ae84aa702823b62b",
+      "duration_ms": 4641.3,
+      "error": null
+    }
+  ],
+  "product_assisted_eligible": true,
+  "index_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "codebase-memory-mcp",
+    "version": "0.11.0",
+    "commit": "8972ea69c6ad94b1ef1d4ffbf0a92d78d2db1798",
+    "binary_sha256": "a67b7ccead5d2ca852051f8619458ab96af41393257b56fb36e523a110265d48",
+    "artifact_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+    "manifest_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+    "query_surface": [
+      "search_graph",
+      "query_graph:references",
+      "trace_path:functions",
+      "query_graph:CROSS_*",
+      "query_graph:TESTS",
+      "get_graph_schema"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.4.0",
+    "config_sha256": "4bcf17b2c68852b9e5bada7a20a10465f09a6310ce3dd8e090fca25cf031224e",
+    "index_built_at": null,
+    "index_duration_seconds": 117,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "tokens_consumed": 131987,
+  "cost_usd": 0.15416760000000002,
+  "model": "openai-codex/gpt-5.6-terra",
+  "model_digest": null,
+  "pi_version": "0.84.4",
+  "prompt_sha256": "81e9a949506392e539d20e350458a204eaa8087afb115420f258299fbbd35801",
+  "contestant_config_sha256": "7117350de8321927529cf526b1afd27bcf1925dbb418c325d727cf75831c0ae4",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "harness_sha256": "b9f840ed6926090bcbfb25cd61c0942b5ba6ccde8700c33b6c1317a1870f9742",
+  "estate_repositories": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "estate_revisions": [
+    {
+      "name": "account-service",
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "dirty": false
+    },
+    {
+      "name": "basket-service",
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false
+    },
+    {
+      "name": "catalog-service",
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false
+    },
+    {
+      "name": "commerce-bff",
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false
+    },
+    {
+      "name": "commerce-platform",
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "dirty": false
+    },
+    {
+      "name": "commerce-web",
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false
+    },
+    {
+      "name": "inventory-service",
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "dirty": false
+    },
+    {
+      "name": "order-service",
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "dirty": false
+    },
+    {
+      "name": "payment-service",
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "dirty": false
+    },
+    {
+      "name": "shipment-service",
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "dirty": false
+    }
+  ]
+}

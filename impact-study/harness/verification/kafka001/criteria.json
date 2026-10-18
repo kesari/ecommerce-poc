@@ -1,0 +1,15 @@
+{
+  "protocol_version": 2,
+  "scenario": "KAFKA-001-topic-rename",
+  "scope": "Actual Order EventEnvelope topic and OutboxPublisher, actual annotated Basket/Shipment listeners and services, real isolated Kafka. Persistence ports controlled; no PostgreSQL or full service E2E claim.",
+  "phases": {
+    "baseline": {"producer_topic": "order.confirmed.v1", "shipment_handler_saves": 1, "basket_handler_checkouts": 1},
+    "changed": {"producer_topic": "order.confirmed.v2", "shipment_handler_saves": 0, "basket_handler_checkouts": 0},
+    "repaired": {"producer_topic": "order.confirmed.v2", "shipment_handler_saves": 1, "basket_handler_checkouts": 1},
+    "faulted-repair": {"producer_topic": "order.confirmed.v2", "shipment_handler_saves": 1, "basket_handler_checkouts": 0}
+  },
+  "expected_test_exit": {"baseline": 0, "changed": 0, "repaired": 0, "faulted-repair": 1},
+  "repair": "Migrate Basket and Shipment main topic subscriptions to v2; retry/DLQ migration not covered by this happy-path check",
+  "fault": "Leave Basket main subscription at v1 while Shipment uses v2; unchanged BASKET_CONSUMER_DELIVERY assertion must reject it",
+  "bounded_negative_window_seconds": 2
+}

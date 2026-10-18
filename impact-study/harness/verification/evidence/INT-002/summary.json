@@ -1,0 +1,12 @@
+{
+  "protocol_version": 2,
+  "scenario": "INT-002-cache-namespace",
+  "status": "passed",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "criteria_sha256": "a9641ec955956d8573540f0b7e257ff9a1e84a12b8beb32f2aa222bfe3b3ec38",
+  "test_sha256": "5c689c5c0fbb0b847179e2addff1b216b5e861af119bc0c4cb2b2c536dd2282a",
+  "manifest_sha256": "79581351534b03b5132fff825babb6bf2099194c7cf01e826e5c27520b076fe9",
+  "scope": "Actual ShipmentService.estimate and ValkeyEstimateCache against disposable real Valkey; no HTTP/DB/full-estate claim",
+  "conclusion": "Cold cache recomputes same reviewed estimate; subsequent lookup hits new namespace. No repair required. Fault returning null after miss rejected at ESTIMATE_COMPATIBILITY.",
+  "valkey_image_id": "sha256:f0ba225266310efba5fb33383e21c64fbd07907304224786c780606e7ebd7327"
+}

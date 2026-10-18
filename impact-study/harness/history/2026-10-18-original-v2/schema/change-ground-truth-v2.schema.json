@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "change-ground-truth-v2",
+  "type": "object",
+  "required": [
+    "protocol_version",
+    "change_id",
+    "status",
+    "category",
+    "query",
+    "snapshot_sha256",
+    "origin_repo",
+    "proposed_change",
+    "repositories",
+    "symbols",
+    "edges",
+    "repair_alternatives"
+  ],
+  "properties": {
+    "protocol_version": {
+      "const": 2,
+      "type": "integer"
+    },
+    "change_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "verified"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "query": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "origin_repo": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "proposed_change": {
+      "type": "object",
+      "required": [
+        "repo",
+        "diff"
+      ],
+      "properties": {
+        "repo": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "diff": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      },
+      "additionalProperties": false
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "repo",
+          "runtime_status"
+        ],
+        "properties": {
+          "repo": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "runtime_status": {
+            "type": "string",
+            "enum": [
+              "broken",
+              "unchanged",
+              "unresolved"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "repo",
+          "fqn"
+        ],
+        "properties": {
+          "repo": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "fqn": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "provider",
+          "consumer",
+          "type",
+          "identifier",
+          "field"
+        ],
+        "properties": {
+          "provider": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "consumer": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "rest",
+              "kafka",
+              "grpc",
+              "db",
+              "local"
+            ]
+          },
+          "identifier": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "field": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "repair_alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "actions",
+          "obligations"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "repo",
+                "target",
+                "operation",
+                "before",
+                "after"
+              ],
+              "properties": {
+                "repo": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "target": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "operation": {
+                  "type": "string",
+                  "enum": [
+                    "read_json_field",
+                    "subscribe_topic",
+                    "publish_topic",
+                    "retain_json_alias"
+                  ]
+                },
+                "before": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "after": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "critical": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "obligations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "repo",
+                "obligation"
+              ],
+              "properties": {
+                "repo": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "obligation": {
+                  "type": "string",
+                  "enum": [
+                    "production_edit",
+                    "validation_only",
+                    "unaffected",
+                    "unresolved"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

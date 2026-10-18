@@ -1,0 +1,4 @@
+Host-local timezone: Asia/Kolkata (UTC+05:30). Restricted sleep/wake events for the smoke interval.
+2026-10-18 02:25:21 +0530 Sleep               	Entering Sleep state due to 'Clamshell Sleep':TCPKeepAlive=active Using Batt (Charge:38%) 593 secs  
+2026-10-18 02:35:14 +0530 DarkWake            	DarkWake from Deep Idle [CDNP] : due to NUB.SPMI0Sw3IRQ nub-spmi0.0x02 rtc/Maintenance Using BATT (Charge:38%) 9 secs    
+2026-10-18 02:35:23 +0530 Sleep               	Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=active Using Batt (Charge:38%) 307 secs  

@@ -1,0 +1,25 @@
+{
+  "repo": "order-service",
+  "record": "com.poc.order.infrastructure.client.AccountClient.AddressResponse",
+  "component": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+  "component_type": "java.lang.String",
+  "method": "com.poc.order.infrastructure.client.AccountClient.address",
+  "method_parameters": [
+    "java.lang.String",
+    "java.util.UUID"
+  ],
+  "route": "GET /api/v1/addresses/{addressId}",
+  "source_sha256": "b8f3f84e93ef46d5192d61cee2d04f7bcfddb1cb817b7fa1a75067141346f727",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "record_body_sha256": "fee079748a60085a31e411508fbfb4af52f200801b26ff33b48afd991457eead",
+  "phase_record_body_sha256": {
+    "baseline": "fee079748a60085a31e411508fbfb4af52f200801b26ff33b48afd991457eead",
+    "changed": "fee079748a60085a31e411508fbfb4af52f200801b26ff33b48afd991457eead",
+    "repaired": "fee079748a60085a31e411508fbfb4af52f200801b26ff33b48afd991457eead",
+    "faulted-repair": "fee079748a60085a31e411508fbfb4af52f200801b26ff33b48afd991457eead"
+  },
+  "compiled_accessor_verified": true,
+  "compiled_method_signature_verified": true,
+  "method_mapping_criteria_passed": true,
+  "wrong_field_fault_detected": true
+}

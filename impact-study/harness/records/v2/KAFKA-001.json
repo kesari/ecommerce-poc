@@ -1,0 +1,94 @@
+{
+  "protocol_version": 2,
+  "change_id": "KAFKA-001",
+  "status": "verified",
+  "category": "kafka_contract",
+  "query": "The supplied diff changes the topic produced for order.confirmed events while retaining the existing event payload. Assess impact at the actual publisher and existing consumer main-listener application boundaries, and identify production changes needed to preserve normal main-topic handling while retaining the requested new producer topic. The independent check uses real Kafka, a bounded two-second non-delivery window and separate consumer liveness controls. Persistence ports are controlled in memory; durable database effects, transaction behavior, retry/DLQ migration, rolling deployments and the complete distributed journey remain unresolved.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "origin_repo": "order-service",
+  "proposed_change": {
+    "repo": "order-service",
+    "diff": "--- a/src/main/java/com/poc/order/application/EventEnvelope.java\n+++ b/src/main/java/com/poc/order/application/EventEnvelope.java\n@@ -21,6 +21,6 @@\n     }\n \n     public String topic() {\n-        return eventType + \".v1\";\n+        return eventType.equals(\"order.confirmed\") ? \"order.confirmed.v2\" : eventType + \".v1\";\n     }\n }\n"
+  },
+  "repositories": [
+    {
+      "repo": "order-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "basket-service",
+      "runtime_status": "broken"
+    },
+    {
+      "repo": "shipment-service",
+      "runtime_status": "broken"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "order-service",
+      "fqn": "com.poc.order.application.EventEnvelope.topic"
+    },
+    {
+      "repo": "basket-service",
+      "fqn": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed"
+    },
+    {
+      "repo": "shipment-service",
+      "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed"
+    }
+  ],
+  "edges": [
+    {
+      "provider": "order-service",
+      "consumer": "basket-service",
+      "type": "kafka",
+      "identifier": "order.confirmed.v1",
+      "field": ""
+    },
+    {
+      "provider": "order-service",
+      "consumer": "shipment-service",
+      "type": "kafka",
+      "identifier": "order.confirmed.v1",
+      "field": ""
+    }
+  ],
+  "repair_alternatives": [
+    {
+      "name": "migrate_main_consumer_subscriptions",
+      "actions": [
+        {
+          "repo": "basket-service",
+          "target": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed",
+          "operation": "subscribe_topic",
+          "before": "order.confirmed.v1",
+          "after": "order.confirmed.v2",
+          "critical": true
+        },
+        {
+          "repo": "shipment-service",
+          "target": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed",
+          "operation": "subscribe_topic",
+          "before": "order.confirmed.v1",
+          "after": "order.confirmed.v2",
+          "critical": true
+        }
+      ],
+      "obligations": [
+        {
+          "repo": "order-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "basket-service",
+          "obligation": "production_edit"
+        },
+        {
+          "repo": "shipment-service",
+          "obligation": "production_edit"
+        }
+      ]
+    }
+  ]
+}

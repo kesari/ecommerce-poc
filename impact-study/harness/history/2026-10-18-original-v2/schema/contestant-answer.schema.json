@@ -1,0 +1,612 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Contestant answer",
+  "type": "object",
+  "required": [
+    "change_id",
+    "contestant",
+    "findings"
+  ],
+  "properties": {
+    "change_id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[0-9]+$"
+    },
+    "contestant": {
+      "type": "string",
+      "enum": [
+        "agent-only",
+        "hybrid-retrieval",
+        "scip",
+        "gortex",
+        "graphify",
+        "combined",
+        "synthetic-symbol-index",
+        "synthetic-contract-graph",
+        "synthetic-config-graph",
+        "synthetic-combined",
+        "scip-first",
+        "gortex-first",
+        "graphify-first",
+        "repowise-first",
+        "codebase-memory-first"
+      ],
+      "description": "scip/gortex/graphify name historical real-product natural-adoption runs; *-first names product-first runs; synthetic-* names experimental controls. Older answers keep their original labels."
+    },
+    "runner": {
+      "type": "string"
+    },
+    "run_index": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "run_started_at": {
+      "type": "string",
+      "description": "ISO-8601 timestamp of when the model run started. Stamped by the runner; never overwritten."
+    },
+    "elapsed_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "tokens_consumed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cost_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "model": {
+      "type": "string"
+    },
+    "model_digest": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pi_version": {
+      "type": "string"
+    },
+    "prompt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "contestant_config_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "estate_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "harness_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Content hash of the runner, prompt, schemas, scorer, and contestant configuration."
+    },
+    "tool_calls": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0,
+      "description": "Guarded read-only tool calls made during the run. Stamped by the runner for the thin-run guard."
+    },
+    "tool_calls_by_name": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Runner-stamped per-tool call counts with success/failure split. Distinguishes product-never-called from called-but-failed from called-and-answered."
+    },
+    "product_tool_calls": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "attempted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "succeeded": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "attempted",
+        "succeeded",
+        "failed"
+      ],
+      "description": "Runner-stamped summary over product-tool receipts. Null when the contestant has no product."
+    },
+    "product_tool_receipts": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "tool",
+          "operation",
+          "success"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "tool": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "requested_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "What the model asked for, before any adapter translation."
+          },
+          "executed_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "What the product was actually run with. Differs from requested_query where an adapter translates dialects, such as a Java FQN narrowed to the declaring type scip-search matches on."
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "output": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The bounded response text the model saw, stored verbatim so a product_direct claim can be checked against the output that backs it."
+          },
+          "output_sha256": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "output_full_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Response size before bounding, so truncation loss is visible."
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "output_normalized": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Bounded copy of the response with unstable ordering canonicalized."
+          },
+          "output_normalized_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Hash over the complete canonicalized response, not the bounded copy. Judges reproducibility on content, so that a product reordering equal nodes between identical calls does not read as a semantic change."
+          },
+          "duration_ms": {
+            "type": "number"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "description": "Runner-generated receipt per product invocation. A product_direct finding must reference one of these IDs."
+    },
+    "product_playbook": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object",
+        "properties": {
+          "intention": {
+            "type": "string",
+            "enum": [
+              "locate",
+              "references",
+              "expand",
+              "tests"
+            ]
+          },
+          "tool": {
+            "type": "string"
+          },
+          "operation": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ok": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
+      "description": "Track C only: the frozen query playbook the harness ran against the product before the model saw anything. Null on a natural-adoption run, which must never be compared with a product-first one."
+    },
+    "product_assisted_eligible": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "For natural-adoption runs, true after one successful product call. For product-first runs, true only when every frozen playbook step reached a real product tool, every attempt has a receipt, and at least one call succeeded. False runs remain useful for adoption or failure analysis but are excluded from product-assisted comparisons. Null for non-product contestants."
+    },
+    "index_sha256": {
+      "type": "string",
+      "description": "SHA-256 over the precomputed index payloads served to this run, or 'none' for index-free contestants."
+    },
+    "product_provenance": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "const": "real_product"
+        },
+        "product": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "commit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "binary_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "artifact_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "manifest_sha256": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "query_surface": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "freshness": {
+          "type": "string",
+          "const": "verified"
+        },
+        "adapter_version": {
+          "type": "string"
+        },
+        "config_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "index_built_at": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "index_duration_seconds": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "indexed_estate_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^([a-f0-9]{64})?$"
+        }
+      },
+      "required": [
+        "mode",
+        "product",
+        "version",
+        "commit",
+        "binary_sha256",
+        "artifact_sha256",
+        "manifest_sha256",
+        "query_surface",
+        "freshness",
+        "adapter_version",
+        "config_sha256",
+        "index_built_at",
+        "index_duration_seconds",
+        "indexed_estate_sha256"
+      ],
+      "additionalProperties": false,
+      "description": "Runner-stamped identity and freshness receipt for a real open-source product integration."
+    },
+    "estate_repositories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "estate_revisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "commit",
+          "dirty"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "commit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dirty": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "freshness_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Manual rubric score 0-1 from Phase E. Omit or null to exclude freshness from the composite (weights renormalize)."
+    },
+    "operational_cost_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Manual rubric score 0-1 where 1 is cheapest to operate. Null excludes it from the composite."
+    },
+    "findings": {
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "evidence_tier": {
+                "type": "string",
+                "enum": [
+                  "compiler",
+                  "extracted",
+                  "contract_matched",
+                  "inferred",
+                  "hypothesis"
+                ],
+                "description": "Provenance: compiler=VERY HIGH, extracted/contract_matched=HIGH, inferred=MEDIUM, hypothesis=INVESTIGATE."
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
+              }
+            }
+          }
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "fqn"
+            ],
+            "properties": {
+              "fqn": {
+                "type": "string"
+              },
+              "repo": {
+                "type": "string"
+              },
+              "evidence_tier": {
+                "type": "string",
+                "enum": [
+                  "compiler",
+                  "extracted",
+                  "contract_matched",
+                  "inferred",
+                  "hypothesis"
+                ],
+                "description": "Provenance: compiler=VERY HIGH, extracted/contract_matched=HIGH, inferred=MEDIUM, hypothesis=INVESTIGATE."
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
+              }
+            }
+          }
+        },
+        "contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "identifier"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "rest",
+                  "kafka",
+                  "grpc",
+                  "openapi",
+                  "db"
+                ]
+              },
+              "identifier": {
+                "type": "string"
+              },
+              "consumer_repos": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "evidence_tier": {
+                "type": "string",
+                "enum": [
+                  "compiler",
+                  "extracted",
+                  "contract_matched",
+                  "inferred",
+                  "hypothesis"
+                ],
+                "description": "Provenance: compiler=VERY HIGH, extracted/contract_matched=HIGH, inferred=MEDIUM, hypothesis=INVESTIGATE."
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
+              }
+            }
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "repo",
+              "suite"
+            ],
+            "properties": {
+              "repo": {
+                "type": "string"
+              },
+              "suite": {
+                "type": "string"
+              },
+              "evidence_tier": {
+                "type": "string",
+                "enum": [
+                  "compiler",
+                  "extracted",
+                  "contract_matched",
+                  "inferred",
+                  "hypothesis"
+                ],
+                "description": "Provenance: compiler=VERY HIGH, extracted/contract_matched=HIGH, inferred=MEDIUM, hypothesis=INVESTIGATE."
+              },
+              "evidence": {
+                "type": "string"
+              },
+              "attribution": {
+                "type": "string",
+                "enum": [
+                  "product_direct",
+                  "agent_inferred",
+                  "file_search"
+                ]
+              },
+              "receipt_id": {
+                "type": "string",
+                "description": "ID of the runner-generated product invocation receipt backing a product_direct claim."
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

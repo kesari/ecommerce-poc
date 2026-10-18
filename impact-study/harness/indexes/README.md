@@ -62,6 +62,13 @@ artifacts and metadata via `index_admin.py manifest`.
 The runner exposes only these allowlisted read operations. It does not give the
 agent a shell or arbitrary product arguments.
 
+Codebase Memory adapter 1.4.1 calls `trace_path` with `--depth 5`. For an
+unambiguous trace, use the indexed function `qualified_name` returned by native
+search, which can include project and source-path prefixes. The
+[trace regression smoke](smokes/2026-10-18-trace-fix/codebase-memory-trace.json)
+exercises the pinned 0.11.0 binary through the real adapter. A successful command
+or a nonempty graph does not prove its relationships correct.
+
 ## Promotion gate
 
 New contestants start disabled. Enable one only after its install and build

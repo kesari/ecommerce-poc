@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { cp, mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -12,9 +13,9 @@ import {
 	SettingsManager,
 } from "@earendil-works/pi-coding-agent";
 import { extractAnswer } from "./answer.ts";
-import { countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate } from "./estate.ts";
+import { assertBlindEstate, captureEstateSnapshot, countToolCalls, createRestrictedReadOnlyTools, DEFAULT_ESTATE, isolate } from "./estate.ts";
 import { buildConceptIndex, buildContractGraph, buildSymbolIndex, indexPromptSection, parseJavaSymbols } from "./indexes.ts";
-import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, productEligible, productSummary, withTimeout } from "./run.ts";
+import { buildPrompt, FIXED_THINKING, FIXED_TOOLS, parseArgs, productEligible, productSummary, verifyPinnedSnapshot, assertVerifierOutsideEstate, withTimeout, runOnce } from "./run.ts";
 import { candidateSection, playbookFor } from "./playbook.ts";
 import { createRealProduct } from "./products.ts";
 import { verifyHeads, canonicalizeOutput, codebaseMemoryRelationQuery, repowiseJson, scipQueryName } from "./products.ts";
@@ -25,33 +26,60 @@ test("parseArgs accepts repeated records and positive numeric values", () => {
 	assert.deepEqual(args.record, ["REST-001", "REST-002"]);
 	assert.equal(args.runs, 2);
 	assert.equal(args.timeout, 30);
-	assert.equal(args.minToolCalls, 10);
+	assert.equal("minToolCalls" in args, false);
+	assert.equal("minTokens" in args, false);
 });
 
-test("parseArgs accepts --min-tool-calls and --contestant", () => {
-	const args = parseArgs(["--record", "REST-001", "--contestant", "pi-scip", "--min-tool-calls", "4"]);
+test("parseArgs accepts --contestant without imposing a usage floor", () => {
+	const args = parseArgs(["--record", "REST-001", "--contestant", "pi-scip"]);
 	assert.deepEqual(args.contestant, ["pi-scip"]);
-	assert.equal(args.minToolCalls, 4);
-	assert.equal(args.minTokens, 8000);
-});
-
-test("parseArgs accepts --min-tokens", () => {
-	const args = parseArgs(["--record", "REST-001", "--min-tokens", "100"]);
-	assert.equal(args.minTokens, 100);
 });
 
 for (const argv of [
 	["--record", "REST-001", "--runs", "0"],
 	["--record", "REST-001", "--runs", "nope"],
 	["--record", "REST-001", "--timeout", "-1"],
-	["--record", "REST-001", "--min-tool-calls", "0"],
-	["--record", "REST-001", "--min-tokens", "0"],
+	["--record", "REST-001", "--min-tool-calls", "10"],
+	["--record", "REST-001", "--min-tokens", "8000"],
 	["--unknown", "value", "--record", "REST-001"],
 ]) {
 	test(`parseArgs rejects ${argv.join(" ")}`, () => {
 		assert.throws(() => parseArgs(argv));
 	});
 }
+
+test("v2 requires explicit oracle trust options while v1 keeps its default", () => {
+	assert.equal(parseArgs(["--record", "REST-001"]).protocol, 1);
+	const args = parseArgs(["--record", "REST-001", "--protocol", "2", "--oracle-bundle", "oracle.json",
+		"--trusted-oracle-sha256", "a".repeat(64), "--artifact-root", "artifacts", "--timeout", "30", "--max-tokens", "500000", "--max-cost-usd", "1"]);
+	assert.equal(args.protocol, 2);
+	assert.equal(args.oracleBundle, "oracle.json");
+	assert.equal(args.trustedOracleSha256, "a".repeat(64));
+	assert.equal(args.artifactRoot, "artifacts");
+});
+
+test("v2 run groups isolate new measurements and cannot escape their parent", () => {
+	const required = ["--record", "REST-001", "--protocol", "2", "--oracle-bundle", "oracle.json",
+		"--trusted-oracle-sha256", "a".repeat(64), "--artifact-root", "artifacts", "--timeout", "300", "--max-tokens", "1000000", "--max-cost-usd", "5"];
+	assert.equal(parseArgs([...required, "--run-group", "v2-1-repair-fix"]).runGroup, "v2-1-repair-fix");
+	for (const group of ["..", "../escape", "/tmp/escape", "nested/path", "x".repeat(65)]) {
+		assert.throws(() => parseArgs([...required, "--run-group", group]), /directory-safe label/);
+	}
+	assert.throws(() => parseArgs(["--record", "REST-001", "--run-group", "group"]), /require --protocol 2/);
+});
+
+for (const argv of [
+	["--record", "REST-001", "--protocol", "2"],
+	["--record", "REST-001", "--protocol", "3"],
+	["--record", "REST-001", "--oracle-bundle", "oracle.json"],
+	["--record", "../REST-001"],
+	["--record", "REST-001", "--protocol", "2", "--oracle-bundle", "oracle.json", "--trusted-oracle-sha256", "bad", "--artifact-root", "artifacts"],
+	["--record", "REST-001", "--max-tokens", "0"],
+	["--record", "REST-001", "--max-cost-usd", "NaN"],
+	["--record", "REST-001", "--max-cost-usd", "Infinity"],
+	["--record", "REST-001", "--max-cost-usd", "-1"],
+]) test(`v2 preflight argument rejection: ${argv.join(" ")}`, () => assert.throws(() => parseArgs(argv)));
+
 
 test("buildPrompt replaces every record placeholder", () => {
 	const result = buildPrompt(
@@ -241,6 +269,35 @@ test("Codebase Memory relationship queries use its supported typed-edge syntax",
 	assert.throws(() => codebaseMemoryRelationQuery("AddressResponse", "CROSS_*"));
 });
 
+test("Codebase Memory trace adapter traverses the pinned graph and records its receipt", async () => {
+	const pins = JSON.parse(await readFile(join(import.meta.dirname, "..", "indexes", "pins.json"), "utf8"));
+	const snapshot = {
+		sha256: "0".repeat(64),
+		repositories: Object.keys(pins.repositories),
+		revisions: Object.entries(pins.repositories).map(([name, value]: [string, any]) => ({
+			name, commit: value.commit, dirty: value.dirty,
+		})),
+	};
+	const integration = await createRealProduct({ kind: "codebase-memory" }, "unused", snapshot);
+	const parameters = {
+		operation: "trace",
+		query: "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+		repo: "order-service",
+	};
+	await integration.tools[0].execute("test", parameters);
+	assert.equal(integration.receipts.length, 1);
+	const receipt = integration.receipts[0];
+	assert.equal(receipt.success, true, receipt.error ?? "trace failed");
+	assert.equal(receipt.tool, "codebase_memory_query");
+	assert.equal(receipt.operation, "trace");
+	assert.deepEqual(receipt.parameters, parameters);
+	const trace = JSON.parse(receipt.output ?? "");
+	assert.equal(trace.function, parameters.query);
+	assert.equal(trace.direction, "both");
+	assert.ok(trace.callers_total > 0);
+	assert.ok(trace.callees_total > 0);
+});
+
 test("RepoWise JSON extraction ignores command banners and trailing notices", () => {
 	assert.deepEqual(repowiseJson('banner\n{"value":"a}b","nested":{"ok":true}}\nnotice'), {
 		value: "a}b",
@@ -260,7 +317,18 @@ test("productEligible is null off-product and success-gated on-product", () => {
 	assert.equal(productEligible(first, [{ success: true }], undefined), false);
 	assert.equal(productEligible(first, [{ success: true }], [{ error: "no such tool: product" }]), false);
 	assert.equal(productEligible(first, [{ success: false }], [{ ok: false, error: "product failed" }]), false);
-	assert.equal(productEligible(first, [{ success: false }, { success: true }], [{ ok: false }, { ok: true }]), true);
+	const receipts = [
+		{ id: "r1", tool: "scip_search", parameters: { operation: "symbols", name: "Address" }, success: false },
+		{ id: "r2", tool: "scip_search", parameters: { operation: "references", name: "Address" }, success: true },
+	];
+	const playbook = receipts.map((receipt) => ({
+		step: { tool: receipt.tool, params: receipt.parameters }, ok: receipt.success, receipt_id: receipt.id,
+	}));
+	assert.equal(productEligible(first, receipts, playbook), true);
+	assert.equal(productEligible(first, receipts, [{ ...playbook[0], receipt_id: "r2" }, playbook[1]]), false);
+	assert.equal(productEligible(first, receipts, [{ ...playbook[0], receipt_id: undefined }, playbook[1]]), false);
+	assert.equal(productEligible(first, receipts, [playbook[1], playbook[1]]), false);
+	assert.equal(productEligible(first, receipts, [{ ...playbook[0], step: { tool: "scip_search", params: { name: "Other" } } }, playbook[1]]), false);
 });
 
 test("withTimeout rejects at the deadline and invokes cancellation", async () => {	let cancelled = false;
@@ -684,4 +752,114 @@ test("gortex freshness: daemon reports pinned HEADs as fresh", async (context) =
 	for (const [name, value] of Object.entries(pins.repositories) as [string, any][]) {
 		assert.match(status, new RegExp(`${name}.*${value.commit.slice(0, 12)}`), `${name} not indexed at its pin`);
 	}
+});
+
+
+test("neutral prompt does not teach the REST-001 answer", async () => {
+	const prompt = await readFile(new URL("./prompt-template.md", import.meta.url), "utf8");
+	assert.doesNotMatch(prompt, /arrive as null|unchanged event envelope|BFF controller|untyped JSON node/);
+	assert.match(prompt, /dependency alone does not establish/);
+});
+
+for (const protectedPath of [
+	"harness/verification/expected.json", "harness/records/v2/INT-002.json",
+	"oracles/expected.json", ".benchmark-verifier/repair.patch", "KAFKA-001.json",
+]) {
+	test(`blindness preflight rejects ${protectedPath} before indexing or tool exposure`, async () => {
+		const root = await mkdtemp(join(tmpdir(), "harness-protected-"));
+		try {
+			const file = join(root, "account-service", protectedPath);
+			await mkdir(join(file, ".."), { recursive: true });
+			await writeFile(file, "hidden expectation");
+			await assert.rejects(assertBlindEstate(root, ["account-service"]), /ground-truth leak/);
+			await assert.rejects(captureEstateSnapshot(root, ["account-service"]), /ground-truth leak/);
+		} finally { await rm(root, { recursive: true, force: true }); }
+	});
+}
+
+test("blindness preflight preserves ordinary service test sources", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-public-tests-"));
+	try {
+		const directory = join(root, "account-service", "src/test/java");
+		await mkdir(directory, { recursive: true });
+		await writeFile(join(directory, "AddressOracleTest.java"), "public class AddressOracleTest {}");
+		await assertBlindEstate(root, ["account-service"]);
+	} finally { await rm(root, { recursive: true, force: true }); }
+});
+
+
+test("v2 snapshot proves exact clean pinned commit and tree independently of content fingerprint", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-v2-snapshot-"));
+	try {
+		const repo = join(root, "account-service");
+		await mkdir(repo);
+		const git = (...args: string[]) => {
+			const result = spawnSync("git", ["-C", repo, ...args], { encoding: "utf8" });
+			assert.equal(result.status, 0, result.stderr);
+			return result.stdout.trim();
+		};
+		git("init", "-q");
+		await writeFile(join(repo, "source.txt"), "public source");
+		git("add", "source.txt");
+		git("-c", "user.name=Harness Test", "-c", "user.email=harness@example.invalid", "commit", "-qm", "baseline");
+		const commit = git("rev-parse", "HEAD");
+		const tree = git("rev-parse", "HEAD^{tree}");
+		const snapshot = await captureEstateSnapshot(root, ["account-service"]);
+		const pins = { repositories: { "account-service": { commit, tree } } };
+		const canonical = `{"account-service":{"commit":"${commit}","tree":"${tree}"}}`;
+		const digest = createHash("sha256").update(canonical).digest("hex");
+		assert.equal(verifyPinnedSnapshot(root, snapshot, pins), digest);
+		assert.notEqual(snapshot.sha256, digest);
+		assert.throws(() => verifyPinnedSnapshot(root, snapshot, { repositories: {} }), /repository set/);
+		assert.throws(() => verifyPinnedSnapshot(root, snapshot, { repositories: { "account-service": { commit, tree: "0".repeat(40) } } }), /snapshot drift/);
+		await writeFile(join(repo, "source.txt"), "changed public source");
+		assert.throws(() => verifyPinnedSnapshot(root, snapshot, pins), /snapshot drift/);
+		const dirty = await captureEstateSnapshot(root, ["account-service"]);
+		assert.throws(() => verifyPinnedSnapshot(root, dirty, pins), /snapshot drift/);
+	} finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("v2 oracle files and artifact directories must remain outside searchable repositories", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-v2-hidden-"));
+	try {
+		await mkdir(join(root, "account-service"));
+		const hidden = join(root, "account-service", "unexpected.json");
+		const external = join(root, "trusted.json");
+		await writeFile(hidden, "{}");
+		await writeFile(external, "{}");
+		await assert.rejects(assertVerifierOutsideEstate(root, [hidden], ["account-service"]), /outside the searchable estate/);
+		await assert.rejects(assertVerifierOutsideEstate(root, [join(root, "account-service")], ["account-service"]), /outside the searchable estate/);
+		await assertVerifierOutsideEstate(root, [external], ["account-service"]);
+	} finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test("failed runner attempt retains independent raw, usage, receipt and exposure evidence", async () => {
+	const root = await mkdtemp(join(tmpdir(), "harness-failed-attempt-"));
+	try {
+		const budgetPolicy = { max_tokens: 1_000_000, max_cost_usd: 5, timeout_seconds: 30,
+			cost_enforcement: "catalog_context_reservation", token_enforcement: "context_window_reservation",
+			retries: false, compaction: false } as const;
+		let failure: any;
+		try {
+			await runOnce({ protocol_version: 2, change_id: "TEST-001", snapshot_sha256: "1".repeat(64), query: "No provider calls",
+				proposed_change: { repo: "account-service", diff: "-a\n+b" } }, "test-runner",
+				{ label: "agent-only", provider: "nonexistent-test-provider", model: "none" }, root, 1,
+				{ outputDir: root, budgetPolicy, estate: { sha256: "a".repeat(64), repositories: [], revisions: [] }, piVersion: "test", harnessSha256: "b".repeat(64) });
+		} catch (error) { failure = error; }
+		assert.equal(failure.status, "setup_failed");
+		const pointer = failure.evidence.attempt_evidence;
+		const raw = await readFile(pointer.path, "utf8");
+		assert.equal(createHash("sha256").update(raw).digest("hex"), pointer.sha256);
+		const evidence = JSON.parse(raw);
+		assert.equal(evidence.raw, "");
+		assert.deepEqual(evidence.productReceipts, []);
+		assert.deepEqual(evidence.usage, failure.evidence.usage);
+		assert.deepEqual(evidence.exposure, failure.evidence.exposure);
+		assert.equal(evidence.exposure.unknown_usage, false);
+		assert.equal(evidence.exposure.exposure_upper_bound_usd, 0);
+		const envelope = JSON.parse(await readFile(evidence.run_receipt_bundle.path, "utf8"));
+		assert.deepEqual(envelope.usage, evidence.usage);
+		assert.deepEqual(envelope.budget_policy, budgetPolicy);
+		assert.deepEqual(envelope.receipts, []);
+	} finally { await rm(root, { recursive: true, force: true }); }
 });

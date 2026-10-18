@@ -1,0 +1,474 @@
+{
+  "protocol_version": 2,
+  "change_id": "KAFKA-001",
+  "record_sha256": "9bd0313dc80dd46f0b6a1feef89a0d3cb9833dab61cbedc5190ebf71f9a16163",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "artifacts": [
+    {
+      "path": "Kafka001BoundaryTest.java",
+      "sha256": "a78b3e84311432e79973717f4e218ec9ce993898663e3e4cab23510da3193649"
+    },
+    {
+      "path": "baseline-junit.xml",
+      "sha256": "1d8e39be8baa586abb02f4c6b06cc8e0b09a310295ee3693997eb26249acecdc"
+    },
+    {
+      "path": "baseline-observation.json",
+      "sha256": "d564216d1f26e6f5cbe716906090da39e7cec54183c860533a2140a6b1cc7343"
+    },
+    {
+      "path": "baseline-test.log",
+      "sha256": "81f0e2c6ffda14e75d6bc77aae6fea309cc5c1078fc970eab813568e4ba60340"
+    },
+    {
+      "path": "baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "changed-junit.xml",
+      "sha256": "b0a07aa79adac37daf2cb8f1a8d059eea47e4e73e81a092143ea7d4a3f0e3e00"
+    },
+    {
+      "path": "changed-observation.json",
+      "sha256": "9df924de7a7aa0ebebb9c78446b743284fadde6e485f13069fbe2ec531a4ae04"
+    },
+    {
+      "path": "changed-test.log",
+      "sha256": "a934d75a1ca78c172b3b81d522af63434825373850dee656edddd42e473141a5"
+    },
+    {
+      "path": "changed.patch",
+      "sha256": "0287f00d25123c4af5056f0c0c9a7899a5f53814325446099d5339f4694d1ff1"
+    },
+    {
+      "path": "criteria.json",
+      "sha256": "09f8d989c7f92bd9f37397cea66501890e67a691ba0334801563efc4ee589a36"
+    },
+    {
+      "path": "faulted-repair-junit.xml",
+      "sha256": "59e0a0027d404b24cd81e6f48780687a772d00823fb7ba63227f658c685085f1"
+    },
+    {
+      "path": "faulted-repair-observation.json",
+      "sha256": "1800e1d758ffc7bfce1f725cbc1f932851acf6fdf22f367c170bded2194ad763"
+    },
+    {
+      "path": "faulted-repair-test.log",
+      "sha256": "3179801128bdad34201278a5478794523934a700a6efd47e090849e199cb2375"
+    },
+    {
+      "path": "faulted-repair.patch",
+      "sha256": "2030f1540100d3615667fbd2dedcebe94b7c7c4646eca0bb7608ae96221b5642"
+    },
+    {
+      "path": "java-version.log",
+      "sha256": "df99e73ba1f223def82468e35abb72b272fb5201d9ca3f00f0a3a18c6b58ce2b"
+    },
+    {
+      "path": "kafka-image.log",
+      "sha256": "f975654dc586936aabc6db5dfcc45103c3656ddbfb346dfe437c1c665d1c1c28"
+    },
+    {
+      "path": "manifest.json",
+      "sha256": "465980d020d1137dd461b95170c8302af9e76ae80e983cc64d82134f51cb6a01"
+    },
+    {
+      "path": "maven-version.log",
+      "sha256": "5fe1d6184c6ddd05be3d7e4e3e2cc4fcb5d0d1b9a73ea97b0c3aabfcb5f5e246"
+    },
+    {
+      "path": "repaired-junit.xml",
+      "sha256": "925b2379d27b1a425855f06ea7695a35efb84fbd3ef25e511e7e907c6ad132e2"
+    },
+    {
+      "path": "repaired-observation.json",
+      "sha256": "0aeb5a9c1747f04ac54c0653d23a83742515aa693e6f0d5ecf09c0c969d4e705"
+    },
+    {
+      "path": "repaired-test.log",
+      "sha256": "eb16c1dd1b8fc73e58653cff4584dcc9285c5f7a0ef58b77f39e56ad69097510"
+    },
+    {
+      "path": "repaired.patch",
+      "sha256": "7db8986a17035bc64fca2ccab1a961ad45d0312bee7a6c8f03e309121437df59"
+    }
+  ],
+  "attestations": [
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "order-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "basket-service",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "shipment-service",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.application.EventEnvelope.topic"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "basket-service",
+        "fqn": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "shipment-service",
+        "fqn": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "order-service",
+        "consumer": "basket-service",
+        "type": "kafka",
+        "identifier": "order.confirmed.v1",
+        "field": ""
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "order-service",
+        "consumer": "shipment-service",
+        "type": "kafka",
+        "identifier": "order.confirmed.v1",
+        "field": ""
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "basket-service",
+        "target": "com.poc.basket.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed",
+        "operation": "subscribe_topic",
+        "before": "order.confirmed.v1",
+        "after": "order.confirmed.v2"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "shipment-service",
+        "target": "com.poc.shipment.infrastructure.messaging.OrderConfirmedListener.onOrderConfirmed",
+        "operation": "subscribe_topic",
+        "before": "order.confirmed.v1",
+        "after": "order.confirmed.v2"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "order-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "basket-service",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "shipment-service",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "manifest.json",
+        "criteria.json",
+        "Kafka001BoundaryTest.java",
+        "baseline-observation.json",
+        "baseline-junit.xml",
+        "baseline-test.log",
+        "baseline.patch",
+        "changed-observation.json",
+        "changed-junit.xml",
+        "changed-test.log",
+        "changed.patch",
+        "repaired-observation.json",
+        "repaired-junit.xml",
+        "repaired-test.log",
+        "repaired.patch",
+        "faulted-repair-observation.json",
+        "faulted-repair-junit.xml",
+        "faulted-repair-test.log",
+        "faulted-repair.patch"
+      ]
+    }
+  ]
+}

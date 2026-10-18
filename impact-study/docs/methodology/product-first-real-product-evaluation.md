@@ -2,6 +2,12 @@
 
 Status: current methodology. This supersedes the original synthetic-index comparison and the natural-adoption pilot for product-quality claims.
 
+The [v2 implementation status](implementation-status-v2.md) takes precedence
+for scoring and verification gates. Bounded REST-001, KAFKA-001 and INT-002 records
+are verified under v2, with explicit run ceilings and fresh native adapter smoke. The
+execution order below is a campaign plan, not completed model results. Historical
+v1 scores must not be pooled with v2.
+
 The [2026-10-09 checkpoint and restart plan](2026-10-09-checkpoint-and-restart.md)
 records what has actually run, the current verification results, and the next
 evaluation milestone. Gate 0 completion does not imply scored evaluation
@@ -108,11 +114,14 @@ No score may be described as “product X scores Y” unless the run passes Gate
 
 Do not launch the full corpus immediately.
 
-1. Run one deterministic adapter smoke per product on REST-001. Completed for RepoWise and Codebase Memory on 2026-09-18.
-2. Run five repeats of REST-001 for agent-only and each Gate-0 product.
-3. Check receipt completeness, output stability, failure rate, token spread, and ground-truth overlap.
-4. Continue with a five-scenario balanced slice only if the adapter is reliable and product evidence reaches the model.
-5. Run the full corpus only after the slice shows stable operation and a plausible marginal signal.
+The [broader discovery plan](2026-10-18-broader-discovery-plan.md) defines the
+next tool-selection experiment after the guided integration smokes:
+
+1. Verify all exposed adapter operations and develop output/scoring changes on known cases.
+2. Independently prove twelve new less guided cases, including compatible and private-change controls.
+3. Freeze the protocol and check all four arms on two development cases.
+4. After campaign budget approval, run three repeats per held-out case and arm (144 attempts), pairing each product with agent-only.
+5. Report complete impact/repair, critical misses, false edits, uncertainty, failures and efficiency separately; replicate before generalizing beyond this estate.
 
 Overlapping score ranges are reported as inconclusive, not ranked by median. Cost and consistency are first-class outcomes because the pilot showed token use varying by more than 2× between products and by roughly 5× between repeats of the same product.
 

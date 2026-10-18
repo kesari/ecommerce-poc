@@ -1,0 +1,22 @@
+--- a/src/main/java/com/poc/shipment/application/ShipmentService.java
++++ b/src/main/java/com/poc/shipment/application/ShipmentService.java
+@@ -45,7 +45,7 @@
+         DeliveryEstimate estimate = DeliveryEstimator.estimate(postalCode,
+                 LocalDate.now(clock));
+         cache.put(postalCode, itemCount, subtotalMinor, estimate);
+-        return estimate;
++        return null;
+     }
+ 
+     @Transactional
+--- a/src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java
++++ b/src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java
+@@ -66,7 +66,7 @@
+     }
+ 
+     static String key(String postalCode, int itemCount, long subtotalMinor) {
+-        return "shipment:estimate:" + hash(postalCode + "|" + itemCount + "|" + subtotalMinor);
++        return "shipment:estimate:v2:" + hash(postalCode + "|" + itemCount + "|" + subtotalMinor);
+     }
+ 
+     private static String hash(String value) {

@@ -1,0 +1,10 @@
+{
+  "protocol_version": 2,
+  "reviewed_scope": "REST-001 response-only HTTP binding and checkout boundary; not full-estate impact",
+  "source_snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "record_sha256": "7cea7df02d6b51d16ae8a5d1b50d7174b1a6d74e0690713a60050a72f2f19d2f",
+  "execution_manifest_sha256": "bf8e18e7bbe346faa89c20e3f0f969d7eb963e567cc8499fda69361e41420b27",
+  "oracle_bundle_sha256": "33b42c1fca9396918b35c584076cca9cb5351ceb09d59889d5c195fd050d12d6",
+  "criteria_sha256": "597434b2d44770fe5e5e577f5287d7564ea527eefd234eee2c43a780655782dc",
+  "test_sha256": "0ec0abbcb2c5e9e4ce002f048421bc2da77522a799e018885b99176896527a54"
+}

@@ -1,0 +1,36 @@
+--- a/account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java
++++ b/account-service/src/main/java/com/poc/account/api/dto/AddressResponse.java
+@@ -10,7 +10,7 @@
+         String line2,
+         String city,
+         String state,
+-        String postalCode,
++        String postcode,
+         String country,
+         String phoneNumber,
+         Instant createdAt,
+--- a/order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java
++++ b/order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java
+@@ -29,16 +29,18 @@
+     @CircuitBreaker(name = "account")
+     public AddressSnapshot address(String bearerToken, UUID addressId) {
+         try {
+-            AddressResponse response = client.get()
++            com.fasterxml.jackson.databind.JsonNode response = client.get()
+                     .uri("/api/v1/addresses/{addressId}", addressId)
+                     .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                     .retrieve()
+-                    .body(AddressResponse.class);
++                    .body(com.fasterxml.jackson.databind.JsonNode.class);
+             if (response == null) {
+                 throw new DownstreamUnavailableException("account returned an empty body", null);
+             }
+-            return new AddressSnapshot(response.fullName(), response.line1(), response.line2(),
+-                    response.city(), response.state(), response.postalCode(), response.country());
++            return new AddressSnapshot(response.path("fullName").asText(null),
++                    response.path("line1").asText(null), response.path("line2").asText(null),
++                    response.path("city").asText(null), response.path("state").asText(null),
++                    response.path("postcode").asText(null), response.path("country").asText(null));
+         } catch (RestClientException e) {
+             throw new DownstreamUnavailableException("account-service is unavailable", e);
+         }

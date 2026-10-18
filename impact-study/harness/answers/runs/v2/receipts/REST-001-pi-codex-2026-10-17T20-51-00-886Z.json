@@ -1,0 +1,25 @@
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "run_started_at": "2026-10-17T20:51:00.886Z",
+  "prompt_sha256": "b4bca7a8137247fac097da277ed4a26b35edcb5ed5444f5014ecee99c7982af9",
+  "estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+  "receipts": [],
+  "product_provenance": null,
+  "product_playbook": null,
+  "budget_policy": {
+    "timeout_seconds": 300,
+    "max_tokens": 2000000,
+    "max_cost_usd": 5,
+    "cost_enforcement": "catalog_context_reservation",
+    "token_enforcement": "context_window_reservation",
+    "retries": false,
+    "compaction": false
+  },
+  "usage": {
+    "tokens_consumed": 100979,
+    "cost_usd": 0.1183336,
+    "elapsed_seconds": 104.326268834
+  }
+}

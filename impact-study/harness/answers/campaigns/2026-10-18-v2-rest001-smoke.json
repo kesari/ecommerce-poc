@@ -1,0 +1,94 @@
+{
+  "protocol_version": 2,
+  "kind": "integration_smoke_campaign",
+  "date": "2026-10-18",
+  "change_id": "REST-001",
+  "status": "stopped_budget_insufficient_for_next_reservation",
+  "authorization": "User approved the US$5 total ceiling and transmission of isolated POC source excerpts and product results to OpenAI Codex at chatgpt.com/backend-api.",
+  "model": "openai-codex/gpt-5.6-terra",
+  "ceiling_usd": 5,
+  "cost_basis": "SDK catalog estimates; unsettled requests debit their conservative maximum exposure",
+  "target_runners": [
+    "pi-codex",
+    "pi-codex-gortex-first",
+    "pi-codex-repowise-first",
+    "pi-codex-codebase-memory-first"
+  ],
+  "timeout_seconds_per_attempt": 300,
+  "max_tokens_per_attempt": 2000000,
+  "attempts": [
+    {
+      "runner": "pi-codex",
+      "answer_path": "harness/answers/runs/v2/REST-001-pi-codex-1.json",
+      "answer_sha256": "90d12591ee75923ed8ca0445cd396d64f2bec9695161bb62f657f47ed451938a",
+      "attempt_evidence": {
+        "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/REST-001-pi-codex-1.2026-10-17T20-51-00-886Z.attempt.json",
+        "sha256": "3b391cde01d641dabd716b3415c5c3c1bba43cf5a4c5364e987962cf1bbafd80"
+      },
+      "status": "scored",
+      "benchmark_eligible": true,
+      "observed_cost_usd": 0.1183336,
+      "cost_debit_usd": 0.1183336,
+      "unknown_usage": false,
+      "elapsed_seconds": 104.326268834,
+      "tokens_consumed": 100979,
+      "satisfies_any_repair": false,
+      "action_recall": 0
+    },
+    {
+      "runner": "pi-codex-gortex-first",
+      "answer_path": "harness/answers/runs/v2/REST-001-pi-codex-gortex-first-1.json",
+      "answer_sha256": "ee3cb9bfa266f1a9f5c3ba454b9044bb45b974ff57732fb61f5dd698ee7db17f",
+      "attempt_evidence": {
+        "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/REST-001-pi-codex-gortex-first-1.2026-10-17T20-53-04-074Z.attempt.json",
+        "sha256": "6f720a9cb5e3c2c36253d90b9c8f4d98563c5aba3d391a008c5ff607dbea3bb2"
+      },
+      "status": "scored",
+      "benchmark_eligible": true,
+      "observed_cost_usd": 0.19221480000000002,
+      "cost_debit_usd": 0.19221480000000002,
+      "unknown_usage": false,
+      "elapsed_seconds": 60.828401,
+      "tokens_consumed": 162228,
+      "satisfies_any_repair": false,
+      "action_recall": 0
+    },
+    {
+      "runner": "pi-codex-repowise-first",
+      "rejection_path": "harness/answers/runs/v2/REST-001-pi-codex-repowise-first-1.rejected.json",
+      "rejection_sha256": "6c1ebd9b8fbf07c62d9c3ebfe4efb9d03a763e577d6341a0d996a7a7d33afd1a",
+      "attempt_evidence": {
+        "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/REST-001-pi-codex-repowise-first-1.2026-10-17T20-54-36-036Z.attempt.json",
+        "sha256": "2d189ede933eb4c9f0d252c553bb7bd866c12715e835177a4f5bba59f30e526e"
+      },
+      "status": "budget_exhausted",
+      "observed_cost_usd": 0.0574972,
+      "cost_debit_usd": 3.7214971999999995,
+      "unknown_usage": true,
+      "elapsed_seconds": 639.084219917,
+      "tokens_consumed": 54893,
+      "scheduled_product_steps": 4,
+      "native_receipts": 7,
+      "interruption": "host_clamshell_sleep",
+      "product_latency_comparable": false,
+      "host_sleep_evidence": "harness/answers/campaigns/2026-10-18-host-sleep-window.txt"
+    }
+  ],
+  "total_observed_cost_usd": 0.36804560000000003,
+  "total_cost_debit_usd": 4.032045599999999,
+  "remaining_allowance_usd": 0.9679544,
+  "cost_accounting": {
+    "known_attempts": 3,
+    "observed_cost_usd": 0.36804560000000003,
+    "exposure_upper_bound_usd": 4.032045599999999,
+    "unknown_usage_attempts": 1,
+    "failures_without_cost_evidence": 0
+  },
+  "not_attempted": [
+    {
+      "runner": "pi-codex-codebase-memory-first",
+      "reason": "Remaining allowance below US$3.664 conservative full-request reservation"
+    }
+  ],
+  "interpretation": "Integration smoke only. Strict action/edge scores exhibit representation and scope ambiguities; no product ranking. RepoWise interrupted by host sleep; Codebase Memory not launched after conservative cost debit."
+}

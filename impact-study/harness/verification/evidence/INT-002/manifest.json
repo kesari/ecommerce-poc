@@ -1,0 +1,798 @@
+{
+  "protocol_version": 2,
+  "scenario": "INT-002-cache-namespace",
+  "status": "passed",
+  "criteria_sha256": "a9641ec955956d8573540f0b7e257ff9a1e84a12b8beb32f2aa222bfe3b3ec38",
+  "test_sha256": "5c689c5c0fbb0b847179e2addff1b216b5e861af119bc0c4cb2b2c536dd2282a",
+  "verifier_sha256": "da9c60d7a1b3356e1e6c875be4fe8ea13ebab104f97200b288f00ae4c49c280d",
+  "commands": [
+    {
+      "argv": [
+        "java",
+        "-version"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache",
+      "exit_code": 0,
+      "log": "java-version.log",
+      "log_sha256": "df99e73ba1f223def82468e35abb72b272fb5201d9ca3f00f0a3a18c6b58ce2b"
+    },
+    {
+      "argv": [
+        "mvn",
+        "-version"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache",
+      "exit_code": 0,
+      "log": "maven-version.log",
+      "log_sha256": "5fe1d6184c6ddd05be3d7e4e3e2cc4fcb5d0d1b9a73ea97b0c3aabfcb5f5e246"
+    },
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "valkey/valkey:8",
+        "--format",
+        "{{.Id}}"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache",
+      "exit_code": 0,
+      "log": "valkey-image.log",
+      "log_sha256": "6e3e5509db6afaa88aa35b06fbb6bb9c897c1d43df52bbaaa5960f389e66a228"
+    },
+    {
+      "argv": [
+        "docker",
+        "run",
+        "--rm",
+        "-d",
+        "--pull=never",
+        "-p",
+        "127.0.0.1::6379",
+        "valkey/valkey:8"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache",
+      "exit_code": 0,
+      "log": "valkey-start.log",
+      "log_sha256": "33b4b259c214fa4052d3bb5ad3b8cdd718152c189e4e42b21e45bdb13c25fc4a"
+    },
+    {
+      "argv": [
+        "docker",
+        "port",
+        "9223fd15a22bbf660edfecefe2974eced027e1cd0e657a2130825977e135d313",
+        "6379/tcp"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache",
+      "exit_code": 0,
+      "log": "valkey-port.log",
+      "log_sha256": "2a1e70b8f313314e894e31daf8496e5536a3e17b90ea178859eee9abecace617"
+    },
+    {
+      "argv": [
+        "mvn",
+        "-o",
+        "-B",
+        "-Dstyle.color=never",
+        "-Dtest=Int002CacheBoundaryTest",
+        "-Dverification.phase=baseline",
+        "-Dverification.observation=/private/tmp/cross-repo-int002-verification-real-cache/baseline-observation.json",
+        "-Dverification.valkey.port=54584",
+        "test"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache/baseline",
+      "exit_code": 0,
+      "log": "baseline-test.log",
+      "log_sha256": "947e613a336e774b108b0c16fa825732b163ce09ffc445b857c0ab92dfedbb86"
+    },
+    {
+      "argv": [
+        "mvn",
+        "-o",
+        "-B",
+        "-Dstyle.color=never",
+        "-Dtest=Int002CacheBoundaryTest",
+        "-Dverification.phase=changed",
+        "-Dverification.observation=/private/tmp/cross-repo-int002-verification-real-cache/changed-observation.json",
+        "-Dverification.valkey.port=54584",
+        "test"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache/changed",
+      "exit_code": 0,
+      "log": "changed-test.log",
+      "log_sha256": "83f9d605b4bbe2f445f8f5a0852b559f1aee52dfef2289e74dfb8ba78d48c59d"
+    },
+    {
+      "argv": [
+        "mvn",
+        "-o",
+        "-B",
+        "-Dstyle.color=never",
+        "-Dtest=Int002CacheBoundaryTest",
+        "-Dverification.phase=repaired",
+        "-Dverification.observation=/private/tmp/cross-repo-int002-verification-real-cache/repaired-observation.json",
+        "-Dverification.valkey.port=54584",
+        "test"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache/repaired",
+      "exit_code": 0,
+      "log": "repaired-test.log",
+      "log_sha256": "c48f04cb444ae4cdafdad4d102eaedde12bac9b3d9e0dbf8abd658f33afc29f8"
+    },
+    {
+      "argv": [
+        "mvn",
+        "-o",
+        "-B",
+        "-Dstyle.color=never",
+        "-Dtest=Int002CacheBoundaryTest",
+        "-Dverification.phase=faulted-repair",
+        "-Dverification.observation=/private/tmp/cross-repo-int002-verification-real-cache/faulted-repair-observation.json",
+        "-Dverification.valkey.port=54584",
+        "test"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache/faulted-repair",
+      "exit_code": 1,
+      "log": "faulted-repair-test.log",
+      "log_sha256": "b652011159340025295479b6bc113f7b7f53495ea4cda6f5e401ff008c9b3668"
+    },
+    {
+      "argv": [
+        "docker",
+        "rm",
+        "-f",
+        "9223fd15a22bbf660edfecefe2974eced027e1cd0e657a2130825977e135d313"
+      ],
+      "cwd": "/private/tmp/cross-repo-int002-verification-real-cache",
+      "exit_code": 0,
+      "log": "valkey-cleanup.log",
+      "log_sha256": "33b4b259c214fa4052d3bb5ad3b8cdd718152c189e4e42b21e45bdb13c25fc4a"
+    }
+  ],
+  "phases": {
+    "baseline": {
+      "passed": true,
+      "fault_detected": false,
+      "source_files": {
+        ".dockerignore": "c239b152ede93ec261f92bac885523419123ee273718735de02e751b503ec2a4",
+        ".gitignore": "8e780010ddca07a4d2d41fbdd795633dcb4e9501d0b7d1b08fc9291e2a0c37e1",
+        ".mvn/wrapper/maven-wrapper.properties": "8f2a4438810348270d9d98f8d6d530541ddb7271e373db207e8ac381e0e35b62",
+        "Dockerfile": "a1216fdb1692b3d8e32e02f785db86b9fbf85f2a4b29583d9b58e8c7dd9adfc4",
+        "README.md": "5bb20f1597b316fc6c7b7c6df78ade7ae02570e7420159e9044b17f5ead3478f",
+        "asyncapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "asyncapi/schemas/envelope.v1.json": "c510ea150826b024ddbaeffc2262b97281480f7087d00b111b489180de2dbe2a",
+        "asyncapi/schemas/order.confirmed.v1.json": "cad34e9d67ea66a717911612e8a6b32cb46ac5994b160f77cd6d62a375265bfb",
+        "asyncapi/schemas/shipment.created.v1.json": "1f46ad70b5a73b21729aa260b98cb9ebec74ca1eb09fe49c2e1b7aa028025097",
+        "asyncapi/shipment-service.yaml": "b128b21802253c7ca2499c945282befbd6cf43eaaf84a4ee4010d148297a853a",
+        "mvnw": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+        "mvnw.cmd": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+        "openapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openapi/shipment-service.yaml": "8a0fcd623d383f38478640ea1c1b1f13361822db8dc9508e42144d1212e66bd4",
+        "pom.xml": "f950a5f7b6ccd2def76731916d6fce730a7f4f8b9cd02301d0dc1393bc4d715b",
+        "src/main/java/com/poc/shipment/ShipmentApplication.java": "4a7dfa1a9e35e713a83e16fc02bba7c4d539e9851f6a1a7bb2349315e2334cb8",
+        "src/main/java/com/poc/shipment/api/CorrelationIdFilter.java": "a791ec0119155d77c52ef2d06cb8ec030801eb20031aa5fbdc3ea4e3dc3cd2e2",
+        "src/main/java/com/poc/shipment/api/GlobalExceptionHandler.java": "c096360f06d87b543269b27e06ca073813165fb3724505c19fefbe82766d54b0",
+        "src/main/java/com/poc/shipment/api/OpenApiConfig.java": "d4b16a6e117e29600e6171b07f00c0b90488860bf45e7d052cba42b96a517a15",
+        "src/main/java/com/poc/shipment/api/ShipmentController.java": "3ff573943424879fff9f2401b60901adce21c7cd08c3c09bddbbc1111aef8d7d",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java": "2f062fe2f2f3bf6b242745134a1abe1373257cf3f7946b2c7d2894b9be2f922c",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java": "b7e6379a945e8641c81d35c967890b0d1424ffbd995a3274791d98bcfbbf7419",
+        "src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java": "50c5512e6c789fc881fb4affc414f7dfc30af2a1121f15d7435a0146fb569099",
+        "src/main/java/com/poc/shipment/application/DeliveryEstimator.java": "1d447b647015e092870fff1adfa419f87619ca7bf4243fadf3f913b44087cb7c",
+        "src/main/java/com/poc/shipment/application/EstimateCache.java": "5a8c047338e795cfeb62178ec31114d62639452fe495f1719b3a13c48b78ca7c",
+        "src/main/java/com/poc/shipment/application/EventEnvelope.java": "f4b351f04018a0d7660be32cf863e5a7069eb1657b9e13c82875895dbe5cea33",
+        "src/main/java/com/poc/shipment/application/ShipmentService.java": "fb201ca9eab94ebce139b086786c78c45ef28cffc6d345d439658d366b99b68a",
+        "src/main/java/com/poc/shipment/application/port/InboxRepository.java": "cacfb569752715183133e53cb74f56c660e6f22e911b2a03163234259e3c8269",
+        "src/main/java/com/poc/shipment/application/port/OutboxRepository.java": "33a2afa57da1b597edb2a934dcca757f94699a7f49b587f8002f48a759465cc0",
+        "src/main/java/com/poc/shipment/application/port/ShipmentRepository.java": "4a9af8692996552be088bf8cdc1b4f21202bb4c02aa8af7420e69f9a7511beae",
+        "src/main/java/com/poc/shipment/domain/exception/ShipmentNotFoundException.java": "e8a6ed0602e99edcb3ab3e7a602c2143e541013b872ef4bceaab86c50de89003",
+        "src/main/java/com/poc/shipment/domain/exception/UnsupportedDestinationException.java": "c3443ef3afb01fe34004e70b171d5a4a9bdd44737f964b1155f92f3a872795cb",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java": "0cd8bcb295b58ef92dab032e52a53759513e7ac8130950cfd18d566369e3d28d",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryEstimate.java": "3abc6a2e13303557b55ddc7c30edf97d161ec34e0ef276b9809d707c2725ae2f",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java": "78d093e797797c6ab9d9300b9a488566dda812612e54e5fbfd7ebc05804097ad",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryZone.java": "5cc2a96c19ae34447d0e101b92223c89e233367d4655b5951cedade58567309a",
+        "src/main/java/com/poc/shipment/domain/model/Shipment.java": "aa040f2d6156c380ce24d53931f9ba62843f96a0d6b8a828c491dd8ca5496457",
+        "src/main/java/com/poc/shipment/domain/model/ShipmentStatus.java": "efd20bf4821b9965ac353a6e6fe6b0c5293c10a76df30ceb9aeca1f2b1b83f3d",
+        "src/main/java/com/poc/shipment/infrastructure/ClockConfig.java": "075af24655818a1c7b018c6769d43f3c3cc95294b5aebdf25fd600d3aa80de69",
+        "src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java": "ed819e10033f9c8738b8c61b115fe0ec773f581c7a562731ee26dd52329871d5",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java": "8e80ba28b48df53511b0dbf664508cabda49cef5a8c375c0bec2290eeb5f4036",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OutboxPublisher.java": "b9acb377b77166b5bcedbf3bc0ddabca5922af5d8242213a72aa0d594418f03c",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/mapper/ShipmentMapper.java": "77f9b0a187ec2dce008c23f7c45da1dafc209ce574dea57c3869835faca430fa",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisInboxRepository.java": "758ae65b4ee847f47486cfd506a615e1619e55e7cdfccfc6fa4dd0686b5d5d80",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisOutboxRepository.java": "bb7cca209a0fd1b5077b133d36f4034eea1ec6d465fc0efac759eace20c02b48",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java": "3dc824ed7e9468dc733c495c2cd6d137b99f4cd63a57a5e06fde416c6f35acaf",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/OutboxRow.java": "9aee8dcbf74f37323b549a48d38d4f0c3240a6eef6fbe6d57b24a293b035ec1f",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java": "65043d0c5e376db77c6a85b0d2bdb741ecd24c003641ae66186ebc2da61fbfcf",
+        "src/main/java/com/poc/shipment/infrastructure/security/ProblemAuthHandlers.java": "8951ddeb8b959169ace3c2f2405884bec974d81aa878a39d1e6048ab53b96b2e",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java": "df61789a523fb5f5f496130bea3c5c266062855ec113ba1b13c3937103299b02",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityProperties.java": "94c514a0412edf198249c8cd0401445d7b4fe71ca1cc1fcd7ab125baf4e21f78",
+        "src/main/resources/application.yml": "e2600cca7d069e0baf600d190f0b182b31325d8ec74135ba878721f11dd3db42",
+        "src/main/resources/db/migration/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/db/migration/V1__shipment_schema.sql": "e58f83f2fc1193fb48b7f0a54389b1a0125c0da1b2ec89339b426b9395288197",
+        "src/main/resources/mybatis/mapper/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/mybatis/mapper/ShipmentMapper.xml": "a140a791b927a065819824fb72e090126c0e2245506b9be76bbc0ebaaafb17e5",
+        "src/main/resources/mybatis/typehandler/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/test/java/com/poc/shipment/AsyncApiContractTest.java": "a81d067544447637d63cd405d8bb3e44d1d000b82967e6dda515b1b9f1c31241",
+        "src/test/java/com/poc/shipment/DeliveryEstimatorTest.java": "c2ee4e0c43348879c8195476db5a54f271009b6b4f31cf7990989c290cb14017",
+        "src/test/java/com/poc/shipment/OpenApiContractTest.java": "2e3c05af9d9ebb33087da5058d2fb20e9c16ea867e1423ae74a1dd2c24f4dd80",
+        "src/test/java/com/poc/shipment/ShipmentApplicationSmokeTest.java": "ffa7f0b023fcfe3240bb5390b4e7a7f0341f3c3972b0073b0927511badc8ea89",
+        "src/test/java/com/poc/shipment/ShipmentIntegrationTest.java": "f9dddaab1117f2f2ff608faa7226c3f80fcd59af4891d2774ae7e5d28b520888",
+        "src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java": "29bb759801ec0859c1a3fb02e0b0ae75844f479dd91dacf4e8623c4c826c1d35"
+      },
+      "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observations": {
+        "phase": "baseline",
+        "first_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "second_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "first_hits": 1.0,
+        "first_misses": 0.0,
+        "total_hits": 2.0,
+        "total_misses": 0.0,
+        "cache_errors": 0.0,
+        "old_entry_preserved": true,
+        "new_entry_exists": false,
+        "active_key": "shipment:estimate:6500c025064c552a"
+      }
+    },
+    "changed": {
+      "passed": true,
+      "fault_detected": false,
+      "source_files": {
+        ".dockerignore": "c239b152ede93ec261f92bac885523419123ee273718735de02e751b503ec2a4",
+        ".gitignore": "8e780010ddca07a4d2d41fbdd795633dcb4e9501d0b7d1b08fc9291e2a0c37e1",
+        ".mvn/wrapper/maven-wrapper.properties": "8f2a4438810348270d9d98f8d6d530541ddb7271e373db207e8ac381e0e35b62",
+        "Dockerfile": "a1216fdb1692b3d8e32e02f785db86b9fbf85f2a4b29583d9b58e8c7dd9adfc4",
+        "README.md": "5bb20f1597b316fc6c7b7c6df78ade7ae02570e7420159e9044b17f5ead3478f",
+        "asyncapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "asyncapi/schemas/envelope.v1.json": "c510ea150826b024ddbaeffc2262b97281480f7087d00b111b489180de2dbe2a",
+        "asyncapi/schemas/order.confirmed.v1.json": "cad34e9d67ea66a717911612e8a6b32cb46ac5994b160f77cd6d62a375265bfb",
+        "asyncapi/schemas/shipment.created.v1.json": "1f46ad70b5a73b21729aa260b98cb9ebec74ca1eb09fe49c2e1b7aa028025097",
+        "asyncapi/shipment-service.yaml": "b128b21802253c7ca2499c945282befbd6cf43eaaf84a4ee4010d148297a853a",
+        "mvnw": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+        "mvnw.cmd": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+        "openapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openapi/shipment-service.yaml": "8a0fcd623d383f38478640ea1c1b1f13361822db8dc9508e42144d1212e66bd4",
+        "pom.xml": "f950a5f7b6ccd2def76731916d6fce730a7f4f8b9cd02301d0dc1393bc4d715b",
+        "src/main/java/com/poc/shipment/ShipmentApplication.java": "4a7dfa1a9e35e713a83e16fc02bba7c4d539e9851f6a1a7bb2349315e2334cb8",
+        "src/main/java/com/poc/shipment/api/CorrelationIdFilter.java": "a791ec0119155d77c52ef2d06cb8ec030801eb20031aa5fbdc3ea4e3dc3cd2e2",
+        "src/main/java/com/poc/shipment/api/GlobalExceptionHandler.java": "c096360f06d87b543269b27e06ca073813165fb3724505c19fefbe82766d54b0",
+        "src/main/java/com/poc/shipment/api/OpenApiConfig.java": "d4b16a6e117e29600e6171b07f00c0b90488860bf45e7d052cba42b96a517a15",
+        "src/main/java/com/poc/shipment/api/ShipmentController.java": "3ff573943424879fff9f2401b60901adce21c7cd08c3c09bddbbc1111aef8d7d",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java": "2f062fe2f2f3bf6b242745134a1abe1373257cf3f7946b2c7d2894b9be2f922c",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java": "b7e6379a945e8641c81d35c967890b0d1424ffbd995a3274791d98bcfbbf7419",
+        "src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java": "50c5512e6c789fc881fb4affc414f7dfc30af2a1121f15d7435a0146fb569099",
+        "src/main/java/com/poc/shipment/application/DeliveryEstimator.java": "1d447b647015e092870fff1adfa419f87619ca7bf4243fadf3f913b44087cb7c",
+        "src/main/java/com/poc/shipment/application/EstimateCache.java": "5a8c047338e795cfeb62178ec31114d62639452fe495f1719b3a13c48b78ca7c",
+        "src/main/java/com/poc/shipment/application/EventEnvelope.java": "f4b351f04018a0d7660be32cf863e5a7069eb1657b9e13c82875895dbe5cea33",
+        "src/main/java/com/poc/shipment/application/ShipmentService.java": "fb201ca9eab94ebce139b086786c78c45ef28cffc6d345d439658d366b99b68a",
+        "src/main/java/com/poc/shipment/application/port/InboxRepository.java": "cacfb569752715183133e53cb74f56c660e6f22e911b2a03163234259e3c8269",
+        "src/main/java/com/poc/shipment/application/port/OutboxRepository.java": "33a2afa57da1b597edb2a934dcca757f94699a7f49b587f8002f48a759465cc0",
+        "src/main/java/com/poc/shipment/application/port/ShipmentRepository.java": "4a9af8692996552be088bf8cdc1b4f21202bb4c02aa8af7420e69f9a7511beae",
+        "src/main/java/com/poc/shipment/domain/exception/ShipmentNotFoundException.java": "e8a6ed0602e99edcb3ab3e7a602c2143e541013b872ef4bceaab86c50de89003",
+        "src/main/java/com/poc/shipment/domain/exception/UnsupportedDestinationException.java": "c3443ef3afb01fe34004e70b171d5a4a9bdd44737f964b1155f92f3a872795cb",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java": "0cd8bcb295b58ef92dab032e52a53759513e7ac8130950cfd18d566369e3d28d",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryEstimate.java": "3abc6a2e13303557b55ddc7c30edf97d161ec34e0ef276b9809d707c2725ae2f",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java": "78d093e797797c6ab9d9300b9a488566dda812612e54e5fbfd7ebc05804097ad",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryZone.java": "5cc2a96c19ae34447d0e101b92223c89e233367d4655b5951cedade58567309a",
+        "src/main/java/com/poc/shipment/domain/model/Shipment.java": "aa040f2d6156c380ce24d53931f9ba62843f96a0d6b8a828c491dd8ca5496457",
+        "src/main/java/com/poc/shipment/domain/model/ShipmentStatus.java": "efd20bf4821b9965ac353a6e6fe6b0c5293c10a76df30ceb9aeca1f2b1b83f3d",
+        "src/main/java/com/poc/shipment/infrastructure/ClockConfig.java": "075af24655818a1c7b018c6769d43f3c3cc95294b5aebdf25fd600d3aa80de69",
+        "src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java": "eda23edd03bdb9d5a0e401ffd867dda1d01924bce2b806a938d68593735513a4",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java": "8e80ba28b48df53511b0dbf664508cabda49cef5a8c375c0bec2290eeb5f4036",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OutboxPublisher.java": "b9acb377b77166b5bcedbf3bc0ddabca5922af5d8242213a72aa0d594418f03c",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/mapper/ShipmentMapper.java": "77f9b0a187ec2dce008c23f7c45da1dafc209ce574dea57c3869835faca430fa",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisInboxRepository.java": "758ae65b4ee847f47486cfd506a615e1619e55e7cdfccfc6fa4dd0686b5d5d80",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisOutboxRepository.java": "bb7cca209a0fd1b5077b133d36f4034eea1ec6d465fc0efac759eace20c02b48",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java": "3dc824ed7e9468dc733c495c2cd6d137b99f4cd63a57a5e06fde416c6f35acaf",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/OutboxRow.java": "9aee8dcbf74f37323b549a48d38d4f0c3240a6eef6fbe6d57b24a293b035ec1f",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java": "65043d0c5e376db77c6a85b0d2bdb741ecd24c003641ae66186ebc2da61fbfcf",
+        "src/main/java/com/poc/shipment/infrastructure/security/ProblemAuthHandlers.java": "8951ddeb8b959169ace3c2f2405884bec974d81aa878a39d1e6048ab53b96b2e",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java": "df61789a523fb5f5f496130bea3c5c266062855ec113ba1b13c3937103299b02",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityProperties.java": "94c514a0412edf198249c8cd0401445d7b4fe71ca1cc1fcd7ab125baf4e21f78",
+        "src/main/resources/application.yml": "e2600cca7d069e0baf600d190f0b182b31325d8ec74135ba878721f11dd3db42",
+        "src/main/resources/db/migration/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/db/migration/V1__shipment_schema.sql": "e58f83f2fc1193fb48b7f0a54389b1a0125c0da1b2ec89339b426b9395288197",
+        "src/main/resources/mybatis/mapper/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/mybatis/mapper/ShipmentMapper.xml": "a140a791b927a065819824fb72e090126c0e2245506b9be76bbc0ebaaafb17e5",
+        "src/main/resources/mybatis/typehandler/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/test/java/com/poc/shipment/AsyncApiContractTest.java": "a81d067544447637d63cd405d8bb3e44d1d000b82967e6dda515b1b9f1c31241",
+        "src/test/java/com/poc/shipment/DeliveryEstimatorTest.java": "c2ee4e0c43348879c8195476db5a54f271009b6b4f31cf7990989c290cb14017",
+        "src/test/java/com/poc/shipment/OpenApiContractTest.java": "2e3c05af9d9ebb33087da5058d2fb20e9c16ea867e1423ae74a1dd2c24f4dd80",
+        "src/test/java/com/poc/shipment/ShipmentApplicationSmokeTest.java": "ffa7f0b023fcfe3240bb5390b4e7a7f0341f3c3972b0073b0927511badc8ea89",
+        "src/test/java/com/poc/shipment/ShipmentIntegrationTest.java": "f9dddaab1117f2f2ff608faa7226c3f80fcd59af4891d2774ae7e5d28b520888",
+        "src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java": "29bb759801ec0859c1a3fb02e0b0ae75844f479dd91dacf4e8623c4c826c1d35"
+      },
+      "patch_sha256": "9a586ee7e8bb7bdc71f3ddf2508e95180188fcae403a823eae1c53f64e5704bb",
+      "observations": {
+        "phase": "changed",
+        "first_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "second_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "first_hits": 0.0,
+        "first_misses": 1.0,
+        "total_hits": 1.0,
+        "total_misses": 1.0,
+        "cache_errors": 0.0,
+        "old_entry_preserved": true,
+        "new_entry_exists": true,
+        "active_key": "shipment:estimate:v2:6500c025064c552a"
+      }
+    },
+    "repaired": {
+      "passed": true,
+      "fault_detected": false,
+      "source_files": {
+        ".dockerignore": "c239b152ede93ec261f92bac885523419123ee273718735de02e751b503ec2a4",
+        ".gitignore": "8e780010ddca07a4d2d41fbdd795633dcb4e9501d0b7d1b08fc9291e2a0c37e1",
+        ".mvn/wrapper/maven-wrapper.properties": "8f2a4438810348270d9d98f8d6d530541ddb7271e373db207e8ac381e0e35b62",
+        "Dockerfile": "a1216fdb1692b3d8e32e02f785db86b9fbf85f2a4b29583d9b58e8c7dd9adfc4",
+        "README.md": "5bb20f1597b316fc6c7b7c6df78ade7ae02570e7420159e9044b17f5ead3478f",
+        "asyncapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "asyncapi/schemas/envelope.v1.json": "c510ea150826b024ddbaeffc2262b97281480f7087d00b111b489180de2dbe2a",
+        "asyncapi/schemas/order.confirmed.v1.json": "cad34e9d67ea66a717911612e8a6b32cb46ac5994b160f77cd6d62a375265bfb",
+        "asyncapi/schemas/shipment.created.v1.json": "1f46ad70b5a73b21729aa260b98cb9ebec74ca1eb09fe49c2e1b7aa028025097",
+        "asyncapi/shipment-service.yaml": "b128b21802253c7ca2499c945282befbd6cf43eaaf84a4ee4010d148297a853a",
+        "mvnw": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+        "mvnw.cmd": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+        "openapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openapi/shipment-service.yaml": "8a0fcd623d383f38478640ea1c1b1f13361822db8dc9508e42144d1212e66bd4",
+        "pom.xml": "f950a5f7b6ccd2def76731916d6fce730a7f4f8b9cd02301d0dc1393bc4d715b",
+        "src/main/java/com/poc/shipment/ShipmentApplication.java": "4a7dfa1a9e35e713a83e16fc02bba7c4d539e9851f6a1a7bb2349315e2334cb8",
+        "src/main/java/com/poc/shipment/api/CorrelationIdFilter.java": "a791ec0119155d77c52ef2d06cb8ec030801eb20031aa5fbdc3ea4e3dc3cd2e2",
+        "src/main/java/com/poc/shipment/api/GlobalExceptionHandler.java": "c096360f06d87b543269b27e06ca073813165fb3724505c19fefbe82766d54b0",
+        "src/main/java/com/poc/shipment/api/OpenApiConfig.java": "d4b16a6e117e29600e6171b07f00c0b90488860bf45e7d052cba42b96a517a15",
+        "src/main/java/com/poc/shipment/api/ShipmentController.java": "3ff573943424879fff9f2401b60901adce21c7cd08c3c09bddbbc1111aef8d7d",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java": "2f062fe2f2f3bf6b242745134a1abe1373257cf3f7946b2c7d2894b9be2f922c",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java": "b7e6379a945e8641c81d35c967890b0d1424ffbd995a3274791d98bcfbbf7419",
+        "src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java": "50c5512e6c789fc881fb4affc414f7dfc30af2a1121f15d7435a0146fb569099",
+        "src/main/java/com/poc/shipment/application/DeliveryEstimator.java": "1d447b647015e092870fff1adfa419f87619ca7bf4243fadf3f913b44087cb7c",
+        "src/main/java/com/poc/shipment/application/EstimateCache.java": "5a8c047338e795cfeb62178ec31114d62639452fe495f1719b3a13c48b78ca7c",
+        "src/main/java/com/poc/shipment/application/EventEnvelope.java": "f4b351f04018a0d7660be32cf863e5a7069eb1657b9e13c82875895dbe5cea33",
+        "src/main/java/com/poc/shipment/application/ShipmentService.java": "fb201ca9eab94ebce139b086786c78c45ef28cffc6d345d439658d366b99b68a",
+        "src/main/java/com/poc/shipment/application/port/InboxRepository.java": "cacfb569752715183133e53cb74f56c660e6f22e911b2a03163234259e3c8269",
+        "src/main/java/com/poc/shipment/application/port/OutboxRepository.java": "33a2afa57da1b597edb2a934dcca757f94699a7f49b587f8002f48a759465cc0",
+        "src/main/java/com/poc/shipment/application/port/ShipmentRepository.java": "4a9af8692996552be088bf8cdc1b4f21202bb4c02aa8af7420e69f9a7511beae",
+        "src/main/java/com/poc/shipment/domain/exception/ShipmentNotFoundException.java": "e8a6ed0602e99edcb3ab3e7a602c2143e541013b872ef4bceaab86c50de89003",
+        "src/main/java/com/poc/shipment/domain/exception/UnsupportedDestinationException.java": "c3443ef3afb01fe34004e70b171d5a4a9bdd44737f964b1155f92f3a872795cb",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java": "0cd8bcb295b58ef92dab032e52a53759513e7ac8130950cfd18d566369e3d28d",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryEstimate.java": "3abc6a2e13303557b55ddc7c30edf97d161ec34e0ef276b9809d707c2725ae2f",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java": "78d093e797797c6ab9d9300b9a488566dda812612e54e5fbfd7ebc05804097ad",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryZone.java": "5cc2a96c19ae34447d0e101b92223c89e233367d4655b5951cedade58567309a",
+        "src/main/java/com/poc/shipment/domain/model/Shipment.java": "aa040f2d6156c380ce24d53931f9ba62843f96a0d6b8a828c491dd8ca5496457",
+        "src/main/java/com/poc/shipment/domain/model/ShipmentStatus.java": "efd20bf4821b9965ac353a6e6fe6b0c5293c10a76df30ceb9aeca1f2b1b83f3d",
+        "src/main/java/com/poc/shipment/infrastructure/ClockConfig.java": "075af24655818a1c7b018c6769d43f3c3cc95294b5aebdf25fd600d3aa80de69",
+        "src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java": "eda23edd03bdb9d5a0e401ffd867dda1d01924bce2b806a938d68593735513a4",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java": "8e80ba28b48df53511b0dbf664508cabda49cef5a8c375c0bec2290eeb5f4036",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OutboxPublisher.java": "b9acb377b77166b5bcedbf3bc0ddabca5922af5d8242213a72aa0d594418f03c",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/mapper/ShipmentMapper.java": "77f9b0a187ec2dce008c23f7c45da1dafc209ce574dea57c3869835faca430fa",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisInboxRepository.java": "758ae65b4ee847f47486cfd506a615e1619e55e7cdfccfc6fa4dd0686b5d5d80",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisOutboxRepository.java": "bb7cca209a0fd1b5077b133d36f4034eea1ec6d465fc0efac759eace20c02b48",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java": "3dc824ed7e9468dc733c495c2cd6d137b99f4cd63a57a5e06fde416c6f35acaf",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/OutboxRow.java": "9aee8dcbf74f37323b549a48d38d4f0c3240a6eef6fbe6d57b24a293b035ec1f",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java": "65043d0c5e376db77c6a85b0d2bdb741ecd24c003641ae66186ebc2da61fbfcf",
+        "src/main/java/com/poc/shipment/infrastructure/security/ProblemAuthHandlers.java": "8951ddeb8b959169ace3c2f2405884bec974d81aa878a39d1e6048ab53b96b2e",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java": "df61789a523fb5f5f496130bea3c5c266062855ec113ba1b13c3937103299b02",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityProperties.java": "94c514a0412edf198249c8cd0401445d7b4fe71ca1cc1fcd7ab125baf4e21f78",
+        "src/main/resources/application.yml": "e2600cca7d069e0baf600d190f0b182b31325d8ec74135ba878721f11dd3db42",
+        "src/main/resources/db/migration/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/db/migration/V1__shipment_schema.sql": "e58f83f2fc1193fb48b7f0a54389b1a0125c0da1b2ec89339b426b9395288197",
+        "src/main/resources/mybatis/mapper/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/mybatis/mapper/ShipmentMapper.xml": "a140a791b927a065819824fb72e090126c0e2245506b9be76bbc0ebaaafb17e5",
+        "src/main/resources/mybatis/typehandler/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/test/java/com/poc/shipment/AsyncApiContractTest.java": "a81d067544447637d63cd405d8bb3e44d1d000b82967e6dda515b1b9f1c31241",
+        "src/test/java/com/poc/shipment/DeliveryEstimatorTest.java": "c2ee4e0c43348879c8195476db5a54f271009b6b4f31cf7990989c290cb14017",
+        "src/test/java/com/poc/shipment/OpenApiContractTest.java": "2e3c05af9d9ebb33087da5058d2fb20e9c16ea867e1423ae74a1dd2c24f4dd80",
+        "src/test/java/com/poc/shipment/ShipmentApplicationSmokeTest.java": "ffa7f0b023fcfe3240bb5390b4e7a7f0341f3c3972b0073b0927511badc8ea89",
+        "src/test/java/com/poc/shipment/ShipmentIntegrationTest.java": "f9dddaab1117f2f2ff608faa7226c3f80fcd59af4891d2774ae7e5d28b520888",
+        "src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java": "29bb759801ec0859c1a3fb02e0b0ae75844f479dd91dacf4e8623c4c826c1d35"
+      },
+      "patch_sha256": "9a586ee7e8bb7bdc71f3ddf2508e95180188fcae403a823eae1c53f64e5704bb",
+      "observations": {
+        "phase": "repaired",
+        "first_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "second_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "first_hits": 0.0,
+        "first_misses": 1.0,
+        "total_hits": 1.0,
+        "total_misses": 1.0,
+        "cache_errors": 0.0,
+        "old_entry_preserved": true,
+        "new_entry_exists": true,
+        "active_key": "shipment:estimate:v2:6500c025064c552a"
+      }
+    },
+    "faulted-repair": {
+      "passed": true,
+      "fault_detected": true,
+      "source_files": {
+        ".dockerignore": "c239b152ede93ec261f92bac885523419123ee273718735de02e751b503ec2a4",
+        ".gitignore": "8e780010ddca07a4d2d41fbdd795633dcb4e9501d0b7d1b08fc9291e2a0c37e1",
+        ".mvn/wrapper/maven-wrapper.properties": "8f2a4438810348270d9d98f8d6d530541ddb7271e373db207e8ac381e0e35b62",
+        "Dockerfile": "a1216fdb1692b3d8e32e02f785db86b9fbf85f2a4b29583d9b58e8c7dd9adfc4",
+        "README.md": "5bb20f1597b316fc6c7b7c6df78ade7ae02570e7420159e9044b17f5ead3478f",
+        "asyncapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "asyncapi/schemas/envelope.v1.json": "c510ea150826b024ddbaeffc2262b97281480f7087d00b111b489180de2dbe2a",
+        "asyncapi/schemas/order.confirmed.v1.json": "cad34e9d67ea66a717911612e8a6b32cb46ac5994b160f77cd6d62a375265bfb",
+        "asyncapi/schemas/shipment.created.v1.json": "1f46ad70b5a73b21729aa260b98cb9ebec74ca1eb09fe49c2e1b7aa028025097",
+        "asyncapi/shipment-service.yaml": "b128b21802253c7ca2499c945282befbd6cf43eaaf84a4ee4010d148297a853a",
+        "mvnw": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+        "mvnw.cmd": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+        "openapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openapi/shipment-service.yaml": "8a0fcd623d383f38478640ea1c1b1f13361822db8dc9508e42144d1212e66bd4",
+        "pom.xml": "f950a5f7b6ccd2def76731916d6fce730a7f4f8b9cd02301d0dc1393bc4d715b",
+        "src/main/java/com/poc/shipment/ShipmentApplication.java": "4a7dfa1a9e35e713a83e16fc02bba7c4d539e9851f6a1a7bb2349315e2334cb8",
+        "src/main/java/com/poc/shipment/api/CorrelationIdFilter.java": "a791ec0119155d77c52ef2d06cb8ec030801eb20031aa5fbdc3ea4e3dc3cd2e2",
+        "src/main/java/com/poc/shipment/api/GlobalExceptionHandler.java": "c096360f06d87b543269b27e06ca073813165fb3724505c19fefbe82766d54b0",
+        "src/main/java/com/poc/shipment/api/OpenApiConfig.java": "d4b16a6e117e29600e6171b07f00c0b90488860bf45e7d052cba42b96a517a15",
+        "src/main/java/com/poc/shipment/api/ShipmentController.java": "3ff573943424879fff9f2401b60901adce21c7cd08c3c09bddbbc1111aef8d7d",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java": "2f062fe2f2f3bf6b242745134a1abe1373257cf3f7946b2c7d2894b9be2f922c",
+        "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java": "b7e6379a945e8641c81d35c967890b0d1424ffbd995a3274791d98bcfbbf7419",
+        "src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java": "50c5512e6c789fc881fb4affc414f7dfc30af2a1121f15d7435a0146fb569099",
+        "src/main/java/com/poc/shipment/application/DeliveryEstimator.java": "1d447b647015e092870fff1adfa419f87619ca7bf4243fadf3f913b44087cb7c",
+        "src/main/java/com/poc/shipment/application/EstimateCache.java": "5a8c047338e795cfeb62178ec31114d62639452fe495f1719b3a13c48b78ca7c",
+        "src/main/java/com/poc/shipment/application/EventEnvelope.java": "f4b351f04018a0d7660be32cf863e5a7069eb1657b9e13c82875895dbe5cea33",
+        "src/main/java/com/poc/shipment/application/ShipmentService.java": "c2baf36d55e93ce18c4d25e4acc5b48655639e32fc9eeda7731d55d2252f97bd",
+        "src/main/java/com/poc/shipment/application/port/InboxRepository.java": "cacfb569752715183133e53cb74f56c660e6f22e911b2a03163234259e3c8269",
+        "src/main/java/com/poc/shipment/application/port/OutboxRepository.java": "33a2afa57da1b597edb2a934dcca757f94699a7f49b587f8002f48a759465cc0",
+        "src/main/java/com/poc/shipment/application/port/ShipmentRepository.java": "4a9af8692996552be088bf8cdc1b4f21202bb4c02aa8af7420e69f9a7511beae",
+        "src/main/java/com/poc/shipment/domain/exception/ShipmentNotFoundException.java": "e8a6ed0602e99edcb3ab3e7a602c2143e541013b872ef4bceaab86c50de89003",
+        "src/main/java/com/poc/shipment/domain/exception/UnsupportedDestinationException.java": "c3443ef3afb01fe34004e70b171d5a4a9bdd44737f964b1155f92f3a872795cb",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java": "0cd8bcb295b58ef92dab032e52a53759513e7ac8130950cfd18d566369e3d28d",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryEstimate.java": "3abc6a2e13303557b55ddc7c30edf97d161ec34e0ef276b9809d707c2725ae2f",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java": "78d093e797797c6ab9d9300b9a488566dda812612e54e5fbfd7ebc05804097ad",
+        "src/main/java/com/poc/shipment/domain/model/DeliveryZone.java": "5cc2a96c19ae34447d0e101b92223c89e233367d4655b5951cedade58567309a",
+        "src/main/java/com/poc/shipment/domain/model/Shipment.java": "aa040f2d6156c380ce24d53931f9ba62843f96a0d6b8a828c491dd8ca5496457",
+        "src/main/java/com/poc/shipment/domain/model/ShipmentStatus.java": "efd20bf4821b9965ac353a6e6fe6b0c5293c10a76df30ceb9aeca1f2b1b83f3d",
+        "src/main/java/com/poc/shipment/infrastructure/ClockConfig.java": "075af24655818a1c7b018c6769d43f3c3cc95294b5aebdf25fd600d3aa80de69",
+        "src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java": "eda23edd03bdb9d5a0e401ffd867dda1d01924bce2b806a938d68593735513a4",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java": "8e80ba28b48df53511b0dbf664508cabda49cef5a8c375c0bec2290eeb5f4036",
+        "src/main/java/com/poc/shipment/infrastructure/messaging/OutboxPublisher.java": "b9acb377b77166b5bcedbf3bc0ddabca5922af5d8242213a72aa0d594418f03c",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/mapper/ShipmentMapper.java": "77f9b0a187ec2dce008c23f7c45da1dafc209ce574dea57c3869835faca430fa",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisInboxRepository.java": "758ae65b4ee847f47486cfd506a615e1619e55e7cdfccfc6fa4dd0686b5d5d80",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisOutboxRepository.java": "bb7cca209a0fd1b5077b133d36f4034eea1ec6d465fc0efac759eace20c02b48",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java": "3dc824ed7e9468dc733c495c2cd6d137b99f4cd63a57a5e06fde416c6f35acaf",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/OutboxRow.java": "9aee8dcbf74f37323b549a48d38d4f0c3240a6eef6fbe6d57b24a293b035ec1f",
+        "src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java": "65043d0c5e376db77c6a85b0d2bdb741ecd24c003641ae66186ebc2da61fbfcf",
+        "src/main/java/com/poc/shipment/infrastructure/security/ProblemAuthHandlers.java": "8951ddeb8b959169ace3c2f2405884bec974d81aa878a39d1e6048ab53b96b2e",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java": "df61789a523fb5f5f496130bea3c5c266062855ec113ba1b13c3937103299b02",
+        "src/main/java/com/poc/shipment/infrastructure/security/SecurityProperties.java": "94c514a0412edf198249c8cd0401445d7b4fe71ca1cc1fcd7ab125baf4e21f78",
+        "src/main/resources/application.yml": "e2600cca7d069e0baf600d190f0b182b31325d8ec74135ba878721f11dd3db42",
+        "src/main/resources/db/migration/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/db/migration/V1__shipment_schema.sql": "e58f83f2fc1193fb48b7f0a54389b1a0125c0da1b2ec89339b426b9395288197",
+        "src/main/resources/mybatis/mapper/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/main/resources/mybatis/mapper/ShipmentMapper.xml": "a140a791b927a065819824fb72e090126c0e2245506b9be76bbc0ebaaafb17e5",
+        "src/main/resources/mybatis/typehandler/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/test/java/com/poc/shipment/AsyncApiContractTest.java": "a81d067544447637d63cd405d8bb3e44d1d000b82967e6dda515b1b9f1c31241",
+        "src/test/java/com/poc/shipment/DeliveryEstimatorTest.java": "c2ee4e0c43348879c8195476db5a54f271009b6b4f31cf7990989c290cb14017",
+        "src/test/java/com/poc/shipment/OpenApiContractTest.java": "2e3c05af9d9ebb33087da5058d2fb20e9c16ea867e1423ae74a1dd2c24f4dd80",
+        "src/test/java/com/poc/shipment/ShipmentApplicationSmokeTest.java": "ffa7f0b023fcfe3240bb5390b4e7a7f0341f3c3972b0073b0927511badc8ea89",
+        "src/test/java/com/poc/shipment/ShipmentIntegrationTest.java": "f9dddaab1117f2f2ff608faa7226c3f80fcd59af4891d2774ae7e5d28b520888",
+        "src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java": "29bb759801ec0859c1a3fb02e0b0ae75844f479dd91dacf4e8623c4c826c1d35"
+      },
+      "patch_sha256": "191a4ebae094f1abd90a6bf03f4cde83aee45995b0bd2ca6424b8f8f4f5ebde9",
+      "observations": {
+        "phase": "faulted-repair",
+        "first_estimate": null,
+        "second_estimate": {
+          "shippingMinor": 10000,
+          "currency": "INR",
+          "window": {
+            "from": [
+              2026,
+              1,
+              3
+            ],
+            "to": [
+              2026,
+              1,
+              4
+            ]
+          }
+        },
+        "first_hits": 0.0,
+        "first_misses": 1.0,
+        "total_hits": 1.0,
+        "total_misses": 1.0,
+        "cache_errors": 0.0,
+        "old_entry_preserved": true,
+        "new_entry_exists": true,
+        "active_key": "shipment:estimate:v2:6500c025064c552a"
+      }
+    }
+  },
+  "valkey_image_id": "sha256:f0ba225266310efba5fb33383e21c64fbd07907304224786c780606e7ebd7327",
+  "snapshot": {
+    "account-service": {
+      "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+      "tree": "e2de7fb02756e1485ff0995390ffbd80fa66c698"
+    },
+    "basket-service": {
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "tree": "d4abe607fe7074f58659156062005b50d7ed1c37"
+    },
+    "catalog-service": {
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "tree": "46f14bbd2008508977b7d22f83651f6a7d15645c"
+    },
+    "commerce-bff": {
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "tree": "3e94f7084eefa3a5e9bf5de7b2faa4aa520f3f9d"
+    },
+    "commerce-platform": {
+      "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+      "tree": "31f10292c9835ad0adb85a66adf69179b04b9aa4"
+    },
+    "commerce-web": {
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "tree": "45c86b402be8b36659e685022ca18b2f76145062"
+    },
+    "inventory-service": {
+      "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+      "tree": "5a562982896045e6a6e419db01afe20f1574f3d6"
+    },
+    "order-service": {
+      "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+      "tree": "ae4360948ab8f3f851914019531d5b7644024ba7"
+    },
+    "payment-service": {
+      "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+      "tree": "c68c07c086b340e9da1ce11c72334dd64cdf18c4"
+    },
+    "shipment-service": {
+      "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+      "tree": "79932ccf0ddcb5ad3b97541aa33dd8c16ae64b23"
+    }
+  },
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "baseline_source_files": {
+    ".dockerignore": "c239b152ede93ec261f92bac885523419123ee273718735de02e751b503ec2a4",
+    ".gitignore": "8e780010ddca07a4d2d41fbdd795633dcb4e9501d0b7d1b08fc9291e2a0c37e1",
+    ".mvn/wrapper/maven-wrapper.properties": "8f2a4438810348270d9d98f8d6d530541ddb7271e373db207e8ac381e0e35b62",
+    "Dockerfile": "a1216fdb1692b3d8e32e02f785db86b9fbf85f2a4b29583d9b58e8c7dd9adfc4",
+    "README.md": "5bb20f1597b316fc6c7b7c6df78ade7ae02570e7420159e9044b17f5ead3478f",
+    "asyncapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "asyncapi/schemas/envelope.v1.json": "c510ea150826b024ddbaeffc2262b97281480f7087d00b111b489180de2dbe2a",
+    "asyncapi/schemas/order.confirmed.v1.json": "cad34e9d67ea66a717911612e8a6b32cb46ac5994b160f77cd6d62a375265bfb",
+    "asyncapi/schemas/shipment.created.v1.json": "1f46ad70b5a73b21729aa260b98cb9ebec74ca1eb09fe49c2e1b7aa028025097",
+    "asyncapi/shipment-service.yaml": "b128b21802253c7ca2499c945282befbd6cf43eaaf84a4ee4010d148297a853a",
+    "mvnw": "cae96cef89ebea3531221f4ae17c23cf8edf67d00eae8306d4186ae1bbed4d02",
+    "mvnw.cmd": "46eedb8419bd14fe70d5bb2916d7b6f51806e51b39d5b76a42610384ca929c1c",
+    "openapi/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openapi/shipment-service.yaml": "8a0fcd623d383f38478640ea1c1b1f13361822db8dc9508e42144d1212e66bd4",
+    "pom.xml": "f950a5f7b6ccd2def76731916d6fce730a7f4f8b9cd02301d0dc1393bc4d715b",
+    "src/main/java/com/poc/shipment/ShipmentApplication.java": "4a7dfa1a9e35e713a83e16fc02bba7c4d539e9851f6a1a7bb2349315e2334cb8",
+    "src/main/java/com/poc/shipment/api/CorrelationIdFilter.java": "a791ec0119155d77c52ef2d06cb8ec030801eb20031aa5fbdc3ea4e3dc3cd2e2",
+    "src/main/java/com/poc/shipment/api/GlobalExceptionHandler.java": "c096360f06d87b543269b27e06ca073813165fb3724505c19fefbe82766d54b0",
+    "src/main/java/com/poc/shipment/api/OpenApiConfig.java": "d4b16a6e117e29600e6171b07f00c0b90488860bf45e7d052cba42b96a517a15",
+    "src/main/java/com/poc/shipment/api/ShipmentController.java": "3ff573943424879fff9f2401b60901adce21c7cd08c3c09bddbbc1111aef8d7d",
+    "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateRequest.java": "2f062fe2f2f3bf6b242745134a1abe1373257cf3f7946b2c7d2894b9be2f922c",
+    "src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java": "b7e6379a945e8641c81d35c967890b0d1424ffbd995a3274791d98bcfbbf7419",
+    "src/main/java/com/poc/shipment/api/dto/ShipmentResponse.java": "50c5512e6c789fc881fb4affc414f7dfc30af2a1121f15d7435a0146fb569099",
+    "src/main/java/com/poc/shipment/application/DeliveryEstimator.java": "1d447b647015e092870fff1adfa419f87619ca7bf4243fadf3f913b44087cb7c",
+    "src/main/java/com/poc/shipment/application/EstimateCache.java": "5a8c047338e795cfeb62178ec31114d62639452fe495f1719b3a13c48b78ca7c",
+    "src/main/java/com/poc/shipment/application/EventEnvelope.java": "f4b351f04018a0d7660be32cf863e5a7069eb1657b9e13c82875895dbe5cea33",
+    "src/main/java/com/poc/shipment/application/ShipmentService.java": "fb201ca9eab94ebce139b086786c78c45ef28cffc6d345d439658d366b99b68a",
+    "src/main/java/com/poc/shipment/application/port/InboxRepository.java": "cacfb569752715183133e53cb74f56c660e6f22e911b2a03163234259e3c8269",
+    "src/main/java/com/poc/shipment/application/port/OutboxRepository.java": "33a2afa57da1b597edb2a934dcca757f94699a7f49b587f8002f48a759465cc0",
+    "src/main/java/com/poc/shipment/application/port/ShipmentRepository.java": "4a9af8692996552be088bf8cdc1b4f21202bb4c02aa8af7420e69f9a7511beae",
+    "src/main/java/com/poc/shipment/domain/exception/ShipmentNotFoundException.java": "e8a6ed0602e99edcb3ab3e7a602c2143e541013b872ef4bceaab86c50de89003",
+    "src/main/java/com/poc/shipment/domain/exception/UnsupportedDestinationException.java": "c3443ef3afb01fe34004e70b171d5a4a9bdd44737f964b1155f92f3a872795cb",
+    "src/main/java/com/poc/shipment/domain/model/DeliveryAddress.java": "0cd8bcb295b58ef92dab032e52a53759513e7ac8130950cfd18d566369e3d28d",
+    "src/main/java/com/poc/shipment/domain/model/DeliveryEstimate.java": "3abc6a2e13303557b55ddc7c30edf97d161ec34e0ef276b9809d707c2725ae2f",
+    "src/main/java/com/poc/shipment/domain/model/DeliveryWindow.java": "78d093e797797c6ab9d9300b9a488566dda812612e54e5fbfd7ebc05804097ad",
+    "src/main/java/com/poc/shipment/domain/model/DeliveryZone.java": "5cc2a96c19ae34447d0e101b92223c89e233367d4655b5951cedade58567309a",
+    "src/main/java/com/poc/shipment/domain/model/Shipment.java": "aa040f2d6156c380ce24d53931f9ba62843f96a0d6b8a828c491dd8ca5496457",
+    "src/main/java/com/poc/shipment/domain/model/ShipmentStatus.java": "efd20bf4821b9965ac353a6e6fe6b0c5293c10a76df30ceb9aeca1f2b1b83f3d",
+    "src/main/java/com/poc/shipment/infrastructure/ClockConfig.java": "075af24655818a1c7b018c6769d43f3c3cc95294b5aebdf25fd600d3aa80de69",
+    "src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java": "ed819e10033f9c8738b8c61b115fe0ec773f581c7a562731ee26dd52329871d5",
+    "src/main/java/com/poc/shipment/infrastructure/messaging/OrderConfirmedListener.java": "8e80ba28b48df53511b0dbf664508cabda49cef5a8c375c0bec2290eeb5f4036",
+    "src/main/java/com/poc/shipment/infrastructure/messaging/OutboxPublisher.java": "b9acb377b77166b5bcedbf3bc0ddabca5922af5d8242213a72aa0d594418f03c",
+    "src/main/java/com/poc/shipment/infrastructure/persistence/mapper/ShipmentMapper.java": "77f9b0a187ec2dce008c23f7c45da1dafc209ce574dea57c3869835faca430fa",
+    "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisInboxRepository.java": "758ae65b4ee847f47486cfd506a615e1619e55e7cdfccfc6fa4dd0686b5d5d80",
+    "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisOutboxRepository.java": "bb7cca209a0fd1b5077b133d36f4034eea1ec6d465fc0efac759eace20c02b48",
+    "src/main/java/com/poc/shipment/infrastructure/persistence/repository/MyBatisShipmentRepository.java": "3dc824ed7e9468dc733c495c2cd6d137b99f4cd63a57a5e06fde416c6f35acaf",
+    "src/main/java/com/poc/shipment/infrastructure/persistence/row/OutboxRow.java": "9aee8dcbf74f37323b549a48d38d4f0c3240a6eef6fbe6d57b24a293b035ec1f",
+    "src/main/java/com/poc/shipment/infrastructure/persistence/row/ShipmentRow.java": "65043d0c5e376db77c6a85b0d2bdb741ecd24c003641ae66186ebc2da61fbfcf",
+    "src/main/java/com/poc/shipment/infrastructure/security/ProblemAuthHandlers.java": "8951ddeb8b959169ace3c2f2405884bec974d81aa878a39d1e6048ab53b96b2e",
+    "src/main/java/com/poc/shipment/infrastructure/security/SecurityConfig.java": "df61789a523fb5f5f496130bea3c5c266062855ec113ba1b13c3937103299b02",
+    "src/main/java/com/poc/shipment/infrastructure/security/SecurityProperties.java": "94c514a0412edf198249c8cd0401445d7b4fe71ca1cc1fcd7ab125baf4e21f78",
+    "src/main/resources/application.yml": "e2600cca7d069e0baf600d190f0b182b31325d8ec74135ba878721f11dd3db42",
+    "src/main/resources/db/migration/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/main/resources/db/migration/V1__shipment_schema.sql": "e58f83f2fc1193fb48b7f0a54389b1a0125c0da1b2ec89339b426b9395288197",
+    "src/main/resources/mybatis/mapper/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/main/resources/mybatis/mapper/ShipmentMapper.xml": "a140a791b927a065819824fb72e090126c0e2245506b9be76bbc0ebaaafb17e5",
+    "src/main/resources/mybatis/typehandler/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/test/java/com/poc/shipment/AsyncApiContractTest.java": "a81d067544447637d63cd405d8bb3e44d1d000b82967e6dda515b1b9f1c31241",
+    "src/test/java/com/poc/shipment/DeliveryEstimatorTest.java": "c2ee4e0c43348879c8195476db5a54f271009b6b4f31cf7990989c290cb14017",
+    "src/test/java/com/poc/shipment/OpenApiContractTest.java": "2e3c05af9d9ebb33087da5058d2fb20e9c16ea867e1423ae74a1dd2c24f4dd80",
+    "src/test/java/com/poc/shipment/ShipmentApplicationSmokeTest.java": "ffa7f0b023fcfe3240bb5390b4e7a7f0341f3c3972b0073b0927511badc8ea89",
+    "src/test/java/com/poc/shipment/ShipmentIntegrationTest.java": "f9dddaab1117f2f2ff608faa7226c3f80fcd59af4891d2774ae7e5d28b520888",
+    "src/test/java/com/poc/shipment/ShipmentPersistenceComponentTest.java": "29bb759801ec0859c1a3fb02e0b0ae75844f479dd91dacf4e8623c4c826c1d35"
+  },
+  "artifacts": [
+    {
+      "path": "Int002CacheBoundaryTest.java",
+      "sha256": "5c689c5c0fbb0b847179e2addff1b216b5e861af119bc0c4cb2b2c536dd2282a"
+    },
+    {
+      "path": "baseline-junit.xml",
+      "sha256": "bce9ec96afd5533080538981ac2087a95d4444b34c38bc832377830293eac956"
+    },
+    {
+      "path": "baseline-observation.json",
+      "sha256": "57ea898d43ff6b8f5d060c0a949c0c9a501b45d3e071526263c836754e28bebc"
+    },
+    {
+      "path": "baseline-test.log",
+      "sha256": "947e613a336e774b108b0c16fa825732b163ce09ffc445b857c0ab92dfedbb86"
+    },
+    {
+      "path": "baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "changed-junit.xml",
+      "sha256": "1b377a16ab9174c97b70ab54ad72c078928b252323f91f9b2546e8cd765265ba"
+    },
+    {
+      "path": "changed-observation.json",
+      "sha256": "544e5630492877e8aef91a50c927f81331a81e138813602b864a377fb1e0ad90"
+    },
+    {
+      "path": "changed-test.log",
+      "sha256": "83f9d605b4bbe2f445f8f5a0852b559f1aee52dfef2289e74dfb8ba78d48c59d"
+    },
+    {
+      "path": "changed.patch",
+      "sha256": "9a586ee7e8bb7bdc71f3ddf2508e95180188fcae403a823eae1c53f64e5704bb"
+    },
+    {
+      "path": "criteria.json",
+      "sha256": "a9641ec955956d8573540f0b7e257ff9a1e84a12b8beb32f2aa222bfe3b3ec38"
+    },
+    {
+      "path": "faulted-repair-junit.xml",
+      "sha256": "8a68da8e144161f642eae2a42cd62ee395d1cfae59fd77d048f9afbe4b3548a1"
+    },
+    {
+      "path": "faulted-repair-observation.json",
+      "sha256": "d11c008d93008f2a216bca3e74563693ecbe7d414a67f69d8ff93e8fc7026637"
+    },
+    {
+      "path": "faulted-repair-test.log",
+      "sha256": "b652011159340025295479b6bc113f7b7f53495ea4cda6f5e401ff008c9b3668"
+    },
+    {
+      "path": "faulted-repair.patch",
+      "sha256": "191a4ebae094f1abd90a6bf03f4cde83aee45995b0bd2ca6424b8f8f4f5ebde9"
+    },
+    {
+      "path": "java-version.log",
+      "sha256": "df99e73ba1f223def82468e35abb72b272fb5201d9ca3f00f0a3a18c6b58ce2b"
+    },
+    {
+      "path": "maven-version.log",
+      "sha256": "5fe1d6184c6ddd05be3d7e4e3e2cc4fcb5d0d1b9a73ea97b0c3aabfcb5f5e246"
+    },
+    {
+      "path": "repaired-junit.xml",
+      "sha256": "9a675e612669883bc63d3d81aa04c72d36bd70e853ad7ee64268d1628ab38500"
+    },
+    {
+      "path": "repaired-observation.json",
+      "sha256": "02261350f439a922f303d4de7bcf67e3fe7f6c9aa01b20ca7799ed5b737a36c2"
+    },
+    {
+      "path": "repaired-test.log",
+      "sha256": "c48f04cb444ae4cdafdad4d102eaedde12bac9b3d9e0dbf8abd658f33afc29f8"
+    },
+    {
+      "path": "repaired.patch",
+      "sha256": "9a586ee7e8bb7bdc71f3ddf2508e95180188fcae403a823eae1c53f64e5704bb"
+    },
+    {
+      "path": "valkey-cleanup.log",
+      "sha256": "33b4b259c214fa4052d3bb5ad3b8cdd718152c189e4e42b21e45bdb13c25fc4a"
+    },
+    {
+      "path": "valkey-image.log",
+      "sha256": "6e3e5509db6afaa88aa35b06fbb6bb9c897c1d43df52bbaaa5960f389e66a228"
+    },
+    {
+      "path": "valkey-port.log",
+      "sha256": "2a1e70b8f313314e894e31daf8496e5536a3e17b90ea178859eee9abecace617"
+    },
+    {
+      "path": "valkey-start.log",
+      "sha256": "33b4b259c214fa4052d3bb5ad3b8cdd718152c189e4e42b21e45bdb13c25fc4a"
+    }
+  ]
+}

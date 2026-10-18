@@ -1,0 +1,10 @@
+Compiled from "AccountClient.java"
+public class com.poc.order.infrastructure.client.AccountClient implements com.poc.order.application.port.AccountPort {
+  private final org.springframework.web.client.RestClient client;
+    descriptor: Lorg/springframework/web/client/RestClient;
+  public com.poc.order.infrastructure.client.AccountClient(org.springframework.web.client.RestClient$Builder, java.lang.String);
+    descriptor: (Lorg/springframework/web/client/RestClient$Builder;Ljava/lang/String;)V
+
+  public com.poc.order.domain.model.AddressSnapshot address(java.lang.String, java.util.UUID);
+    descriptor: (Ljava/lang/String;Ljava/util/UUID;)Lcom/poc/order/domain/model/AddressSnapshot;
+}

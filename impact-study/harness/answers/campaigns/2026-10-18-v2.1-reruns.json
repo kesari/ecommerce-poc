@@ -1,0 +1,70 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.1",
+  "kind": "integration_smoke_campaign",
+  "date": "2026-10-18",
+  "change_id": "REST-001",
+  "status": "completed",
+  "authorization": "User explicitly approved a fresh US$5 total allowance for RepoWise and Codebase Memory reruns; existing outbound-context approval persists.",
+  "model": "openai-codex/gpt-5.6-terra",
+  "ceiling_usd": 5,
+  "cost_basis": "SDK catalog estimates; unsettled requests debit their conservative maximum exposure",
+  "prior_campaign": "harness/answers/campaigns/2026-10-18-v2-rest001-smoke.json",
+  "prior_campaign_exposure_reset": false,
+  "target_runners": [
+    "pi-codex-repowise-first",
+    "pi-codex-codebase-memory-first"
+  ],
+  "run_group": "v2-1-repair-fix-2026-10-18",
+  "oracle_bundle_sha256": "d6ed60fa90d5183dc6b6582effdbfef99d4cb88f9436ae64dbccc0c015d3b317",
+  "timeout_seconds_per_attempt": 300,
+  "max_tokens_per_attempt": 2000000,
+  "host_policy": "process-owned caffeinate -i; deliberate lid-close sleep remains possible",
+  "attempts": [
+    {
+      "runner": "pi-codex-repowise-first",
+      "answer_path": "harness/answers/runs/v2/v2-1-repair-fix-2026-10-18/REST-001-pi-codex-repowise-first-1.json",
+      "answer_sha256": "43e9c86dd12c6f0fddcb78eb0059d57eb45be6499e6f38b85b962fa3469c594e",
+      "attempt_evidence": {
+        "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/v2-1-repair-fix-2026-10-18/REST-001-pi-codex-repowise-first-1.2026-10-18T02-06-19-197Z.attempt.json",
+        "sha256": "aa82ad081ce8cdefe74e3481973bd2f7baaf254de08d025569dc601322fe5f84"
+      },
+      "status": "scored",
+      "benchmark_eligible": true,
+      "observed_cost_usd": 0.1289108,
+      "cost_debit_usd": 0.1289108,
+      "unknown_usage": false,
+      "elapsed_seconds": 107.906897333,
+      "tokens_consumed": 128111,
+      "satisfies_required_actions": true,
+      "satisfies_any_repair": true,
+      "action_recall": 1,
+      "edge_recall": 1
+    },
+    {
+      "runner": "pi-codex-codebase-memory-first",
+      "answer_path": "harness/answers/runs/v2/v2-1-repair-fix-2026-10-18/REST-001-pi-codex-codebase-memory-first-1.json",
+      "answer_sha256": "216f68fa57361b727df1e173968dff7ea74abbba50ba619e3a12022fe14dfcf9",
+      "attempt_evidence": {
+        "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/answers/runs/v2/v2-1-repair-fix-2026-10-18/REST-001-pi-codex-codebase-memory-first-1.2026-10-18T02-09-04-853Z.attempt.json",
+        "sha256": "c5a2107d6b53a1448430554e0ba6680a76b9beea4b427ef3a14004906357854f"
+      },
+      "status": "scored",
+      "benchmark_eligible": true,
+      "observed_cost_usd": 0.15416760000000002,
+      "cost_debit_usd": 0.15416760000000002,
+      "unknown_usage": false,
+      "elapsed_seconds": 197.21023825,
+      "tokens_consumed": 131987,
+      "satisfies_required_actions": true,
+      "satisfies_any_repair": true,
+      "action_recall": 1,
+      "edge_recall": 0
+    }
+  ],
+  "total_observed_cost_usd": 0.2830784,
+  "total_cost_debit_usd": 0.2830784,
+  "remaining_allowance_usd": 4.7169216,
+  "scorecard_path": "harness/answers/campaigns/2026-10-18-v2.1-rerun-scorecard.json",
+  "scorecard_sha256": "c967f3b78fa138ea7ab9d9f7e42362bcde65f48b33a3973b5cf38b9259b90af9"
+}

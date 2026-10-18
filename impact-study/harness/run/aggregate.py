@@ -22,82 +22,143 @@ METRICS = ["cross_repo_recall", "contract_recall", "precision",
            "symbol_recall", "test_recall", "composite"]
 
 
-def collect(runs_dir):
+def product_ineligibility(answer, treatment):
+    """Recheck participation from receipts; the runner stamp alone is insufficient."""
+    label = str(answer.get("contestant", ""))
+    provenance = answer.get("product_provenance")
+    product = bool(provenance) or label.endswith("-first") or label in {"scip", "gortex", "graphify"}
+    if not product:
+        return None
+    playbook = answer.get("product_playbook")
+    actual_treatment = "product-first" if label.endswith("-first") or playbook else "natural-adoption"
+    if treatment != "all" and actual_treatment != treatment:
+        return "different product treatment: " + actual_treatment
+    if answer.get("product_assisted_eligible") is not True:
+        return "product-assisted run is ineligible"
+    if not isinstance(provenance, dict) or provenance.get("mode") != "real_product":
+        return "product provenance missing"
+    if not answer.get("estate_sha256") or provenance.get("indexed_estate_sha256") != answer["estate_sha256"]:
+        return "product receipt snapshot mismatch"
+    receipts = answer.get("product_tool_receipts") or []
+    if not receipts or any(not isinstance(r, dict) or not r.get("id") for r in receipts):
+        return "product invocation receipts missing or invalid"
+    by_id = {r["id"]: r for r in receipts}
+    if len(by_id) != len(receipts):
+        return "duplicate product receipt id"
+    if not any(r.get("success") is True for r in receipts):
+        return "no successful product invocation"
+    if actual_treatment == "product-first":
+        if not isinstance(playbook, list) or not playbook:
+            return "product-first playbook missing"
+        used = set()
+        for step in playbook:
+            receipt = by_id.get(step.get("receipt_id"))
+            parameters = step.get("parameters")
+            if (not receipt or receipt["id"] in used or receipt.get("tool") != step.get("tool")
+                    or receipt.get("success") != step.get("ok") or not isinstance(parameters, dict)
+                    or not isinstance(receipt.get("parameters"), dict)
+                    or any(key not in receipt["parameters"] or receipt["parameters"][key] != value
+                           for key, value in parameters.items())):
+                return "playbook step has no matching invocation receipt"
+            used.add(receipt["id"])
+    return None
+
+
+def collect(runs_dir, treatment="product-first"):
     import hashlib
 
     cells = defaultdict(list)
     rejected = []
     for report_file in sorted(Path(runs_dir).glob("*.score.json")):
-        report = json.loads(report_file.read_text())
-        answer_file = report_file.with_name(report_file.name.replace(".score", ""))
-        if not answer_file.exists():
-            rejected.append({"report": report_file.name, "reason": "answer file missing"})
-            continue
-        answer_text = answer_file.read_bytes()
-        answer_doc = json.loads(answer_text.decode("utf-8"))
-        if answer_doc.get("synthetic") is True:
-            rejected.append({"report": report_file.name, "reason": "synthetic example must never enter a scorecard"})
-            continue
-        validation = score.validate_files("answer", [str(answer_file)])
-        if not validation["valid"]:
-            rejected.append({
-                "report": report_file.name,
-                "reason": "answer schema validation failed",
-                "errors": validation["errors"].get(answer_file.name, []),
-            })
-            continue
-        expected_sha = report.get("answer_sha256")
-        if expected_sha:
-            actual_sha = hashlib.sha256(answer_text).hexdigest()
-            if actual_sha != expected_sha:
-                rejected.append({"report": report_file.name, "reason": "stale score: answer hash mismatch"})
+        runner = None
+        change_id = None
+        def reject(reason, status="invalid_output", **extra):
+            rejected.append({"report": report_file.name, "reason": reason,
+                             "runner": runner, "change_id": change_id, "status": status, **extra})
+        try:
+            report = json.loads(report_file.read_text())
+            change_id = report.get("change_id")
+            runner = report.get("contestant", "unknown")
+            answer_file = report_file.with_name(report_file.name.replace(".score", ""))
+            if not answer_file.exists():
+                reject("answer file missing")
                 continue
-        integrity_targets = {
-            "ground_truth_sha256": HARNESS / "records" / f"{report['change_id']}.json",
-            "scorer_sha256": HARNESS / "scoring" / "score.py",
-            "answer_schema_sha256": HARNESS / "schema" / "contestant-answer.schema.json",
-        }
-        integrity_failed = False
-        for field, target in integrity_targets.items():
-            expected = report.get(field)
-            if expected is None:
-                if str(answer_doc.get("runner", "")).endswith("-real"):
-                    rejected.append({"report": report_file.name, "reason": f"missing integrity hash: {field}"})
+            answer_text = answer_file.read_bytes()
+            answer_doc = json.loads(answer_text.decode("utf-8"))
+            runner = answer_doc.get("runner", runner)
+            if answer_doc.get("synthetic") is True:
+                reject("synthetic example must never enter a scorecard")
+                continue
+            protocol = answer_doc.get("protocol_version", "v1")
+            report_protocol = report.get("protocol_version", "v1")
+            if protocol != report_protocol:
+                reject("answer/report protocol mismatch")
+                continue
+            if protocol != "v1":
+                reject("unsupported protocol: " + str(protocol))
+                continue
+            validation = score.validate_files("answer", [str(answer_file)])
+            if not validation["valid"]:
+                reject("answer schema validation failed", errors=validation["errors"].get(answer_file.name, []))
+                continue
+            if answer_doc.get("change_id") != change_id or answer_doc.get("contestant") != report.get("contestant"):
+                reject("answer/report identity mismatch")
+                continue
+            expected_sha = report.get("answer_sha256")
+            if not expected_sha and answer_doc.get("product_provenance"):
+                reject("missing integrity hash: answer_sha256")
+                continue
+            if expected_sha and hashlib.sha256(answer_text).hexdigest() != expected_sha:
+                reject("stale score: answer hash mismatch")
+                continue
+            integrity_targets = {
+                "ground_truth_sha256": HARNESS / "records" / f"{change_id}.json",
+                "scorer_sha256": HARNESS / "scoring" / "score.py",
+                "answer_schema_sha256": HARNESS / "schema" / "contestant-answer.schema.json",
+            }
+            integrity_failed = False
+            for field, target in integrity_targets.items():
+                expected = report.get(field)
+                if expected is None:
+                    if answer_doc.get("product_provenance") or str(runner).endswith("-real") or str(answer_doc.get("contestant", "")).endswith("-first"):
+                        reject(f"missing integrity hash: {field}")
+                        integrity_failed = True
+                        break
+                    continue
+                if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != expected:
+                    reject(f"stale score: {field} mismatch")
                     integrity_failed = True
                     break
+            if integrity_failed:
                 continue
-            if not target.exists() or hashlib.sha256(target.read_bytes()).hexdigest() != expected:
-                rejected.append({"report": report_file.name, "reason": f"stale score: {field} mismatch"})
-                integrity_failed = True
-                break
-        if integrity_failed:
-            continue
-        runner = report.get("contestant", "unknown")
-        runner = answer_doc.get("runner", runner)
-        cohort_fields = {
-            "prompt_sha256": answer_doc.get("prompt_sha256"),
-            "contestant_config_sha256": answer_doc.get("contestant_config_sha256"),
-            "estate_sha256": answer_doc.get("estate_sha256"),
-            "index_sha256": answer_doc.get("index_sha256"),
-            "harness_sha256": answer_doc.get("harness_sha256"),
-            "model": answer_doc.get("model"),
-            "model_digest": answer_doc.get("model_digest"),
-            "pi_version": answer_doc.get("pi_version"),
-            **{field: report.get(field) for field in integrity_targets},
-        }
-        cohort = hashlib.sha256(json.dumps(cohort_fields, sort_keys=True).encode()).hexdigest()
-        cells[(report["change_id"], runner, cohort)].append(report)
+            ineligible = product_ineligibility(answer_doc, treatment)
+            if ineligible:
+                reject(ineligible, "ineligible_product")
+                continue
+            cohort_fields = {
+                "protocol_version": protocol,
+                "treatment": "product-first" if answer_doc.get("product_playbook") else "natural-adoption" if answer_doc.get("product_provenance") else "baseline",
+                **{field: answer_doc.get(field) for field in (
+                    "prompt_sha256", "contestant_config_sha256", "estate_sha256", "index_sha256",
+                    "harness_sha256", "model", "model_digest", "pi_version")},
+                **{field: report.get(field) for field in integrity_targets},
+            }
+            cohort = hashlib.sha256(json.dumps(cohort_fields, sort_keys=True).encode()).hexdigest()
+            cells[(change_id, runner, cohort)].append(report)
+        except (ValueError, TypeError, KeyError, AttributeError, OSError) as exc:
+            reject(f"unreadable or malformed run artifact: {exc}")
     for stub_file in sorted(Path(runs_dir).glob("*.rejected.json")):
         try:
             stub = json.loads(stub_file.read_text())
         except Exception as exc:
-            rejected.append({"report": stub_file.name, "reason": f"unreadable rejection stub: {exc}"})
+            rejected.append({"report": stub_file.name, "reason": f"unreadable rejection stub: {exc}", "status": "invalid_output"})
             continue
         rejected.append({
             "report": stub_file.name,
             "reason": stub.get("reason", "run failed"),
             "change_id": stub.get("change_id"),
             "runner": stub.get("runner"),
+            "status": stub.get("status", "run_failed"),
         })
     return cells, rejected
 
@@ -105,12 +166,14 @@ def collect(runs_dir):
 def outcome_summary(cells, rejected):
     scored = defaultdict(int)
     failed = defaultdict(int)
+    statuses = defaultdict(lambda: defaultdict(int))
     for (_change_id, runner, _cohort), reports in cells.items():
         scored[runner] += len(reports)
     for item in rejected:
         runner = item.get("runner")
         if runner:
             failed[runner] += 1
+            statuses[runner][item.get("status", "run_failed")] += 1
     result = {}
     for runner in sorted(set(scored) | set(failed)):
         total = scored[runner] + failed[runner]
@@ -118,6 +181,7 @@ def outcome_summary(cells, rejected):
             "scored": scored[runner],
             "rejected": failed[runner],
             "attempts": total,
+            "failure_states": dict(statuses[runner]),
             "success_rate": round(scored[runner] / total, 4) if total else 0.0,
         }
     return result
@@ -228,13 +292,14 @@ def main():
     parser = argparse.ArgumentParser(description="Corpus scorecard across runs.")
     parser.add_argument("--runs-dir", default=str(RUNS))
     parser.add_argument("--output", help="write the full JSON scorecard here")
+    parser.add_argument("--treatment", choices=["product-first", "natural-adoption", "all"], default="product-first",
+                        help="product treatment included; baseline is always included")
     parser.add_argument("--json", action="store_true", help="print JSON instead of text")
     args = parser.parse_args()
 
-    cells, rejected = collect(args.runs_dir)
-    if not cells:
-        reason = f"; rejected {len(rejected)} invalid report(s)" if rejected else ""
-        raise SystemExit(f"no valid .score.json files under {args.runs_dir}{reason}")
+    cells, rejected = collect(args.runs_dir, args.treatment)
+    if not cells and not rejected:
+        raise SystemExit(f"no run artifacts under {args.runs_dir}")
 
     scorecard = {"cells": {}, "by_contestant": {}, "rejected": rejected, "outcomes": outcome_summary(cells, rejected)}
     per_contestant = defaultdict(list)
