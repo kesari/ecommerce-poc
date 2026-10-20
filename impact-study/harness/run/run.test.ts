@@ -631,6 +631,14 @@ test("gortex_contracts refuses a route where a symbol belongs, and the reverse",
 	await assert.rejects(
 		() => contracts.execute("t", { action: "route_impact", query: "AddressResponse", repo: "account-service" }),
 		/route must read/);
+	try {
+		await contracts.execute("native-route", { action: "route_impact", query: "GET /api/v1/addresses/{addressId}", repo: "account-service" });
+	} catch (error) {
+		assert.match(String(error), /no route matching/); // A missing extracted route remains visible.
+	}
+	const receipt = integration.receipts.at(-1);
+	assert.equal(receipt.requested_query, "GET /api/v1/addresses/{addressId}");
+	assert.equal(receipt.executed_query, "/api/v1/addresses/{addressId}");
 });
 
 test("real product refuses a snapshot that does not match pins", async () => {

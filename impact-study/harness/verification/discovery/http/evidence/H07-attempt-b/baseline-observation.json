@@ -1,0 +1,61 @@
+[ {
+  "input_pin" : "560001",
+  "input_shipping_minor" : 0,
+  "valid" : true,
+  "request" : {
+    "postalCode" : "560001",
+    "subtotalMinor" : 20000,
+    "itemCount" : 1
+  },
+  "wire" : {
+    "fromDate" : "2026-01-03",
+    "toDate" : "2026-01-04",
+    "shippingChargeMinor" : 0,
+    "currency" : "INR"
+  },
+  "quote_saved" : true,
+  "failure" : null,
+  "quote_shipping_minor" : 0,
+  "quote_total_minor" : 23600,
+  "quote_promised_from" : "2026-01-03"
+}, {
+  "input_pin" : "560001",
+  "input_shipping_minor" : 10000,
+  "valid" : true,
+  "request" : {
+    "postalCode" : "560001",
+    "subtotalMinor" : 20000,
+    "itemCount" : 1
+  },
+  "wire" : {
+    "fromDate" : "2026-01-03",
+    "toDate" : "2026-01-04",
+    "shippingChargeMinor" : 10000,
+    "currency" : "INR"
+  },
+  "quote_saved" : true,
+  "failure" : null,
+  "quote_shipping_minor" : 10000,
+  "quote_total_minor" : 33600,
+  "quote_promised_from" : "2026-01-03"
+}, {
+  "input_pin" : "560001",
+  "input_shipping_minor" : 12300,
+  "valid" : true,
+  "request" : {
+    "postalCode" : "560001",
+    "subtotalMinor" : 20000,
+    "itemCount" : 1
+  },
+  "wire" : {
+    "fromDate" : "2026-01-03",
+    "toDate" : "2026-01-04",
+    "shippingChargeMinor" : 12300,
+    "currency" : "INR"
+  },
+  "quote_saved" : true,
+  "failure" : null,
+  "quote_shipping_minor" : 12300,
+  "quote_total_minor" : 35900,
+  "quote_promised_from" : "2026-01-03"
+} ]

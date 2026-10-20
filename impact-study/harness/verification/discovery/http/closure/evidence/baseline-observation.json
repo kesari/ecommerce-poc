@@ -1,0 +1,14 @@
+{
+  "phase" : "baseline",
+  "warm_from" : "2026-01-05",
+  "warm_to" : "2026-01-07",
+  "cold_from" : "2026-01-05",
+  "cold_to" : "2026-01-07",
+  "repeated_from" : "2026-01-05",
+  "repeated_to" : "2026-01-07",
+  "gets" : 3,
+  "puts" : 1,
+  "puts_after_warm" : 0,
+  "cold_shipping_minor" : 10000,
+  "currency" : "INR"
+}

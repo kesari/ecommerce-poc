@@ -1,0 +1,99 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "change_id": "H03",
+  "status": "verified",
+  "category": "rest_contract",
+  "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "repository_universe": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "origin_repo": "basket-service",
+  "proposed_change": {
+    "repo": "basket-service",
+    "diff": "--- a/src/main/java/com/poc/basket/api/dto/BasketResponse.java\n+++ b/src/main/java/com/poc/basket/api/dto/BasketResponse.java\n@@ -8,7 +8,7 @@\n \n public record BasketResponse(UUID basketId, long basketVersion, String couponCode,\n                              List<BasketItemResponse> items, long subtotalMinor,\n-                             long discountMinor, long totalMinor, String currency) {\n+                             long discountMinor, @com.fasterxml.jackson.annotation.JsonProperty(\"payableMinor\") long totalMinor, String currency) {\n \n     public static BasketResponse from(BasketView view) {\n         List<BasketItemResponse> items = view.basket().items().stream()\n"
+  },
+  "repositories": [
+    {
+      "repo": "basket-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "order-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "commerce-bff",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "commerce-web",
+      "runtime_status": "broken"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "commerce-web",
+      "fqn": "src/api/basket.ts.getBasket"
+    }
+  ],
+  "edges": [
+    {
+      "provider": "basket-service",
+      "consumer": "commerce-bff",
+      "type": "rest",
+      "identifier": "GET /api/v1/basket",
+      "field": "totalMinor"
+    },
+    {
+      "provider": "commerce-bff",
+      "consumer": "commerce-web",
+      "type": "rest",
+      "identifier": "GET /api/v1/basket",
+      "field": "totalMinor"
+    }
+  ],
+  "repair_alternatives": [
+    {
+      "name": "preserve_requested_change_and_repair_consumers",
+      "actions": [
+        {
+          "repo": "commerce-web",
+          "target": "src/api/basket.ts.getBasket",
+          "operation": "read_json_field",
+          "before": "totalMinor",
+          "after": "payableMinor",
+          "critical": true
+        }
+      ],
+      "obligations": [
+        {
+          "repo": "basket-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "order-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "commerce-bff",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "commerce-web",
+          "obligation": "production_edit"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+--- a/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
++++ b/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
+@@ -13,6 +13,6 @@
+ 
+     public static DeliveryEstimateResponse from(DeliveryEstimate estimate) {
+         return new DeliveryEstimateResponse(estimate.window().from(), estimate.window().to(),
+-                estimate.shippingMinor(), estimate.currency());
++                estimate.shippingMinor() / 100, estimate.currency());
+     }
+ }

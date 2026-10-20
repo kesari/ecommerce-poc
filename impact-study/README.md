@@ -22,6 +22,9 @@ remain unmatched. The optional trace adapter flag error is fixed and locally
 verified in adapter 1.4.1. The
 [broader discovery plan](docs/methodology/2026-10-18-broader-discovery-plan.md)
 defines twelve new cases and a paired comparison against agent-only.
+The [20 October implementation status](docs/methodology/2026-10-19-discovery-implementation.md)
+records all twelve verified runtime cases, revision 2.2 scoring and the paired
+campaign safeguards. Paid development and comparison runs remain on hold.
 The earlier smoke and host-sleep interruption remain in the historical
 [smoke results](docs/methodology/2026-10-18-v2-smoke-results.md).
 See the [implementation status](docs/methodology/implementation-status-v2.md)

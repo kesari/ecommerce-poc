@@ -1,0 +1,2192 @@
+{
+  "campaign_version": 1,
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "schedule_sha256": "f081e9e90cc4bf9051cc35b4a359b0a637f48745a4aca8f15f746103be0f5f9c",
+  "condition_sha256": "e4f8ca617b8feb485edcf36abfc25ac99e9fec2deef112a31767d647092207da",
+  "ledger_sha256": "576a3f174a1d606437a867d47feb09afbb6782a146d5a2ddc04fac8331d358db",
+  "status": "incomplete",
+  "campaign_authorization": {
+    "authorization_id": "pending-discovery-approval",
+    "max_total_usd": 0,
+    "currency": "USD"
+  },
+  "paid_runs_authorized": false,
+  "scheduled_attempts": 144,
+  "cells": [
+    {
+      "slot_id": "H02/r1/pi-codex-codebase-memory-first",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 0,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r1/pi-codex-gortex-first",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 1,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r1/pi-codex-repowise-first",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 2,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r1/pi-codex",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 3,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r1/pi-codex-gortex-first",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 4,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r1/pi-codex-repowise-first",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 5,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r1/pi-codex",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 6,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r1/pi-codex-codebase-memory-first",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 7,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r1/pi-codex",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 8,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r1/pi-codex-codebase-memory-first",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 9,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r1/pi-codex-gortex-first",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 10,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r1/pi-codex-repowise-first",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 11,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r1/pi-codex-gortex-first",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 12,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r1/pi-codex-repowise-first",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 13,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r1/pi-codex",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 14,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r1/pi-codex-codebase-memory-first",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 15,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r1/pi-codex",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 16,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r1/pi-codex-codebase-memory-first",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 17,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r1/pi-codex-gortex-first",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 18,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r1/pi-codex-repowise-first",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 19,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r1/pi-codex-codebase-memory-first",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 20,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r1/pi-codex-gortex-first",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 21,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r1/pi-codex-repowise-first",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 22,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r1/pi-codex",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 23,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r1/pi-codex",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 24,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r1/pi-codex-codebase-memory-first",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 25,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r1/pi-codex-gortex-first",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 26,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r1/pi-codex-repowise-first",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 27,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r1/pi-codex-repowise-first",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 28,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r1/pi-codex",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 29,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r1/pi-codex-codebase-memory-first",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 30,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r1/pi-codex-gortex-first",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 31,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r1/pi-codex-repowise-first",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 32,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r1/pi-codex",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 33,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r1/pi-codex-codebase-memory-first",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 34,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r1/pi-codex-gortex-first",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 35,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r1/pi-codex-codebase-memory-first",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 36,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r1/pi-codex-gortex-first",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 37,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r1/pi-codex-repowise-first",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 38,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r1/pi-codex",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 39,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r1/pi-codex-gortex-first",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 40,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r1/pi-codex-repowise-first",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 41,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r1/pi-codex",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 42,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r1/pi-codex-codebase-memory-first",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 43,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r1/pi-codex-repowise-first",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 44,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r1/pi-codex",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 45,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r1/pi-codex-codebase-memory-first",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 46,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r1/pi-codex-gortex-first",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 47,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r2/pi-codex-repowise-first",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 48,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r2/pi-codex",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 49,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r2/pi-codex-codebase-memory-first",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 50,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r2/pi-codex-gortex-first",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 51,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r2/pi-codex",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 52,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r2/pi-codex-codebase-memory-first",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 53,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r2/pi-codex-gortex-first",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 54,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r2/pi-codex-repowise-first",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 55,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r2/pi-codex-repowise-first",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 56,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r2/pi-codex",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 57,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r2/pi-codex-codebase-memory-first",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 58,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r2/pi-codex-gortex-first",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 59,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r2/pi-codex-repowise-first",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 60,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r2/pi-codex",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 61,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r2/pi-codex-codebase-memory-first",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 62,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r2/pi-codex-gortex-first",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 63,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r2/pi-codex-codebase-memory-first",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 64,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r2/pi-codex-gortex-first",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 65,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r2/pi-codex-repowise-first",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 66,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r2/pi-codex",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 67,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r2/pi-codex-codebase-memory-first",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 68,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r2/pi-codex-gortex-first",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 69,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r2/pi-codex-repowise-first",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 70,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r2/pi-codex",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 71,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r2/pi-codex",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 72,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r2/pi-codex-codebase-memory-first",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 73,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r2/pi-codex-gortex-first",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 74,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r2/pi-codex-repowise-first",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 75,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r2/pi-codex-gortex-first",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 76,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r2/pi-codex-repowise-first",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 77,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r2/pi-codex",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 78,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r2/pi-codex-codebase-memory-first",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 79,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r2/pi-codex-gortex-first",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 80,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r2/pi-codex-repowise-first",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 81,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r2/pi-codex",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 82,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r2/pi-codex-codebase-memory-first",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 83,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r2/pi-codex",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 84,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r2/pi-codex-codebase-memory-first",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 85,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r2/pi-codex-gortex-first",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 86,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r2/pi-codex-repowise-first",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 87,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r2/pi-codex-codebase-memory-first",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 88,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r2/pi-codex-gortex-first",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 89,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r2/pi-codex-repowise-first",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 90,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r2/pi-codex",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 91,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r2/pi-codex-gortex-first",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 92,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r2/pi-codex-repowise-first",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 93,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r2/pi-codex",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 94,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r2/pi-codex-codebase-memory-first",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 95,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r3/pi-codex-repowise-first",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 96,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r3/pi-codex",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 97,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r3/pi-codex-codebase-memory-first",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 98,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H10/r3/pi-codex-gortex-first",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 99,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r3/pi-codex-gortex-first",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 100,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r3/pi-codex-repowise-first",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 101,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r3/pi-codex",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 102,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H05/r3/pi-codex-codebase-memory-first",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 103,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r3/pi-codex-codebase-memory-first",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 104,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r3/pi-codex-gortex-first",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 105,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r3/pi-codex-repowise-first",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 106,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H08/r3/pi-codex",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 107,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r3/pi-codex-codebase-memory-first",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 108,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r3/pi-codex-gortex-first",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 109,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r3/pi-codex-repowise-first",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 110,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H04/r3/pi-codex",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 111,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r3/pi-codex-gortex-first",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 112,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r3/pi-codex-repowise-first",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 113,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r3/pi-codex",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 114,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H09/r3/pi-codex-codebase-memory-first",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 115,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r3/pi-codex",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 116,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r3/pi-codex-codebase-memory-first",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 117,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r3/pi-codex-gortex-first",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 118,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H07/r3/pi-codex-repowise-first",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 119,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r3/pi-codex-repowise-first",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 120,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r3/pi-codex",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 121,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r3/pi-codex-codebase-memory-first",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 122,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H06/r3/pi-codex-gortex-first",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 123,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r3/pi-codex-repowise-first",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 124,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r3/pi-codex",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 125,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r3/pi-codex-codebase-memory-first",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 126,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H02/r3/pi-codex-gortex-first",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 127,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r3/pi-codex-codebase-memory-first",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 128,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r3/pi-codex-gortex-first",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 129,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r3/pi-codex-repowise-first",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 130,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H12/r3/pi-codex",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 131,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r3/pi-codex",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 132,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r3/pi-codex-codebase-memory-first",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 133,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r3/pi-codex-gortex-first",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 134,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H11/r3/pi-codex-repowise-first",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 135,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r3/pi-codex-gortex-first",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 136,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r3/pi-codex-repowise-first",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 137,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r3/pi-codex",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 138,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H01/r3/pi-codex-codebase-memory-first",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 139,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r3/pi-codex",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 140,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r3/pi-codex-codebase-memory-first",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 141,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r3/pi-codex-gortex-first",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 142,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    },
+    {
+      "slot_id": "H03/r3/pi-codex-repowise-first",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 143,
+      "state": "missing_unrun",
+      "complete_supported_impact": null,
+      "valid_answer": false
+    }
+  ],
+  "integrity_errors": [],
+  "complete_campaign": false,
+  "arms": {
+    "pi-codex": {
+      "scheduled": 36,
+      "attempted": 0,
+      "missing_unrun": 36,
+      "scored_valid": 0,
+      "observed_failures": 0,
+      "complete_successes": 0,
+      "scheduled_success_fraction": 0.0,
+      "scheduled_success_bounds": [
+        0.0,
+        1.0
+      ],
+      "attempted_operational_success": null,
+      "conditional_valid_answer_success": null,
+      "failure_states": {},
+      "metrics": {},
+      "critical_action_miss_count": {
+        "observed": 0
+      },
+      "unverified_material_claim_count": {
+        "observed": 0
+      },
+      "disproved_edit_claim_count": {
+        "observed": 0
+      },
+      "control_valid_answers": 0,
+      "compatible_control_specificity_conditional_valid": null,
+      "native_operations": {
+        "attempts_with_evidence": 0,
+        "attempted": 0,
+        "failed": 0
+      },
+      "cost_accounting": {
+        "known_attempts": 0,
+        "observed_cost_usd": 0,
+        "exposure_upper_bound_usd": 0,
+        "unknown_usage_attempts": 0,
+        "failures_without_cost_evidence": 0
+      },
+      "efficiency": {
+        "tokens_consumed": {
+          "observed": 0
+        },
+        "cost_usd": {
+          "observed": 0
+        },
+        "elapsed_seconds": {
+          "observed": 0
+        }
+      }
+    },
+    "pi-codex-gortex-first": {
+      "scheduled": 36,
+      "attempted": 0,
+      "missing_unrun": 36,
+      "scored_valid": 0,
+      "observed_failures": 0,
+      "complete_successes": 0,
+      "scheduled_success_fraction": 0.0,
+      "scheduled_success_bounds": [
+        0.0,
+        1.0
+      ],
+      "attempted_operational_success": null,
+      "conditional_valid_answer_success": null,
+      "failure_states": {},
+      "metrics": {},
+      "critical_action_miss_count": {
+        "observed": 0
+      },
+      "unverified_material_claim_count": {
+        "observed": 0
+      },
+      "disproved_edit_claim_count": {
+        "observed": 0
+      },
+      "control_valid_answers": 0,
+      "compatible_control_specificity_conditional_valid": null,
+      "native_operations": {
+        "attempts_with_evidence": 0,
+        "attempted": 0,
+        "failed": 0
+      },
+      "cost_accounting": {
+        "known_attempts": 0,
+        "observed_cost_usd": 0,
+        "exposure_upper_bound_usd": 0,
+        "unknown_usage_attempts": 0,
+        "failures_without_cost_evidence": 0
+      },
+      "efficiency": {
+        "tokens_consumed": {
+          "observed": 0
+        },
+        "cost_usd": {
+          "observed": 0
+        },
+        "elapsed_seconds": {
+          "observed": 0
+        }
+      }
+    },
+    "pi-codex-repowise-first": {
+      "scheduled": 36,
+      "attempted": 0,
+      "missing_unrun": 36,
+      "scored_valid": 0,
+      "observed_failures": 0,
+      "complete_successes": 0,
+      "scheduled_success_fraction": 0.0,
+      "scheduled_success_bounds": [
+        0.0,
+        1.0
+      ],
+      "attempted_operational_success": null,
+      "conditional_valid_answer_success": null,
+      "failure_states": {},
+      "metrics": {},
+      "critical_action_miss_count": {
+        "observed": 0
+      },
+      "unverified_material_claim_count": {
+        "observed": 0
+      },
+      "disproved_edit_claim_count": {
+        "observed": 0
+      },
+      "control_valid_answers": 0,
+      "compatible_control_specificity_conditional_valid": null,
+      "native_operations": {
+        "attempts_with_evidence": 0,
+        "attempted": 0,
+        "failed": 0
+      },
+      "cost_accounting": {
+        "known_attempts": 0,
+        "observed_cost_usd": 0,
+        "exposure_upper_bound_usd": 0,
+        "unknown_usage_attempts": 0,
+        "failures_without_cost_evidence": 0
+      },
+      "efficiency": {
+        "tokens_consumed": {
+          "observed": 0
+        },
+        "cost_usd": {
+          "observed": 0
+        },
+        "elapsed_seconds": {
+          "observed": 0
+        }
+      }
+    },
+    "pi-codex-codebase-memory-first": {
+      "scheduled": 36,
+      "attempted": 0,
+      "missing_unrun": 36,
+      "scored_valid": 0,
+      "observed_failures": 0,
+      "complete_successes": 0,
+      "scheduled_success_fraction": 0.0,
+      "scheduled_success_bounds": [
+        0.0,
+        1.0
+      ],
+      "attempted_operational_success": null,
+      "conditional_valid_answer_success": null,
+      "failure_states": {},
+      "metrics": {},
+      "critical_action_miss_count": {
+        "observed": 0
+      },
+      "unverified_material_claim_count": {
+        "observed": 0
+      },
+      "disproved_edit_claim_count": {
+        "observed": 0
+      },
+      "control_valid_answers": 0,
+      "compatible_control_specificity_conditional_valid": null,
+      "native_operations": {
+        "attempts_with_evidence": 0,
+        "attempted": 0,
+        "failed": 0
+      },
+      "cost_accounting": {
+        "known_attempts": 0,
+        "observed_cost_usd": 0,
+        "exposure_upper_bound_usd": 0,
+        "unknown_usage_attempts": 0,
+        "failures_without_cost_evidence": 0
+      },
+      "efficiency": {
+        "tokens_consumed": {
+          "observed": 0
+        },
+        "cost_usd": {
+          "observed": 0
+        },
+        "elapsed_seconds": {
+          "observed": 0
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "pi-codex-gortex-first": {
+      "baseline": "pi-codex",
+      "case_results": [
+        {
+          "case_id": "H01",
+          "family": "http_binding",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H02",
+          "family": "http_binding",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H03",
+          "family": "web_consumption",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H04",
+          "family": "web_consumption",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H05",
+          "family": "messaging",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H06",
+          "family": "messaging",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H07",
+          "family": "meaning",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H08",
+          "family": "meaning",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H09",
+          "family": "private_storage",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H10",
+          "family": "private_storage",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H11",
+          "family": "compatible_shape",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H12",
+          "family": "compatible_shape",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        }
+      ],
+      "observed_pair_counts": {
+        "unknown_missing_pair": 36
+      },
+      "complete_case_count": 0,
+      "case_equal_delta": null,
+      "observed_case_equal_delta": null,
+      "scheduled_delta_bounds": [
+        -1,
+        1
+      ],
+      "case_cluster_interval": null,
+      "family_deltas": {},
+      "family_cluster_sensitivity": null,
+      "compatible_control_safety_regressions": [],
+      "control_valid_pairs": 0,
+      "control_scheduled_pairs": 15,
+      "decision": "incomplete_campaign",
+      "inference_limit": "Partial paired summaries are descriptive; repetitions are not independent cases. Missing pairs remain unknown."
+    },
+    "pi-codex-repowise-first": {
+      "baseline": "pi-codex",
+      "case_results": [
+        {
+          "case_id": "H01",
+          "family": "http_binding",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H02",
+          "family": "http_binding",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H03",
+          "family": "web_consumption",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H04",
+          "family": "web_consumption",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H05",
+          "family": "messaging",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H06",
+          "family": "messaging",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H07",
+          "family": "meaning",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H08",
+          "family": "meaning",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H09",
+          "family": "private_storage",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H10",
+          "family": "private_storage",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H11",
+          "family": "compatible_shape",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H12",
+          "family": "compatible_shape",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        }
+      ],
+      "observed_pair_counts": {
+        "unknown_missing_pair": 36
+      },
+      "complete_case_count": 0,
+      "case_equal_delta": null,
+      "observed_case_equal_delta": null,
+      "scheduled_delta_bounds": [
+        -1,
+        1
+      ],
+      "case_cluster_interval": null,
+      "family_deltas": {},
+      "family_cluster_sensitivity": null,
+      "compatible_control_safety_regressions": [],
+      "control_valid_pairs": 0,
+      "control_scheduled_pairs": 15,
+      "decision": "incomplete_campaign",
+      "inference_limit": "Partial paired summaries are descriptive; repetitions are not independent cases. Missing pairs remain unknown."
+    },
+    "pi-codex-codebase-memory-first": {
+      "baseline": "pi-codex",
+      "case_results": [
+        {
+          "case_id": "H01",
+          "family": "http_binding",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H02",
+          "family": "http_binding",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H03",
+          "family": "web_consumption",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H04",
+          "family": "web_consumption",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H05",
+          "family": "messaging",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H06",
+          "family": "messaging",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H07",
+          "family": "meaning",
+          "compatible_control": false,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H08",
+          "family": "meaning",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H09",
+          "family": "private_storage",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H10",
+          "family": "private_storage",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H11",
+          "family": "compatible_shape",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        },
+        {
+          "case_id": "H12",
+          "family": "compatible_shape",
+          "compatible_control": true,
+          "pairs": {
+            "unknown_missing_pair": 3
+          },
+          "valid_answer_pairs": {},
+          "observed_pairs": 0,
+          "mean_paired_difference": null,
+          "complete_case": false
+        }
+      ],
+      "observed_pair_counts": {
+        "unknown_missing_pair": 36
+      },
+      "complete_case_count": 0,
+      "case_equal_delta": null,
+      "observed_case_equal_delta": null,
+      "scheduled_delta_bounds": [
+        -1,
+        1
+      ],
+      "case_cluster_interval": null,
+      "family_deltas": {},
+      "family_cluster_sensitivity": null,
+      "compatible_control_safety_regressions": [],
+      "control_valid_pairs": 0,
+      "control_scheduled_pairs": 15,
+      "decision": "incomplete_campaign",
+      "inference_limit": "Partial paired summaries are descriptive; repetitions are not independent cases. Missing pairs remain unknown."
+    }
+  },
+  "cost_accounting": {
+    "known_attempts": 0,
+    "observed_cost_usd": 0,
+    "exposure_upper_bound_usd": 0,
+    "unknown_usage_attempts": 0,
+    "failures_without_cost_evidence": 0,
+    "scope": "sealed_observed_attempts_only",
+    "slots_without_sealed_attempt": 144,
+    "note": "Unrecorded slots have no cost evidence; known attempt totals do not bound unrecorded campaign exposure."
+  },
+  "setup_accounting": {
+    "status": "reported_separately",
+    "included_in_attempt_cost": false,
+    "note": "Index construction/update and setup measurements require their own evidence; no zero cost is inferred."
+  },
+  "global_budget_accounting": {
+    "status": "not_supplied",
+    "exposure_upper_bound_usd": null,
+    "decision_blockers": [
+      "global_budget_evidence_missing"
+    ],
+    "note": "No sealed global ledger supplied; missing cells do not establish zero exposure."
+  }
+}

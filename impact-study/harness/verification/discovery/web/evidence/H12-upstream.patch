@@ -1,0 +1,17 @@
+--- a/src/main/java/com/poc/catalog/application/CatalogService.java
++++ b/src/main/java/com/poc/catalog/application/CatalogService.java
+@@ -31,9 +31,11 @@
+         return cache.getListPage(page, size)
+                 .map(this::readList)
+                 .orElseGet(() -> {
+-                    List<ProductResponse> items = products.findActivePage(page, size).stream()
+-                            .map(CatalogService::toResponse)
+-                            .toList();
++                    var mapped = new java.util.ArrayList<ProductResponse>();
++                    for (Product product : products.findActivePage(page, size)) {
++                        mapped.add(toResponse(product));
++                    }
++                    List<ProductResponse> items = List.copyOf(mapped);
+                     cache.putListPage(page, size, writeList(items));
+                     return items;
+                 });

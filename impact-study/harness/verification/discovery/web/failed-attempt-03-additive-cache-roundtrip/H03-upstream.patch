@@ -1,0 +1,11 @@
+--- a/src/main/java/com/poc/basket/api/dto/BasketResponse.java
++++ b/src/main/java/com/poc/basket/api/dto/BasketResponse.java
+@@ -8,7 +8,7 @@
+ 
+ public record BasketResponse(UUID basketId, long basketVersion, String couponCode,
+                              List<BasketItemResponse> items, long subtotalMinor,
+-                             long discountMinor, long totalMinor, String currency) {
++                             long discountMinor, @com.fasterxml.jackson.annotation.JsonProperty("payableMinor") long totalMinor, String currency) {
+ 
+     public static BasketResponse from(BasketView view) {
+         List<BasketItemResponse> items = view.basket().items().stream()

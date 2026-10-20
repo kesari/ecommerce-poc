@@ -1,0 +1,14 @@
+{
+  "case" : "H06",
+  "phase" : "repaired",
+  "registered_topics" : [ [ "inventory.reserve.requested.v1", "inventory.reserve.requested.v1.retry.1", "inventory.reserve.requested.v1.retry.2", "inventory.commit.requested.v1", "inventory.commit.requested.v1.retry.1", "inventory.commit.requested.v1.retry.2", "inventory.release.requested.v1", "inventory.release.requested.v1.retry.1", "inventory.release.requested.v1.retry.2" ] ],
+  "producer_item" : {
+    "units" : 3,
+    "productId" : "33ba0bf4-d8a5-4dfa-8c09-4b3d46d65640"
+  },
+  "broker_records" : 1,
+  "consumer_liveness" : true,
+  "reservation_quantity" : 3,
+  "remaining_stock" : 7,
+  "reservations" : 1
+}

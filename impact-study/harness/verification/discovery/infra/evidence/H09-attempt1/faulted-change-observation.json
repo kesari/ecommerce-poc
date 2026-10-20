@@ -1,0 +1,11 @@
+{
+  "case" : "H09",
+  "phase" : "faulted-change",
+  "private_columns" : [ "unit_price_minor" ],
+  "detail_price" : 65001,
+  "list_price" : 65001,
+  "batch_price" : 65001,
+  "basket_price" : 65001,
+  "updated_price" : 72000,
+  "read_back_price" : 72001
+}

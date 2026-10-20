@@ -1,0 +1,236 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Trusted runner invocation receipts v2",
+  "type": "object",
+  "required": [
+    "protocol_version",
+    "change_id",
+    "snapshot_sha256",
+    "run_started_at",
+    "prompt_sha256",
+    "receipts",
+    "product_provenance",
+    "product_playbook",
+    "estate_sha256",
+    "budget_policy",
+    "usage"
+  ],
+  "properties": {
+    "protocol_version": {
+      "type": "integer",
+      "const": 2
+    },
+    "change_id": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "snapshot_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "run_started_at": {
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "prompt_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "receipts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "tool",
+          "operation",
+          "parameters",
+          "requested_query",
+          "executed_query",
+          "success",
+          "output",
+          "output_sha256",
+          "output_bytes",
+          "output_full_bytes",
+          "truncated",
+          "output_normalized",
+          "output_normalized_sha256",
+          "duration_ms",
+          "error"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "tool": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "operation": {
+            "type": "string",
+            "pattern": "\\S"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "requested_query": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "executed_query": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "success": {
+            "type": "boolean"
+          },
+          "output": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "output_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "output_full_bytes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "truncated": {
+            "type": "boolean"
+          },
+          "output_normalized": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "output_normalized_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "duration_ms": {
+            "type": "number",
+            "minimum": 0
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "product_provenance": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "product_playbook": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "object"
+      }
+    },
+    "estate_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "budget_policy": {
+      "type": "object",
+      "required": [
+        "timeout_seconds",
+        "max_tokens",
+        "max_cost_usd",
+        "cost_enforcement",
+        "token_enforcement",
+        "retries",
+        "compaction"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "timeout_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "max_tokens": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_cost_usd": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "cost_enforcement": {
+          "type": "string",
+          "const": "catalog_context_reservation"
+        },
+        "token_enforcement": {
+          "type": "string",
+          "const": "context_window_reservation"
+        },
+        "retries": {
+          "type": "boolean",
+          "const": false
+        },
+        "compaction": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "required": [
+        "tokens_consumed",
+        "cost_usd",
+        "elapsed_seconds"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "tokens_consumed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cost_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "elapsed_seconds": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { AttemptBudget, AttemptError, superviseAttempt } from "./budget.ts";
 import type { BudgetPolicy } from "./budget.ts";
+import { ESTATE_REPOSITORIES } from "./estate.ts";
 
 const policy: BudgetPolicy = { max_tokens: 1_000_000, max_cost_usd: 5, timeout_seconds: 30,
 	cost_enforcement: "catalog_context_reservation", token_enforcement: "context_window_reservation",
@@ -126,6 +127,7 @@ if(m.type==='reservation_ack'){writeFileSync(${JSON.stringify(marker)},'started'
 test("actual runner worker reports setup failure without invoking a provider", async () => {
 	const root = await mkdtemp(join(tmpdir(), "budget-runner-"));
 	try {
+		for (const repo of ESTATE_REPOSITORIES) await mkdir(join(root, repo));
 		const progress: any[] = [];
 		await assert.rejects(superviseAttempt(fileURLToPath(new URL("./run.ts", import.meta.url)), {
 			policy, protocol: 2, scratch: join(root, "scratch"), prompt: "must never reach a provider",

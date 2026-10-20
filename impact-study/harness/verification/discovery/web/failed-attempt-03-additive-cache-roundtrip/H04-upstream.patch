@@ -1,0 +1,11 @@
+--- a/src/main/java/com/poc/catalog/api/dto/ProductResponse.java
++++ b/src/main/java/com/poc/catalog/api/dto/ProductResponse.java
+@@ -6,7 +6,7 @@
+         UUID id,
+         String name,
+         String description,
+-        String imageUrl,
++        @com.fasterxml.jackson.annotation.JsonProperty("thumbnailUrl") String imageUrl,
+         long priceMinor,
+         String currency,
+         boolean active

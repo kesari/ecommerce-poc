@@ -1,0 +1,23 @@
+{
+  "H01_web": {
+    "same_origin_change": "ProductResponse.currency JSON property currency -> currencyCode, Java member unchanged; must exactly match independently verified H01 upstream edit",
+    "boundary": "Actual CatalogService output and cache roundtrip -> actual CatalogProxyController/DownstreamRelay over localhost HTTP -> real listProducts/ProductsPage",
+    "protected_assertion": "BUSINESS_PRODUCT_CURRENCY_PRICES",
+    "baseline": "Both concrete product prices render in INR",
+    "changed": "Caught real render exception or wrong DOM must fail the SAME explicit product price assertion; no unhandled Vitest or transport error counts",
+    "repair": "src/api/products.ts.listProducts normalizes currencyCode into existing internal Product.currency without reverting provider; complete web build and same DOM assertion pass",
+    "fault": "Wrong normalization source currencyWrong causes the same explicit price assertion failure despite successful full build",
+    "necessity": "Basket's independently proved alias repair does not repair the direct Catalog -> BFF -> web path; the web normalization is independently needed"
+  },
+  "H04_H11_basket": {
+    "boundary": "Actual unchanged Basket CatalogClient consumes concrete actual serialized changed ProductResponse over localhost HTTP",
+    "assertions": "Returned ProductInfo retains id,name,priceMinor,currency,active despite imageUrl rename or additive merchandisingTag",
+    "outcome": "No Basket production edit required on these changes"
+  },
+  "H03_order": {
+    "boundary": "Actual unchanged Order BasketClient.currentBasket consumes concrete actual serialized changed BasketResponse over localhost HTTP",
+    "assertions": "BasketSnapshot retains version,coupon,subtotal,discount,currency and line values; totalMinor is not used in snapshot mapping",
+    "outcome": "No Order production edit required for renamed totalMinor on this boundary"
+  },
+  "limits": ["Controlled provider transport and application repository/cache collaborators; deployed DB, Valkey, authentication/security and complete browser checkout are not asserted","All ten repository production sources are audited for contract consumers; no out-of-estate consumers are claimed"]
+}

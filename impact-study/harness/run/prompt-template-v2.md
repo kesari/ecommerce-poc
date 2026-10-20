@@ -4,9 +4,27 @@ repositories need validation without production edits. Use only source and
 product evidence available to this run. The proposed change is assumed applied;
 do not count merely implementing that supplied diff as downstream remediation.
 
+Evaluation policy shared by every task: assess Java HTTP clients, normal first
+message delivery through registered listeners, proxy forwarding, web data
+consumption, and private SQL/cache boundaries. Assume required routes and broker
+topics are provisioned and supplied migrations are applied. Deployment and
+mixed-version rollout, topic provisioning, security/authentication, retries and
+DLQ handling are outside the requested behavior. Put recommendations for those
+surfaces in additional_recommendations, rather than structured repair claims.
+Runtime status concerns compatibility under the supplied change: the intended
+new behavior itself is not a break. Leave unestablished behavior unresolved.
+
 Question: {{QUERY}}
 
 Origin repository: {{CHANGE_REPO}}
+
+Repository inventory: {{REPOSITORY_UNIVERSE}}
+Use repository IDs from this inventory for repo, provider and consumer;
+class and method names belong in symbols and action targets.
+For an unrelated estate with IDs `widget-service` and `report-service`, an edge
+could read `{ "provider": "widget-service", "consumer": "report-service",
+"type": "rest", "identifier": "GET /widgets/{widgetId}", "field": "code" }`.
+Those example IDs and that example contract are not findings for this task.
 
 ```diff
 {{CHANGE_DIFF}}
@@ -49,15 +67,22 @@ and `findings` containing these five arrays:
   `kafka`, `grpc`, `db`, or `local`. Use `METHOD /path` for REST identifiers and
   the exact topic for Kafka. Edge identity describes the ORIGINAL contract
   before the supplied diff: use its original topic and serialized field, or an
-  empty `field` when no field-specific claim is made. Actions describe the
+  empty `field` when no field-specific claim is made. For an enveloped message,
+  field paths are relative to the business payload, with arrays written like
+  `lines[].code` (omit the outer envelope prefix). Actions describe the
   transition from the original to the requested new contract. Provider -> consumer is the direction
   of data supplied, even if the consumer initiates the HTTP call.
 - `actions`: `{repo, target, operation, before, after}`. Use the exact baseline
   declaring member or contract location implementing the repair as target,
-  with dotted names as above, and the old/new contract values. An equivalent
+  with dotted names as above, and the old/new contract values. For
+  `read_json_field`, before and after are the local serialized member keys at
+  the named read location, rather than whole envelope paths. An equivalent
   method-level read mapping may name the method that implements that mapping.
   Public operations are `read_json_field`, `subscribe_topic`, `publish_topic`,
-  and `retain_json_alias`.
+  `retain_json_alias`, and `scale_numeric_field`. For `scale_numeric_field`,
+  before and after are positive integer multiplier strings applied at the
+  target (for example, an unrelated conversion from dozens to units uses
+  before `1` and after `12`).
   Describe an equivalent alias/read-mapping repair as `read_json_field`; the
   predicate concerns behavior rather than one particular patch implementation.
 

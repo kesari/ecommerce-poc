@@ -1,0 +1,193 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< com.poc:order_service >------------------------
+[INFO] Building order-service 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ order_service ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 5 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ order_service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 64 source files with javac [debug parameters release 21] to target/classes
+[WARNING] The following options were not recognized by any processor: '[mapstruct.unmappedTargetPolicy, mapstruct.defaultComponentModel]'
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ order_service ---
+[INFO] skip non existing resourceDirectory /private/tmp/discovery-infra-h05-20261019-a2/baseline/order-service/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ order_service ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 37 source files with javac [debug parameters release 21] to target/test-classes
+[WARNING] The following options were not recognized by any processor: '[mapstruct.unmappedTargetPolicy, mapstruct.defaultComponentModel]'
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ order_service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.poc.order.verification.MessagingBoundaryTest
+23:27:13.111 [main] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+23:27:13.112 [main] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+23:27:13.122 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 1.21.4
+23:27:13.286 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with Environment variables, system properties and defaults. Resolved dockerHost=unix:///Users/rajmohan/.docker/run/docker.sock
+23:27:13.286 [main] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+23:27:13.298 [main] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.9.1
+  API Version: 1.56
+  Operating System: Docker Desktop
+  Total Memory: 7931 MB
+  Labels: 
+    com.docker.desktop.address=unix:///Users/rajmohan/Library/Containers/com.docker.docker/Data/docker-cli.sock
+23:27:13.298 [main] WARN org.testcontainers.utility.ResourceReaper -- 
+********************************************************************************
+Ryuk has been disabled. This can cause unexpected behavior in your environment.
+********************************************************************************
+23:27:13.299 [main] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+23:27:13.299 [main] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+23:27:13.301 [main] INFO tc.apache/kafka:4.0.0 -- Creating container for image: apache/kafka:4.0.0
+23:27:13.446 [main] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for https://index.docker.io/v1/
+23:27:13.513 [main] INFO tc.apache/kafka:4.0.0 -- Container apache/kafka:4.0.0 is starting: bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7
+23:27:18.641 [main] ERROR tc.apache/kafka:4.0.0 -- Could not start container
+org.testcontainers.shaded.org.awaitility.core.ConditionTimeoutException: org.testcontainers.containers.GenericContainer$$Lambda/0x000000e8012b96d0 expected the predicate to return <true> but it returned <false> for input of <InspectContainerResponse(args=[sh, -c, while [ ! -f /tmp/testcontainers_start.sh ]; do sleep 0.1; done; /tmp/testcontainers_start.sh], config=ContainerConfig(attachStderr=false, attachStdin=false, attachStdout=false, cmd=[sh, -c, while [ ! -f /tmp/testcontainers_start.sh ]; do sleep 0.1; done; /tmp/testcontainers_start.sh], domainName=, entrypoint=[/__cacert_entrypoint.sh], env=[KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9094, KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS=1, KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER, KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1, KAFKA_INTER_BROKER_LISTENER_NAME=BROKER, KAFKA_LOG_FLUSH_INTERVAL_MESSAGES=9223372036854775807, KAFKA_NODE_ID=1, KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1, KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9094,BROKER://0.0.0.0:9093, KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1, CLUSTER_ID=4L6g3nShT-eMCtK--X86sw, KAFKA_PROCESS_ROLES=broker,controller, KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=BROKER:PLAINTEXT,PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT, KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0, PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin, JAVA_HOME=/opt/java/openjdk, LANG=en_US.UTF-8, LANGUAGE=en_US:en, LC_ALL=en_US.UTF-8, JAVA_VERSION=jdk-21.0.6+7], exposedPorts=[9092/tcp], hostName=bac823d96c59, image=apache/kafka:4.0.0, labels={discovery.verification=discovery-78d2e0c7-a0b5-43ef-af2b-d5531552aa54, maintainer=Apache Kafka, org.label-schema.build-date=2025-03-14, org.label-schema.description=Apache Kafka, org.label-schema.name=kafka, org.label-schema.vcs-url=https://github.com/apache/kafka, org.testcontainers=true, org.testcontainers.lang=java, org.testcontainers.sessionId=e4de0903-aecc-4941-9ee3-611ad548a52c, org.testcontainers.version=1.21.4}, macAddress=null, networkDisabled=null, onBuild=null, stdinOpen=false, portSpecs=null, stdInOnce=false, tty=false, user=appuser, volumes={/etc/kafka/secrets={}, /mnt/shared/config={}, /var/lib/kafka/data={}}, workingDir=/, healthCheck=null), created=2026-10-19T17:57:13.482283258Z, driver=overlayfs, execDriver=null, hostConfig=HostConfig(binds=[], blkioWeight=0, blkioWeightDevice=null, blkioDeviceReadBps=null, blkioDeviceWriteBps=null, blkioDeviceReadIOps=null, blkioDeviceWriteIOps=null, memorySwappiness=null, nanoCPUs=0, capAdd=null, capDrop=null, containerIDFile=, cpuPeriod=0, cpuRealtimePeriod=0, cpuRealtimeRuntime=0, cpuShares=0, cpuQuota=0, cpusetCpus=, cpusetMems=, devices=null, deviceCgroupRules=null, deviceRequests=null, diskQuota=null, dns=null, dnsOptions=null, dnsSearch=null, extraHosts=[], groupAdd=null, ipcMode=private, cgroup=, links=[], logConfig=LogConfig(type=local, config={}), lxcConf=null, memory=0, memorySwap=0, memoryReservation=0, kernelMemory=null, networkMode=bridge, oomKillDisable=null, init=null, autoRemove=false, oomScoreAdj=0, portBindings={9093/tcp=[Lcom.github.dockerjava.api.model.Ports$Binding;@7afb1741}, privileged=false, publishAllPorts=false, readonlyRootfs=false, restartPolicy=no, ulimits=null, cpuCount=0, cpuPercent=0, ioMaximumIOps=0, ioMaximumBandwidth=0, volumesFrom=[], mounts=null, pidMode=, isolation=null, securityOpts=null, storageOpt=null, cgroupParent=, volumeDriver=, shmSize=67108864, pidsLimit=null, runtime=runc, tmpFs=null, utSMode=, usernsMode=, sysctls=null, consoleSize=[0, 0], cgroupnsMode=private), hostnamePath=/var/lib/docker/containers/bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7/hostname, hostsPath=/var/lib/docker/containers/bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7/hosts, logPath=, id=bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7, sizeRootFs=null, sizeRw=null, imageId=sha256:3f7b939115cd4872e9cee9369d80bd69712fde55f9902f46d793f64848dedc75, mountLabel=, name=/frosty_mendel, restartCount=0, networkSettings=NetworkSettings(bridge=null, sandboxId=5634c5fc80e0ccdcfbe6a36a1cd3e12a8f32617a7060fb1366ef82c749ef0f5a, hairpinMode=null, linkLocalIPv6Address=null, linkLocalIPv6PrefixLen=null, ports={9093/tcp=[Lcom.github.dockerjava.api.model.Ports$Binding;@263bbfeb}, sandboxKey=/var/run/docker/netns/5634c5fc80e0, secondaryIPAddresses=null, secondaryIPv6Addresses=null, endpointID=null, gateway=null, portMapping=null, globalIPv6Address=null, globalIPv6PrefixLen=null, ipAddress=null, ipPrefixLen=null, ipV6Gateway=null, macAddress=null, networks={bridge=ContainerNetwork(ipamConfig=null, links=[], aliases=null, networkID=8543f8fc20c600080fee9b7b3215b657f5c8a135074384cd8deb605ae0a72412, endpointId=91d94a389ba64c700aa45fd66ee03fe681e71ab6b52c2d4b6042ec0742f72b97, gateway=172.17.0.1, ipAddress=172.17.0.2, ipPrefixLen=16, ipV6Gateway=, globalIPv6Address=, globalIPv6PrefixLen=0, macAddress=06:19:72:a4:fe:9c)}), path=/__cacert_entrypoint.sh, processLabel=, resolvConfPath=/var/lib/docker/containers/bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7/resolv.conf, execIds=null, state=InspectContainerResponse.ContainerState(status=running, running=true, paused=false, restarting=false, oomKilled=false, dead=false, pid=745, exitCode=0, error=, startedAt=2026-10-19T17:57:13.526171466Z, finishedAt=0001-01-01T00:00:00Z, health=null), volumes=null, volumesRW=null, node=null, mounts=[InspectContainerResponse.Mount(name=2369932eac31e4525c3c1815c7e6e04f3652a6b0df0bebc4feb87ad6916f79db, source=/var/lib/docker/volumes/2369932eac31e4525c3c1815c7e6e04f3652a6b0df0bebc4feb87ad6916f79db/_data, destination=/etc/kafka/secrets, driver=local, mode=, rw=true), InspectContainerResponse.Mount(name=410befbcb4636cf7d2a64a4122368ee3ca468399e376a5922ed9c2bdf13ef0cd, source=/var/lib/docker/volumes/410befbcb4636cf7d2a64a4122368ee3ca468399e376a5922ed9c2bdf13ef0cd/_data, destination=/mnt/shared/config, driver=local, mode=, rw=true), InspectContainerResponse.Mount(name=9ce16fbeda571233951f583b07889222847177f0ea28274f1f063ebf5e9da49d, source=/var/lib/docker/volumes/9ce16fbeda571233951f583b07889222847177f0ea28274f1f063ebf5e9da49d/_data, destination=/var/lib/kafka/data, driver=local, mode=, rw=true)], graphDriver=GraphDriver(name=overlayfs, data=null), platform=linux)> within 5 seconds.
+	at org.testcontainers.shaded.org.awaitility.core.ConditionAwaiter.await(ConditionAwaiter.java:167)
+	at org.testcontainers.shaded.org.awaitility.core.AbstractHamcrestCondition.await(AbstractHamcrestCondition.java:86)
+	at org.testcontainers.shaded.org.awaitility.core.ConditionFactory.until(ConditionFactory.java:985)
+	at org.testcontainers.shaded.org.awaitility.core.ConditionFactory.until(ConditionFactory.java:691)
+	at org.testcontainers.shaded.org.awaitility.core.ConditionFactory.until(ConditionFactory.java:708)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:458)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at com.poc.order.verification.MessagingBoundaryTest.deliveryPreservesBusinessState(MessagingBoundaryTest.java:39)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:775)
+	at org.junit.platform.commons.support.ReflectionSupport.invokeMethod(ReflectionSupport.java:479)
+	at org.junit.jupiter.engine.execution.MethodInvocation.proceed(MethodInvocation.java:60)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$ValidatingInvocation.proceed(InvocationInterceptorChain.java:131)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.intercept(TimeoutExtension.java:161)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestableMethod(TimeoutExtension.java:152)
+	at org.junit.jupiter.engine.extension.TimeoutExtension.interceptTestMethod(TimeoutExtension.java:91)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker$ReflectiveInterceptorCall.lambda$ofVoidMethod$0(InterceptingExecutableInvoker.java:112)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.lambda$invoke$0(InterceptingExecutableInvoker.java:94)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain$InterceptedInvocation.proceed(InvocationInterceptorChain.java:106)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.proceed(InvocationInterceptorChain.java:64)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.chainAndInvoke(InvocationInterceptorChain.java:45)
+	at org.junit.jupiter.engine.execution.InvocationInterceptorChain.invoke(InvocationInterceptorChain.java:37)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:93)
+	at org.junit.jupiter.engine.execution.InterceptingExecutableInvoker.invoke(InterceptingExecutableInvoker.java:87)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.lambda$invokeTestMethod$7(TestMethodTestDescriptor.java:216)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.invokeTestMethod(TestMethodTestDescriptor.java:212)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:137)
+	at org.junit.jupiter.engine.descriptor.TestMethodTestDescriptor.execute(TestMethodTestDescriptor.java:69)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:156)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:41)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:160)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:146)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$9(NodeTestTask.java:144)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:100)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:35)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:201)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:170)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:94)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:59)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:142)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:58)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:103)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:85)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.junit.platform.launcher.core.InterceptingLauncher.lambda$execute$1(InterceptingLauncher.java:39)
+	at org.junit.platform.launcher.core.ClasspathAlignmentCheckingLauncherInterceptor.intercept(ClasspathAlignmentCheckingLauncherInterceptor.java:25)
+	at org.junit.platform.launcher.core.InterceptingLauncher.execute(InterceptingLauncher.java:38)
+	at org.junit.platform.launcher.core.DelegatingLauncher.execute(DelegatingLauncher.java:47)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:56)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:194)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:150)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:124)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+23:27:18.657 [main] ERROR tc.apache/kafka:4.0.0 -- There are no stdout/stderr logs available for the failed container
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.789 s <<< FAILURE! -- in com.poc.order.verification.MessagingBoundaryTest
+[ERROR] com.poc.order.verification.MessagingBoundaryTest.deliveryPreservesBusinessState -- Time elapsed: 5.726 s <<< ERROR!
+org.testcontainers.containers.ContainerLaunchException: Container startup failed for image apache/kafka:4.0.0
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:351)
+	at org.testcontainers.containers.GenericContainer.start(GenericContainer.java:322)
+	at com.poc.order.verification.MessagingBoundaryTest.deliveryPreservesBusinessState(MessagingBoundaryTest.java:39)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.rnorth.ducttape.RetryCountExceededException: Retry limit hit with exception
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:88)
+	at org.testcontainers.containers.GenericContainer.doStart(GenericContainer.java:336)
+	... 5 more
+Caused by: org.testcontainers.containers.ContainerLaunchException: Could not create/start container
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:556)
+	at org.testcontainers.containers.GenericContainer.lambda$doStart$0(GenericContainer.java:346)
+	at org.rnorth.ducttape.unreliables.Unreliables.retryUntilSuccess(Unreliables.java:81)
+	... 6 more
+Caused by: org.testcontainers.shaded.org.awaitility.core.ConditionTimeoutException: org.testcontainers.containers.GenericContainer$$Lambda/0x000000e8012b96d0 expected the predicate to return <true> but it returned <false> for input of <InspectContainerResponse(args=[sh, -c, while [ ! -f /tmp/testcontainers_start.sh ]; do sleep 0.1; done; /tmp/testcontainers_start.sh], config=ContainerConfig(attachStderr=false, attachStdin=false, attachStdout=false, cmd=[sh, -c, while [ ! -f /tmp/testcontainers_start.sh ]; do sleep 0.1; done; /tmp/testcontainers_start.sh], domainName=, entrypoint=[/__cacert_entrypoint.sh], env=[KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9094, KAFKA_OFFSETS_TOPIC_NUM_PARTITIONS=1, KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER, KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1, KAFKA_INTER_BROKER_LISTENER_NAME=BROKER, KAFKA_LOG_FLUSH_INTERVAL_MESSAGES=9223372036854775807, KAFKA_NODE_ID=1, KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1, KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9094,BROKER://0.0.0.0:9093, KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1, CLUSTER_ID=4L6g3nShT-eMCtK--X86sw, KAFKA_PROCESS_ROLES=broker,controller, KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=BROKER:PLAINTEXT,PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT, KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0, PATH=/opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin, JAVA_HOME=/opt/java/openjdk, LANG=en_US.UTF-8, LANGUAGE=en_US:en, LC_ALL=en_US.UTF-8, JAVA_VERSION=jdk-21.0.6+7], exposedPorts=[9092/tcp], hostName=bac823d96c59, image=apache/kafka:4.0.0, labels={discovery.verification=discovery-78d2e0c7-a0b5-43ef-af2b-d5531552aa54, maintainer=Apache Kafka, org.label-schema.build-date=2025-03-14, org.label-schema.description=Apache Kafka, org.label-schema.name=kafka, org.label-schema.vcs-url=https://github.com/apache/kafka, org.testcontainers=true, org.testcontainers.lang=java, org.testcontainers.sessionId=e4de0903-aecc-4941-9ee3-611ad548a52c, org.testcontainers.version=1.21.4}, macAddress=null, networkDisabled=null, onBuild=null, stdinOpen=false, portSpecs=null, stdInOnce=false, tty=false, user=appuser, volumes={/etc/kafka/secrets={}, /mnt/shared/config={}, /var/lib/kafka/data={}}, workingDir=/, healthCheck=null), created=2026-10-19T17:57:13.482283258Z, driver=overlayfs, execDriver=null, hostConfig=HostConfig(binds=[], blkioWeight=0, blkioWeightDevice=null, blkioDeviceReadBps=null, blkioDeviceWriteBps=null, blkioDeviceReadIOps=null, blkioDeviceWriteIOps=null, memorySwappiness=null, nanoCPUs=0, capAdd=null, capDrop=null, containerIDFile=, cpuPeriod=0, cpuRealtimePeriod=0, cpuRealtimeRuntime=0, cpuShares=0, cpuQuota=0, cpusetCpus=, cpusetMems=, devices=null, deviceCgroupRules=null, deviceRequests=null, diskQuota=null, dns=null, dnsOptions=null, dnsSearch=null, extraHosts=[], groupAdd=null, ipcMode=private, cgroup=, links=[], logConfig=LogConfig(type=local, config={}), lxcConf=null, memory=0, memorySwap=0, memoryReservation=0, kernelMemory=null, networkMode=bridge, oomKillDisable=null, init=null, autoRemove=false, oomScoreAdj=0, portBindings={9093/tcp=[Lcom.github.dockerjava.api.model.Ports$Binding;@7afb1741}, privileged=false, publishAllPorts=false, readonlyRootfs=false, restartPolicy=no, ulimits=null, cpuCount=0, cpuPercent=0, ioMaximumIOps=0, ioMaximumBandwidth=0, volumesFrom=[], mounts=null, pidMode=, isolation=null, securityOpts=null, storageOpt=null, cgroupParent=, volumeDriver=, shmSize=67108864, pidsLimit=null, runtime=runc, tmpFs=null, utSMode=, usernsMode=, sysctls=null, consoleSize=[0, 0], cgroupnsMode=private), hostnamePath=/var/lib/docker/containers/bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7/hostname, hostsPath=/var/lib/docker/containers/bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7/hosts, logPath=, id=bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7, sizeRootFs=null, sizeRw=null, imageId=sha256:3f7b939115cd4872e9cee9369d80bd69712fde55f9902f46d793f64848dedc75, mountLabel=, name=/frosty_mendel, restartCount=0, networkSettings=NetworkSettings(bridge=null, sandboxId=5634c5fc80e0ccdcfbe6a36a1cd3e12a8f32617a7060fb1366ef82c749ef0f5a, hairpinMode=null, linkLocalIPv6Address=null, linkLocalIPv6PrefixLen=null, ports={9093/tcp=[Lcom.github.dockerjava.api.model.Ports$Binding;@263bbfeb}, sandboxKey=/var/run/docker/netns/5634c5fc80e0, secondaryIPAddresses=null, secondaryIPv6Addresses=null, endpointID=null, gateway=null, portMapping=null, globalIPv6Address=null, globalIPv6PrefixLen=null, ipAddress=null, ipPrefixLen=null, ipV6Gateway=null, macAddress=null, networks={bridge=ContainerNetwork(ipamConfig=null, links=[], aliases=null, networkID=8543f8fc20c600080fee9b7b3215b657f5c8a135074384cd8deb605ae0a72412, endpointId=91d94a389ba64c700aa45fd66ee03fe681e71ab6b52c2d4b6042ec0742f72b97, gateway=172.17.0.1, ipAddress=172.17.0.2, ipPrefixLen=16, ipV6Gateway=, globalIPv6Address=, globalIPv6PrefixLen=0, macAddress=06:19:72:a4:fe:9c)}), path=/__cacert_entrypoint.sh, processLabel=, resolvConfPath=/var/lib/docker/containers/bac823d96c593562a3facaee70c0b70439cb3a2ae355e2d1638062f79bc882d7/resolv.conf, execIds=null, state=InspectContainerResponse.ContainerState(status=running, running=true, paused=false, restarting=false, oomKilled=false, dead=false, pid=745, exitCode=0, error=, startedAt=2026-10-19T17:57:13.526171466Z, finishedAt=0001-01-01T00:00:00Z, health=null), volumes=null, volumesRW=null, node=null, mounts=[InspectContainerResponse.Mount(name=2369932eac31e4525c3c1815c7e6e04f3652a6b0df0bebc4feb87ad6916f79db, source=/var/lib/docker/volumes/2369932eac31e4525c3c1815c7e6e04f3652a6b0df0bebc4feb87ad6916f79db/_data, destination=/etc/kafka/secrets, driver=local, mode=, rw=true), InspectContainerResponse.Mount(name=410befbcb4636cf7d2a64a4122368ee3ca468399e376a5922ed9c2bdf13ef0cd, source=/var/lib/docker/volumes/410befbcb4636cf7d2a64a4122368ee3ca468399e376a5922ed9c2bdf13ef0cd/_data, destination=/mnt/shared/config, driver=local, mode=, rw=true), InspectContainerResponse.Mount(name=9ce16fbeda571233951f583b07889222847177f0ea28274f1f063ebf5e9da49d, source=/var/lib/docker/volumes/9ce16fbeda571233951f583b07889222847177f0ea28274f1f063ebf5e9da49d/_data, destination=/var/lib/kafka/data, driver=local, mode=, rw=true)], graphDriver=GraphDriver(name=overlayfs, data=null), platform=linux)> within 5 seconds.
+	at org.testcontainers.shaded.org.awaitility.core.ConditionAwaiter.await(ConditionAwaiter.java:167)
+	at org.testcontainers.shaded.org.awaitility.core.AbstractHamcrestCondition.await(AbstractHamcrestCondition.java:86)
+	at org.testcontainers.shaded.org.awaitility.core.ConditionFactory.until(ConditionFactory.java:985)
+	at org.testcontainers.shaded.org.awaitility.core.ConditionFactory.until(ConditionFactory.java:691)
+	at org.testcontainers.shaded.org.awaitility.core.ConditionFactory.until(ConditionFactory.java:708)
+	at org.testcontainers.containers.GenericContainer.tryStart(GenericContainer.java:458)
+	... 8 more
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Errors: 
+[ERROR]   MessagingBoundaryTest.deliveryPreservesBusinessState:39 » ContainerLaunch Container startup failed for image apache/kafka:4.0.0
+[INFO] 
+[ERROR] Tests run: 1, Failures: 0, Errors: 1, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  7.447 s
+[INFO] Finished at: 2026-10-19T23:27:18+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project order_service: 
+[ERROR] 
+[ERROR] See /private/tmp/discovery-infra-h05-20261019-a2/baseline/order-service/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

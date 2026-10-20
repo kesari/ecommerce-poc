@@ -1,0 +1,41 @@
+
+> commerce-web@0.0.0 test
+> vitest run src/test/discovery-wire.test.tsx --reporter=verbose
+
+
+ RUN  v4.1.11 /private/tmp/discovery-web-bda5a1zl/commerce-web
+
+ × src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION 30ms
+   → PRODUCT_PRICES: expected [ '₹123.46', '₹67.90' ] to deeply equal [ '₹123.45', '₹67.89' ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION
+AssertionError: PRODUCT_PRICES: expected [ '₹123.46', '₹67.90' ] to deeply equal [ '₹123.45', '₹67.89' ]
+
+- Expected
++ Received
+
+  [
+-   "₹123.45",
+-   "₹67.89",
++   "₹123.46",
++   "₹67.90",
+  ]
+
+ ❯ src/test/discovery-wire.test.tsx:31:81
+     29|   expect(cards.map(c=>c.querySelector('h2')?.textContent),'PRODUCT_ORD…
+     30|   expect(cards.map(c=>c.querySelector('img')?.getAttribute('src')),'PR…
+     31|   expect(cards.map(c=>c.querySelector('strong')?.textContent),'PRODUCT…
+       |                                                                                 ^
+     32|  }
+     33|  expect(requests).toEqual([path])
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:15:52
+   Duration  333ms (transform 28ms, setup 44ms, import 26ms, tests 31ms, environment 182ms)
+

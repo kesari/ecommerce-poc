@@ -1,0 +1,61 @@
+
+> commerce-web@0.0.0 test
+> vitest run src/test/CurrencyClosure.test.tsx --reporter=verbose
+
+
+ RUN  v4.1.11 /private/tmp/discovery-closure-5_608r0c/commerce-web
+
+stderr | src/test/CurrencyClosure.test.tsx > PROTECTED_PRODUCT_CURRENCY_DISPLAY
+TypeError: Currency code is required with currency style.
+    at new NumberFormat (<anonymous>)
+    at money (/private/tmp/discovery-closure-5_608r0c/commerce-web/src/utils/format.ts:2:10)
+    at /private/tmp/discovery-closure-5_608r0c/commerce-web/src/pages/ProductsPage.tsx:63:28
+    at Array.map (<anonymous>)
+    at ProductsPage (/private/tmp/discovery-closure-5_608r0c/commerce-web/src/pages/ProductsPage.tsx:54:21)
+    at Object.react_stack_bottom_frame (/private/tmp/discovery-closure-5_608r0c/commerce-web/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+    at renderWithHooks (/private/tmp/discovery-closure-5_608r0c/commerce-web/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+    at updateFunctionComponent (/private/tmp/discovery-closure-5_608r0c/commerce-web/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+    at beginWork (/private/tmp/discovery-closure-5_608r0c/commerce-web/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+    at runWithFiberInDEV (/private/tmp/discovery-closure-5_608r0c/commerce-web/node_modules/react-dom/cjs/react-dom-client.development.js:874:13) {
+  [stack]: [Getter/Setter],
+  [message]: 'Currency code is required with currency style.'
+}
+
+The above error occurred in the <ProductsPage> component.
+
+React will try to recreate this component tree from scratch using the error boundary you provided, RenderBoundary.
+
+
+ × src/test/CurrencyClosure.test.tsx > PROTECTED_PRODUCT_CURRENCY_DISPLAY 27ms
+   → BUSINESS_PRODUCT_CURRENCY_PRICES: expected [] to deeply equal [ '₹123.45', '₹67.89' ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/test/CurrencyClosure.test.tsx > PROTECTED_PRODUCT_CURRENCY_DISPLAY
+AssertionError: BUSINESS_PRODUCT_CURRENCY_PRICES: expected [] to deeply equal [ '₹123.45', '₹67.89' ]
+
+- Expected
++ Received
+
+- [
+-   "₹123.45",
+-   "₹67.89",
+- ]
++ []
+
+ ❯ src/test/CurrencyClosure.test.tsx:26:132
+     24|  const {container}=render(<RenderBoundary><MemoryRouter><ProductsPage/…
+     25|  await waitFor(() => expect(Boolean(container.querySelector('.product-…
+     26|  expect(Array.from(container.querySelectorAll('.product-action strong'…
+       |                                                                                                                                    ^
+     27|  expect(requests,'ACTUAL_PRODUCTS_API_CALL').toEqual(['/api/v1/product…
+     28| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:13:56
+   Duration  328ms (transform 25ms, setup 44ms, import 21ms, tests 28ms, environment 185ms)
+

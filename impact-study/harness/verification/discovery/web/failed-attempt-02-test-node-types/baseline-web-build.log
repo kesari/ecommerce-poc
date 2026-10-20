@@ -1,0 +1,7 @@
+
+> commerce-web@0.0.0 build
+> tsc -b && vite build
+
+src/test/discovery-wire.test.tsx(1,30): error TS2591: Cannot find name 'node:fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/test/discovery-wire.test.tsx(11,27): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+src/test/discovery-wire.test.tsx(12,15): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.

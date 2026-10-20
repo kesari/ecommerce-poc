@@ -1,0 +1,54 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "change_id": "H09",
+  "status": "verified",
+  "category": "private_storage",
+  "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "repository_universe": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "origin_repo": "catalog-service",
+  "proposed_change": {
+    "repo": "catalog-service",
+    "diff": "--- a/src/main/resources/db/migration/V3__private_price_column.sql\n+++ b/src/main/resources/db/migration/V3__private_price_column.sql\n@@ -0,0 +1 @@\n+ALTER TABLE products RENAME COLUMN price_minor TO unit_price_minor;\n--- a/src/main/resources/mybatis/mapper/ProductMapper.xml\n+++ b/src/main/resources/mybatis/mapper/ProductMapper.xml\n@@ -4,7 +4,7 @@\n <mapper namespace=\"com.poc.catalog.infrastructure.persistence.mapper.ProductMapper\">\n \n     <sql id=\"columns\">\n-        id, name, description, image_url AS imageUrl, price_minor AS priceMinor,\n+        id, name, description, image_url AS imageUrl, unit_price_minor AS priceMinor,\n         currency, active, created_at AS createdAt, updated_at AS updatedAt\n     </sql>\n \n@@ -34,7 +34,7 @@\n \n     <update id=\"updatePrice\">\n         UPDATE products\n-        SET price_minor = #{priceMinor},\n+        SET unit_price_minor = #{priceMinor},\n             updated_at = now()\n         WHERE id = #{id}\n     </update>\n"
+  },
+  "repositories": [
+    {
+      "repo": "catalog-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "basket-service",
+      "runtime_status": "unchanged"
+    }
+  ],
+  "symbols": [],
+  "edges": [],
+  "repair_alternatives": [
+    {
+      "name": "preserve_requested_change_without_coordinated_edits",
+      "actions": [],
+      "obligations": [
+        {
+          "repo": "catalog-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "basket-service",
+          "obligation": "validation_only"
+        }
+      ]
+    }
+  ]
+}

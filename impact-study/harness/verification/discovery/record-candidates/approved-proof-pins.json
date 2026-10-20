@@ -1,0 +1,14 @@
+{
+  "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json": "7acb79b4f9f7561cd830d024c3dd46be529ae3bc36f0bb5bacdb206e0a315c90",
+  "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json": "b06cb34bd6141f61265ff819a4a0da79aa1c94a1b3b7acac60a60e244bc18ba8",
+  "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json": "1011379ca38f6c2dbcbf1f4e74a584aa04e3bee5bfe510c007ba093841fe9d27",
+  "harness/verification/discovery/http/evidence/H08-attempt-a/manifest.json": "1b1d194608d69a838800bc32981f79bcc0f7c06525093e066d404ef70402ba13",
+  "harness/verification/discovery/http/closure/evidence/manifest.json": "78635e2d4dcda6bd0a4f5359aa0eea062870169fd3097bd24a85768b93b30c76",
+  "harness/verification/discovery/web/evidence/manifest.json": "5de9c4388f4e9d550d2ea2bbf420d35931fe630f03ff138817e198da37dba6b5",
+  "harness/verification/discovery/web/closure/evidence/manifest.json": "f472b6666aff9778a31248f8ff717f1707fa2a9d303c1f31f3b890eb008f346a",
+  "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json": "ac7967688c912b7d82a978fad082d403c8870c304516fa3d6f800cfb12df0eb7",
+  "harness/verification/discovery/infra/evidence/H05-attempt3/manifest.json": "fb8af92d62cc3ab4a799c6beb2d9b55e22f1f83f2818aeffc73a8e81101ebcc6",
+  "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json": "a15b430d36cdecb8a91e1361d6ebdf6aef3229081de14c055c3b1a0bb9c6d702",
+  "harness/verification/discovery/infra/evidence/H09-attempt1/manifest.json": "8431c8e6b104d29a16e98ddbaa4c4ff15d8881afb8f3c515c4b26d59e60cafea",
+  "harness/verification/discovery/infra/evidence/H10-attempt1/manifest.json": "a5ffc56db5928d02a5eba29b2b14e5527569888305b99eba2e31f59457f88114"
+}

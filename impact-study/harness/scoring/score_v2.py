@@ -8,6 +8,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 
 from score import check
@@ -20,7 +21,7 @@ FIELDS = {
     'edges': ('provider', 'consumer', 'type', 'identifier', 'field'),
     'actions': ('repo', 'target', 'operation', 'before', 'after'),
 }
-EVALUATION_REVISION = '2.1'
+EVALUATION_REVISION = '2.2'
 EQUIVALENT_FIELDS = {'symbols': 'fqn', 'actions': 'target', 'edges': 'field'}
 
 
@@ -36,7 +37,10 @@ def validate(value, spec, context):
     errors = []
     check(value, spec, context, errors)
     def extra_constraints(node, node_spec, path):
-        if isinstance(node, float) and not math.isfinite(node):
+        if isinstance(node, str):
+            if len(node) < node_spec.get('minLength', 0) or len(node) > node_spec.get('maxLength', math.inf):
+                errors.append(f'{path}: string length is outside schema bounds')
+        elif isinstance(node, float) and not math.isfinite(node):
             errors.append(f'{path}: nonfinite numbers are not valid protocol values')
         elif isinstance(node, (int, float)) and not isinstance(node, bool):
             if 'exclusiveMinimum' in node_spec and node <= node_spec['exclusiveMinimum']:
@@ -94,6 +98,12 @@ def record_errors(record):
     if errors:
         return errors
     repos = [item['repo'].strip() for item in record['repositories']]
+    discovery = record.get('evaluation_revision') == '2.2'
+    universe = record.get('repository_universe', [])
+    if discovery != ('repository_universe' in record):
+        errors.append('record: evaluation_revision 2.2 and repository_universe must occur together')
+    if discovery and (not universe or len(set(universe)) != len(universe) or not set(repos) <= set(universe)):
+        errors.append('record.repository_universe: must contain unique IDs and all evaluated repositories')
     if len(set(repos)) != len(repos):
         errors.append('record.repositories: duplicate repository observation')
     if record['origin_repo'].strip() not in repos:
@@ -116,12 +126,55 @@ def record_errors(record):
             errors.append(f"record.{plan['name']}: production_edit obligations must equal action repositories")
         if len({claim_key('actions', x) for x in plan['actions']}) != len(plan['actions']):
             errors.append(f"record.{plan['name']}: duplicate action")
+        for item in plan['actions']:
+            if item['operation'] == 'scale_numeric_field' and (not discovery or not valid_multiplier(item)):
+                errors.append('record.actions: scale_numeric_field requires revision 2.2 and positive integer multipliers')
     for kind in ('symbols', 'edges'):
         for item in record[kind]:
             refs = (item['repo'],) if kind == 'symbols' else (item['provider'], item['consumer'])
             if any(ref.strip() not in repos for ref in refs):
                 errors.append(f'record.{kind}: unknown repository')
     return errors
+
+
+def valid_multiplier(item):
+    return all(re.fullmatch(r'[1-9][0-9]*', item[field]) for field in ('before', 'after'))
+
+
+def restrict_discovery_findings(record, reported, invalid):
+    """Reject invalid repository identities without erasing valid peer claims."""
+    universe = set(record['repository_universe'])
+    for kind in FIELDS:
+        for key in list(reported[kind]):
+            refs = key[:2] if kind == 'edges' else key[:1]
+            item = claim_object(kind, key)
+            reason = None
+            if not set(refs) <= universe:
+                reason = 'repository identity is outside the public inventory'
+            elif kind == 'actions' and item['operation'] == 'scale_numeric_field' and not valid_multiplier(item):
+                reason = 'scale_numeric_field requires positive integer multipliers'
+            if reason:
+                reported[kind].remove(key)
+                invalid.append({'kind': kind, 'claim': item, 'errors': [reason]})
+
+
+def supported_impact_details(expected, reported, conflicts, invalid):
+    missing = {kind: [claim_object(kind, key) for key in sorted(expected[kind] - reported[kind])]
+               for kind in ('repositories', 'obligations', 'edges', 'actions')}
+    # Extra source context is allowed. Unsupported edits/failures and competing
+    # claims about a required contract are material to the selected repair.
+    material = []
+    contracts = {(key[2], key[3]) for key in expected['edges']}
+    for kind in ('actions', 'repositories', 'obligations', 'edges'):
+        for key in sorted(reported[kind] - expected[kind]):
+            if (kind == 'actions' or kind == 'repositories' and key[1] == 'broken'
+                    or kind == 'obligations' and key[1] == 'production_edit'
+                    or kind == 'edges' and (key[2], key[3]) in contracts):
+                material.append({'kind': kind, 'claim': claim_object(kind, key)})
+    unresolved = any(key[1] == 'unresolved' for kind in ('repositories', 'obligations') for key in expected[kind])
+    complete = not any(missing.values()) and not conflicts and not invalid and not material and not unresolved
+    return {'supported': complete, 'missing': missing, 'unverified_material_claims': material,
+            'unresolved_reference': unresolved}
 
 
 def split_answer(answer):
@@ -275,6 +328,19 @@ def run_receipts(record, answer, bundle_path, trusted_sha256):
         for key in ('tokens_consumed', 'cost_usd', 'elapsed_seconds'):
             if bundle['usage'][key] != answer.get(key):
                 errors.append(f'run receipt usage.{key} differs from answer telemetry')
+        if record.get('evaluation_revision') == '2.2' or 'measurement_identity' in bundle:
+            identity = bundle.get('measurement_identity')
+            if not isinstance(identity, dict) or identity != answer.get('measurement_identity'):
+                errors.append('run receipt protected measurement_identity differs from answer or is missing')
+            else:
+                for key, value in identity.items():
+                    if key != 'campaign_slot' and answer.get(key) != value:
+                        errors.append(f'run receipt protected {key} differs from answer')
+                slot = identity.get('campaign_slot')
+                if record.get('evaluation_revision') == '2.2' and (not isinstance(slot, dict)
+                        or slot.get('case_id') != record['change_id'] or slot.get('arm') != identity.get('runner')
+                        or slot.get('repeat') != identity.get('run_index')):
+                    errors.append('run receipt campaign slot is missing or inconsistent')
         if answer.get('product_tool_receipts') is not None and answer['product_tool_receipts'] != bundle['receipts']:
             errors.append('run receipt list differs from runner-stamped answer receipts')
         ids = set()
@@ -375,6 +441,9 @@ def score_change(record, answer, *, oracle_bundle_path=None, trusted_oracle_sha2
     if errors:
         return {'protocol_version': 2, 'status': 'invalid_record', 'errors': sorted(set(errors))}
     reported, invalid, errors = split_answer(answer)
+    discovery = record.get('evaluation_revision') == '2.2'
+    if discovery:
+        restrict_discovery_findings(record, reported, invalid)
     if isinstance(answer, dict):
         if answer.get('synthetic') is True:
             errors.append('synthetic answers cannot be scored as real agent observations')
@@ -397,7 +466,8 @@ def score_change(record, answer, *, oracle_bundle_path=None, trusted_oracle_sha2
         action_metrics = metric(actions, reported['actions'], invalid_counts['actions'])
         obligation_metrics = metric(obligations, reported['obligations'], invalid_counts['obligations'])
         plan_expected = {**expected, 'actions': actions, 'obligations': obligations}
-        conflicts = scope_contradictions(plan_expected, reported, oracle.get('equivalences', [])) if scoped else []
+        conflicts = scope_contradictions(plan_expected, reported, oracle.get('equivalences', [])) if scoped or discovery else []
+        supported = supported_impact_details(plan_expected, reported, conflicts, invalid) if discovery else None
         required_actions = actions <= reported['actions'] and not invalid_counts['actions']
         complete = (required_actions and obligations <= reported['obligations'] and not conflicts and not invalid
                     if scoped else actions == reported['actions'] and obligations == reported['obligations'])
@@ -407,6 +477,7 @@ def score_change(record, answer, *, oracle_bundle_path=None, trusted_oracle_sha2
         plans.append({'name': plan['name'].strip(), 'actions': action_metrics,
                       'obligations': obligation_metrics,
                       'complete': complete, 'satisfies_required_actions': required_actions,
+                      **({'supported_impact': supported} if discovery else {}),
                       'contradictions': conflicts,
                       'critical_downstream_action_misses': sorted(missed, key=canonical),
                       'action_differences': scoped_differences('actions', actions, reported['actions'], conflicts) if scoped
@@ -416,7 +487,8 @@ def score_change(record, answer, *, oracle_bundle_path=None, trusted_oracle_sha2
     def rank(plan):
         m = plan['actions']
         f1 = 2 * m['precision'] * m['recall'] / (m['precision'] + m['recall']) if m['precision'] + m['recall'] else 0
-        return (-int(plan['complete']), -int(plan['satisfies_required_actions']) if scoped else 0,
+        return (-int(plan['supported_impact']['supported']) if discovery else 0,
+                -int(plan['complete']), -int(plan['satisfies_required_actions']) if scoped else 0,
                 -f1, -plan['obligations']['correct'], plan['name'])
     plans.sort(key=rank)
     selected = plans[0]
@@ -451,11 +523,15 @@ def score_change(record, answer, *, oracle_bundle_path=None, trusted_oracle_sha2
         proof[kind] = {'reported': len(reported[kind]) + invalid_counts[kind], 'invalid': invalid_counts[kind], 'verified_correct': len(established),
                        'unverified': [claim_object(kind, k) for k in sorted(reported[kind] - established)]}
     grounded = all(expected[kind] <= verified[kind] for kind in FIELDS)
+    eligible = (record['status'] == 'verified' and not invalid and oracle['status'] == 'verified'
+                and grounded and provenance['status'] != 'invalid'
+                and ('run_started_at' not in answer or invocation_bundle['status'] == 'verified'))
     return {'protocol_version': 2, 'evaluation_revision': EVALUATION_REVISION,
             'change_id': record['change_id'], 'status': 'scored',
-            'record_status': record['status'], 'benchmark_eligible': record['status'] == 'verified' and not invalid
-                and oracle['status'] == 'verified' and grounded and provenance['status'] != 'invalid'
-                and ('run_started_at' not in answer or invocation_bundle['status'] == 'verified'),
+            'record_status': record['status'], 'benchmark_eligible': eligible,
+            'complete_supported_impact': eligible and selected['supported_impact']['supported'] if discovery else None,
+            'complete_supported_impact_details': {**selected['supported_impact'], 'eligible': eligible} if discovery
+                else {'status': 'not_applicable_to_legacy_record'},
             'metrics': metrics, 'invalid_findings': invalid,
             'differences': {kind: scoped_differences(kind, expected[kind], reported[kind], selected['contradictions']) if scoped
                             else differences(kind, expected[kind], reported[kind]) for kind in FIELDS},

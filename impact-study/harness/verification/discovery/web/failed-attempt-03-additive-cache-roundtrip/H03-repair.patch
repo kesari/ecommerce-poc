@@ -1,0 +1,48 @@
+--- a/src/api/basket.ts
++++ b/src/api/basket.ts
+@@ -2,34 +2,39 @@
+ import type { Basket } from './types'
+ 
+ export function getBasket() {
+-  return apiRequest<Basket>('/basket')
++  return basketRequest('/basket')
+ }
+ 
+ export function addBasketItem(productId: string, quantity: number) {
+-  return apiRequest<Basket>('/basket/items', {
++  return basketRequest('/basket/items', {
+     method: 'POST',
+     body: JSON.stringify({ productId, quantity }),
+   })
+ }
+ 
+ export function updateBasketQuantity(productId: string, quantity: number) {
+-  return apiRequest<Basket>(`/basket/items/${productId}`, {
++  return basketRequest(`/basket/items/${productId}`, {
+     method: 'PATCH',
+     body: JSON.stringify({ quantity }),
+   })
+ }
+ 
+ export function removeBasketItem(productId: string) {
+-  return apiRequest<Basket>(`/basket/items/${productId}`, { method: 'DELETE' })
++  return basketRequest(`/basket/items/${productId}`, { method: 'DELETE' })
+ }
+ 
+ export function applyBasketCoupon(code: string) {
+-  return apiRequest<Basket>('/basket/coupon', {
++  return basketRequest('/basket/coupon', {
+     method: 'PUT',
+     body: JSON.stringify({ code }),
+   })
+ }
+ 
+ export function removeBasketCoupon() {
+-  return apiRequest<Basket>('/basket/coupon', { method: 'DELETE' })
++  return basketRequest('/basket/coupon', { method: 'DELETE' })
+ }
++
++async function basketRequest(path: string, init: RequestInit = {}): Promise<Basket> {
++  const response = await apiRequest<Basket & { payableMinor: number }>(path, init)
++  return { ...response, totalMinor: response.payableMinor }
++}

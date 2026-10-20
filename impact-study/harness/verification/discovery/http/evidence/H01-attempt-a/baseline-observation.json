@@ -1,0 +1,14 @@
+{
+  "wire" : {
+    "id" : "00000000-0000-0000-0000-000000000001",
+    "name" : "item",
+    "description" : "description",
+    "imageUrl" : "/image",
+    "priceMinor" : 12300,
+    "currency" : "INR",
+    "active" : true
+  },
+  "bound_currency" : "INR",
+  "bound_price_minor" : 12300,
+  "http_requests" : 1
+}

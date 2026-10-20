@@ -1,0 +1,20 @@
+{
+  "case" : "H10",
+  "phase" : "baseline",
+  "raw_cache" : {
+    "id" : "11111111-1111-4111-8111-111111111111",
+    "name" : "Basmati Rice 5kg",
+    "description" : "Rice",
+    "imageUrl" : "/rice.png",
+    "priceMinor" : 65000,
+    "currency" : "INR",
+    "active" : true,
+    "createdAt" : 1.7672256E9,
+    "updatedAt" : 1.7672256E9
+  },
+  "cold_price" : 65000,
+  "warm_price" : 65000,
+  "legacy_price" : 65000,
+  "basket_price" : 65000,
+  "decode_error" : null
+}

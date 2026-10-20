@@ -1,0 +1,92 @@
+{
+  "provider_calls": 0,
+  "estate": {
+    "sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+    "repositories": [
+      "account-service",
+      "basket-service",
+      "catalog-service",
+      "commerce-bff",
+      "commerce-platform",
+      "commerce-web",
+      "inventory-service",
+      "order-service",
+      "payment-service",
+      "shipment-service"
+    ],
+    "revisions": [
+      {
+        "name": "account-service",
+        "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+        "dirty": false
+      },
+      {
+        "name": "basket-service",
+        "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+        "dirty": false
+      },
+      {
+        "name": "catalog-service",
+        "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+        "dirty": false
+      },
+      {
+        "name": "commerce-bff",
+        "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+        "dirty": false
+      },
+      {
+        "name": "commerce-platform",
+        "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+        "dirty": false
+      },
+      {
+        "name": "commerce-web",
+        "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+        "dirty": false
+      },
+      {
+        "name": "inventory-service",
+        "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+        "dirty": false
+      },
+      {
+        "name": "order-service",
+        "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+        "dirty": false
+      },
+      {
+        "name": "payment-service",
+        "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+        "dirty": false
+      },
+      {
+        "name": "shipment-service",
+        "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+        "dirty": false
+      }
+    ]
+  },
+  "native_checks": {
+    "pi-codex-gortex-first": {
+      "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/smokes/2026-10-20-operations-gortex-v1.4.2-verified/gortex.json",
+      "sha256": "f539026edce274dbb0ff7ff917200c794060b3c8ddbd89f48bc7dc8d6dca4ad7",
+      "status": "expected_outcomes"
+    },
+    "pi-codex-repowise-first": {
+      "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/smokes/2026-10-20-operations-resolved/repowise.json",
+      "sha256": "a60e9f16a4e1894bc18a68acabfb3e5558074551b2b90b0c938a6735f15639f9",
+      "status": "expected_outcomes"
+    },
+    "pi-codex-codebase-memory-first": {
+      "path": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/smokes/2026-10-20-operations-resolved/codebase-memory.json",
+      "sha256": "522f9ec1ef8b116b38809b8043e62511d3bc106865ccb9dda72c459dc6a75f08",
+      "status": "expected_outcomes"
+    }
+  },
+  "limits": [
+    "No paid development or comparison runs were authorized or executed.",
+    "Remote model weights have no independently available digest; provider/model identity is frozen.",
+    "Native empty/ambiguous results are retrieval outcomes, not evidence of an absent real dependency."
+  ]
+}

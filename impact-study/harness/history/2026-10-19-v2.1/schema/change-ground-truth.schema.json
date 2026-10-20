@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Change ground truth record",
+  "type": "object",
+  "required": [
+    "change_id",
+    "category",
+    "query",
+    "ground_truth"
+  ],
+  "properties": {
+    "change_id": {
+      "type": "string",
+      "pattern": "^[A-Z]+-[0-9]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "frozen"
+      ],
+      "default": "draft",
+      "description": "draft: authored before or independently of the implementation and freely editable. frozen: derived from the built estate and immutable without a commit note. Only frozen records may be scored."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "rest_contract",
+        "kafka_schema",
+        "shared_library",
+        "db_schema",
+        "internal_refactor"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "query": {
+      "type": "string",
+      "description": "Exact question given to every contestant."
+    },
+    "proposed_change": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "diff": {
+          "type": "string"
+        }
+      }
+    },
+    "ground_truth": {
+      "type": "object",
+      "required": [
+        "affected_repositories"
+      ],
+      "properties": {
+        "affected_repositories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "criticality"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "criticality": {
+                "type": "string",
+                "enum": [
+                  "critical",
+                  "contract_consumer",
+                  "test_only",
+                  "informational"
+                ],
+                "description": "Determines miss severity: critical -> critical_runtime_dependency, contract_consumer -> contract_consumer, test_only -> test_suite, informational -> informational."
+              },
+              "evidence_note": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "affected_symbols": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "fqn",
+              "repo"
+            ],
+            "properties": {
+              "fqn": {
+                "type": "string"
+              },
+              "repo": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "class",
+                  "record",
+                  "interface",
+                  "method",
+                  "field",
+                  "topic",
+                  "schema"
+                ]
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "critical_runtime_dependency",
+                  "contract_consumer",
+                  "test_suite",
+                  "informational"
+                ],
+                "default": "informational"
+              }
+            }
+          }
+        },
+        "affected_contracts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "type",
+              "identifier",
+              "provider_repo",
+              "consumer_repos"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "rest",
+                  "kafka",
+                  "grpc",
+                  "openapi",
+                  "db"
+                ]
+              },
+              "identifier": {
+                "type": "string"
+              },
+              "provider_repo": {
+                "type": "string"
+              },
+              "consumer_repos": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "critical_runtime_dependency",
+                  "contract_consumer",
+                  "test_suite",
+                  "informational"
+                ],
+                "default": "contract_consumer"
+              }
+            }
+          }
+        },
+        "required_tests": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "repo",
+              "suite"
+            ],
+            "properties": {
+              "repo": {
+                "type": "string"
+              },
+              "suite": {
+                "type": "string"
+              },
+              "level": {
+                "type": "string",
+                "enum": [
+                  "unit",
+                  "integration",
+                  "contract"
+                ],
+                "default": "unit"
+              }
+            }
+          }
+        },
+        "known_incidents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

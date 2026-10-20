@@ -1,0 +1,744 @@
+{
+  "protocol_version": 2,
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "change_id": "H01",
+  "record_sha256": "4c3ad44707d77632068ad0c0df1548a7a17dd52a1ae5d228015890d9e7bcfda6",
+  "scoring_policy": {
+    "mode": "scoped_reference_v1"
+  },
+  "artifacts": [
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/CatalogDiscoveryTest.java",
+      "sha256": "52e3827592bda4c4ca0f8270f6c53e551bb7cff7849e47e2b7e11d0117c27e77"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-boundary-test.log",
+      "sha256": "1152abe462b3aaef2abcc4bb33d19c864d724ddedb8d9ba91b1d23c7d9e1a4f5"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-junit.xml",
+      "sha256": "01444e6d5eceac07cb47a67a51ac9201e6cd345b26f59c9df9eef77659d2d741"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+      "sha256": "fe3fe050759572c756dc95ed59908e9ed1b0234785c3c9f89400d63e92bf2532"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-producer-compile.log",
+      "sha256": "bc62e7458734f481ac5d0105963a6d31a7379383c1830489646f8fcc01945821"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/changed-boundary-test.log",
+      "sha256": "4df9bbc8380e519c23ea21a4fa9444db8a21850c19bada6ae685181299c7bab2"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/changed-junit.xml",
+      "sha256": "fbd8481cd0a20504e1c3ec975d75ba98af327ef8ba0839ca2dbb995f4239655f"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+      "sha256": "9714758fc1b4479c52a374f985bb63f062c2fc6bc834badc8126588caa645116"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/changed-producer-compile.log",
+      "sha256": "a71f452d5a695861c480e94e838739c3899192f3f092f3f2d465c483051af935"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/changed.patch",
+      "sha256": "fbf6c55e36153858ed5d02d6cc5d84e09cdaa1003b493250b0d10395226b1deb"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/criteria.json",
+      "sha256": "505e1b8feefed3e1ce8cb0df945b27521bc226db93c970eb921e94c69512bbbe"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-boundary-test.log",
+      "sha256": "3ccb24794cbd0289ed89804eb129b7f8f997f84e1c618520b818668f18c06c6e"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+      "sha256": "f2bc544177332cbfb33b9cdef11ecb46aec4e96195b329de8fd8292546d95af4"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+      "sha256": "9714758fc1b4479c52a374f985bb63f062c2fc6bc834badc8126588caa645116"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-producer-compile.log",
+      "sha256": "e3c02b86ffe50c90a33259ad6df8369a1357f012beb3854ff3cbd329be57fbe9"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair.patch",
+      "sha256": "587928ba04ab238bb211fc1f0d0373fb597479fdf693904d97484e5e88a58929"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+      "sha256": "7acb79b4f9f7561cd830d024c3dd46be529ae3bc36f0bb5bacdb206e0a315c90"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-boundary-test.log",
+      "sha256": "249d7cf634c7337ea2681f6e18d4003ab90caf7a5a85df7f08511293bc7154bd"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-junit.xml",
+      "sha256": "d961211f5f631b1ed67e6f80c6dd1e063b703f86ac0778d440286e4f9bf63dd0"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+      "sha256": "02aca7b29d8147bc78624b82d993fd2bbbe69f179f3630d685c393cfaf4532ac"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-producer-compile.log",
+      "sha256": "1cdf3a1839506cb7ff44ed87175afc2a308fe9fcee354934a4d76286686b2abb"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+      "sha256": "5f455700a38f83b6beedf2328695dd2ffb0fff4514375dbed830bce1b44a2497"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/BasketClosureTest.java",
+      "sha256": "9d69eda798563f8c28b1ab01633d4d3ab43d94213850e8c6c08dcd24fd8f0ef0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/CurrencyClosure.test.tsx",
+      "sha256": "43fc628f05ccf8f5f47386d6f5e38534d32ed925d22a92510f2947fef93d98e0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-bff.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-forward-TEST-com.poc.bff.api.ForwardWireTest.xml",
+      "sha256": "1fe1bf37fdd57f9e1933e0520948c3479285820dcd1d6dae56f8b379f6f4a7a9"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-forward-com.poc.bff.api.ForwardWireTest.txt",
+      "sha256": "47565b6b1932f7888bdf3e55bd74f28c0ca65b0ce0f15b97461b52178936385f"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-forward.log",
+      "sha256": "ae2e0bb0c2370e0ddf584402096f879ac243e873acd4dfdd442cf9b576d02890"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-origin-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "fe59bd30e06bcead6c827da1240eb31cfb8f7b2e2db9b9a5c30e4aa12f571f49"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-origin-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "d0d8c3bf88414af68f7efc50a149bd033ebe5573bb2539d173ef69ad52c7b21a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-provider.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-provider.json.cache.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+      "sha256": "81772e979bb7f1c078d0bcc0aaeb54addc95017ae05ed20a5f88dfa844388ac9"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-bff.json",
+      "sha256": "96c3c1f1dfac3c9bbeb27d11d019f3aec5afb4428889a3a9502503afd781e6a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-forward-TEST-com.poc.bff.api.ForwardWireTest.xml",
+      "sha256": "10d4f3a1a425ef92fdc75f10431140fbe5ff6c0d7ef23895c4e443272b9a44c5"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-forward-com.poc.bff.api.ForwardWireTest.txt",
+      "sha256": "2e05cb3ba11c33a7b3162a01b1fae243d7c2c25b66c0a21b65d3545c94e74a71"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-forward.log",
+      "sha256": "b7c6c81c7f1c1893b8d8a95faf1ab917e7b43939ce1d531f4c67f6e24acd85a0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-origin-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "86e9374a33060f6d0a9d7b4d4670b04c0a232b6a6c141b49ee139da1c11fd5d6"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-origin-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "83de68fa96d09fd4287af2015f44de44abcdcdca3e3aacb39ba37ab8444e319c"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-provider.json",
+      "sha256": "96c3c1f1dfac3c9bbeb27d11d019f3aec5afb4428889a3a9502503afd781e6a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-provider.json.cache.json",
+      "sha256": "96c3c1f1dfac3c9bbeb27d11d019f3aec5afb4428889a3a9502503afd781e6a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+      "sha256": "0fa702f9ac612560fcd5b760aa8076f05d744e8b62e03a5774e8dfb1ecc144c0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-fault-web-build.log",
+      "sha256": "a72553397ccaf9a6bda4498594f877b19a7cbc2076298d575cf05bb76d97bbbc"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+      "sha256": "3d14b8773ac03d07819ce80113bda9c0153288f30df67a45869ddb0d37395e66"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+      "sha256": "f90753b23bf48d383a120c15505060f6be00c9a4ceaa3a97f637586a48e53262"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+      "sha256": "edea7aa2d04a21829c34d2107582789ec2caf1171d16bab6600f1223f6ab6931"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-upstream.patch",
+      "sha256": "f7cd1f284b9423dbe86eb2ffef1ac617708803c0bdfc304530e8688b42dc2c2e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-web-fault.patch",
+      "sha256": "10c48abdab827df438905783e2cf79d9507a5468e470137d871ac6909d3f6c9b"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+      "sha256": "e27789455561ad38e559b23813863536ab9c7d9009b09bae28a6b867ecb542fd"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-basket-snapshot.json",
+      "sha256": "70dfbb1114fcd0179f24ce6651528d4e90f9c252eb2c9981c28b911c36711f9a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-input.json",
+      "sha256": "4a03d1d12c306ae1d62a426da5e2d8df1a7a503b1fe53400a4f0b4bb761532aa"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-order-TEST-com.poc.order.verification.BasketClosureTest.xml",
+      "sha256": "c22c18153b87c263289e67c8943f63c6e2d1104863e1f56020ad1c438d7c5724"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-order-com.poc.order.verification.BasketClosureTest.txt",
+      "sha256": "61c34084013e72fc0f47b099932280ce30e46716f02a358ff1d1738c0cfd26da"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-order.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-basket-snapshot.json",
+      "sha256": "70dfbb1114fcd0179f24ce6651528d4e90f9c252eb2c9981c28b911c36711f9a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-input.json",
+      "sha256": "7938e5ed099c2654491cd5032035c1f1f03827f37ff7ef1fbff7f6826fd5a36a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-order-TEST-com.poc.order.verification.BasketClosureTest.xml",
+      "sha256": "d2ed394000e19c38499346af2c95c0d11518e3c3279bbe1f7a25ce7b6af465d1"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-order-com.poc.order.verification.BasketClosureTest.txt",
+      "sha256": "b2180e4d3c45a260736252e9fca24119d2b4954e9c20c1564a7bac9085b3e8ee"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-order.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "06c463c6fc99b52676fd9fa32af3003fd5e658cb2491bc3d87d904f9b1e9b8d5"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "afd124145af441bc60ba620d2f21c1b0dffaa12a4d271248cb9d687b75fc74af"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-input.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "f8203f9960b5ebd691051fce4d68cab1037b512cd5f8bc11af3143f58b3ba568"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "f548cbc6b2eaaa07e817c84aa043f4cb84136ce77617c6fa52c93c24d39e36a8"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-input.json",
+      "sha256": "d15d1aac3262bc1db71ca566eb17f2e4ff76da11f18e1401bca2336779661743"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "1a6fe8a372e38587975ecb7b384a02f7ff459060df3e9ba111476717e085ba15"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "afd124145af441bc60ba620d2f21c1b0dffaa12a4d271248cb9d687b75fc74af"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-input.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "18e71b6cc11e87d1a6dc811a18d00651c0c76d6abe42835e6133133c0b509b5b"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "afd124145af441bc60ba620d2f21c1b0dffaa12a4d271248cb9d687b75fc74af"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-input.json",
+      "sha256": "a3ab8dad765c7354eb47380ed74d9fdb55e06e5f7a11431cf11679d1ae6ed687"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/ProductClosureTest.java",
+      "sha256": "847a1b77ebe6f39413e2b346bcaaafcbc8c1ba0bc1f61a1980912d002aec4279"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/commands.json",
+      "sha256": "c9b654ac64146c5794b17fc9448916dcaaee1284820057408ff1ffb309ae1390"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/criteria.json",
+      "sha256": "f88b7dac3391639453fbf1ab9908f98446d1642d3ae4fd86086ccd75ba00ccaa"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/manifest.json",
+      "sha256": "f472b6666aff9778a31248f8ff717f1707fa2a9d303c1f31f3b890eb008f346a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/source-snapshots.json",
+      "sha256": "15264651799e601679e499250f0ae8dfb4122dec5c9a3b42f0fd5cbe3a5164da"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/summary.json",
+      "sha256": "437805f2e4d4814f27ecd04dd40891c1ed57db1a4ec8ee7288bbc2bc62902c12"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+      "sha256": "ac7967688c912b7d82a978fad082d403c8870c304516fa3d6f800cfb12df0eb7"
+    }
+  ],
+  "attestations": [
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "catalog-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "basket-service",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "commerce-bff",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "commerce-web",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "basket-service",
+        "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "commerce-web",
+        "fqn": "src/api/products.ts.listProducts"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "catalog-service",
+        "consumer": "basket-service",
+        "type": "rest",
+        "identifier": "GET /api/v1/products/{productId}",
+        "field": "currency"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "catalog-service",
+        "consumer": "commerce-bff",
+        "type": "rest",
+        "identifier": "GET /api/v1/products",
+        "field": "currency"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "commerce-bff",
+        "consumer": "commerce-web",
+        "type": "rest",
+        "identifier": "GET /api/v1/products",
+        "field": "currency"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "basket-service",
+        "target": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency",
+        "operation": "read_json_field",
+        "before": "currency",
+        "after": "currencyCode"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "commerce-web",
+        "target": "src/api/products.ts.listProducts",
+        "operation": "read_json_field",
+        "before": "currency",
+        "after": "currencyCode"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "catalog-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "basket-service",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "commerce-bff",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "commerce-web",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H01-attempt-a/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H01-attempt-a/repaired.patch",
+        "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+        "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+        "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    }
+  ]
+}

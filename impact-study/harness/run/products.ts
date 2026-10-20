@@ -34,8 +34,9 @@ export interface ProductReceipt {
  *  hash, SCIP FQN translation, Gortex route/symbol split.
  *  1.2.0 — output ceilings removed: an 8KB per-call bound discarded the tail
  *  of Gortex's richest answer, and with it three affected repositories.
- *  1.4.1 — use Codebase Memory 0.11.0's supported trace depth flag. */
-const ADAPTER_VERSION = "1.4.1";
+ *  1.4.1 — use Codebase Memory 0.11.0's supported trace depth flag.
+ *  1.4.2 — send Gortex API impact a native path substring, not METHOD/path. */
+const ADAPTER_VERSION = "1.4.2";
 
 function configSha(value: unknown) {
 	return sha256(JSON.stringify(value));
@@ -111,6 +112,11 @@ function assertRoute(value: unknown) {
 		throw new Error('route must read "<METHOD> /path", for example "POST /api/v1/addresses"; use symbol_impact for a code symbol');
 	}
 	return route;
+}
+
+export function gortexRouteQuery(value: unknown) {
+	const route = assertRoute(value);
+	return route.slice(route.indexOf(" ") + 1).split("?")[0];
 }
 
 /** A code symbol, not a route. */
@@ -552,7 +558,7 @@ function gortexContractsTool(binary: string, estate: string, pins: any, receipts
 	return {
 		name: "gortex_contracts",
 		label: "Gortex contracts",
-		description: "Use Gortex's native read-only contract bridge or fused API-impact analysis across the pinned workspace. Use route_impact for an HTTP route and symbol_impact for a code symbol; they are not interchangeable.",
+		description: "Use Gortex's native read-only contract bridge or fused API-impact analysis across the pinned workspace. Use route_impact for an HTTP route; its native lookup uses a path substring, so verify returned methods and paths. For symbol_impact use an exact graph node ID returned by gortex_query. Missing extracted routes do not establish an absent HTTP dependency.",
 		parameters: schema({
 			action: stringEnum(actions),
 			query: { type: "string", maxLength: 300, description: "An HTTP route for route_impact, a code symbol for symbol_impact, a bridge query for bridge_rank. Omit for list, check and validate." },
@@ -565,13 +571,13 @@ function gortexContractsTool(binary: string, estate: string, pins: any, receipts
 			const repo = assertRepo(params.repo);
 			const indexArgs = ["--index", join(estate, repo), "--format", "json"];
 			const parameters: Record<string, unknown> = { action, repo };
-			let executed: string | undefined;
+			const queries: { requested?: string; executed?: string } = { requested: params.query };
 			const invoke = () => {
 				if (action === "route_impact") {
 					const route = assertRoute(params.query);
 					parameters.query = route;
-					executed = route;
-					return result(run(binary, ["call", "api_impact", "--arg", `route=${route}`, "--arg", `repo=${repo}`, ...indexArgs]));
+					queries.executed = gortexRouteQuery(route);
+					return result(run(binary, ["call", "api_impact", "--arg", `route=${queries.executed}`, "--arg", `repo=${repo}`, ...indexArgs]));
 				}
 				const contractAction = action.startsWith("bridge_") || action === "symbol_impact" ? "bridge" : action;
 				const args = ["call", "contracts", "--arg", `action=${contractAction}`];
@@ -579,19 +585,18 @@ function gortexContractsTool(binary: string, estate: string, pins: any, receipts
 					const query = assertQuery(params.query, "query");
 					args.push("--arg", "mode=rank", "--arg", `query=${query}`);
 					parameters.query = query;
-					executed = query;
+					queries.executed = query;
 				} else if (action === "symbol_impact") {
 					const symbol = assertSymbol(params.query);
 					args.push("--arg", "mode=impact", "--arg", `symbol=${symbol}`);
 					parameters.query = symbol;
-					executed = symbol;
+					queries.executed = symbol;
 				} else {
 					args.push("--arg", `repo=${repo}`);
 				}
 				return result(run(binary, [...args, ...indexArgs]));
 			};
-			return invokeWithReceipt(receipts, takeId, "gortex_contracts", action, parameters, invoke,
-				{ requested: params.query, executed });
+			return invokeWithReceipt(receipts, takeId, "gortex_contracts", action, parameters, invoke, queries);
 		},
 	};
 }

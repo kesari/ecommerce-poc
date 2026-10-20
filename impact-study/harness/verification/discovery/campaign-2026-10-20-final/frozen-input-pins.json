@@ -1,0 +1,6 @@
+{
+  "harness/verification/discovery/frozen/cases.json": "27c5cf3076cd97ad2b7695639ba7784a2213e4f4c4afb55d836cb8f0e183ff08",
+  "harness/verification/discovery/campaign-2026-10-20-final/conditions.json": "e4f8ca617b8feb485edcf36abfc25ac99e9fec2deef112a31767d647092207da",
+  "harness/verification/discovery/campaign-2026-10-20-final/schedule.json": "f081e9e90cc4bf9051cc35b4a359b0a637f48745a4aca8f15f746103be0f5f9c",
+  "harness/verification/discovery/campaign-2026-10-20-final/empty-execution-ledger.json": "576a3f174a1d606437a867d47feb09afbb6782a146d5a2ddc04fac8331d358db"
+}

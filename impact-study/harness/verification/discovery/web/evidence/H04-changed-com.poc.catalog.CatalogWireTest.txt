@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.poc.catalog.CatalogWireTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.506 s -- in com.poc.catalog.CatalogWireTest

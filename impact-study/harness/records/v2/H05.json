@@ -1,0 +1,76 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "change_id": "H05",
+  "status": "verified",
+  "category": "messaging",
+  "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "repository_universe": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "origin_repo": "payment-service",
+  "proposed_change": {
+    "repo": "payment-service",
+    "diff": "--- a/src/main/java/com/poc/payment/application/PaymentCommandService.java\n+++ b/src/main/java/com/poc/payment/application/PaymentCommandService.java\n@@ -17,7 +17,7 @@\n \n @Service\n public class PaymentCommandService {\n-    public static final String CHARGED_TOPIC = \"payment.charged.v1\";\n+    public static final String CHARGED_TOPIC = \"payment.charged.v2\";\n     public static final String DECLINED_TOPIC = \"payment.declined.v1\";\n     public static final String REFUNDED_TOPIC = \"payment.refunded.v1\";\n \n"
+  },
+  "repositories": [
+    {
+      "repo": "payment-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "order-service",
+      "runtime_status": "broken"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "order-service",
+      "fqn": "com.poc.order.infrastructure.messaging.SagaResultListener.onResult"
+    }
+  ],
+  "edges": [
+    {
+      "provider": "payment-service",
+      "consumer": "order-service",
+      "type": "kafka",
+      "identifier": "payment.charged.v1",
+      "field": ""
+    }
+  ],
+  "repair_alternatives": [
+    {
+      "name": "preserve_requested_change_and_repair_consumers",
+      "actions": [
+        {
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.messaging.SagaResultListener.onResult",
+          "operation": "subscribe_topic",
+          "before": "payment.charged.v1",
+          "after": "payment.charged.v2",
+          "critical": true
+        }
+      ],
+      "obligations": [
+        {
+          "repo": "payment-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "order-service",
+          "obligation": "production_edit"
+        }
+      ]
+    }
+  ]
+}

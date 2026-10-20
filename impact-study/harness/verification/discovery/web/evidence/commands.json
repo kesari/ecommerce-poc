@@ -1,0 +1,607 @@
+[
+  {
+    "label": "H03-baseline-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=BasketWireTest",
+      "test"
+    ],
+    "cwd_repo": "basket-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-baseline-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.072
+  },
+  {
+    "label": "H03-baseline-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-baseline-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-baseline-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.903
+  },
+  {
+    "label": "H03-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-baseline-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.964
+  },
+  {
+    "label": "baseline-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 1.109
+  },
+  {
+    "label": "H03-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=BasketWireTest",
+      "test"
+    ],
+    "cwd_repo": "basket-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-changed-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.014
+  },
+  {
+    "label": "H03-changed-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-changed-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.334
+  },
+  {
+    "label": "H03-changed-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.54
+  },
+  {
+    "label": "H03-repaired-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.802
+  },
+  {
+    "label": "H03-repaired-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.529
+  },
+  {
+    "label": "H03-fault-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.814
+  },
+  {
+    "label": "H03-faulty-repair-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.532
+  },
+  {
+    "label": "H04-baseline-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-baseline-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.252
+  },
+  {
+    "label": "H04-baseline-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-baseline-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.343
+  },
+  {
+    "label": "H04-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.532
+  },
+  {
+    "label": "H04-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-changed-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.262
+  },
+  {
+    "label": "H04-changed-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-changed-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.359
+  },
+  {
+    "label": "H04-changed-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.539
+  },
+  {
+    "label": "H04-repaired-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.802
+  },
+  {
+    "label": "H04-repaired-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.53
+  },
+  {
+    "label": "H04-fault-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.799
+  },
+  {
+    "label": "H04-faulty-repair-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.532
+  },
+  {
+    "label": "H11-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.533
+  },
+  {
+    "label": "H11-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-changed-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.276
+  },
+  {
+    "label": "H11-changed-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-changed-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.363
+  },
+  {
+    "label": "H11-changed-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.545
+  },
+  {
+    "label": "H11-fault-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-fault-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.305
+  },
+  {
+    "label": "H11-fault-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-fault-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-fault-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.356
+  },
+  {
+    "label": "H11-incompatible-fault-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H11-fault-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.542
+  },
+  {
+    "label": "H12-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.541
+  },
+  {
+    "label": "H12-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-changed-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.287
+  },
+  {
+    "label": "H12-changed-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-changed-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.351
+  },
+  {
+    "label": "H12-changed-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.572
+  },
+  {
+    "label": "H12-fault-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-fault-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.284
+  },
+  {
+    "label": "H12-fault-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-fault-provider.json",
+      "WIRE_OUTPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-fault-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.351
+  },
+  {
+    "label": "H12-incompatible-fault-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/private/tmp/discovery-web-bda5a1zl/portable-evidence/H12-fault-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.551
+  }
+]

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poc.basket.infrastructure.persistence.mapper.BasketMapper">
+
+    <sql id="basketColumns">
+        id, user_id AS userId, coupon_code AS couponCode,
+        basket_version AS basketVersion, status,
+        created_at AS createdAt, updated_at AS updatedAt
+    </sql>
+
+    <sql id="basketItemColumns">
+        basket_id AS basketId, product_id AS productId, name,
+        unit_price_minor AS unitPriceMinor, currency, quantity
+    </sql>
+
+    <sql id="couponColumns">
+        code, discount_percent AS discountPercent, active
+    </sql>
+
+    <insert id="insertBasketIfAbsent">
+        INSERT INTO baskets (id, user_id)
+        VALUES (#{id}, #{userId})
+        ON CONFLICT (user_id) DO NOTHING
+    </insert>
+
+    <select id="findByUserId" resultType="com.poc.basket.infrastructure.persistence.row.BasketRow">
+        SELECT <include refid="basketColumns"/>
+        FROM baskets
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findActiveByUserId" resultType="com.poc.basket.infrastructure.persistence.row.BasketRow">
+        SELECT <include refid="basketColumns"/>
+        FROM baskets
+        WHERE user_id = #{userId}
+          AND status = 'ACTIVE'
+    </select>
+
+    <select id="findItemsByBasketId" resultType="com.poc.basket.infrastructure.persistence.row.BasketItemRow">
+        SELECT <include refid="basketItemColumns"/>
+        FROM basket_items
+        WHERE basket_id = #{basketId}
+        ORDER BY product_id
+    </select>
+
+    <update id="updateHeaderWithVersion">
+        UPDATE baskets
+        SET coupon_code = #{couponCode,jdbcType=VARCHAR},
+            basket_version = basket_version + 1,
+            updated_at = now()
+        WHERE user_id = #{userId}
+          AND status = 'ACTIVE'
+          AND basket_version = #{expectedVersion}
+    </update>
+
+    <delete id="deleteItems">
+        DELETE FROM basket_items
+        WHERE basket_id = #{basketId}
+    </delete>
+
+    <insert id="insertItem">
+        INSERT INTO basket_items (
+            basket_id, product_id, name, unit_price_minor, currency, quantity
+        )
+        VALUES (#{basketId}, #{productId}, #{name}, #{unitPriceMinor}, #{currency}, #{quantity})
+    </insert>
+
+    <select id="findVersionByUserId" resultType="long">
+        SELECT basket_version
+        FROM baskets
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findCoupon" resultType="com.poc.basket.infrastructure.persistence.row.CouponRow">
+        SELECT <include refid="couponColumns"/>
+        FROM coupons
+        WHERE code = #{code}
+    </select>
+
+    <update id="markCheckedOut">
+        UPDATE baskets
+        SET status = 'CHECKED_OUT',
+            updated_at = now()
+        WHERE user_id = #{userId}
+          AND status = 'ACTIVE'
+    </update>
+
+    <insert id="claimInbox">
+        INSERT INTO inbox (event_id) VALUES (#{eventId}) ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
+</mapper>

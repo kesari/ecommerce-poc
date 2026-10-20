@@ -1,0 +1,21 @@
+--- a/order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java
++++ b/order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java
+@@ -41,7 +41,7 @@
+                 throw new DownstreamUnavailableException("shipment returned an empty body", null);
+             }
+             return new DeliveryEstimate(new DeliveryWindow(response.fromDate(), response.toDate()),
+-                    response.shippingChargeMinor(), response.currency());
++                    Math.multiplyExact(response.shippingChargeMinor(), 10), response.currency());
+         } catch (RestClientException e) {
+             throw new DownstreamUnavailableException("shipment-service is unavailable", e);
+         }
+--- a/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
++++ b/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
+@@ -13,6 +13,6 @@
+ 
+     public static DeliveryEstimateResponse from(DeliveryEstimate estimate) {
+         return new DeliveryEstimateResponse(estimate.window().from(), estimate.window().to(),
+-                estimate.shippingMinor(), estimate.currency());
++                estimate.shippingMinor() / 100, estimate.currency());
+     }
+ }

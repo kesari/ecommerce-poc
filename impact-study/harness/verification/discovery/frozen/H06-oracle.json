@@ -1,0 +1,778 @@
+{
+  "protocol_version": 2,
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "change_id": "H06",
+  "record_sha256": "86492d0e1137cf1aede27c9d8f2a6bab8847d4fb4295e7a2d64ab5751840ed66",
+  "scoring_policy": {
+    "mode": "scoped_reference_v1"
+  },
+  "artifacts": [
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/MessagingBoundaryTest.java",
+      "sha256": "9c8daf8154763ef49de8b45f8f10452e7553bec97b16250d325d4890a5742a5e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/StorageBoundaryTest.java",
+      "sha256": "6bd2d2133a65ef89b13ea9e8f9941496815e55062d5e094cba5dde545efbcc62"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-junit.xml",
+      "sha256": "5ab5556058c9ac5f8f374e74d9b592a9e500ccd017caf61d3550465f5ad3496c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+      "sha256": "0c3eb6fe62c134913a70687f2fd490827ccd3d2374adea370b511128915294da"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-origin-compile.log",
+      "sha256": "5cd462dcca08bd5254d47dee1130a1af1e7a3b666afb8a4cf632896d4b3b17ed"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-test.log",
+      "sha256": "67de00fc7806aaba81cb0d65ffb3a900416b969e083132ace11ba962768139b3"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/changed-junit.xml",
+      "sha256": "9429544f5c0482867748ed744f50269c9730312b0af918f896fd5032651ac6fb"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+      "sha256": "7f3e398465d8b40383c9769ddb0e30300c4dddf1ed3e0bcfaff85f498befeff8"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/changed-origin-compile.log",
+      "sha256": "eb23d32221342015e16cf2b4ffe5587b68ce104692efe8a0ce224da5d662ad32"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/changed-test.log",
+      "sha256": "bc7f82388ef9b46496d4bb9bc57d6f987c6d624029a1c40c36173172841f44f9"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/changed.patch",
+      "sha256": "d545b4dfc014b1674b8842347b5dcc88a747b2b04510688b6d3d414f062c2ed4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+      "sha256": "94da25aae6e63e2eea30019db258f47eb0f70b7228d0bbb70af2bf7e4765fd75"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+      "sha256": "b7c4cd57d572d89a62751b232b9a23f405de96b1ea9d4263dcc0cf46cc54b5c7"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+      "sha256": "4cf312fa14ef62b616594a7063d70975525bf75041b77073a655d14b43cf8c02"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-origin-compile.log",
+      "sha256": "e5eeabf606482113296db0e04c00a8b9fbf3f20bdeba2a667ed024e8b305026a"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-test.log",
+      "sha256": "8a5f0c078db1eb66be05ee13267ecfefb308a3ee05230163b85e7c7e5d03a8a3"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair.patch",
+      "sha256": "d545b4dfc014b1674b8842347b5dcc88a747b2b04510688b6d3d414f062c2ed4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/image-0.log",
+      "sha256": "f975654dc586936aabc6db5dfcc45103c3656ddbfb346dfe437c1c665d1c1c28"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+      "sha256": "a15b430d36cdecb8a91e1361d6ebdf6aef3229081de14c055c3b1a0bb9c6d702"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/owned-container-ids.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-junit.xml",
+      "sha256": "a2a4ef8b8e3f8aba559d6efdff798f9c9829c248c84befca1742b38175b055c4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+      "sha256": "0574f63dd46e246fe6c13eca2cc9d740cfd051964ba9088a3f6f741fff03bdfd"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-origin-compile.log",
+      "sha256": "8965ef59169274ad123cd92a150f50845684e5e988fb9af39b0df08deca8156d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-test.log",
+      "sha256": "2a7f89f734b2a57d77e65b40f0a98a5123d5a9dc6f9560932dfb74bae6e407e3"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/repaired.patch",
+      "sha256": "5183d52d8bec7d3941783a88ceb815c45393ce37c149263c2f052410ab9f9877"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/pom.xml",
+      "sha256": "077ccca6a20679e7a4846420c326a98a65fcd57633af81f410336158064698d5"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/InventoryApplication.java",
+      "sha256": "3d1fb5607b650ad02d545feccf6f5b73daa8f170f3685fd0ae256de4379480ab"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/application/EventEnvelope.java",
+      "sha256": "fe10363e899c2564b762389586c7e7dde29cd29812c24559f6ea8a73a05d8d6c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/application/InventoryService.java",
+      "sha256": "ab26912e4d6660d156b16b3aa8c8c561f2464a9c02cf913a34c047f88310f2e5"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/application/port/InboxRepository.java",
+      "sha256": "621f701f1154195d881e6946ffa09297d5e8784ab36b0ea0db6b25db89ca2aca"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/application/port/OutboxRepository.java",
+      "sha256": "571b676a65efd0207cb6c747499b4a04daa8a0915fd8aa291bdd448914d90116"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/application/port/ReservationRepository.java",
+      "sha256": "77eaa7c6d8da6bc5cb9f3b8fa3d6b182565ce5ada431eafa2ed75f045316c8fa"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/application/port/StockRepository.java",
+      "sha256": "46f2e30efa32fefe77fcda8ea40bd24f9c2cb42150b488916e36edc085c131c6"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/domain/model/CommitFailureReason.java",
+      "sha256": "bae80a8a34d337d0661ae686bbb3b0ae7b37ebc13f8dda495864a0daae590a80"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/domain/model/ReleaseReason.java",
+      "sha256": "22c0ae5c4c6454319079903c23dd0c090e825662ceb7f2c024af07bbb782026a"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/domain/model/Reservation.java",
+      "sha256": "17c57ffc55ece055d9eb0c853573fd3a5a05239d60693dfe4162a157c6aa320d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/domain/model/ReservationItem.java",
+      "sha256": "eeb288748fe3527ac1edb4241378348da746db75b7f48ac5cea00dc7600c4a6a"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/domain/model/ReservationStatus.java",
+      "sha256": "e06f51869f73cf0faa279b2163ff7c346fadc66e0d2214a01301b8c8ccbc07fc"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/ClockConfig.java",
+      "sha256": "1f55d36984db885c9261f19e21f47afb35eba621444145ff4b99d649ad9571ce"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/messaging/InvalidMessageException.java",
+      "sha256": "9fe987607bf14be667368238c29a7830e0b3098473e1726f967805dab9f5fe3d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java",
+      "sha256": "92cf4187d4a78db18346d595595e647a2e56259cce5859de2aaeed244dd02743"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/messaging/OutboxPublisher.java",
+      "sha256": "8931543f95615167eeaefbd96d03b77a06225e8d489d617155e4e554e6dee782"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/messaging/RetryRouter.java",
+      "sha256": "07b5fdace915e698560287634f3537b3784748197e5a4f1df61edc2850af70b2"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/mapper/InventoryMapper.java",
+      "sha256": "23f5c38d4c8772d5999aa185b197a4b81c66e616032d362f54b5308b6a471d2b"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisInboxRepository.java",
+      "sha256": "41753edf6068fdba501948a743f920d5dc0b3087d3957b3beb55ca509745c941"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisOutboxRepository.java",
+      "sha256": "f2884d240923f9565bd158e87a2ffc8d2b6485d7be88d4081c55f146deb455af"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisReservationRepository.java",
+      "sha256": "7d0478cfd92e9491a62669455a48ff6e31e44d152125b2d25c17c4dfd869e5c2"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/repository/MyBatisStockRepository.java",
+      "sha256": "d8a150ce704f60169414ab2a5c9b339aa18e4ec8a9f5e071d6749a8a9895d5f5"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/row/OutboxRow.java",
+      "sha256": "6d055940cfef1aa2001cc35cce4c98106f3ee9870ca5f0e256a2cf3be07776cc"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/row/ReservationItemRow.java",
+      "sha256": "7a91930a3f7565da66949dcf22641c71c37d9dbedd8fbfb4cd37b6a0620e0ce5"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/row/ReservationRow.java",
+      "sha256": "b33d8c621655cbb7fabe0569a8cc1cd614adbc3cc8249d9635465f8f3c864702"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/row/StockRow.java",
+      "sha256": "06f81e00c9091fde3831c6e299095ba21c0304bce378c657cdcd1ed703799409"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/java/com/poc/inventory/infrastructure/persistence/typehandler/UuidTypeHandler.java",
+      "sha256": "e6a29f1eb25188cab0637d53c7058f1dadeecfbdd5441f65a3dfcb8828dbf59e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/application.yml",
+      "sha256": "70be9b69305ce72fa6598ca39672a70dbc2c58886217d9ab88a4cb97b529081b"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/db/migration/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/db/migration/V1__inventory_schema.sql",
+      "sha256": "8ea0dd67dc338942c97fca12c765b7ee5dec7b591a7dd2e14c58ba8e17728419"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/db/migration/V2__seed_stock.sql",
+      "sha256": "cce38f234ca6f1aa9a2aeac1d7cb183c8943b0cdd0cf08518d96a48d100b33c1"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/mybatis/mapper/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/mybatis/mapper/InventoryMapper.xml",
+      "sha256": "7fedf8c69e46ef6e7eed893fe7e25d802c7b89e4cbce960ba4c571deaa1a95d4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/inventory-service/src/main/resources/mybatis/typehandler/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/pom.xml",
+      "sha256": "27be12754ad006dbfb885a07ec9abc1b7988feefceb14172caf94591233d8bc3"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/OrderApplication.java",
+      "sha256": "9b5b8f550366a904b423d6b67a7479e010369d76a7abd08c2a1ed598b20c63ee"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/CheckoutController.java",
+      "sha256": "307766720d90c759293ddd206ec60b0ff597634647121d1c837ae7e5fe5a0360"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/CorrelationIdFilter.java",
+      "sha256": "4570a444a5640b528408ea768b8926806fda12622e80aea48dda7ca838ebad23"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/GlobalExceptionHandler.java",
+      "sha256": "66e9c1d8d1c5efdbc3d26408c621a7657654a8128b4cd1225148a1e00ef6c93b"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/OpenApiConfig.java",
+      "sha256": "d316579198f3bbae893661e77257b45fef324d1b24d6f68e1e90cab844d85f8f"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/dto/CreateQuoteRequest.java",
+      "sha256": "d73b6469410715b724a988038a7cf977510810a65db3984980c9739019737f29"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/dto/OrderResponse.java",
+      "sha256": "32e0784f899f2cdc62ff73bf9ffcbca4b8c3c5783ce39fb484ca3e68d399c32e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/dto/PlaceOrderRequest.java",
+      "sha256": "68ab105f5c6c0b308af570b7fe427a25d374f3b99064c045844b2d951278635a"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/api/dto/QuoteResponse.java",
+      "sha256": "bdf6e0cf2a2f6614d7d492a0db7434c4b5e11b1df133fc7c374b10afbac71894"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/CheckoutService.java",
+      "sha256": "e234659900ba0b98ec2cbef60fa7eb99efe737a4785105e0a5d092848c5e379f"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/EventEnvelope.java",
+      "sha256": "4435c1b054d1e8a92e79a49045be6c8985040463714745e0722bf6736bfa6f59"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/OrderPricing.java",
+      "sha256": "a0a41a2897a75a3bcd8d1efcbf13665307179db904a6a4c0bf2c65993b8a60c6"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/OrderService.java",
+      "sha256": "6f049c633d7e063116f1eab1ab6d94bae1c922c45770ff624e28a0eeaf0b8213"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/SagaOrchestrator.java",
+      "sha256": "d9b7ad0df94698baf2e9bef1d30688bc650f365b9785678e8ea9656088d1a8d4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/SagaTransitions.java",
+      "sha256": "d8a4540d65364218186e3590bf0fbe27b5b2259128efa2134ee836550517ac43"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/AccountPort.java",
+      "sha256": "8fdf815bd60e0afdc489f302bfcc99d449bbb1a0f7bc81f3d64fd6033f484bc7"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/BasketPort.java",
+      "sha256": "9cdfa0392342277900c6dbd9b02641728af4a2f25f9c5baf916eb1154c6f44c5"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/IdempotencyRepository.java",
+      "sha256": "9c955a0d21d7b8a2246f79829eb274e4fe0ecf610489a764de596a57df0cd149"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/InboxRepository.java",
+      "sha256": "de4eabb8fedeaa3bf4f9eed1e9dc5aa2cecb82e4349e321d90457d99d9d5b752"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/OrderRepository.java",
+      "sha256": "bedae907ddad95a44797fc01cc4d3fca77c9751062c65ddb290079df3d897bf0"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/OutboxRepository.java",
+      "sha256": "95e3818a99a8b222186c0610b957c092bf763f130540d912fb190d44f98f3a1c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/QuoteRepository.java",
+      "sha256": "ee5e1b02f1e5698a4b4f44ee26cc27d9fbdc82234f7bd1b0efab54833360a60c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/application/port/ShipmentPort.java",
+      "sha256": "8ea0ac7d1557ca6ff34f6d01afa1934de7c3489eee0ccd31c1f5d6db9eba6d6b"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/BasketVersionChangedException.java",
+      "sha256": "b482da69b9291bc17d0e12f03b8ef6cb9cc55d392e10a3e0b37fd97dc5cd9631"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/IdempotencyKeyRequiredException.java",
+      "sha256": "9577d08aaee65c323011287879a18210cc29de160f7995b6805b2d96ecf47f3c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/IdempotencyKeyReusedException.java",
+      "sha256": "5a366885d0b58e91f16c0ab70daec8e749c11abe2bd39510f1cbf55919027cc3"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/OrderNotFoundException.java",
+      "sha256": "dc79a4391f5344d35abe9d9643f7ed75b9ec9b94a84e7c95ebd7c0b2d0fa409d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/QuoteExpiredException.java",
+      "sha256": "38e76948e4e56e22de8a8b5b0303b71a4cf4eadb400418b5be73cc3fa13fc229"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/QuoteNotFoundException.java",
+      "sha256": "32469a06b2774b95def255c4373a459ef3c9871743f5a5cccb95246202ff01a4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/exception/UnsupportedPaymentMethodException.java",
+      "sha256": "49beb58905b290a1ccd7e7ff2b3d83462adf4a701bb0d387b99a46569224aaef"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/AddressSnapshot.java",
+      "sha256": "ff672fbacb6d8e58a81d5e1ed5c46b1160e65a1a85f75f149a4e3972cb2a918f"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/DeliveryWindow.java",
+      "sha256": "58a5e278228f70991ef687f9df1bee6820e9bfd0d894085f1443f94c2b317b86"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/Order.java",
+      "sha256": "c85d85dd9800ab145bc3dd6e3dbc2716fbd278545a85302fad9cf3b6f9e58955"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/OrderLine.java",
+      "sha256": "7614e478c62448fdfb3b5190421a202f18c20ae93642d75c8c21e2860b54e320"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/OrderStatus.java",
+      "sha256": "5195d69a5410ad58246635b0c4708b7e1242993d78b6833fb34ddcadcda366bc"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/PaymentMethod.java",
+      "sha256": "a9909c1aad38d3b146f4f1054c80188cfe0e8c6e2d9912ccf11550eeaba51c5e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/PriceBreakdown.java",
+      "sha256": "6dd7c538f643c0e56cd6016a263e54e200628a92896fe86a865169fddf7e68f0"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/domain/model/Quote.java",
+      "sha256": "6050329d789f8fc46f49bf149df29dd0035d387d34c5de9ebeedbee06063050a"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/ClockConfig.java",
+      "sha256": "1f3916b6d4327400836a633458a1748e79b3d8e3e232b3ed9009c673631c55b6"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/client/AccountClient.java",
+      "sha256": "b8f3f84e93ef46d5192d61cee2d04f7bcfddb1cb817b7fa1a75067141346f727"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/client/BasketClient.java",
+      "sha256": "8d6a58fdda9ef8ae3ff867918186f86434a837bba1d196f25b9e9ec517ca3611"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/client/ClientConfig.java",
+      "sha256": "a38ce1106b17bef0257feb9df8b010ad8c7d662fd5d824008342cdab7e3a8c53"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/client/DownstreamUnavailableException.java",
+      "sha256": "0242c131f0e425b8a4a2eec04bce7f5b608b4c5f271e278e3d6c9e289ce10692"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java",
+      "sha256": "59f79f5ff0d05c67541f23e7f94d7cae4b0cf96189dc741e21630d01e40a7c7f"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/messaging/InvalidMessageException.java",
+      "sha256": "bd4334afce59f32b0d396f56ed2165488029d60804c2cc34d8902c31f2024c02"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/messaging/OutboxPublisher.java",
+      "sha256": "845ea92add7df69d6d714ef36cf6fb633933787e737adb204b78c49e0111b400"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/messaging/RetryRouter.java",
+      "sha256": "7fa7d2aa671fbf8047cfcfaa3aed3d7e924bf08db7aaa4fb89c8841f80c87040"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/messaging/SagaResultListener.java",
+      "sha256": "57cde20f1243df1609d8ab9463ea5bc353cff0463623050ab3ebe309799d9496"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/mapper/OrderMapper.java",
+      "sha256": "7f540327629f6fcd3bc32073127ca60f62f7aa5272de1b8aedcac1f38aeb8031"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/JsonSupport.java",
+      "sha256": "35baf98b63b1592e8ed708a9f039db63ea9ea7b6ab078f4bffeeaf57c355c793"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisIdempotencyRepository.java",
+      "sha256": "6c20f5f91b53686d1aeceee46924118b6a8f1babb064961863b8a3d58a26bd3d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisInboxRepository.java",
+      "sha256": "2cba31575e5fe5ef26eee8e1b7d56823bfcf9bd4329461cf92ab7dc097f7b0b2"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOrderRepository.java",
+      "sha256": "8b3e98a449388b98c536987742811f244179278f74b3c1365dc063a798bc2434"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisOutboxRepository.java",
+      "sha256": "959dae9c1d74c3b52baa368550752d79f16c3f14eb9f087a221dc210d018e48e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/repository/MyBatisQuoteRepository.java",
+      "sha256": "7ef7e32f96769867d494623daa7718e45f9f25c871d826be1caa28d35ec6ef15"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/row/IdempotencyRow.java",
+      "sha256": "bf53774da4f04e398b93ec28127a6f0f7ab6f4fe7a0f54b8047440f15aa436db"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/row/LineRow.java",
+      "sha256": "3438550cd411e89f5337b78339ebf686b71a3670bc74604bd7b624c68db0f1bd"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OrderRow.java",
+      "sha256": "05b4571b7f13a0d939ee1fbc461fc81e2b469bbbb40bcd5b7ba917fc7834b409"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/row/OutboxRow.java",
+      "sha256": "9ca7270c894c2fb5108e6fb693723cbd3d6a57863c53403f937f1e243171f026"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/row/QuoteRow.java",
+      "sha256": "a7eb3a95e3f13e90acf3445e7dc7e5a7906e3285f331ec23216aca80cbe3f4b9"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/persistence/typehandler/UuidTypeHandler.java",
+      "sha256": "01660e7205b081ad6ddaf1d38610ae3790f22dea9d9645373afc238b788e4e7d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/security/ProblemAuthHandlers.java",
+      "sha256": "9c6ad1de4f58e7adace5916f8bba6c7bf12168fbcb35e10d1cee74125bf1b9c4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/security/SecurityConfig.java",
+      "sha256": "5ab635197da4ac0180758b87c01f143173d7e2e3ce722c5960a2f48e49bf1835"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/java/com/poc/order/infrastructure/security/SecurityProperties.java",
+      "sha256": "d456cf8fcf1105716bf7c81b49f4d50b68f10376f6bfd847fc71256b8a6d6b27"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/resources/application.yml",
+      "sha256": "4d5ca27f50b67cffa3a78a738e4ca5e6a27fe614cc0649d7d1a144bed4b6bd4f"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/resources/db/migration/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/resources/db/migration/V1__order_schema.sql",
+      "sha256": "8362ad3c178f03e9fee019c54bf66c4eff52a9ccabda933736aff4a8b442fec6"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/resources/mybatis/mapper/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/resources/mybatis/mapper/OrderMapper.xml",
+      "sha256": "437f857ca51379fe3a8e818c67ed3e5bb039a401bced6024548a51411c5cd7c9"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/order-service/src/main/resources/mybatis/typehandler/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/pom.xml",
+      "sha256": "4c8a9f78b1082be04b3ed2d9ee712ce1554faaab974f3cd7fc213fa3b56abfd8"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/PaymentApplication.java",
+      "sha256": "d6307bba82f4f0d6e5f38ae131906382db51d31b502874d024ce175c8a72c6e8"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/ChargeRequested.java",
+      "sha256": "1d841840d57c023b97f89b5980dc7fa41818446506e20e2f98c5946dc0875fa0"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/EventEnvelope.java",
+      "sha256": "9b0a4c51a8f70a2430ea78086bfb0eccab22a579ce3a42287cc0e574682a3fa4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/InvalidMessageException.java",
+      "sha256": "adc8f2eafa2e0c6eed9cc5a3928759cd98fd7ac3dff89ae5331c662ef91b1692"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java",
+      "sha256": "b3c1a4752e9aa1d7f4124bd841ce152237a5e80fa45650062d3a0c12d2fd4564"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/PaymentMessageParser.java",
+      "sha256": "2cd67a309b9578e109f54e44a8a51a645d52495d5ea2cd7241b14872f9769f3e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/PaymentProcessingException.java",
+      "sha256": "bfdb7e959ff4881359e6ab44af149990dfa2415cb6c8bf9533e6a9352d57fbf7"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/RefundRequested.java",
+      "sha256": "caf5d52b7ce0ed12317f8d22a2f0a9691fdcefd8f9a0cdc1fead8623e78919bd"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/application/port/PaymentStore.java",
+      "sha256": "455fcef18dc90d24774633724f748a378138d41a87422b9c335a5a6eeca17cb4"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/domain/Payment.java",
+      "sha256": "104545a9b5391ee2fa0a394764addcc4ddaca6b729cceb1a59a4137b42877d5c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/domain/PaymentStatus.java",
+      "sha256": "44b3b9fdcb9ed4a869b9afe8dc2c5b3fd86ffcceee95eed6a0a1f7120db66c9f"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/domain/Refund.java",
+      "sha256": "60cdac2aa847965f35f8f5f9e7756c8dd92c150901e42b141eab4eb4e43ecc7d"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/kafka/OutboxPublisher.java",
+      "sha256": "96c4137a968d5c62b035a3d580c6dde1a8bc27dfad90cefcec1d598df472c59e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/kafka/PaymentCommandListener.java",
+      "sha256": "536550d523dacfd96eb1ac89a3544c1b5ad2abc211303e0e811f5412373af385"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/kafka/PaymentConfiguration.java",
+      "sha256": "6b31a2497de98c6600e13a4feebc7454dda0fdcabfae4afde2993dc716e35bda"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/persistence/mapper/PaymentMapper.java",
+      "sha256": "c18db2169922fc858e48006ffaae2d4eb066fe06c13bd1c41c97791479260f9b"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/persistence/repository/MyBatisPaymentStore.java",
+      "sha256": "4a5b5eff8beaedef0c98e4e53b1bf2b9a25cd8076fbb6a9e76b0ea0982bfe865"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/persistence/row/OutboxRow.java",
+      "sha256": "d77a06c655840356b21c4f194e0fdd587e7fc07a64689ffa392a75fb97fdc669"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/persistence/row/PaymentRow.java",
+      "sha256": "01abda5ccbca1d72ff8208efc381fbbf3000848f2b689b08301f582cc6309d6e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/java/com/poc/payment/infrastructure/persistence/typehandler/UuidTypeHandler.java",
+      "sha256": "89f09d1485acf92495f0a7a3f0910648c8e11904eed76b0e58f358b58729af4e"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/resources/application.yml",
+      "sha256": "9e8280f9123bfbd835ec086bcb08e6d3c5e8abea315acd9aa69976842ff5913b"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/resources/db/migration/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/resources/db/migration/V1__payment_schema.sql",
+      "sha256": "d0532cacc05a6e57c9b660845e40904747bef0a135545050431984e8ff8a4221"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/resources/mybatis/mapper/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/resources/mybatis/mapper/PaymentMapper.xml",
+      "sha256": "9c7387cad51816aec582dd31a43dacf4a3e7e563ffa50f2d6ee6ed9cf788617c"
+    },
+    {
+      "path": "harness/verification/discovery/infra/evidence/H06-attempt1/source-snapshot/payment-service/src/main/resources/mybatis/typehandler/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+      "sha256": "ac7967688c912b7d82a978fad082d403c8870c304516fa3d6f800cfb12df0eb7"
+    }
+  ],
+  "attestations": [
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "order-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "inventory-service",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "inventory-service",
+        "fqn": "com.poc.inventory.infrastructure.messaging.InventoryCommandListener.items"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "order-service",
+        "consumer": "inventory-service",
+        "type": "kafka",
+        "identifier": "inventory.reserve.requested.v1",
+        "field": "items[].quantity"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "inventory-service",
+        "target": "com.poc.inventory.infrastructure.messaging.InventoryCommandListener.items",
+        "operation": "read_json_field",
+        "before": "quantity",
+        "after": "units"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "order-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "inventory-service",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/infra/evidence/H06-attempt1/baseline-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/changed-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/criteria.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-junit.xml",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/faulted-repair-observation.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+        "harness/verification/discovery/infra/evidence/H06-attempt1/repaired-observation.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    }
+  ]
+}

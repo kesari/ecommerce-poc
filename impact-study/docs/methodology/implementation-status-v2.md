@@ -1,6 +1,6 @@
 # Bottom-up verification implementation status
 
-Date: 2026-10-16. Updated: 2026-10-18. Branch: `codex/verify-impact-benchmark`.
+Date: 2026-10-16. Updated: 2026-10-20. Branch: `codex/verify-impact-benchmark`.
 
 The first implementation milestone of the [approved repair plan](bottom-up-verification-repair-plan.md)
 is complete and the next local gates have passed: acceptance criteria, a separate
@@ -23,8 +23,13 @@ which supplied method names instead of repository identifiers in its edges.
 Codebase Memory's optional trace flag is now corrected in adapter 1.4.1 and
 verified through the real pinned CLI/index. The
 [broader discovery plan](2026-10-18-broader-discovery-plan.md) proposes twelve
-new cases and paired comparisons against fresh agent-only controls; those cases
-and the campaign have not been implemented or run.
+new cases and paired comparisons against fresh agent-only controls. The
+[20 October implementation status](2026-10-19-discovery-implementation.md)
+now records twelve runtime-verified cases, including real Kafka, PostgreSQL and
+Valkey checks, trusted oracles, revision 2.2 complete-impact scoring and a frozen
+paired schedule. Campaign-wide durable cost reservations supplement per-attempt
+ceilings. No paid development or comparison campaign has run. Native operation
+checks retain Gortex's unresolved Java API-impact extraction as a known limit.
 
 ## Implemented
 
@@ -129,22 +134,22 @@ general cross-repository discovery ranking.
 
 Follow the [broader discovery plan](2026-10-18-broader-discovery-plan.md):
 
-1. Cover every exposed native operation, clarify repository-valued edge fields,
-   and extend action predicates only for independently proved new scenarios.
-2. Build twelve less guided cases, including cross-language, semantic, messaging,
-   private-storage and compatible controls. Freeze their execution evidence
-   before any held-out model run; retain unresolved surfaces as unresolved.
-3. Run fresh development checks for all four arms under one frozen protocol,
-   including agent-only and Gortex. Preserve the original smoke and reruns.
-4. With an approved campaign budget, execute the proposed 144 paired held-out
-   attempts and compare each product against agent-only. Keep correctness,
-   unsupported claims, failures and efficiency separately visible.
+1. Run the planned eight development model checks across the four arms only
+   under a new explicit allowance; no such runs are authorized by this phase.
+2. Refreeze conditions if development changes any prompt, adapter or scoring
+   code. The twelve comparison cases have no model predictions yet.
+3. With a separately approved total campaign budget, run the 144 paired
+   attempts. Keep the host awake and seal outcomes, failures and budget exposure.
 
-CLI ceilings apply per attempt. A campaign must separately account for all
-attempts, including failures. The planned smoke sequence reserves each next
-request against the remaining US$5 allowance; unknown final usage debits the
-outstanding request's maximum exposure. SDK dollar values assume catalog rates
-and provider limits; they do not certify actual invoiced charges.
+The implemented runner requires an authorized positive total ceiling and durably
+reserves each attempt's full cap across concurrent processes. Unknown usage and
+crash reservations remain debited. Prepared conditions explicitly disable paid
+execution. SDK dollar values are catalog estimates, not invoiced charges.
 
 The active candidate matrix remains agent-only, Gortex-first, RepoWise-first
 and Codebase Memory-first. There is no evidence yet to choose a winning product.
+
+Current offline validation: **258 Python tests and 101 Node tests pass, with no skips**.
+See the [discovery checkpoint](2026-10-19-discovery-implementation.md) for scope,
+prepared artifacts and the actual zero-provider CLI rejection. The older test
+counts above describe the preserved revision 2.1 checkpoint.

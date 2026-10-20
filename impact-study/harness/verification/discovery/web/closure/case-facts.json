@@ -1,0 +1,31 @@
+{
+  "status": "independently_executed_pending_root_freeze",
+  "source_audit": "source-audit/all-ten-repo-consumer-audit.json",
+  "H01_additional_required_repair": {
+    "origin": "catalog-service",
+    "same_upstream_patch_as": "../../http/evidence/H01-attempt-a/changed.patch",
+    "web_patch": "evidence/H01-web-repair.patch",
+    "action": {"repo":"commerce-web","target":"src/api/products.ts.listProducts","operation":"read_json_field","before":"currency","after":"currencyCode","critical":true},
+    "independent_required_actions": ["Original HTTP proof: Basket CatalogProductResponse.currency accepts currencyCode","This closure proof: commerce-web listProducts reads currencyCode into internal Product.currency"],
+    "repositories": [{"repo":"catalog-service","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"basket-service","runtime_status":"broken","obligation":"production_edit"},{"repo":"commerce-bff","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-web","runtime_status":"broken","obligation":"production_edit"}],
+    "directed_contract_dependencies": [{"provider":"catalog-service","consumer":"basket-service","type":"rest","identifier":"GET /api/v1/products/{productId}","field":"currency"},{"provider":"catalog-service","consumer":"commerce-bff","type":"rest","identifier":"GET /api/v1/products?page=0&size=20","field":"currency"},{"provider":"commerce-bff","consumer":"commerce-web","type":"rest","identifier":"GET /api/v1/products?page=0&size=20","field":"currency"}],
+    "protected_assertion":"BUSINESS_PRODUCT_CURRENCY_PRICES"
+  },
+  "H03_additional_validation_only": {
+    "repo":"order-service",
+    "runtime_status":"unchanged",
+    "obligation":"validation_only",
+    "proof":"Actual BasketClient.currentBasket returns identical complete BasketSnapshot on original versus payableMinor JSON; typed totalMinor is not read into the application snapshot",
+    "wire_member":"com.poc.order.infrastructure.client.BasketClient.BasketResponse.totalMinor",
+    "consumer":"com.poc.order.infrastructure.client.BasketClient.currentBasket"
+  },
+  "H04_H11_additional_validation_only": {
+    "repo":"basket-service",
+    "runtime_status":"unchanged",
+    "obligation":"validation_only",
+    "proof":"Actual CatalogClient.lookup returns identical ProductInfo id/name/price/currency/active on original, thumbnailUrl and additive merchandisingTag JSON",
+    "unused_wire_member":"com.poc.basket.infrastructure.catalog.CatalogProductResponse.imageUrl",
+    "consumer":"com.poc.basket.infrastructure.catalog.CatalogClient.lookup"
+  },
+  "limits": ["All repository source snapshots are inventoried, but runtime tests cover concrete declared consumers and inputs only","Unchanged response DTO fields and generic forwarding support H02/H07/H08 downstream web no-edit source conclusions; those are not extra browser executions","H08 warm-cache/default-SLA rollout semantics require the separate HTTP origin closure proof"]
+}

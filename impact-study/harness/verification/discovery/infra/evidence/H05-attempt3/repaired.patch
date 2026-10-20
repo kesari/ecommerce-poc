@@ -1,0 +1,22 @@
+--- a/order-service/src/main/java/com/poc/order/infrastructure/messaging/SagaResultListener.java
++++ b/order-service/src/main/java/com/poc/order/infrastructure/messaging/SagaResultListener.java
+@@ -35,7 +35,7 @@
+             "inventory.committed.v1",
+             "inventory.commit-failed.v1",
+             "inventory.released.v1",
+-            "payment.charged.v1",
++            "payment.charged.v2",
+             "payment.declined.v1",
+             "payment.refunded.v1",
+             "shipment.created.v1",
+--- a/payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java
++++ b/payment-service/src/main/java/com/poc/payment/application/PaymentCommandService.java
+@@ -17,7 +17,7 @@
+ 
+ @Service
+ public class PaymentCommandService {
+-    public static final String CHARGED_TOPIC = "payment.charged.v1";
++    public static final String CHARGED_TOPIC = "payment.charged.v2";
+     public static final String DECLINED_TOPIC = "payment.declined.v1";
+     public static final String REFUNDED_TOPIC = "payment.refunded.v1";
+ 

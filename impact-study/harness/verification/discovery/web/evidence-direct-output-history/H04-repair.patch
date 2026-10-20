@@ -1,0 +1,22 @@
+--- a/src/pages/ProductsPage.tsx
++++ b/src/pages/ProductsPage.tsx
+@@ -54,7 +54,7 @@
+           {products.map((product) => (
+             <article className="product-card" key={product.id}>
+               <div className="product-image">
+-                {product.imageUrl ? <img src={product.imageUrl} alt="" /> : <span>{product.name.slice(0, 1)}</span>}
++                {product.thumbnailUrl ? <img src={product.thumbnailUrl} alt="" /> : <span>{product.name.slice(0, 1)}</span>}
+               </div>
+               <div className="product-body">
+                 <h2>{product.name}</h2>
+--- a/src/api/types.ts
++++ b/src/api/types.ts
+@@ -18,7 +18,7 @@
+   id: string
+   name: string
+   description: string | null
+-  imageUrl: string | null
++  thumbnailUrl: string | null
+   priceMinor: number
+   currency: string
+   active: boolean

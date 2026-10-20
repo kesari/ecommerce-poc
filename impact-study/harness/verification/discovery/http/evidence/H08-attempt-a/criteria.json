@@ -1,0 +1,48 @@
+{
+  "cases": {
+    "H01": {
+      "origin": "catalog-service",
+      "consumer": "basket-service",
+      "upstream": "ProductResponse.currency wire key currency -> currencyCode, Java API preserved",
+      "required_effect": "CatalogClient.lookup preserves INR currency",
+      "repair": "CatalogProductResponse.currency accepts currencyCode",
+      "fault": "alias wrongCurrency"
+    },
+    "H02": {
+      "origin": "shipment-service",
+      "consumer": "order-service",
+      "upstream": "DeliveryEstimateResponse.shippingChargeMinor wire key -> feeMinor, Java API preserved",
+      "required_effect": "CheckoutService quote preserves shipping amount and total",
+      "repair": "ShipmentClient.EstimateResponse.shippingChargeMinor accepts feeMinor",
+      "fault": "alias wrongFee"
+    },
+    "H07": {
+      "origin": "shipment-service",
+      "consumer": "order-service",
+      "upstream": "DeliveryEstimateResponse.from divides charge by 100; names and signatures unchanged; whole INR output policy",
+      "required_effect": "Order quotes retain integer minor-unit charges for whole-INR inputs 0,10000,12300",
+      "repair": "ShipmentClient.estimate scales wire whole INR by 100 exactly",
+      "fault": "scale by 10"
+    },
+    "H08": {
+      "origin": "shipment-service",
+      "consumer": "order-service",
+      "upstream": "DeliveryEstimator fallback nonmetro default SLA changes4/6 to5/7 days; stable names/signatures andmetro2/3 retained",
+      "required_effect": "Order quote consumes new defaultdates unchanged; digitPIN4..10 validation remains; invalidPIN rejected",
+      "repair": "No consumer production edit required",
+      "fault": "Swap incoming fromDate/toDate in ShipmentClient mapping"
+    }
+  },
+  "phases": [
+    "baseline",
+    "changed",
+    "repaired",
+    "faulted-repair"
+  ],
+  "limits": [
+    "DTO/estimator-to-real-client HTTP boundaries and CheckoutService quote persistence, not deployed Spring/auth/database/proxy/web E2E",
+    "H01 verifies Basket CatalogPort ProductInfo, not full Basket mutation or unrelated consumers",
+    "H07 whole-INR divisible-by-100 amounts only; fractional and overflow amount policy unresolved outside stated contract",
+    "H08 actual DeliveryEstimateRequest BeanValidation and real DeliveryEstimator execute in loopbackfixture; deployed Spring wiring/auth and unrelated ports outside scope"
+  ]
+}

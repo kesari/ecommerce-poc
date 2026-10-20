@@ -1,0 +1,10 @@
+--- a/src/main/java/com/poc/shipment/application/DeliveryEstimator.java
++++ b/src/main/java/com/poc/shipment/application/DeliveryEstimator.java
+@@ -27,6 +27,6 @@
+                     new DeliveryWindow(today.plusDays(2), today.plusDays(3)));
+         }
+         return new DeliveryEstimate(SHIPPING_CHARGE_MINOR, CURRENCY,
+-                new DeliveryWindow(today.plusDays(4), today.plusDays(6)));
++                new DeliveryWindow(today.plusDays(5), today.plusDays(7)));
+     }
+ }

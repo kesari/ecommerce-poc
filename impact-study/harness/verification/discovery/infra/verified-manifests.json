@@ -1,0 +1,22 @@
+{
+  "H05": {
+    "manifest": "harness/verification/discovery/infra/evidence/H05-attempt3/manifest.json",
+    "sha256": "fb8af92d62cc3ab4a799c6beb2d9b55e22f1f83f2818aeffc73a8e81101ebcc6",
+    "phases": 4
+  },
+  "H06": {
+    "manifest": "harness/verification/discovery/infra/evidence/H06-attempt1/manifest.json",
+    "sha256": "a15b430d36cdecb8a91e1361d6ebdf6aef3229081de14c055c3b1a0bb9c6d702",
+    "phases": 4
+  },
+  "H09": {
+    "manifest": "harness/verification/discovery/infra/evidence/H09-attempt1/manifest.json",
+    "sha256": "8431c8e6b104d29a16e98ddbaa4c4ff15d8881afb8f3c515c4b26d59e60cafea",
+    "phases": 3
+  },
+  "H10": {
+    "manifest": "harness/verification/discovery/infra/evidence/H10-attempt1/manifest.json",
+    "sha256": "a5ffc56db5928d02a5eba29b2b14e5527569888305b99eba2e31f59457f88114",
+    "phases": 3
+  }
+}

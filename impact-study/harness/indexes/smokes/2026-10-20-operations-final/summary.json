@@ -1,0 +1,17 @@
+{
+  "provider_calls": 0,
+  "reports": [
+    {
+      "product": "gortex",
+      "status": "invocation_failures"
+    },
+    {
+      "product": "repowise",
+      "status": "invocations_succeeded"
+    },
+    {
+      "product": "codebase-memory",
+      "status": "invocation_failures"
+    }
+  ]
+}

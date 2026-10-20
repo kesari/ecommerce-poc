@@ -193,7 +193,8 @@
                     "read_json_field",
                     "subscribe_topic",
                     "publish_topic",
-                    "retain_json_alias"
+                    "retain_json_alias",
+                    "scale_numeric_field"
                   ]
                 },
                 "before": {
@@ -239,6 +240,17 @@
           }
         },
         "additionalProperties": false
+      }
+    },
+    "evaluation_revision": {
+      "type": "string",
+      "const": "2.2"
+    },
+    "repository_universe": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
       }
     }
   },

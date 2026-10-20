@@ -1,0 +1,230 @@
+{
+  "status": "failed",
+  "runtime": "/private/tmp/discovery-closure-5_608r0c",
+  "protected": {
+    "criteria.json": "f88b7dac3391639453fbf1ab9908f98446d1642d3ae4fd86086ccd75ba00ccaa",
+    "CurrencyClosure.test.tsx": "43fc628f05ccf8f5f47386d6f5e38534d32ed925d22a92510f2947fef93d98e0",
+    "ProductClosureTest.java": "847a1b77ebe6f39413e2b346bcaaafcbc8c1ba0bc1f61a1980912d002aec4279",
+    "BasketClosureTest.java": "b1f53fc4585d7f17f50dac97e43e69f565b5fa28286ece73ef6b44e63dcdf37c"
+  },
+  "commands": [
+    {
+      "label": "H01-baseline-origin",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=CatalogWireTest",
+        "test"
+      ],
+      "repo": "catalog-service",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 2.296
+    },
+    {
+      "label": "H01-baseline-forward",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=ForwardWireTest",
+        "test"
+      ],
+      "repo": "commerce-bff",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 2.89
+    },
+    {
+      "label": "H01-baseline-web",
+      "argv": [
+        "npm",
+        "test",
+        "--",
+        "src/test/CurrencyClosure.test.tsx",
+        "--reporter=verbose"
+      ],
+      "repo": "commerce-web",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 0.9
+    },
+    {
+      "label": "H01-changed-origin",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=CatalogWireTest",
+        "test"
+      ],
+      "repo": "catalog-service",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 2.214
+    },
+    {
+      "label": "H01-changed-forward",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=ForwardWireTest",
+        "test"
+      ],
+      "repo": "commerce-bff",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 2.31
+    },
+    {
+      "label": "H01-changed-web",
+      "argv": [
+        "npm",
+        "test",
+        "--",
+        "src/test/CurrencyClosure.test.tsx",
+        "--reporter=verbose"
+      ],
+      "repo": "commerce-web",
+      "exit": 1,
+      "expected_success": false,
+      "elapsed_seconds": 0.541
+    },
+    {
+      "label": "H01-repaired-web-build",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "repo": "commerce-web",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 1.179
+    },
+    {
+      "label": "H01-repaired-web",
+      "argv": [
+        "npm",
+        "test",
+        "--",
+        "src/test/CurrencyClosure.test.tsx",
+        "--reporter=verbose"
+      ],
+      "repo": "commerce-web",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 0.525
+    },
+    {
+      "label": "H01-fault-web-build",
+      "argv": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "repo": "commerce-web",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 0.819
+    },
+    {
+      "label": "H01-faulty-repair-web",
+      "argv": [
+        "npm",
+        "test",
+        "--",
+        "src/test/CurrencyClosure.test.tsx",
+        "--reporter=verbose"
+      ],
+      "repo": "commerce-web",
+      "exit": 1,
+      "expected_success": false,
+      "elapsed_seconds": 0.527
+    },
+    {
+      "label": "H04-baseline-basket",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=ProductClosureTest",
+        "test"
+      ],
+      "repo": "basket-service",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 2.586
+    },
+    {
+      "label": "H04-changed-basket",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=ProductClosureTest",
+        "test"
+      ],
+      "repo": "basket-service",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 1.882
+    },
+    {
+      "label": "H11-baseline-basket",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=ProductClosureTest",
+        "test"
+      ],
+      "repo": "basket-service",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 1.908
+    },
+    {
+      "label": "H11-changed-basket",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=ProductClosureTest",
+        "test"
+      ],
+      "repo": "basket-service",
+      "exit": 0,
+      "expected_success": true,
+      "elapsed_seconds": 2.101
+    },
+    {
+      "label": "H03-baseline-order",
+      "argv": [
+        "mvn",
+        "-o",
+        "-q",
+        "-Dtest=BasketClosureTest",
+        "test"
+      ],
+      "repo": "order-service",
+      "exit": 1,
+      "expected_success": true,
+      "elapsed_seconds": 1.905
+    }
+  ],
+  "additional_protected": {
+    "CatalogWireTest.java": "4cd280289b5653e818b79feeec6abdda32e386ceab71a07dcd994142db0523cb",
+    "ForwardWireTest.java": "ccc25d0675a741b6fba94789a9d156deff90af6f3d3c715c12653492670c9769",
+    "ProductClosureTest.java": "847a1b77ebe6f39413e2b346bcaaafcbc8c1ba0bc1f61a1980912d002aec4279",
+    "BasketClosureTest.java": "b1f53fc4585d7f17f50dac97e43e69f565b5fa28286ece73ef6b44e63dcdf37c"
+  },
+  "error": "('H03-baseline-order', '[ERROR] COMPILATION ERROR : \\n[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[29,25] cannot find symbol\\n  symbol:   method items()\\n  location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot\\n[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[30,19] cannot find symbol\\n  symbol:   method items()\\n  location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot\\n[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.0:testCompile (default-testCompile) on project order_service: Compilation failure: Compilation failure: \\n[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[29,25] cannot find symbol\\n[ERROR]   symbol:   method items()\\n[ERROR]   location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot\\n[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[30,19] cannot find symbol\\n[ERROR]   symbol:   method items()\\n[ERROR]   location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot\\n[ERROR] -> [Help 1]\\n[ERROR] \\n[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.\\n[ERROR] Re-run Maven using the -X switch to enable full debug logging.\\n[ERROR] \\n[ERROR] For more information about the errors and possible solutions, please read the following articles:\\n[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException\\n')",
+  "evidence_limits": [
+    "Exact H01 producer patch matches HTTP family H01. Concrete serialized values differ across independently chosen business fixtures.",
+    "GET forwarding executes localhost HTTP and actual BFF controller; global servlet security and query propagation semantics not claimed.",
+    "H04/H11 Basket and H03 Order tests execute actual unedited HTTP clients and compare output snapshots; no unrelated persistence/Kafka journey."
+  ]
+}

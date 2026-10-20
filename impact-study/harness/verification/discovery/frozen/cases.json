@@ -1,0 +1,125 @@
+{
+  "campaign_version": 1,
+  "cases": [
+    {
+      "case_id": "H01",
+      "family": "http_binding",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H01.json",
+      "record_sha256": "2cfc4054d28fcdf6a2e92a23a2e7edd4c0c1e750e81c59c1ee4f888078e0231a",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H01-oracle.json",
+      "oracle_bundle_sha256": "963f62cb5e9c0ad7f741cd52c29fd9729e0b56b69dc800938ab5d9b3eacef32c",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H02",
+      "family": "http_binding",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H02.json",
+      "record_sha256": "0e2115176345f1cb00ff31489fe606d150d7c570a963391b09ed26dac5e86124",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H02-oracle.json",
+      "oracle_bundle_sha256": "43a43d6abb6b978a1d978cacd2d8e9251710a0dcb3eeebd2a8dec07c7f278b61",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H03",
+      "family": "web_consumption",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H03.json",
+      "record_sha256": "1574831cb22a222bf38911528d61c85827cfa02b261ff09aa7722eb2df5f0a44",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H03-oracle.json",
+      "oracle_bundle_sha256": "cdaaa77f3412e212524a3246a05a29109c5f18038f69b5d43ae3eb7844decf9c",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H04",
+      "family": "web_consumption",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H04.json",
+      "record_sha256": "97723628b5755a7d778af8577739466467b88bbb98a587986404d95ee288d802",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H04-oracle.json",
+      "oracle_bundle_sha256": "ebcd3dcd7f79a08e460e986b00092be9c436d0cba5c140ebe66a34fdd4ead02d",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H05",
+      "family": "messaging",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H05.json",
+      "record_sha256": "43c806b2cf6203cffbd03fbff7f10dd4098e671db1bb351f2c7bd54dde5dd4cc",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H05-oracle.json",
+      "oracle_bundle_sha256": "c7293357de31618420520290a80e8caae554eb4d45ce5bb5e16119946729a9a2",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H06",
+      "family": "messaging",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H06.json",
+      "record_sha256": "f02aa42802a44c73849ab0b6a1d77258c8f6a5fe59197124404c2c7518893210",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H06-oracle.json",
+      "oracle_bundle_sha256": "5619aee75483e2ff20f5f280aeebbd9f4580681bd7349541cfce15094bc1780b",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H07",
+      "family": "meaning",
+      "compatible_control": false,
+      "record_path": "harness/records/v2/H07.json",
+      "record_sha256": "10880f8f9570f0756ffc2f5bfd5601345b2f5464364a3d2b5cc12e723f261dff",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H07-oracle.json",
+      "oracle_bundle_sha256": "1df51ed02c55e54c3f7728fafa10d48ba7360a0557235bcb312b346ea205241b",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H08",
+      "family": "meaning",
+      "compatible_control": true,
+      "record_path": "harness/records/v2/H08.json",
+      "record_sha256": "083b3bd5f1cc610fecdf697e0ad4ec2d294991d118fdf406cac5b8d2dbd952df",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H08-oracle.json",
+      "oracle_bundle_sha256": "a2e8db298a2e8174cda89f9551eec0622689378907884c2f3db13ca73b6321ce",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H09",
+      "family": "private_storage",
+      "compatible_control": true,
+      "record_path": "harness/records/v2/H09.json",
+      "record_sha256": "670f32fdf294b542e9a5857ab904d69d68aa9f65e9170e85e8159868451f7550",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H09-oracle.json",
+      "oracle_bundle_sha256": "4907fd32355b6652defb7853e8e58cb9031afa247103dd72f150d98f508122d5",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H10",
+      "family": "private_storage",
+      "compatible_control": true,
+      "record_path": "harness/records/v2/H10.json",
+      "record_sha256": "9e4e15c983ea440fc8d036992264d5dd9005bd4e07b69097526aa288e9b85492",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H10-oracle.json",
+      "oracle_bundle_sha256": "95e472fead7ab165b5b2d9ab5dfe9635c54efa4f6e2635e5003faf8dfa605428",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H11",
+      "family": "compatible_shape",
+      "compatible_control": true,
+      "record_path": "harness/records/v2/H11.json",
+      "record_sha256": "89206c1543867a7dd90b5780b8a77aff1bae5f6144df1225d38d42de0a8ee38d",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H11-oracle.json",
+      "oracle_bundle_sha256": "603338036ac4771fb4d952acbd2981986ff9551a8984d9f292b7d28c7eef3812",
+      "artifact_root": "."
+    },
+    {
+      "case_id": "H12",
+      "family": "compatible_shape",
+      "compatible_control": true,
+      "record_path": "harness/records/v2/H12.json",
+      "record_sha256": "4b39e5518d40c0996236e28e41e02cde3dc7c721e2ece396e23562b6ee37a6aa",
+      "oracle_bundle_path": "harness/verification/discovery/frozen/H12-oracle.json",
+      "oracle_bundle_sha256": "dcc19586d4cf78ac7de5ccb736c5afeb03c1d561c0efc1a57ffa2ea4e41466a9",
+      "artifact_root": "."
+    }
+  ]
+}

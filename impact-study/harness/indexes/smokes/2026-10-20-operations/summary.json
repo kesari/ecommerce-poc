@@ -1,0 +1,18 @@
+{
+  "provider_calls": 0,
+  "reports": [
+    {
+      "product": "gortex",
+      "status": "preflight_failed",
+      "error": "Error: verified 10 repositories against /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/pins.json\nGortex daemon is not running; run setup-gortex.sh"
+    },
+    {
+      "product": "repowise",
+      "status": "invocations_succeeded"
+    },
+    {
+      "product": "codebase-memory",
+      "status": "invocation_failures"
+    }
+  ]
+}

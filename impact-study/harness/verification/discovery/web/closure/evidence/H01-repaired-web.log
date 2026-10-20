@@ -1,0 +1,14 @@
+
+> commerce-web@0.0.0 test
+> vitest run src/test/CurrencyClosure.test.tsx --reporter=verbose
+
+
+ RUN  v4.1.11 /private/tmp/discovery-closure-6hsprm6_/commerce-web
+
+ ✓ src/test/CurrencyClosure.test.tsx > PROTECTED_PRODUCT_CURRENCY_DISPLAY 25ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:16:41
+   Duration  316ms (transform 24ms, setup 44ms, import 20ms, tests 25ms, environment 178ms)
+

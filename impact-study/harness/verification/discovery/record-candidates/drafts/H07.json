@@ -1,0 +1,76 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "change_id": "H07",
+  "status": "draft",
+  "category": "meaning_change",
+  "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims. The changed response expresses charges in whole INR. In-scope values are non-negative whole-INR amounts, represented before the change as integer minor units divisible by 100; existing public amount contracts must retain their documented units.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "repository_universe": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "origin_repo": "shipment-service",
+  "proposed_change": {
+    "repo": "shipment-service",
+    "diff": "--- a/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\n+++ b/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\n@@ -13,6 +13,6 @@\n \n     public static DeliveryEstimateResponse from(DeliveryEstimate estimate) {\n         return new DeliveryEstimateResponse(estimate.window().from(), estimate.window().to(),\n-                estimate.shippingMinor(), estimate.currency());\n+                estimate.shippingMinor() / 100, estimate.currency());\n     }\n }\n"
+  },
+  "repositories": [
+    {
+      "repo": "shipment-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "order-service",
+      "runtime_status": "broken"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "order-service",
+      "fqn": "com.poc.order.infrastructure.client.ShipmentClient.estimate"
+    }
+  ],
+  "edges": [
+    {
+      "provider": "shipment-service",
+      "consumer": "order-service",
+      "type": "rest",
+      "identifier": "POST /api/v1/delivery-estimates",
+      "field": "shippingChargeMinor"
+    }
+  ],
+  "repair_alternatives": [
+    {
+      "name": "preserve_requested_change_and_repair_consumers",
+      "actions": [
+        {
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+          "operation": "scale_numeric_field",
+          "before": "1",
+          "after": "100",
+          "critical": true
+        }
+      ],
+      "obligations": [
+        {
+          "repo": "shipment-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "order-service",
+          "obligation": "production_edit"
+        }
+      ]
+    }
+  ]
+}

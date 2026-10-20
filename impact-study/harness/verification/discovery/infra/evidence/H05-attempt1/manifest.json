@@ -1,0 +1,60 @@
+{
+  "case": "H05",
+  "status": "failed",
+  "protected_inputs": {
+    "criteria.json": "94da25aae6e63e2eea30019db258f47eb0f70b7228d0bbb70af2bf7e4765fd75",
+    "MessagingBoundaryTest.java": "3308585eef6086e0391f1ebe169ae1dc29dfef1549b108401d6662ff4172ceda",
+    "StorageBoundaryTest.java": "6bd2d2133a65ef89b13ea9e8f9941496815e55062d5e094cba5dde545efbcc62"
+  },
+  "run_id": "discovery-cf4347b0-544f-4e32-8b4d-5aebff5e2331",
+  "commands": [
+    {
+      "argv": [
+        "docker",
+        "image",
+        "inspect",
+        "apache/kafka:4.0.0",
+        "--format",
+        "{{.Id}}"
+      ],
+      "cwd": "/private/tmp/discovery-infra-h05-20261019-a1",
+      "exit_code": 1,
+      "log": "image-0.log",
+      "sha256": "fee3444d95af4fc893d83d38aca867a067fbf748f1417b9dd8391abeeab6c8df"
+    },
+    {
+      "argv": [
+        "docker",
+        "ps",
+        "-aq",
+        "--filter",
+        "label=discovery.verification=discovery-cf4347b0-544f-4e32-8b4d-5aebff5e2331"
+      ],
+      "cwd": "/private/tmp/discovery-infra-h05-20261019-a1",
+      "exit_code": 1,
+      "log": "owned-container-ids.log",
+      "sha256": "0d62c74283f74b9360837d31235585c49bd25ef6d641380449ada9658d3f2f0d"
+    }
+  ],
+  "phases": {},
+  "limits": [
+    "controlled persistence ports",
+    "no database transaction proof",
+    "retry and DLQ semantics outside contract",
+    "only direct Order main listener proven"
+  ],
+  "container_policy": {
+    "cached_images_only": true,
+    "loopback_ports_only": true,
+    "ryuk_disabled": true,
+    "privileged": false
+  },
+  "error": "cached image unavailable",
+  "artifacts": {
+    "MessagingBoundaryTest.java": "3308585eef6086e0391f1ebe169ae1dc29dfef1549b108401d6662ff4172ceda",
+    "StorageBoundaryTest.java": "6bd2d2133a65ef89b13ea9e8f9941496815e55062d5e094cba5dde545efbcc62",
+    "criteria.json": "94da25aae6e63e2eea30019db258f47eb0f70b7228d0bbb70af2bf7e4765fd75",
+    "image-0.log": "fee3444d95af4fc893d83d38aca867a067fbf748f1417b9dd8391abeeab6c8df",
+    "owned-container-ids.log": "0d62c74283f74b9360837d31235585c49bd25ef6d641380449ada9658d3f2f0d"
+  }
+}

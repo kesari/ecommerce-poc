@@ -1,0 +1,11 @@
+--- a/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
++++ b/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
+@@ -7,7 +7,7 @@
+ public record DeliveryEstimateResponse(
+         LocalDate fromDate,
+         LocalDate toDate,
+-        long shippingChargeMinor,
++        @com.fasterxml.jackson.annotation.JsonProperty("feeMinor") long shippingChargeMinor,
+         String currency
+ ) {
+ 

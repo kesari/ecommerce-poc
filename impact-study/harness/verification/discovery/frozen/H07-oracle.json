@@ -1,0 +1,234 @@
+{
+  "protocol_version": 2,
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "change_id": "H07",
+  "record_sha256": "a53c2a75fbe8e21902b1b12cddb16e18582acc60912cc8028c95bf182b3b632f",
+  "scoring_policy": {
+    "mode": "scoped_reference_v1"
+  },
+  "artifacts": [
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/ShipmentDiscoveryTest.java",
+      "sha256": "cb14bf029e5380e420cd55ada3b077e5e67c36d9be5bd3d8c2ed1419e81caa1c"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-boundary-test.log",
+      "sha256": "61238c4390660bf2f55849fbdffc4afffbe4cf0428ebd121d3a75935c31f6102"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-junit.xml",
+      "sha256": "c60eb7bd8b46a272f11fe016caf8ccf293bc59a58940a64b629291ae69b14437"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+      "sha256": "bf3652320b878220c9f9f3491402ad752de734a4580b5756c702bdcb139764da"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-producer-compile.log",
+      "sha256": "08e8112ffa7108ac271bfb07c7dfcf1152d6f82af5cf0f17c1a99666e31e5595"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/baseline.patch",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/changed-boundary-test.log",
+      "sha256": "84b2da2caa15ab24e40ed2d1085a49a53a1d31a4971275b308e08440a087c6d6"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/changed-junit.xml",
+      "sha256": "78479e0a7be73438b765254280387ca1b6895973f6eeb1f41ad43996de8b9816"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+      "sha256": "46ea5e17e3342ae8eae8871f2bbf69521d5a9c3bc6d1d8cc79ce029ef2a01bfd"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/changed-producer-compile.log",
+      "sha256": "9d39a3d8db8436d73dfd71d2cd73d9c7279e1854066c9de2f59c6465b3c02a92"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/changed.patch",
+      "sha256": "3e8fbe056f654cc0df53a1961dcd41d4d9c0a25b276528821b0a9eee150925b4"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/criteria.json",
+      "sha256": "505e1b8feefed3e1ce8cb0df945b27521bc226db93c970eb921e94c69512bbbe"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-boundary-test.log",
+      "sha256": "9108b4ec7bc4e72e54d6a8f3c16789ea60c47ba2d6816bf3b4758d13a84ba839"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+      "sha256": "3b588c72b57136f5eb85e6fbc7a19b78b3782b05d4fc4dd227037e9da89bfd20"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+      "sha256": "9a54b1f61b2c0b351f5e75e051c2e2e0f829cb607f93b7e4c017ca48cee7bb34"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-producer-compile.log",
+      "sha256": "d980545ee3a4d80dd22565e352654e852a6954ffb2ee71f7d0b7ace1dd6de47c"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair.patch",
+      "sha256": "6dc3d577096009020b74872558eebf2377d8889411a450a70464110e005cc6c1"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+      "sha256": "1011379ca38f6c2dbcbf1f4e74a584aa04e3bee5bfe510c007ba093841fe9d27"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-boundary-test.log",
+      "sha256": "bf6abcec95ff53252cec0913d8b9c733f76bb378f8cddd874322b19fb259cefc"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-junit.xml",
+      "sha256": "27f1decb39bc4c568e1fdd001a4c31fb86ae48446554c208f0d22d0f28bcb722"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+      "sha256": "05784f3dc9f06f438e05dcf7a859b5c1399e6bacfd1d10d00275c9648d9218d6"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-producer-compile.log",
+      "sha256": "83da57532a903af5ebcd679c84dfa22aa0a41a883c1f3719c0133911f0225e31"
+    },
+    {
+      "path": "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+      "sha256": "2dc3aa6eef67dc91676f33256b6eebf77e6668b77ac179ebd940ed5b2dad87d6"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+      "sha256": "ac7967688c912b7d82a978fad082d403c8870c304516fa3d6f800cfb12df0eb7"
+    }
+  ],
+  "attestations": [
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "shipment-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "order-service",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "order-service",
+        "fqn": "com.poc.order.infrastructure.client.ShipmentClient.estimate"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "shipment-service",
+        "consumer": "order-service",
+        "type": "rest",
+        "identifier": "POST /api/v1/delivery-estimates",
+        "field": "shippingChargeMinor"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "order-service",
+        "target": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+        "operation": "scale_numeric_field",
+        "before": "1",
+        "after": "100"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "shipment-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "order-service",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/http/evidence/H07-attempt-b/baseline-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/changed-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-junit.xml",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/faulted-repair-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired-observation.json",
+        "harness/verification/discovery/http/evidence/H07-attempt-b/repaired.patch",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+      ]
+    }
+  ]
+}

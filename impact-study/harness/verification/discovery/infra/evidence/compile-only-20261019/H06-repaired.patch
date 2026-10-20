@@ -1,0 +1,22 @@
+--- a/order-service/src/main/java/com/poc/order/application/OrderService.java
++++ b/order-service/src/main/java/com/poc/order/application/OrderService.java
+@@ -110,7 +110,7 @@
+         payload.put("items", order.lines().stream()
+                 .map(line -> Map.<String, Object>of(
+                         "productId", line.productId().toString(),
+-                        "quantity", line.quantity()))
++                        "units", line.quantity()))
+                 .toList());
+         return payload;
+     }
+--- a/inventory-service/src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java
++++ b/inventory-service/src/main/java/com/poc/inventory/infrastructure/messaging/InventoryCommandListener.java
+@@ -93,7 +93,7 @@
+         Set<UUID> seen = new HashSet<>();
+         for (JsonNode item : items) {
+             UUID productId = requiredUuid(item, "productId");
+-            int quantity = item.path("quantity").asInt(0);
++            int quantity = item.path("units").asInt(0);
+             if (quantity <= 0) {
+                 throw new InvalidMessageException("quantity must be greater than zero");
+             }

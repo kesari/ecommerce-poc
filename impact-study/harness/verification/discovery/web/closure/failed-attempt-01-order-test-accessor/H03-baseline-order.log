@@ -1,0 +1,21 @@
+[ERROR] COMPILATION ERROR : 
+[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[29,25] cannot find symbol
+  symbol:   method items()
+  location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot
+[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[30,19] cannot find symbol
+  symbol:   method items()
+  location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.0:testCompile (default-testCompile) on project order_service: Compilation failure: Compilation failure: 
+[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[29,25] cannot find symbol
+[ERROR]   symbol:   method items()
+[ERROR]   location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot
+[ERROR] /private/tmp/discovery-closure-5_608r0c/order-service/src/test/java/com/poc/order/verification/BasketClosureTest.java:[30,19] cannot find symbol
+[ERROR]   symbol:   method items()
+[ERROR]   location: variable result of type com.poc.order.application.port.BasketPort.BasketSnapshot
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

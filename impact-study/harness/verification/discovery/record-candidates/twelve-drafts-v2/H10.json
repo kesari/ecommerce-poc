@@ -1,0 +1,54 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "change_id": "H10",
+  "status": "draft",
+  "category": "private_storage",
+  "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "repository_universe": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "origin_repo": "catalog-service",
+  "proposed_change": {
+    "repo": "catalog-service",
+    "diff": "--- a/src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java\n+++ b/src/main/java/com/poc/catalog/infrastructure/cache/ProductCache.java\n@@ -53,7 +53,7 @@\n     public void putProduct(Product product) {\n         try {\n             valkey.opsForValue().set(\"catalog:product:\" + product.id(),\n-                    objectMapper.writeValueAsString(product), DETAIL_TTL);\n+                    objectMapper.writeValueAsString(java.util.Map.of(\"format\", 1, \"product\", product)), DETAIL_TTL);\n         } catch (JsonProcessingException e) {\n             throw new IllegalStateException(\"failed to serialize product cache entry\", e);\n         } catch (RuntimeException e) {\n@@ -99,7 +99,8 @@\n \n     private Product deserialize(String raw) {\n         try {\n-            return objectMapper.readValue(raw, Product.class);\n+            var node = objectMapper.readTree(raw);\n+            return objectMapper.treeToValue(node.has(\"format\") ? node.path(\"product\") : node, Product.class);\n         } catch (JsonProcessingException e) {\n             throw new IllegalStateException(\"failed to deserialize product cache entry\", e);\n         }\n"
+  },
+  "repositories": [
+    {
+      "repo": "catalog-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "basket-service",
+      "runtime_status": "unchanged"
+    }
+  ],
+  "symbols": [],
+  "edges": [],
+  "repair_alternatives": [
+    {
+      "name": "preserve_requested_change_without_coordinated_edits",
+      "actions": [],
+      "obligations": [
+        {
+          "repo": "catalog-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "basket-service",
+          "obligation": "validation_only"
+        }
+      ]
+    }
+  ]
+}

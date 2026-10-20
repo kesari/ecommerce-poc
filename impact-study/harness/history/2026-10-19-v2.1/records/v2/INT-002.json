@@ -1,0 +1,42 @@
+{
+  "protocol_version": 2,
+  "change_id": "INT-002",
+  "status": "verified",
+  "category": "internal_refactor",
+  "query": "The supplied diff changes Shipment's Valkey estimate-cache key prefix. Assess whether the actual ShipmentService.estimate output remains compatible and what production edits or validation obligations follow. Consider an existing entry in the old namespace and two identical requests after the change. This bounded check covers the real cache adapter and estimate method; HTTP, database persistence, outage/failover behavior, other service paths and the complete distributed journey remain unresolved.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "origin_repo": "shipment-service",
+  "proposed_change": {
+    "repo": "shipment-service",
+    "diff": "--- a/src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java\n+++ b/src/main/java/com/poc/shipment/infrastructure/cache/ValkeyEstimateCache.java\n@@ -66,7 +66,7 @@\n     }\n \n     static String key(String postalCode, int itemCount, long subtotalMinor) {\n-        return \"shipment:estimate:\" + hash(postalCode + \"|\" + itemCount + \"|\" + subtotalMinor);\n+        return \"shipment:estimate:v2:\" + hash(postalCode + \"|\" + itemCount + \"|\" + subtotalMinor);\n     }\n \n     private static String hash(String value) {\n"
+  },
+  "repositories": [
+    {
+      "repo": "shipment-service",
+      "runtime_status": "unchanged"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "shipment-service",
+      "fqn": "com.poc.shipment.infrastructure.cache.ValkeyEstimateCache.key"
+    },
+    {
+      "repo": "shipment-service",
+      "fqn": "com.poc.shipment.application.ShipmentService.estimate"
+    }
+  ],
+  "edges": [],
+  "repair_alternatives": [
+    {
+      "name": "retain_changed_cache_namespace",
+      "actions": [],
+      "obligations": [
+        {
+          "repo": "shipment-service",
+          "obligation": "validation_only"
+        }
+      ]
+    }
+  ]
+}

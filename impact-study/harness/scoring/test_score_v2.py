@@ -517,7 +517,7 @@ class ScopedEquivalenceTests(unittest.TestCase):
         report = self.evaluate()
         self.assertTrue(report['satisfies_required_actions'])
         self.assertTrue(report['satisfies_any_repair'])
-        self.assertEqual(report['evaluation_revision'], '2.1')
+        self.assertEqual(report['evaluation_revision'], '2.2')
         self.assertTrue(report['benchmark_eligible'])
         self.assertEqual(len(report['equivalences_applied']), 3)
         for kind in ('actions', 'symbols', 'edges'):

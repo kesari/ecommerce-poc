@@ -1,0 +1,368 @@
+{
+  "kind": "native_operation_coverage",
+  "provider_calls": 0,
+  "estate": {
+    "sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6",
+    "repositories": [
+      "account-service",
+      "basket-service",
+      "catalog-service",
+      "commerce-bff",
+      "commerce-platform",
+      "commerce-web",
+      "inventory-service",
+      "order-service",
+      "payment-service",
+      "shipment-service"
+    ],
+    "revisions": [
+      {
+        "name": "account-service",
+        "commit": "0336d5dac2f4b7ee3c0a69b960330cde42244b59",
+        "dirty": false
+      },
+      {
+        "name": "basket-service",
+        "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+        "dirty": false
+      },
+      {
+        "name": "catalog-service",
+        "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+        "dirty": false
+      },
+      {
+        "name": "commerce-bff",
+        "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+        "dirty": false
+      },
+      {
+        "name": "commerce-platform",
+        "commit": "b8a61b37487f7e24ecdff4531bc1798bd683da74",
+        "dirty": false
+      },
+      {
+        "name": "commerce-web",
+        "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+        "dirty": false
+      },
+      {
+        "name": "inventory-service",
+        "commit": "037e07043eaad6a5c562bb8dc9d39385def22c2a",
+        "dirty": false
+      },
+      {
+        "name": "order-service",
+        "commit": "2c0592dab42ce15c32c72a4f17f1c603ee604d34",
+        "dirty": false
+      },
+      {
+        "name": "payment-service",
+        "commit": "3fbcb4a1a6b103064a15e8398666123fbf22dcd9",
+        "dirty": false
+      },
+      {
+        "name": "shipment-service",
+        "commit": "a7a8a067559b5e62a6c53699939cf9ec31686f25",
+        "dirty": false
+      }
+    ]
+  },
+  "product": "codebase-memory",
+  "checks": [
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "search",
+        "query": "AddressResponse",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r1",
+        "tool": "codebase_memory_query",
+        "operation": "search",
+        "parameters": {
+          "operation": "search",
+          "query": "AddressResponse",
+          "repo": "account-service"
+        },
+        "requested_query": "AddressResponse",
+        "executed_query": "AddressResponse",
+        "success": true,
+        "output": "{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"groups\":[{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto\",\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"rows\":[[\"AddressResponse\",\"Class\",\"6-19\",6,0]]},{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto.AddressResponse.java\",\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"rows\":[[\"__file__\",\"File\",\"\",0,0]]}],\"total\":2,\"returned\":2,\"count\":2,\"has_more\":false,\"truncated\":false}",
+        "output_sha256": "71e4e79de44ddfe3274b1b74f3d53e87bce5d4da238b6e250c0f6c8588b9cd5a",
+        "output_bytes": 573,
+        "output_full_bytes": 573,
+        "truncated": false,
+        "output_normalized": "{\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"count\":2,\"groups\":[{\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto\",\"rows\":[[\"AddressResponse\",\"Class\",\"6-19\",6,0]]},{\"file\":\"src/main/java/com/poc/account/api/dto/AddressResponse.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.dto.AddressResponse.java\",\"rows\":[[\"__file__\",\"File\",\"\",0,0]]}],\"has_more\":false,\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"returned\":2,\"total\":2,\"truncated\":false}",
+        "output_normalized_sha256": "f078281dfa9191b72b74855809dd5b01dc05b5908d9e6bcd92910abfff3e80cb",
+        "duration_ms": 4867.1,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "references",
+        "query": "AddressResponse",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r2",
+        "tool": "codebase_memory_query",
+        "operation": "references",
+        "parameters": {
+          "operation": "references",
+          "query": "AddressResponse",
+          "repo": "account-service"
+        },
+        "requested_query": "AddressResponse",
+        "executed_query": "AddressResponse",
+        "success": true,
+        "output": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"rows\":[[\"list\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"get\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"create\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"update\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"dto\",\"[\\\"Folder\\\"]\",\"CONTAINS_FILE\",\"AddressResponse.java\",\"[\\\"File\\\"]\",\"{}\"],[\"AddressResponse.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"dto\",\"[\\\"Folder\\\"]\",\"{}\"],[\"AddressResponse.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{}\"],[\"toResponse\",\"[\\\"Method\\\"]\",\"CALLS\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\",\\\"confidence\\\":0.75,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"address.id()\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"address.fullName()\\\"},{\\\"i\\\":2,\\\"e\\\":\\\"address.line1()\\\"},{\\\"i\\\":3,\\\"e\\\":\\\"address.line2()\\\"},{\\\"i\\\":4,\\\"e\\\":\\\"address.city()\\\"},{\\\"i\\\":5,\\\"e\\\":\\\"address.state()\\\"},{\\\"i\\\":6,\\\"e\\\":\\\"address.postalCode()\\\"},{\\\"i\\\":7,\\\"e\\\":\\\"address.country()\\\"}],\\\"line\\\":14}\"],[\"toResponse\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"]],\"returned\":9,\"total\":9,\"total_relation\":\"eq\",\"has_more\":false,\"truncated\":false}",
+        "output_sha256": "b84d54e0921282a57d5b4a2f3a4de54801a862fead5e493e748991ad78bea027",
+        "output_bytes": 1401,
+        "output_full_bytes": 1401,
+        "truncated": false,
+        "output_normalized": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"has_more\":false,\"returned\":9,\"rows\":[[\"list\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"get\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"create\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"update\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"],[\"dto\",\"[\\\"Folder\\\"]\",\"CONTAINS_FILE\",\"AddressResponse.java\",\"[\\\"File\\\"]\",\"{}\"],[\"AddressResponse.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"dto\",\"[\\\"Folder\\\"]\",\"{}\"],[\"AddressResponse.java\",\"[\\\"File\\\"]\",\"DEFINES\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{}\"],[\"toResponse\",\"[\\\"Method\\\"]\",\"CALLS\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\",\\\"confidence\\\":0.75,\\\"strategy\\\":\\\"unique_name\\\",\\\"candidates\\\":1,\\\"args\\\":[{\\\"i\\\":0,\\\"e\\\":\\\"address.id()\\\"},{\\\"i\\\":1,\\\"e\\\":\\\"address.fullName()\\\"},{\\\"i\\\":2,\\\"e\\\":\\\"address.line1()\\\"},{\\\"i\\\":3,\\\"e\\\":\\\"address.line2()\\\"},{\\\"i\\\":4,\\\"e\\\":\\\"address.city()\\\"},{\\\"i\\\":5,\\\"e\\\":\\\"address.state()\\\"},{\\\"i\\\":6,\\\"e\\\":\\\"address.postalCode()\\\"},{\\\"i\\\":7,\\\"e\\\":\\\"address.country()\\\"}],\\\"line\\\":14}\"],[\"toResponse\",\"[\\\"Method\\\"]\",\"USAGE\",\"AddressResponse\",\"[\\\"Class\\\"]\",\"{\\\"callee\\\":\\\"AddressResponse\\\"}\"]],\"total\":9,\"total_relation\":\"eq\",\"truncated\":false}",
+        "output_normalized_sha256": "3ebb50863c6f1bc174ac2f2732c6b6c6150f9117dc583d932ea2627a9b96f68e",
+        "duration_ms": 4875.9,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "cross_repo",
+        "query": "AddressResponse",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r3",
+        "tool": "codebase_memory_query",
+        "operation": "cross_repo",
+        "parameters": {
+          "operation": "cross_repo",
+          "query": "AddressResponse",
+          "repo": "account-service"
+        },
+        "requested_query": "AddressResponse",
+        "executed_query": "AddressResponse",
+        "success": false,
+        "output": null,
+        "output_sha256": null,
+        "output_bytes": null,
+        "output_full_bytes": null,
+        "truncated": false,
+        "output_normalized": null,
+        "output_normalized_sha256": null,
+        "duration_ms": 9981.8,
+        "error": "codebase-memory-mcp: CBM daemon failed to start: socket_bind failed with EPERM (Operation not permitted) at /private/tmp/cbm-daemon-501/cbm-c888acc3ae367a1e.anc; see /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/codebase-memory/cache/logs/cbm-daemon.log\nerror: CBM daemon failed to start: socket_bind failed with EPERM (Operation not permitted) at /private/tmp/cbm-daemon-501/cbm-c888acc3ae367a1e.anc; see /Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/indexes/co"
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "tests",
+        "query": "AddressResponse",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r4",
+        "tool": "codebase_memory_query",
+        "operation": "tests",
+        "parameters": {
+          "operation": "tests",
+          "query": "AddressResponse",
+          "repo": "account-service"
+        },
+        "requested_query": "AddressResponse",
+        "executed_query": "AddressResponse",
+        "success": true,
+        "output": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"rows\":[],\"returned\":0,\"total\":0,\"total_relation\":\"eq\",\"has_more\":false,\"truncated\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\"}",
+        "output_sha256": "c9d7231ad034db066dfd0bf046b8a4c463d8b855103918e373d3b62b490bbadf",
+        "output_bytes": 270,
+        "output_full_bytes": 270,
+        "truncated": false,
+        "output_normalized": "{\"columns\":[\"a.name\",\"labels(a)\",\"type(r)\",\"b.name\",\"labels(b)\",\"properties(r)\"],\"has_more\":false,\"hint\":\"Query returned no results. Use get_graph_schema() to see available labels and edge types.\",\"returned\":0,\"rows\":[],\"total\":0,\"total_relation\":\"eq\",\"truncated\":false}",
+        "output_normalized_sha256": "f1e9b73f5b5d167b646592b41e326ddf3cd8a5e4244973c0127b87f4ce79e883",
+        "duration_ms": 3113,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "schema",
+        "query": "AddressResponse",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r5",
+        "tool": "codebase_memory_query",
+        "operation": "schema",
+        "parameters": {
+          "operation": "schema",
+          "query": "AddressResponse",
+          "repo": "account-service"
+        },
+        "requested_query": "AddressResponse",
+        "executed_query": "AddressResponse",
+        "success": true,
+        "output": "{\"node_labels\":[{\"label\":\"Method\",\"count\":112},{\"label\":\"Class\",\"count\":80},{\"label\":\"File\",\"count\":57},{\"label\":\"Variable\",\"count\":55},{\"label\":\"Field\",\"count\":37},{\"label\":\"Folder\",\"count\":34},{\"label\":\"Decorator\",\"count\":30},{\"label\":\"Module\",\"count\":12},{\"label\":\"Route\",\"count\":12},{\"label\":\"Function\",\"count\":8},{\"label\":\"Interface\",\"count\":7},{\"label\":\"Section\",\"count\":3},{\"label\":\"Table\",\"count\":3},{\"label\":\"Branch\",\"count\":1},{\"label\":\"Project\",\"count\":1}],\"edge_types\":[{\"type\":\"DEFINES\",\"count\":368},{\"type\":\"USAGE\",\"count\":317},{\"type\":\"CALLS\",\"count\":126},{\"type\":\"DECORATES\",\"count\":115},{\"type\":\"DEFINES_METHOD\",\"count\":112},{\"type\":\"IMPORTS\",\"count\":61},{\"type\":\"CONTAINS_FILE\",\"count\":57},{\"type\":\"WRITES\",\"count\":24},{\"type\":\"CONTAINS_FOLDER\",\"count\":19},{\"type\":\"OVERRIDE\",\"count\":12},{\"type\":\"SEMANTICALLY_RELATED\",\"count\":10},{\"type\":\"HANDLES\",\"count\":8},{\"type\":\"IMPLEMENTS\",\"count\":5},{\"type\":\"THROWS\",\"count\":5},{\"type\":\"CALL_REFERENCE\",\"count\":4},{\"type\":\"HTTP_CALLS\",\"count\":3},{\"type\":\"CONFIGURES\",\"count\":2},{\"type\":\"CROSS_HTTP_CALLS\",\"count\":2},{\"type\":\"HAS_BRANCH\",\"count\":1}],\"total\":34,\"returned\":34,\"has_more\":false,\"adr_present\":false}",
+        "output_sha256": "ffeeedc78842b3e230eb5f13db1a2b0770379355652b873ce35eff3689e8e2e9",
+        "output_bytes": 1171,
+        "output_full_bytes": 1171,
+        "truncated": false,
+        "output_normalized": "{\"adr_present\":false,\"edge_types\":[{\"count\":1,\"type\":\"HAS_BRANCH\"},{\"count\":10,\"type\":\"SEMANTICALLY_RELATED\"},{\"count\":112,\"type\":\"DEFINES_METHOD\"},{\"count\":115,\"type\":\"DECORATES\"},{\"count\":12,\"type\":\"OVERRIDE\"},{\"count\":126,\"type\":\"CALLS\"},{\"count\":19,\"type\":\"CONTAINS_FOLDER\"},{\"count\":2,\"type\":\"CONFIGURES\"},{\"count\":2,\"type\":\"CROSS_HTTP_CALLS\"},{\"count\":24,\"type\":\"WRITES\"},{\"count\":3,\"type\":\"HTTP_CALLS\"},{\"count\":317,\"type\":\"USAGE\"},{\"count\":368,\"type\":\"DEFINES\"},{\"count\":4,\"type\":\"CALL_REFERENCE\"},{\"count\":5,\"type\":\"IMPLEMENTS\"},{\"count\":5,\"type\":\"THROWS\"},{\"count\":57,\"type\":\"CONTAINS_FILE\"},{\"count\":61,\"type\":\"IMPORTS\"},{\"count\":8,\"type\":\"HANDLES\"}],\"has_more\":false,\"node_labels\":[{\"count\":1,\"label\":\"Branch\"},{\"count\":1,\"label\":\"Project\"},{\"count\":112,\"label\":\"Method\"},{\"count\":12,\"label\":\"Module\"},{\"count\":12,\"label\":\"Route\"},{\"count\":3,\"label\":\"Section\"},{\"count\":3,\"label\":\"Table\"},{\"count\":30,\"label\":\"Decorator\"},{\"count\":34,\"label\":\"Folder\"},{\"count\":37,\"label\":\"Field\"},{\"count\":55,\"label\":\"Variable\"},{\"count\":57,\"label\":\"File\"},{\"count\":7,\"label\":\"Interface\"},{\"count\":8,\"label\":\"Function\"},{\"count\":80,\"label\":\"Class\"}],\"returned\":34,\"total\":34}",
+        "output_normalized_sha256": "49ce643051a5d82378f979ca4575e3e2c53193977591fbb4803a6bbea17f1d24",
+        "duration_ms": 4859.2,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "trace",
+        "query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+        "repo": "order-service"
+      },
+      "receipt": {
+        "id": "r6",
+        "tool": "codebase_memory_query",
+        "operation": "trace",
+        "parameters": {
+          "operation": "trace",
+          "query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+          "repo": "order-service"
+        },
+        "requested_query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+        "executed_query": "order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address",
+        "success": true,
+        "output": "{\"function\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address\",\"direction\":\"both\",\"callees_total\":11,\"callees_total_relation\":\"eq\",\"callees\":{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client\",\"rows\":[[\"DownstreamUnavailableException\",1]]},{\"qn_prefix\":\"order-service.asyncapi.schemas.order.confirmed.v1\",\"rows\":[[\"country\",1],[\"postalCode\",1],[\"state\",1],[\"city\",1],[\"line2\",1],[\"line1\",1],[\"fullName\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.messaging.RetryRouter\",\"rows\":[[\"header\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.domain.model\",\"rows\":[[\"AddressSnapshot\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]}]},\"callers_total\":2,\"callers_total_relation\":\"eq\",\"callers\":{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository\",\"rows\":[[\"save\",1]]}]}}",
+        "output_sha256": "6825a00a20dd1996acfaa3998ae32b936a952b6d44537abb06789fb7191e4666",
+        "output_bytes": 1330,
+        "output_full_bytes": 1330,
+        "truncated": false,
+        "output_normalized": "{\"callees\":{\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.asyncapi.schemas.order.confirmed.v1\",\"rows\":[[\"country\",1],[\"postalCode\",1],[\"state\",1],[\"city\",1],[\"line2\",1],[\"line1\",1],[\"fullName\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.domain.model\",\"rows\":[[\"AddressSnapshot\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client\",\"rows\":[[\"DownstreamUnavailableException\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.messaging.RetryRouter\",\"rows\":[[\"header\",1]]}],\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\"},\"callees_total\":11,\"callees_total_relation\":\"eq\",\"callers\":{\"cols\":[\"name\",\"hop\"],\"groups\":[{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient\",\"rows\":[[\"address\",1]]},{\"qn_prefix\":\"order-service.src.main.java.com.poc.order.infrastructure.persistence.repository.MyBatisQuoteRepository\",\"rows\":[[\"save\",1]]}],\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\"},\"callers_total\":2,\"callers_total_relation\":\"eq\",\"direction\":\"both\",\"function\":\"order-service.src.main.java.com.poc.order.infrastructure.client.AccountClient.address\"}",
+        "output_normalized_sha256": "82bdf0e08448d631787bdd103782a9eb23bcddf8ddf2d58aa2401cfd5c0a068d",
+        "duration_ms": 4864.9,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "search",
+        "query": "BenchmarkMissingSymbol987654",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r7",
+        "tool": "codebase_memory_query",
+        "operation": "search",
+        "parameters": {
+          "operation": "search",
+          "query": "BenchmarkMissingSymbol987654",
+          "repo": "account-service"
+        },
+        "requested_query": "BenchmarkMissingSymbol987654",
+        "executed_query": "BenchmarkMissingSymbol987654",
+        "success": true,
+        "output": "{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"groups\":[],\"hint\":\"No nodes match; check spelling or broaden the regex.\",\"total\":0,\"returned\":0,\"count\":0,\"has_more\":false,\"truncated\":false}",
+        "output_sha256": "c20d8a5c1fbfbc9a4262e1690881dc7dff18e2688b6d71c891d4733776cc3944",
+        "output_bytes": 255,
+        "output_full_bytes": 255,
+        "truncated": false,
+        "output_normalized": "{\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"count\":0,\"groups\":[],\"has_more\":false,\"hint\":\"No nodes match; check spelling or broaden the regex.\",\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"returned\":0,\"total\":0,\"truncated\":false}",
+        "output_normalized_sha256": "8b540174d9366f09ba73932050017c91b75a28124de671eec05def620c4ab769",
+        "duration_ms": 4864,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "search",
+        "query": "get",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r8",
+        "tool": "codebase_memory_query",
+        "operation": "search",
+        "parameters": {
+          "operation": "search",
+          "query": "get",
+          "repo": "account-service"
+        },
+        "requested_query": "get",
+        "executed_query": "get",
+        "success": true,
+        "output": "{\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"groups\":[{\"qn_prefix\":\"\",\"file\":\"\",\"rows\":[[\"<decorator:GetMapping>\",\"Decorator\",\"\",2,0]]},{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.application.AddressBookService\",\"file\":\"src/main/java/com/poc/account/application/AddressBookService.java\",\"rows\":[[\"get\",\"Method\",\"27-30\",0,3]]},{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.AddressController\",\"file\":\"src/main/java/com/poc/account/api/AddressController.java\",\"rows\":[[\"get\",\"Method\",\"49-57\",7,7]]},{\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.GlobalExceptionHandler.log = LoggerFactory.getLogger(GlobalExceptionHandler\",\"file\":\"src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\"rows\":[[\"class)\",\"Field\",\"18-18\",0,0]]}],\"total\":4,\"returned\":4,\"count\":4,\"has_more\":false,\"truncated\":false}",
+        "output_sha256": "6a708e93308559698577d9544c7521c7782a27c388c2119dfbd492590b71a0ee",
+        "output_bytes": 921,
+        "output_full_bytes": 921,
+        "truncated": false,
+        "output_normalized": "{\"cols\":[\"name\",\"label\",\"lines\",\"in\",\"out\"],\"count\":4,\"groups\":[{\"file\":\"\",\"qn_prefix\":\"\",\"rows\":[[\"<decorator:GetMapping>\",\"Decorator\",\"\",2,0]]},{\"file\":\"src/main/java/com/poc/account/api/AddressController.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.AddressController\",\"rows\":[[\"get\",\"Method\",\"49-57\",7,7]]},{\"file\":\"src/main/java/com/poc/account/api/GlobalExceptionHandler.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.api.GlobalExceptionHandler.log = LoggerFactory.getLogger(GlobalExceptionHandler\",\"rows\":[[\"class)\",\"Field\",\"18-18\",0,0]]},{\"file\":\"src/main/java/com/poc/account/application/AddressBookService.java\",\"qn_prefix\":\"account-service.src.main.java.com.poc.account.application.AddressBookService\",\"rows\":[[\"get\",\"Method\",\"27-30\",0,3]]}],\"has_more\":false,\"qn_rule\":\"qn = qn_prefix == \\\"\\\" ? name : qn_prefix + \\\".\\\" + name\",\"returned\":4,\"total\":4,\"truncated\":false}",
+        "output_normalized_sha256": "5afabbbdbe30b85ab58e2af1255864b7119974ffd0d93e7a3acbaa4abac82b9b",
+        "duration_ms": 4875,
+        "error": null
+      }
+    },
+    {
+      "tool": "codebase_memory_query",
+      "parameters": {
+        "operation": "trace",
+        "query": "getAddress",
+        "repo": "account-service"
+      },
+      "receipt": {
+        "id": "r9",
+        "tool": "codebase_memory_query",
+        "operation": "trace",
+        "parameters": {
+          "operation": "trace",
+          "query": "getAddress",
+          "repo": "account-service"
+        },
+        "requested_query": "getAddress",
+        "executed_query": "getAddress",
+        "success": false,
+        "output": null,
+        "output_sha256": null,
+        "output_bytes": null,
+        "output_full_bytes": null,
+        "truncated": false,
+        "output_normalized": null,
+        "output_normalized_sha256": null,
+        "duration_ms": 4872.3,
+        "error": "{\"error\":\"function not found\",\"function_name\":\"getAddress\",\"hint\":\"Use search_graph(name_pattern=...) to find the exact qualified name, then pass it to trace_path.\"}"
+      }
+    }
+  ],
+  "product_provenance": {
+    "mode": "real_product",
+    "product": "codebase-memory-mcp",
+    "version": "0.11.0",
+    "commit": "8972ea69c6ad94b1ef1d4ffbf0a92d78d2db1798",
+    "binary_sha256": "a67b7ccead5d2ca852051f8619458ab96af41393257b56fb36e523a110265d48",
+    "artifact_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+    "manifest_sha256": "91fdb9cafed4f56776d7fab5e0e0409a190d414ff1577b03319a28392eec0b18",
+    "query_surface": [
+      "search_graph",
+      "query_graph:references",
+      "trace_path:functions",
+      "query_graph:CROSS_*",
+      "query_graph:TESTS",
+      "get_graph_schema"
+    ],
+    "freshness": "verified",
+    "adapter_version": "1.4.1",
+    "config_sha256": "4bcf17b2c68852b9e5bada7a20a10465f09a6310ce3dd8e090fca25cf031224e",
+    "index_built_at": null,
+    "index_duration_seconds": 117,
+    "indexed_estate_sha256": "d621514949e1eda544a23e8ff40610079c4554a1fcab2b29d7b4f8dd82974ad6"
+  },
+  "status": "invocation_failures"
+}

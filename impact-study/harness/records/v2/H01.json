@@ -1,0 +1,118 @@
+{
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "change_id": "H01",
+  "status": "verified",
+  "category": "rest_contract",
+  "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "repository_universe": [
+    "account-service",
+    "basket-service",
+    "catalog-service",
+    "commerce-bff",
+    "commerce-platform",
+    "commerce-web",
+    "inventory-service",
+    "order-service",
+    "payment-service",
+    "shipment-service"
+  ],
+  "origin_repo": "catalog-service",
+  "proposed_change": {
+    "repo": "catalog-service",
+    "diff": "--- a/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n+++ b/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n@@ -8,7 +8,7 @@\n         String description,\n         String imageUrl,\n         long priceMinor,\n-        String currency,\n+        @com.fasterxml.jackson.annotation.JsonProperty(\"currencyCode\") String currency,\n         boolean active\n ) {\n }\n"
+  },
+  "repositories": [
+    {
+      "repo": "catalog-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "basket-service",
+      "runtime_status": "broken"
+    },
+    {
+      "repo": "commerce-bff",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "commerce-web",
+      "runtime_status": "broken"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "basket-service",
+      "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency"
+    },
+    {
+      "repo": "commerce-web",
+      "fqn": "src/api/products.ts.listProducts"
+    }
+  ],
+  "edges": [
+    {
+      "provider": "catalog-service",
+      "consumer": "basket-service",
+      "type": "rest",
+      "identifier": "GET /api/v1/products/{productId}",
+      "field": "currency"
+    },
+    {
+      "provider": "catalog-service",
+      "consumer": "commerce-bff",
+      "type": "rest",
+      "identifier": "GET /api/v1/products",
+      "field": "currency"
+    },
+    {
+      "provider": "commerce-bff",
+      "consumer": "commerce-web",
+      "type": "rest",
+      "identifier": "GET /api/v1/products",
+      "field": "currency"
+    }
+  ],
+  "repair_alternatives": [
+    {
+      "name": "preserve_requested_change_and_repair_consumers",
+      "actions": [
+        {
+          "repo": "basket-service",
+          "target": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency",
+          "operation": "read_json_field",
+          "before": "currency",
+          "after": "currencyCode",
+          "critical": true
+        },
+        {
+          "repo": "commerce-web",
+          "target": "src/api/products.ts.listProducts",
+          "operation": "read_json_field",
+          "before": "currency",
+          "after": "currencyCode",
+          "critical": true
+        }
+      ],
+      "obligations": [
+        {
+          "repo": "catalog-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "basket-service",
+          "obligation": "production_edit"
+        },
+        {
+          "repo": "commerce-bff",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "commerce-web",
+          "obligation": "production_edit"
+        }
+      ]
+    }
+  ]
+}

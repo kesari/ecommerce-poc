@@ -1,0 +1,63 @@
+{
+  "protocol_version": 2,
+  "change_id": "REST-001",
+  "status": "verified",
+  "category": "rest_contract",
+  "query": "Account's address GET response changes its JSON field postalCode to postcode; request bodies retain postalCode. Under the supplied diff, determine the effect on Order's real HTTP address binding and normal quote creation before any later order-confirmed event. Identify the field-level consumer repair needed to preserve successful quote creation while the provider emits only postcode. Limit runtime claims to this Account-to-Order boundary and Order's Shipment estimate call; full provider routing/security, Shipment server behavior, persistence, UI and Kafka execution are outside this bounded check.",
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "origin_repo": "account-service",
+  "proposed_change": {
+    "repo": "account-service",
+    "diff": "--- a/src/main/java/com/poc/account/api/dto/AddressResponse.java\n+++ b/src/main/java/com/poc/account/api/dto/AddressResponse.java\n@@ -10,7 +10,7 @@\n         String line2,\n         String city,\n         String state,\n-        String postalCode,\n+        String postcode,\n         String country,\n         String phoneNumber,\n         Instant createdAt,\n"
+  },
+  "repositories": [
+    {
+      "repo": "account-service",
+      "runtime_status": "unchanged"
+    },
+    {
+      "repo": "order-service",
+      "runtime_status": "broken"
+    }
+  ],
+  "symbols": [
+    {
+      "repo": "order-service",
+      "fqn": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode"
+    }
+  ],
+  "edges": [
+    {
+      "provider": "account-service",
+      "consumer": "order-service",
+      "type": "rest",
+      "identifier": "GET /api/v1/addresses/{addressId}",
+      "field": "postalCode"
+    }
+  ],
+  "repair_alternatives": [
+    {
+      "name": "consumer_reads_renamed_response_field",
+      "actions": [
+        {
+          "repo": "order-service",
+          "target": "com.poc.order.infrastructure.client.AccountClient.AddressResponse.postalCode",
+          "operation": "read_json_field",
+          "before": "postalCode",
+          "after": "postcode",
+          "critical": true
+        }
+      ],
+      "obligations": [
+        {
+          "repo": "account-service",
+          "obligation": "validation_only"
+        },
+        {
+          "repo": "order-service",
+          "obligation": "production_edit"
+        }
+      ]
+    }
+  ]
+}

@@ -1,8 +1,38 @@
 # Version 2 structured scoring contract
 
-Implemented 2026-10-16; scoped revision **2.1** added 2026-10-18. This is a separate diagnostic scorer; v1 schemas,
+Implemented 2026-10-16; scoped revision **2.1** added 2026-10-18; discovery revision **2.2** added 2026-10-20. This is a separate diagnostic scorer; v1 schemas,
 records, scorer and historical scores retain their original meaning. It does
 not by itself establish that a whole-estate scenario has been verified.
+
+## Discovery revision 2.2
+
+New records declare `evaluation_revision: "2.2"` and a public
+`repository_universe`. Repository claims and edge endpoints must use its IDs;
+class/method names receive no repository credit. The new
+`scale_numeric_field` action uses exact positive integer multiplier strings for
+`before` and `after`, such as `1` and `12` for an unrelated dozens-to-units
+conversion. JSON read actions use local member keys; message edge paths are
+payload-relative, with arrays such as `lines[].code`. HTTP contract identities
+use source-declared paths; test pagination values are not required route keys.
+
+`complete_supported_impact` is the discovery primary outcome. A coherent
+alternative must cover all proved repository/runtime observations, causal edges,
+repair actions and obligations. It must be benchmark-eligible with a complete
+trusted oracle, valid live runner receipts, no invalid findings, no established
+contradictions and no unresolved reference observations. Missing symbols affect
+diagnostic recall, not this primary outcome. Unsupported additional actions,
+production-edit obligations, broken-repository claims or competing versions of
+a required contract prevent complete impact; they remain unverified unless
+independent evidence establishes a contradiction. Unrelated supporting edges and
+unchanged-repository context do not automatically fail the outcome.
+
+The scorer ranks complete supported alternatives before the earlier repair
+ranking. It retains `satisfies_required_actions` and `satisfies_any_repair` as
+separate diagnostics. Older records receive a null discovery primary outcome;
+use the archived 2.1 sources to replay original scores. Protected live receipts
+bind model/SDK, harness, estate, arm config/index, task prompt and campaign slot
+to runner-stamped answer metadata. The paired analyzer additionally binds that
+identity to the externally pinned schedule, conditions and execution ledger.
 
 ## Acceptance predicates
 
@@ -48,6 +78,7 @@ The pilot's public action vocabulary is deliberately small:
 | `retain_json_alias` | A producer contract preserves an explicitly permitted compatibility key |
 | `subscribe_topic` | A scoped consumer listens to the new topic rather than the old topic |
 | `publish_topic` | A scoped producer publishes to the new topic rather than the old topic |
+| `scale_numeric_field` | Revision 2.2: the scoped consumer applies the new numeric multiplier |
 
 `target` is an exact declaring member or contract location. `before` and
 `after` are exact old/new contract values. An accessor rename and an equivalent

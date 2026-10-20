@@ -21,6 +21,8 @@ import {
 import { AttemptBudget, AttemptError, superviseAttempt } from "./budget.ts";
 import type { BudgetPolicy } from "./budget.ts";
 import { extractAnswer } from "./answer.ts";
+import { claimCampaignSlot, loadFrozenCampaign, reserveCampaignBudget, settleCampaignBudget, preflightCampaignSlot, SAFE_CASE } from "./campaign.ts";
+import type { CampaignBudgetReservation, FrozenCampaign, MeasurementIdentity } from "./campaign.ts";
 import {
 	assertDirectory,
 	assertEstateSnapshot,
@@ -77,6 +79,12 @@ interface RunnerArgs {
 	maxTokens?: number;
 	maxCostUsd?: number;
 	runGroup?: string;
+	campaignSchedule?: string;
+	campaignCasesManifest?: string;
+	trustedCampaignScheduleSha256?: string;
+	campaignConditions?: string;
+	trustedCampaignConditionsSha256?: string;
+	campaignRepeat?: number;
 }
 
 interface RunContext {
@@ -85,6 +93,9 @@ interface RunContext {
 	harnessSha256: string;
 	outputDir: string;
 	budgetPolicy: BudgetPolicy;
+	campaign?: FrozenCampaign;
+	campaignClaimDir?: string;
+	campaignRuntime?: { scorerSha256: string; answerSchemaSha256: string; taskTemplateSha256: string; scoringPolicy: string; recordSha256?: string; oracleSha256?: string; treatment: string };
 	oracleOptions?: { oracleBundle: string; trustedOracleSha256: string; artifactRoot: string };
 }
 
@@ -109,7 +120,7 @@ export function parseArgs(argv: string[]): RunnerArgs {
 	};
 	for (let index = 0; index < argv.length; index++) {
 		const flag = argv[index];
-		if (!["--record", "--contestant", "--runs", "--estate", "--timeout", "--protocol", "--oracle-bundle", "--trusted-oracle-sha256", "--artifact-root", "--max-tokens", "--max-cost-usd", "--run-group"].includes(flag)) {
+		if (!["--record", "--contestant", "--runs", "--estate", "--timeout", "--protocol", "--oracle-bundle", "--trusted-oracle-sha256", "--artifact-root", "--max-tokens", "--max-cost-usd", "--run-group", "--campaign-schedule", "--campaign-cases-manifest", "--trusted-campaign-schedule-sha256", "--campaign-conditions", "--trusted-campaign-conditions-sha256", "--campaign-repeat"].includes(flag)) {
 			throw new Error(`unknown flag ${flag}`);
 		}
 		const value = argv[++index];
@@ -129,6 +140,12 @@ export function parseArgs(argv: string[]): RunnerArgs {
 			if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$/.test(value)) throw new Error("--run-group must be a directory-safe label of at most 64 characters");
 			args.runGroup = value;
 		}
+		else if (flag === "--campaign-schedule") args.campaignSchedule = value;
+		else if (flag === "--campaign-cases-manifest") args.campaignCasesManifest = value;
+		else if (flag === "--campaign-conditions") args.campaignConditions = value;
+		else if (flag === "--trusted-campaign-schedule-sha256") args.trustedCampaignScheduleSha256 = value;
+		else if (flag === "--trusted-campaign-conditions-sha256") args.trustedCampaignConditionsSha256 = value;
+		else if (flag === "--campaign-repeat") args.campaignRepeat = positiveInteger(value, flag);
 		else if (flag === "--max-tokens") args.maxTokens = positiveInteger(value, flag);
 		else if (flag === "--max-cost-usd") {
 			args.maxCostUsd = Number(value);
@@ -137,7 +154,7 @@ export function parseArgs(argv: string[]): RunnerArgs {
 		else args.timeout = positiveInteger(value, flag);
 	}
 	if (args.record.length === 0) throw new Error("--record is required (change id, or 'all')");
-	if (args.record.some((id) => id !== "all" && !/^[A-Z]+-[0-9]+$/.test(id))) {
+	if (args.record.some((id) => id !== "all" && !SAFE_CASE.test(id))) {
 		throw new Error("--record must be a change id or 'all'");
 	}
 	if (args.protocol === 2) {
@@ -149,6 +166,13 @@ export function parseArgs(argv: string[]): RunnerArgs {
 	} else if (args.oracleBundle || args.trustedOracleSha256 || args.artifactRoot || args.runGroup) {
 		throw new Error("oracle options and --run-group require --protocol 2");
 	}
+	const campaignValues = [args.campaignSchedule, args.campaignCasesManifest, args.campaignConditions, args.trustedCampaignScheduleSha256, args.trustedCampaignConditionsSha256, args.campaignRepeat];
+	if (campaignValues.some(value => value !== undefined)) {
+		if (args.protocol !== 2 || campaignValues.some(value => value === undefined)) throw new Error("campaign execution requires protocol 2 and all six frozen campaign options");
+		if (!/^[a-f0-9]{64}$/.test(args.trustedCampaignScheduleSha256!) || !/^[a-f0-9]{64}$/.test(args.trustedCampaignConditionsSha256!)) throw new Error("campaign trusted digests must be SHA-256");
+		if (args.campaignRepeat! > 3 || args.record.length !== 1 || args.record[0] === "all" || args.contestant.length !== 1 || (argv.includes("--runs") && args.runs !== 1)) throw new Error("campaign invocation selects exactly one case, arm, and repetition (1..3)");
+		args.runs = 1;
+	}
 	return args;
 }
 
@@ -156,6 +180,7 @@ export function buildPrompt(record: any, template: string) {
 	const change = record.proposed_change ?? {};
 	return template
 		.replaceAll("{{QUERY}}", record.query)
+		.replaceAll("{{REPOSITORY_UNIVERSE}}", record.repository_universe?.length ? [...record.repository_universe].sort().join(", ") : "Use the repository names available in source.")
 		.replaceAll("{{CHANGE_REPO}}", change.repo ?? "unspecified")
 		.replaceAll("{{CHANGE_DIFF}}", change.diff ?? "(not supplied)")
 		.replaceAll("{{CHANGE_ID}}", record.change_id)
@@ -207,10 +232,10 @@ function stableHash(value: any) {
 	return sha256(JSON.stringify(stableValue(value)));
 }
 
-async function harnessHash() {
+export async function harnessHash() {
 	const files = [
-		"answer.ts", "budget.ts", "estate.ts", "indexes.ts", "paths.ts", "playbook.ts", "products.ts", "run.ts", "scoring.ts",
-		"aggregate.py", "aggregate_v2.py", "package.json", "package-lock.json",
+		"answer.ts", "budget.ts", "campaign.ts", "estate.ts", "freeze_campaign.ts", "indexes.ts", "paths.ts", "playbook.ts", "products.ts", "run.ts", "scoring.ts",
+		"aggregate.py", "aggregate_v2.py", "aggregate_paired.py", "package.json", "package-lock.json",
 		"contestants.json", "prompt-template.md", "prompt-template-v2.md", "../scoring/score.py", "../scoring/score_v2.py",
 		"../schema/contestant-answer.schema.json", "../schema/change-ground-truth.schema.json",
 		"../schema/contestant-answer-v2.schema.json", "../schema/change-ground-truth-v2.schema.json", "../schema/oracle-bundle-v2.schema.json",
@@ -257,6 +282,23 @@ export async function assertVerifierOutsideEstate(estate: string, paths: string[
 			}
 		}
 	}
+}
+
+export function declaredTools(contestant: Contestant): string[] {
+	const productTools: Record<string, string[]> = { scip: ["scip_search"], graphify: ["graphify_query"],
+		gortex: ["gortex_query", "gortex_contracts"], repowise: ["repowise_search", "repowise_context", "repowise_blast_radius"],
+		"codebase-memory": ["codebase_memory_query"] };
+	if (contestant.product && !productTools[contestant.product.kind]) throw new Error("unsupported product tool identity");
+	return [...FIXED_TOOLS, ...(contestant.product ? productTools[contestant.product.kind] : [])];
+}
+export function contestantConfigSha256(contestant: Contestant, budgetPolicy: BudgetPolicy) {
+	return stableHash({ contestant, tools: declaredTools(contestant), thinking: FIXED_THINKING, budget_policy: budgetPolicy });
+}
+export function createMeasurementIdentity(name: string, contestant: Contestant, index: number, context: RunContext, taskPrompt: string, indexSha = "none"): MeasurementIdentity {
+	return { runner: name, contestant: contestant.label, run_index: index, model: `${contestant.provider}/${contestant.model}`,
+		model_digest: modelDigest(contestant), pi_version: context.piVersion, harness_sha256: context.harnessSha256,
+		contestant_config_sha256: contestantConfigSha256(contestant, context.budgetPolicy), index_sha256: indexSha,
+		thinking: FIXED_THINKING, estate_sha256: context.estate.sha256, task_prompt_sha256: sha256(taskPrompt) };
 }
 
 function modelDigest(contestant: Contestant) {
@@ -309,27 +351,14 @@ async function ask(payload: any, budget: AttemptBudget, signal: AbortSignal, emi
 	let effectivePrompt = prompt;
 	let toolCalls: ReturnType<typeof countToolCalls> | undefined;
 	const indexShas: string[] = [];
-	const progress = (extra: any = {}, durable = false) => emit({ productReceipt, productReceipts, playbook, effectivePrompt,
+	let observedIndexSha: string | null = null;
+	const progress = (extra: any = {}, durable = false) => emit({ index_observed_sha256: observedIndexSha ?? productReceipt?.artifact_sha256 ?? null, productReceipt, productReceipts, playbook, effectivePrompt,
 		stats: budget.stats, reservations: budget.reservations, toolCalls: toolCalls?.() ?? 0,
 		toolTelemetry: toolCalls?.telemetry(), exposure: budget.exposure(), ...extra }, durable);
 	try {
 		budget.check();
 		await mkdir(scratch);
 		progress({ stage: "setup" });
-		const modelRuntime = await ModelRuntime.create({ signal, allowModelNetwork: false, refreshOnCreate: false, ...(payload.protocol === 2 ? { modelsPath: null } : {}) });
-		const model = modelRuntime.getModel(contestant.provider, contestant.model);
-		if (!model) throw new AttemptError("setup_failed", `model not in pi registry: ${contestant.provider}/${contestant.model}`);
-		const stream = modelRuntime.streamSimple.bind(modelRuntime);
-		// SDK streamFn is async and awaits this result; ACK the reservation
-		// in the parent ledger before any HTTP request can begin.
-		(modelRuntime as any).streamSimple = async (model: any, context: any, options: any) => {
-			let limits;
-			try { limits = budget.reserve(model); }
-			catch (error: any) { budget.stop(error); throw error; }
-			await progress({ stage: "provider_request" }, true);
-			budget.check();
-			return stream(model, context, { ...options, ...limits, maxRetries: 0, ...(model.api === "openai-codex-responses" ? { transport: "sse" } : {}) });
-		};
 		budget.check();
 		if (snapshot) await assertEstateSnapshot(estate, snapshot);
 		budget.check();
@@ -389,6 +418,27 @@ async function ask(payload: any, budget: AttemptBudget, signal: AbortSignal, emi
 		}
 		toolCalls = countToolCalls(tools);
 		const allowedTools = [...FIXED_TOOLS, ...productTools.map((tool: any) => tool.name)];
+		const indexSha = productReceipt?.artifact_sha256 ?? (indexShas.length ? sha256(indexShas.join("\0")) : "none");
+		observedIndexSha = indexSha;
+		if (payload.campaign) {
+			if (JSON.stringify(allowedTools) !== JSON.stringify(payload.declaredTools)) throw new Error("campaign preflight: actual tool configuration differs from frozen declaration");
+			preflightCampaignSlot(payload.campaign, { ...payload.measurementIdentity, index_sha256: indexSha }, payload.campaignRuntime);
+		}
+		const modelRuntime = await ModelRuntime.create({ signal, allowModelNetwork: false, refreshOnCreate: false, ...(payload.protocol === 2 ? { modelsPath: null } : {}) });
+		const model = modelRuntime.getModel(contestant.provider, contestant.model);
+		if (!model) throw new AttemptError("setup_failed", `model not in pi registry: ${contestant.provider}/${contestant.model}`);
+		if (payload.campaign && `${model.provider}/${model.id}` !== payload.measurementIdentity.model) throw new Error("campaign preflight: registry model identity differs from frozen condition");
+		const stream = modelRuntime.streamSimple.bind(modelRuntime);
+		// SDK streamFn is async and awaits this result; ACK the reservation
+		// in the parent ledger before any HTTP request can begin.
+		(modelRuntime as any).streamSimple = async (model: any, context: any, options: any) => {
+			let limits;
+			try { limits = budget.reserve(model); }
+			catch (error: any) { budget.stop(error); throw error; }
+			await progress({ stage: "provider_request" }, true);
+			budget.check();
+			return stream(model, context, { ...options, ...limits, maxRetries: 0, ...(model.api === "openai-codex-responses" ? { transport: "sse" } : {}) });
+		};
 		({ session } = await createAgentSession({
 			cwd: workdir, model, thinkingLevel: FIXED_THINKING, tools: allowedTools, customTools: tools as any,
 			modelRuntime, sessionManager: SessionManager.inMemory(workdir),
@@ -470,9 +520,9 @@ function stampedPlaybook(playbook: any[] | undefined) {
 /** Persist trusted runtime output before parsing any model-authored JSON. */
 export async function persistRunReceipts(outputDir: string, record: any, name: string, runStartedAt: string, runtime: {
 	prompt: string; estateSha256: string; productReceipt?: any; productReceipts?: any[]; playbook?: any[];
-	budgetPolicy: BudgetPolicy; usage: { tokens_consumed: number; cost_usd: number; elapsed_seconds: number };
+	budgetPolicy: BudgetPolicy; usage: { tokens_consumed: number; cost_usd: number; elapsed_seconds: number }; measurementIdentity?: MeasurementIdentity;
 }) {
-	if (!/^[A-Z]+-[0-9]+$/.test(record.change_id) || !/^[a-z0-9-]+$/i.test(name)) throw new Error("unsafe run identity");
+	if (!SAFE_CASE.test(record.change_id) || !/^[a-z0-9-]+$/i.test(name)) throw new Error("unsafe run identity");
 	const directory = join(outputDir, "receipts");
 	await mkdir(directory, { recursive: true });
 	const path = join(directory, `${record.change_id}-${name}-${runStartedAt.replace(/[:.]/g, "-")}.json`);
@@ -481,6 +531,7 @@ export async function persistRunReceipts(outputDir: string, record: any, name: s
 		run_started_at: runStartedAt, prompt_sha256: sha256(runtime.prompt), estate_sha256: runtime.estateSha256,
 		receipts: runtime.productReceipts ?? [], product_provenance: runtime.productReceipt ?? null,
 		product_playbook: stampedPlaybook(runtime.playbook), budget_policy: runtime.budgetPolicy, usage: runtime.usage,
+		...(runtime.measurementIdentity ? { measurement_identity: runtime.measurementIdentity } : {}),
 	};
 	const bytes = `${JSON.stringify(envelope, null, 2)}\n`;
 	await writeFile(path, bytes, { flag: "wx" });
@@ -488,7 +539,7 @@ export async function persistRunReceipts(outputDir: string, record: any, name: s
 }
 
 /** Everything needed to reproduce or invalidate this measurement later. */
-function stampProvenance(answer: any, options: {
+export function stampProvenance(answer: any, options: {
 	record: any;
 	name: string;
 	contestant: Contestant;
@@ -508,6 +559,7 @@ function stampProvenance(answer: any, options: {
 	playbook?: any[];
 	reservations?: any[];
 	attemptEvidence?: { path: string; sha256: string };
+	measurementIdentity?: MeasurementIdentity;
 }) {
 	const { record, name, contestant, index, prompt, elapsed, stats, context, runStartedAt, toolCalls, toolTelemetry, indexSha, productReceipt, productReceipts, allowedTools } = options;
 	// Manual rubric scores must come from an out-of-band rubric file, never
@@ -515,6 +567,10 @@ function stampProvenance(answer: any, options: {
 	// their own composite or suppress weight renormalization.
 	delete answer.freshness_score;
 	delete answer.operational_cost_score;
+	delete answer.campaign_slot;
+	delete answer.measurement_identity;
+	delete answer.task_prompt_sha256;
+	const { campaign_slot: _slot, ...identityFields } = options.measurementIdentity ?? {};
 	if (record.protocol_version === 2) {
 		answer.protocol_version = 2;
 		answer.snapshot_sha256 = record.snapshot_sha256;
@@ -546,7 +602,7 @@ function stampProvenance(answer: any, options: {
 		tokens_consumed: stats?.tokens.total,
 		cost_usd: stats?.cost,
 		model: `${contestant.provider}/${contestant.model}`,
-		model_digest: modelDigest(contestant),
+		model_digest: options.measurementIdentity ? options.measurementIdentity.model_digest : modelDigest(contestant),
 		pi_version: context.piVersion,
 		prompt_sha256: sha256(prompt),
 		contestant_config_sha256: stableHash({ contestant, tools: allowedTools ?? [...FIXED_TOOLS], thinking: FIXED_THINKING, budget_policy: context.budgetPolicy }),
@@ -554,6 +610,8 @@ function stampProvenance(answer: any, options: {
 		harness_sha256: context.harnessSha256,
 		estate_repositories: context.estate.repositories,
 		estate_revisions: context.estate.revisions,
+		thinking: FIXED_THINKING,
+		...(options.measurementIdentity ? { ...identityFields, measurement_identity: options.measurementIdentity } : {}),
 		findings: answer.findings ?? {},
 	});
 }
@@ -574,32 +632,58 @@ export async function runOnce(record: any, name: string, contestant: Contestant,
 		reservations: [], exposure: { unknown_usage: false, pending_request: null, exposure_upper_bound_usd: 0 } };
 	let runReceiptBundle: { path: string; sha256: string } | undefined;
 	let attemptEvidence: { path: string; sha256: string } | undefined;
+	let measurementIdentity: MeasurementIdentity | undefined;
+	let campaignReservation: CampaignBudgetReservation | undefined;
+	let campaignSettled = false, slotClaimed = false;
 	let protectedUsage: { tokens_consumed: number; cost_usd: number; elapsed_seconds: number } | undefined;
 	try {
 		const template = await readFile(join(RUN_DIR, record.protocol_version === 2 ? "prompt-template-v2.md" : "prompt-template.md"), "utf8");
 		const section = indexPromptSection(contestant.indexes ?? []);
 		const prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
 		partial.effectivePrompt = prompt;
+		measurementIdentity = createMeasurementIdentity(name, contestant, index, context, prompt, context.campaign?.conditions.arms[name]?.index_sha256 ?? "none");
+		if (record.evaluation_revision === "2.2" && !context.campaign) throw new Error("campaign preflight: evaluation revision 2.2 requires a frozen validated campaign slot");
+		if (context.campaign) {
+			if (record.evaluation_revision !== "2.2") throw new Error("campaign preflight: record evaluation revision differs from frozen campaign");
+			if (!context.campaignRuntime) throw new Error("campaign preflight: missing current runtime digests");
+			measurementIdentity.campaign_slot = preflightCampaignSlot(context.campaign,
+				{ ...measurementIdentity, index_sha256: contestant.product || contestant.indexes?.length ? undefined : "none" },
+				{ ...context.campaignRuntime, caseId: record.change_id, estateSha256: context.estate.sha256, budgetPolicy: context.budgetPolicy });
+			campaignReservation = await reserveCampaignBudget(context.campaignClaimDir ?? join(RUNS, "v2"), context.campaign.conditions, measurementIdentity.campaign_slot, runStartedAt, context.budgetPolicy.max_cost_usd!);
+			await claimCampaignSlot(context.campaignClaimDir ?? join(RUNS, "v2"), measurementIdentity.campaign_slot, runStartedAt);
+			slotClaimed = true;
+		}
+
 		const remainingSeconds = context.budgetPolicy.timeout_seconds - (performance.now() - started) / 1000;
 		if (remainingSeconds <= 0) throw new AttemptError("budget_exhausted", "total attempt deadline exhausted");
 		const runtime = await superviseAttempt(fileURLToPath(import.meta.url), {
 			prompt, contestant, estate, snapshot: context.estate, policy: context.budgetPolicy, protocol: record.protocol_version ?? 1,
 			scratch, anchor: contestant.product_first ? deriveAnchor(record.proposed_change?.repo ?? "", record.proposed_change?.diff ?? "") : undefined,
 			question: contestant.product_first ? record.query : undefined,
+			campaign: context.campaign, measurementIdentity, declaredTools: declaredTools(contestant),
+			campaignRuntime: context.campaignRuntime ? { ...context.campaignRuntime, caseId: record.change_id, estateSha256: context.estate.sha256, budgetPolicy: context.budgetPolicy } : undefined,
 		}, { ...context.budgetPolicy, timeout_seconds: remainingSeconds }, (progress) => {
 			if (progress.raw_delta !== undefined) partial.raw += progress.raw_delta;
 			else Object.assign(partial, progress);
 		});
 		Object.assign(partial, runtime);
+		if (context.campaign) preflightCampaignSlot(context.campaign, { ...measurementIdentity, index_sha256: runtime.indexSha },
+			{ ...context.campaignRuntime!, caseId: record.change_id, estateSha256: context.estate.sha256, budgetPolicy: context.budgetPolicy });
+		measurementIdentity.index_sha256 = runtime.indexSha;
 		const elapsed = (performance.now() - started) / 1000;
 		const usage = { tokens_consumed: runtime.stats.tokens.total, cost_usd: runtime.stats.cost, elapsed_seconds: elapsed };
 		protectedUsage = usage;
+		if (campaignReservation) {
+			try { await settleCampaignBudget(context.campaignClaimDir ?? join(RUNS, "v2"), context.campaign!.conditions, campaignReservation, {cost_usd:usage.cost_usd},
+				{exposure_upper_bound_usd:usage.cost_usd,unknown_usage:false});campaignSettled = true; }
+			catch (error: any) { partial.campaign_budget_settlement_error = error.message; }
+		}
 		if (record.protocol_version === 2) runReceiptBundle = await persistRunReceipts(context.outputDir, record, name, runStartedAt,
 			{ prompt: runtime.effectivePrompt, estateSha256: context.estate.sha256, productReceipt: runtime.productReceipt,
-				productReceipts: runtime.productReceipts, playbook: runtime.playbook, budgetPolicy: context.budgetPolicy, usage });
+				productReceipts: runtime.productReceipts, playbook: runtime.playbook, budgetPolicy: context.budgetPolicy, usage, measurementIdentity });
 		attemptEvidence = await persistAttemptEvidence(context.outputDir, `${record.change_id}-${name}-${index}`, runStartedAt, {
 			protocol_version: record.protocol_version ?? 1, change_id: record.change_id, runner: name, run_started_at: runStartedAt,
-			status: "runtime_completed", budget_policy: context.budgetPolicy, usage, run_receipt_bundle: runReceiptBundle ?? null, ...partial,
+			status: "runtime_completed", budget_policy: context.budgetPolicy, usage, run_receipt_bundle: runReceiptBundle ?? null, ...partial, measurement_identity: measurementIdentity, campaign_budget_reservation: campaignReservation ?? null,
 		});
 		let answer: any;
 		try { answer = extractAnswer(runtime.raw); }
@@ -607,23 +691,41 @@ export async function runOnce(record: any, name: string, contestant: Contestant,
 		return stampProvenance(answer, { record, name, contestant, index, prompt: runtime.effectivePrompt, elapsed,
 			stats: runtime.stats, context, runStartedAt, toolCalls: runtime.toolCalls, toolTelemetry: runtime.toolTelemetry,
 			indexSha: runtime.indexSha, productReceipt: runtime.productReceipt, productReceipts: runtime.productReceipts,
-			allowedTools: runtime.allowedTools, playbook: runtime.playbook, reservations: runtime.reservations, runReceiptBundle, attemptEvidence });
+			allowedTools: runtime.allowedTools, playbook: runtime.playbook, reservations: runtime.reservations, runReceiptBundle, attemptEvidence, measurementIdentity });
 	} catch (error: any) {
+		if (!slotClaimed && (context.campaign || record.evaluation_revision === "2.2")) {
+			if (campaignReservation && !campaignSettled) {
+				try { await settleCampaignBudget(context.campaignClaimDir ?? join(RUNS, "v2"), context.campaign!.conditions, campaignReservation, {cost_usd:0}, {exposure_upper_bound_usd:0,unknown_usage:false});campaignSettled = true; }
+				catch (settlementError: any) { partial.campaign_budget_settlement_error = settlementError.message; }
+			}
+			await mkdir(context.outputDir,{recursive:true});
+			const path = join(context.outputDir,`${record.change_id}-${name}-${index}.${runStartedAt.replace(/[:.]/g,"-")}.preflight.json`);
+			const bytes = JSON.stringify({protocol_version:2,change_id:record.change_id,runner:name,run_started_at:runStartedAt,status:"campaign_preflight_failed",reason:error.message,
+				measurement_identity:measurementIdentity,campaign_budget_reservation:campaignReservation ?? null,campaign_budget_settlement_error:partial.campaign_budget_settlement_error ?? null,slot_claimed:false},null,2)+"\n";
+			await writeFile(path,bytes,{flag:"wx"});
+			throw new AttemptError("campaign_preflight_failed",error.message,{unrun:true,campaign_preflight:{path,sha256:sha256(bytes)}});
+		}
+		partial.index_observed_sha256 = partial.indexSha ?? partial.index_observed_sha256 ?? partial.productReceipt?.artifact_sha256 ?? null;
+		if (measurementIdentity && !context.campaign) measurementIdentity.index_sha256 = partial.index_observed_sha256 ?? "none";
 		const usage = protectedUsage ?? { tokens_consumed: partial.stats.tokens.total, cost_usd: partial.stats.cost,
 			elapsed_seconds: (performance.now() - started) / 1000 };
 		if (record.protocol_version === 2 && !runReceiptBundle) runReceiptBundle = await persistRunReceipts(
 			context.outputDir, record, name, runStartedAt, { prompt: partial.effectivePrompt ?? "", estateSha256: context.estate.sha256,
 				productReceipt: partial.productReceipt, productReceipts: partial.productReceipts, playbook: partial.playbook,
-				budgetPolicy: context.budgetPolicy, usage });
+				budgetPolicy: context.budgetPolicy, usage, measurementIdentity });
+		if (campaignReservation && !campaignSettled && !partial.campaign_budget_settlement_error) {
+			try { await settleCampaignBudget(context.campaignClaimDir ?? join(RUNS,"v2"),context.campaign!.conditions,campaignReservation,{cost_usd:usage.cost_usd},partial.exposure);campaignSettled = true; }
+			catch (error: any) { partial.campaign_budget_settlement_error = error.message; }
+		}
 		const evidence = attemptEvidence ?? await persistAttemptEvidence(context.outputDir, `${record.change_id}-${name}-${index}`, runStartedAt, {
 			protocol_version: record.protocol_version ?? 1, change_id: record.change_id, runner: name,
 			run_started_at: runStartedAt, status: error.status ?? "setup_failed", reason: error.message,
 			budget_policy: context.budgetPolicy, usage, run_receipt_bundle: runReceiptBundle ?? null,
-			...partial, rejection_detail: error.evidence ?? null,
+			...partial, measurement_identity: measurementIdentity, campaign_budget_reservation: campaignReservation ?? null, rejection_detail: error.evidence ?? null,
 		});
 		throw new AttemptError(error.status ?? "setup_failed", `${error.message}; attempt evidence: ${evidence.path}`, {
 			attempt_evidence: evidence, run_started_at: runStartedAt, usage, exposure: partial.exposure, run_receipt_bundle: runReceiptBundle ?? null,
-			budget_policy: context.budgetPolicy,
+			budget_policy: context.budgetPolicy, measurement_identity: measurementIdentity, campaign_budget_reservation: campaignReservation ?? null,
 		});
 	} finally { await rm(scratch, { recursive: true, force: true }); }
 }
@@ -655,16 +757,38 @@ export async function main(argv = process.argv.slice(2)) {
 			oracleBundle: resolve(args.oracleBundle!), trustedOracleSha256: args.trustedOracleSha256!, artifactRoot: resolve(args.artifactRoot!),
 		} : undefined,
 	};
+	if (args.campaignSchedule) {
+		context.campaign = await loadFrozenCampaign({ schedulePath: resolve(args.campaignSchedule), conditionsPath: resolve(args.campaignConditions!),
+			trustedScheduleSha256: args.trustedCampaignScheduleSha256!, trustedConditionSha256: args.trustedCampaignConditionsSha256!, casesManifestPath: resolve(args.campaignCasesManifest!) });
+		context.campaignRuntime = { scorerSha256: sha256(await readFile(join(HARNESS, "scoring", "score_v2.py"))),
+			answerSchemaSha256: sha256(await readFile(join(HARNESS, "schema", "contestant-answer-v2.schema.json"))),
+			taskTemplateSha256: sha256(await readFile(join(RUN_DIR, "prompt-template-v2.md"))),
+			scoringPolicy: (await readJson(context.oracleOptions!.oracleBundle)).scoring_policy?.mode ?? "strict_reference_v1",
+			oracleSha256: context.oracleOptions!.trustedOracleSha256,
+			treatment: contestants[chosen[0]].product_first && contestants[chosen[0]].product ? "product-first" : !contestants[chosen[0]].product && !contestants[chosen[0]].indexes?.length ? "baseline" : "unsupported" };
+	}
 	// Fail the entire requested cohort before authenticating or creating a model.
 	if (args.protocol === 2) {
 		const snapshotSha = verifyPinnedSnapshot(estate, context.estate, await readJson(join(HARNESS, "indexes", "pins.json")));
-		await assertVerifierOutsideEstate(estate, [context.oracleOptions!.oracleBundle, context.oracleOptions!.artifactRoot]);
+		await assertVerifierOutsideEstate(estate, [context.oracleOptions!.oracleBundle, context.oracleOptions!.artifactRoot,
+			...(args.campaignSchedule ? [resolve(args.campaignSchedule), resolve(args.campaignConditions!), resolve(args.campaignCasesManifest!)] : [])]);
 		for (const recordPath of recordPaths) {
 			validateFile("record", recordPath);
 			const record = await readJson(recordPath);
 			if (record.protocol_version !== 2 || record.status !== "verified") throw new Error(`v2 record is not independently verified: ${recordPath}`);
 			if (record.snapshot_sha256 !== snapshotSha) throw new Error(`v2 record snapshot does not match pinned estate: ${recordPath}`);
 			preflightV2(recordPath, context.oracleOptions!);
+			if (record.evaluation_revision === "2.2" && !context.campaign) throw new Error("evaluation revision 2.2 requires frozen campaign inputs before provider initialization");
+			if (context.campaign) {
+				if (record.evaluation_revision !== "2.2") throw new Error("record evaluation revision differs from frozen campaign");
+				context.campaignRuntime!.recordSha256 = sha256(await readFile(recordPath));
+				const contestant = contestants[chosen[0]], template = await readFile(join(RUN_DIR, "prompt-template-v2.md"), "utf8");
+				const section = indexPromptSection(contestant.indexes ?? []), prompt = buildPrompt(record, template) + (section ? `\n\n${section}` : "");
+				const identity = createMeasurementIdentity(chosen[0], contestant, args.campaignRepeat!, context, prompt);
+				preflightCampaignSlot(context.campaign, { ...identity, index_sha256: contestant.product || contestant.indexes?.length ? undefined : "none" },
+					{ ...context.campaignRuntime!, caseId: record.change_id, estateSha256: context.estate.sha256, budgetPolicy: context.budgetPolicy });
+			}
+
 		}
 	}
 	await mkdir(outputDir, { recursive: true });
@@ -681,7 +805,8 @@ export async function main(argv = process.argv.slice(2)) {
 			continue;
 		}
 		for (const name of chosen) {
-			for (let index = 1; index <= args.runs; index++) {
+			for (let offset = 1; offset <= args.runs; offset++) {
+				const index = args.campaignRepeat ?? offset;
 				const stem = `${record.change_id}-${name}-${index}`;
 				console.log(`\nrunning ${stem} ...`);
 				let completedAnswer: any;
@@ -716,6 +841,7 @@ export async function main(argv = process.argv.slice(2)) {
 					failures++;
 					const reason = (error as Error).message;
 					console.log(`  FAILED: ${reason}`);
+					if ((error as any).evidence?.unrun) { console.log("  Scheduled slot remains unrun; preflight diagnostic retained.");continue; }
 					try {
 						const usage = (error as any).evidence?.usage ?? (completedAnswer ? {
 							tokens_consumed: completedAnswer.tokens_consumed, cost_usd: completedAnswer.cost_usd,
@@ -737,6 +863,7 @@ export async function main(argv = process.argv.slice(2)) {
 							reason,
 							estate_sha256: context.estate.sha256,
 							snapshot_sha256: record.snapshot_sha256 ?? null,
+							measurement_identity: completedAnswer?.measurement_identity ?? evidence?.measurement_identity ?? null,
 						};
 						let stubPath = join(outputDir, `${stem}.rejected.json`);
 						try {

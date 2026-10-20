@@ -1,0 +1,390 @@
+[
+  {
+    "label": "H03-baseline-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=BasketWireTest",
+      "test"
+    ],
+    "cwd_repo": "basket-service",
+    "env": {
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-baseline-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.14
+  },
+  {
+    "label": "H03-baseline-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-baseline-provider.json",
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-baseline-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 3.053
+  },
+  {
+    "label": "H03-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-baseline-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.976
+  },
+  {
+    "label": "baseline-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 1.141
+  },
+  {
+    "label": "H03-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=BasketWireTest",
+      "test"
+    ],
+    "cwd_repo": "basket-service",
+    "env": {
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-changed-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.098
+  },
+  {
+    "label": "H03-changed-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-changed-provider.json",
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.443
+  },
+  {
+    "label": "H03-changed-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.59
+  },
+  {
+    "label": "H03-repaired-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 1.027
+  },
+  {
+    "label": "H03-repaired-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.709
+  },
+  {
+    "label": "H03-fault-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.98
+  },
+  {
+    "label": "H03-faulty-repair-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-changed-bff.json",
+      "WIRE_KIND": "basket"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.608
+  },
+  {
+    "label": "H04-baseline-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-baseline-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.743
+  },
+  {
+    "label": "H04-baseline-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.604
+  },
+  {
+    "label": "H04-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.662
+  },
+  {
+    "label": "H04-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-changed-provider.json"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 3.054
+  },
+  {
+    "label": "H04-changed-bff",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=ForwardWireTest",
+      "test"
+    ],
+    "cwd_repo": "commerce-bff",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-changed-provider.json",
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.703
+  },
+  {
+    "label": "H04-changed-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.606
+  },
+  {
+    "label": "H04-repaired-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.817
+  },
+  {
+    "label": "H04-repaired-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.545
+  },
+  {
+    "label": "H04-fault-web-build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {},
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.812
+  },
+  {
+    "label": "H04-faulty-repair-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-changed-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 1,
+    "expected_exit": 1,
+    "elapsed_seconds": 0.567
+  },
+  {
+    "label": "H11-baseline-web",
+    "command": [
+      "npm",
+      "test",
+      "--",
+      "src/test/discovery-wire.test.tsx",
+      "--reporter=verbose"
+    ],
+    "cwd_repo": "commerce-web",
+    "env": {
+      "WIRE_INPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+      "WIRE_KIND": "catalog"
+    },
+    "exit": 0,
+    "expected_exit": 0,
+    "elapsed_seconds": 0.537
+  },
+  {
+    "label": "H11-changed-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=CatalogWireTest",
+      "test"
+    ],
+    "cwd_repo": "catalog-service",
+    "env": {
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H11-changed-provider.json"
+    },
+    "exit": 1,
+    "expected_exit": 0,
+    "elapsed_seconds": 2.304
+  }
+]

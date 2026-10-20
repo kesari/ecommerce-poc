@@ -1,0 +1,92 @@
+{
+  "status": "verified",
+  "runtime": "/private/tmp/discovery-web-bda5a1zl",
+  "source_pins": {
+    "basket-service": {
+      "commit": "330960bc828b0c66be1c2da126f5dcd7ecf8b3fd",
+      "dirty": false,
+      "remote": null,
+      "remote_note": "no git remote configured; local-only clone",
+      "branch": "main",
+      "tag": null,
+      "tree": "d4abe607fe7074f58659156062005b50d7ed1c37",
+      "submodules": []
+    },
+    "catalog-service": {
+      "commit": "41edf9c9c9a12bc67af2137e91809dd5ebf84197",
+      "dirty": false,
+      "remote": null,
+      "remote_note": "no git remote configured; local-only clone",
+      "branch": "main",
+      "tag": null,
+      "tree": "46f14bbd2008508977b7d22f83651f6a7d15645c",
+      "submodules": []
+    },
+    "commerce-bff": {
+      "commit": "cdd9656e283103f7038e73b3c9e0ce03b3a2c9a9",
+      "dirty": false,
+      "remote": null,
+      "remote_note": "no git remote configured; local-only clone",
+      "branch": "main",
+      "tag": null,
+      "tree": "3e94f7084eefa3a5e9bf5de7b2faa4aa520f3f9d",
+      "submodules": []
+    },
+    "commerce-web": {
+      "commit": "2f0d84733cea71b2e412977805bb2a0b47ae3a9e",
+      "dirty": false,
+      "remote": null,
+      "remote_note": "no git remote configured; local-only clone",
+      "branch": "main",
+      "tag": null,
+      "tree": "45c86b402be8b36659e685022ca18b2f76145062",
+      "submodules": []
+    }
+  },
+  "protected": {
+    "BasketWireTest.java": "86ae35059dd3e9c8b6bbabe8d84d51d9e741f627b04dd279b996a612e19b0291",
+    "CatalogWireTest.java": "4cd280289b5653e818b79feeec6abdda32e386ceab71a07dcd994142db0523cb",
+    "ForwardWireTest.java": "ccc25d0675a741b6fba94789a9d156deff90af6f3d3c715c12653492670c9769",
+    "discovery-wire.test.tsx": "6eddcd9cb7bb6ca773a97015ff92d2f69206b8a954311668d105430412e3a824",
+    "criteria.json": "2494fa7ffa86b6de3ccf9943a24af0f8a3ac2e8bd54f7a1f24213838d191ebd5"
+  },
+  "criteria": {
+    "H03": {
+      "change": "BasketResponse wire totalMinor -> payableMinor",
+      "assertion": "BASKET_VISIBLE_TOTAL",
+      "baseline": true,
+      "changed": false,
+      "repaired": true,
+      "faulty_repair": false
+    },
+    "H04": {
+      "change": "ProductResponse wire imageUrl -> thumbnailUrl",
+      "assertion": "PRODUCT_IMAGES",
+      "baseline": true,
+      "changed": false,
+      "repaired": true,
+      "faulty_repair": false
+    },
+    "H11": {
+      "change": "ProductResponse optional merchandisingTag additive field",
+      "assertion": "PRODUCT_IMAGES",
+      "baseline": true,
+      "changed": true,
+      "incompatible_fault": false
+    },
+    "H12": {
+      "change": "CatalogService listActive ordered mapping loop",
+      "assertion": "PRODUCT_PRICES",
+      "baseline": true,
+      "changed": true,
+      "incompatible_fault": false
+    }
+  },
+  "limits": [
+    "DTO/application serialization; controlled repository and cache collaborators, no deployed DB/Valkey",
+    "Real localhost HTTP provider body into actual BFF controller+relay using MockMvc; no deployed security chain",
+    "Actual API wrappers/components in jsdom consume exact captured BFF body; no browser/login/checkout journey",
+    "H03 all basket response wrappers repaired; only GET display executed",
+    "No exhaustive estate causal claims; production Java compiled, web production build exercised"
+  ]
+}

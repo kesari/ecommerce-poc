@@ -1,0 +1,1025 @@
+{
+  "campaign_version": 1,
+  "protocol_version": 2,
+  "evaluation_revision": "2.2",
+  "condition_sha256": "e4f8ca617b8feb485edcf36abfc25ac99e9fec2deef112a31767d647092207da",
+  "cases_manifest_sha256": "27c5cf3076cd97ad2b7695639ba7784a2213e4f4c4afb55d836cb8f0e183ff08",
+  "seed": 20261020,
+  "repetitions": 3,
+  "arms": [
+    "pi-codex",
+    "pi-codex-codebase-memory-first",
+    "pi-codex-gortex-first",
+    "pi-codex-repowise-first"
+  ],
+  "cells": [
+    {
+      "slot_id": "H02/r1/pi-codex-codebase-memory-first",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 0
+    },
+    {
+      "slot_id": "H02/r1/pi-codex-gortex-first",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 1
+    },
+    {
+      "slot_id": "H02/r1/pi-codex-repowise-first",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 2
+    },
+    {
+      "slot_id": "H02/r1/pi-codex",
+      "case_id": "H02",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 3
+    },
+    {
+      "slot_id": "H03/r1/pi-codex-gortex-first",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 4
+    },
+    {
+      "slot_id": "H03/r1/pi-codex-repowise-first",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 5
+    },
+    {
+      "slot_id": "H03/r1/pi-codex",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 6
+    },
+    {
+      "slot_id": "H03/r1/pi-codex-codebase-memory-first",
+      "case_id": "H03",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 7
+    },
+    {
+      "slot_id": "H05/r1/pi-codex",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 8
+    },
+    {
+      "slot_id": "H05/r1/pi-codex-codebase-memory-first",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 9
+    },
+    {
+      "slot_id": "H05/r1/pi-codex-gortex-first",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 10
+    },
+    {
+      "slot_id": "H05/r1/pi-codex-repowise-first",
+      "case_id": "H05",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 11
+    },
+    {
+      "slot_id": "H07/r1/pi-codex-gortex-first",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 12
+    },
+    {
+      "slot_id": "H07/r1/pi-codex-repowise-first",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 13
+    },
+    {
+      "slot_id": "H07/r1/pi-codex",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 14
+    },
+    {
+      "slot_id": "H07/r1/pi-codex-codebase-memory-first",
+      "case_id": "H07",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 15
+    },
+    {
+      "slot_id": "H09/r1/pi-codex",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 16
+    },
+    {
+      "slot_id": "H09/r1/pi-codex-codebase-memory-first",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 17
+    },
+    {
+      "slot_id": "H09/r1/pi-codex-gortex-first",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 18
+    },
+    {
+      "slot_id": "H09/r1/pi-codex-repowise-first",
+      "case_id": "H09",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 19
+    },
+    {
+      "slot_id": "H10/r1/pi-codex-codebase-memory-first",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 20
+    },
+    {
+      "slot_id": "H10/r1/pi-codex-gortex-first",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 21
+    },
+    {
+      "slot_id": "H10/r1/pi-codex-repowise-first",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 22
+    },
+    {
+      "slot_id": "H10/r1/pi-codex",
+      "case_id": "H10",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 23
+    },
+    {
+      "slot_id": "H01/r1/pi-codex",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 24
+    },
+    {
+      "slot_id": "H01/r1/pi-codex-codebase-memory-first",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 25
+    },
+    {
+      "slot_id": "H01/r1/pi-codex-gortex-first",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 26
+    },
+    {
+      "slot_id": "H01/r1/pi-codex-repowise-first",
+      "case_id": "H01",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 27
+    },
+    {
+      "slot_id": "H12/r1/pi-codex-repowise-first",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 28
+    },
+    {
+      "slot_id": "H12/r1/pi-codex",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 29
+    },
+    {
+      "slot_id": "H12/r1/pi-codex-codebase-memory-first",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 30
+    },
+    {
+      "slot_id": "H12/r1/pi-codex-gortex-first",
+      "case_id": "H12",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 31
+    },
+    {
+      "slot_id": "H04/r1/pi-codex-repowise-first",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 32
+    },
+    {
+      "slot_id": "H04/r1/pi-codex",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 33
+    },
+    {
+      "slot_id": "H04/r1/pi-codex-codebase-memory-first",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 34
+    },
+    {
+      "slot_id": "H04/r1/pi-codex-gortex-first",
+      "case_id": "H04",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 35
+    },
+    {
+      "slot_id": "H06/r1/pi-codex-codebase-memory-first",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 36
+    },
+    {
+      "slot_id": "H06/r1/pi-codex-gortex-first",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 37
+    },
+    {
+      "slot_id": "H06/r1/pi-codex-repowise-first",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 38
+    },
+    {
+      "slot_id": "H06/r1/pi-codex",
+      "case_id": "H06",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 39
+    },
+    {
+      "slot_id": "H11/r1/pi-codex-gortex-first",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 40
+    },
+    {
+      "slot_id": "H11/r1/pi-codex-repowise-first",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 41
+    },
+    {
+      "slot_id": "H11/r1/pi-codex",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 42
+    },
+    {
+      "slot_id": "H11/r1/pi-codex-codebase-memory-first",
+      "case_id": "H11",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 43
+    },
+    {
+      "slot_id": "H08/r1/pi-codex-repowise-first",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 44
+    },
+    {
+      "slot_id": "H08/r1/pi-codex",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex",
+      "ordinal": 45
+    },
+    {
+      "slot_id": "H08/r1/pi-codex-codebase-memory-first",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 46
+    },
+    {
+      "slot_id": "H08/r1/pi-codex-gortex-first",
+      "case_id": "H08",
+      "repeat": 1,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 47
+    },
+    {
+      "slot_id": "H07/r2/pi-codex-repowise-first",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 48
+    },
+    {
+      "slot_id": "H07/r2/pi-codex",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 49
+    },
+    {
+      "slot_id": "H07/r2/pi-codex-codebase-memory-first",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 50
+    },
+    {
+      "slot_id": "H07/r2/pi-codex-gortex-first",
+      "case_id": "H07",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 51
+    },
+    {
+      "slot_id": "H12/r2/pi-codex",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 52
+    },
+    {
+      "slot_id": "H12/r2/pi-codex-codebase-memory-first",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 53
+    },
+    {
+      "slot_id": "H12/r2/pi-codex-gortex-first",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 54
+    },
+    {
+      "slot_id": "H12/r2/pi-codex-repowise-first",
+      "case_id": "H12",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 55
+    },
+    {
+      "slot_id": "H03/r2/pi-codex-repowise-first",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 56
+    },
+    {
+      "slot_id": "H03/r2/pi-codex",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 57
+    },
+    {
+      "slot_id": "H03/r2/pi-codex-codebase-memory-first",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 58
+    },
+    {
+      "slot_id": "H03/r2/pi-codex-gortex-first",
+      "case_id": "H03",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 59
+    },
+    {
+      "slot_id": "H11/r2/pi-codex-repowise-first",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 60
+    },
+    {
+      "slot_id": "H11/r2/pi-codex",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 61
+    },
+    {
+      "slot_id": "H11/r2/pi-codex-codebase-memory-first",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 62
+    },
+    {
+      "slot_id": "H11/r2/pi-codex-gortex-first",
+      "case_id": "H11",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 63
+    },
+    {
+      "slot_id": "H05/r2/pi-codex-codebase-memory-first",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 64
+    },
+    {
+      "slot_id": "H05/r2/pi-codex-gortex-first",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 65
+    },
+    {
+      "slot_id": "H05/r2/pi-codex-repowise-first",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 66
+    },
+    {
+      "slot_id": "H05/r2/pi-codex",
+      "case_id": "H05",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 67
+    },
+    {
+      "slot_id": "H01/r2/pi-codex-codebase-memory-first",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 68
+    },
+    {
+      "slot_id": "H01/r2/pi-codex-gortex-first",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 69
+    },
+    {
+      "slot_id": "H01/r2/pi-codex-repowise-first",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 70
+    },
+    {
+      "slot_id": "H01/r2/pi-codex",
+      "case_id": "H01",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 71
+    },
+    {
+      "slot_id": "H08/r2/pi-codex",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 72
+    },
+    {
+      "slot_id": "H08/r2/pi-codex-codebase-memory-first",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 73
+    },
+    {
+      "slot_id": "H08/r2/pi-codex-gortex-first",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 74
+    },
+    {
+      "slot_id": "H08/r2/pi-codex-repowise-first",
+      "case_id": "H08",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 75
+    },
+    {
+      "slot_id": "H10/r2/pi-codex-gortex-first",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 76
+    },
+    {
+      "slot_id": "H10/r2/pi-codex-repowise-first",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 77
+    },
+    {
+      "slot_id": "H10/r2/pi-codex",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 78
+    },
+    {
+      "slot_id": "H10/r2/pi-codex-codebase-memory-first",
+      "case_id": "H10",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 79
+    },
+    {
+      "slot_id": "H02/r2/pi-codex-gortex-first",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 80
+    },
+    {
+      "slot_id": "H02/r2/pi-codex-repowise-first",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 81
+    },
+    {
+      "slot_id": "H02/r2/pi-codex",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 82
+    },
+    {
+      "slot_id": "H02/r2/pi-codex-codebase-memory-first",
+      "case_id": "H02",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 83
+    },
+    {
+      "slot_id": "H04/r2/pi-codex",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 84
+    },
+    {
+      "slot_id": "H04/r2/pi-codex-codebase-memory-first",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 85
+    },
+    {
+      "slot_id": "H04/r2/pi-codex-gortex-first",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 86
+    },
+    {
+      "slot_id": "H04/r2/pi-codex-repowise-first",
+      "case_id": "H04",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 87
+    },
+    {
+      "slot_id": "H09/r2/pi-codex-codebase-memory-first",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 88
+    },
+    {
+      "slot_id": "H09/r2/pi-codex-gortex-first",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 89
+    },
+    {
+      "slot_id": "H09/r2/pi-codex-repowise-first",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 90
+    },
+    {
+      "slot_id": "H09/r2/pi-codex",
+      "case_id": "H09",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 91
+    },
+    {
+      "slot_id": "H06/r2/pi-codex-gortex-first",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 92
+    },
+    {
+      "slot_id": "H06/r2/pi-codex-repowise-first",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 93
+    },
+    {
+      "slot_id": "H06/r2/pi-codex",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex",
+      "ordinal": 94
+    },
+    {
+      "slot_id": "H06/r2/pi-codex-codebase-memory-first",
+      "case_id": "H06",
+      "repeat": 2,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 95
+    },
+    {
+      "slot_id": "H10/r3/pi-codex-repowise-first",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 96
+    },
+    {
+      "slot_id": "H10/r3/pi-codex",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 97
+    },
+    {
+      "slot_id": "H10/r3/pi-codex-codebase-memory-first",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 98
+    },
+    {
+      "slot_id": "H10/r3/pi-codex-gortex-first",
+      "case_id": "H10",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 99
+    },
+    {
+      "slot_id": "H05/r3/pi-codex-gortex-first",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 100
+    },
+    {
+      "slot_id": "H05/r3/pi-codex-repowise-first",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 101
+    },
+    {
+      "slot_id": "H05/r3/pi-codex",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 102
+    },
+    {
+      "slot_id": "H05/r3/pi-codex-codebase-memory-first",
+      "case_id": "H05",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 103
+    },
+    {
+      "slot_id": "H08/r3/pi-codex-codebase-memory-first",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 104
+    },
+    {
+      "slot_id": "H08/r3/pi-codex-gortex-first",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 105
+    },
+    {
+      "slot_id": "H08/r3/pi-codex-repowise-first",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 106
+    },
+    {
+      "slot_id": "H08/r3/pi-codex",
+      "case_id": "H08",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 107
+    },
+    {
+      "slot_id": "H04/r3/pi-codex-codebase-memory-first",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 108
+    },
+    {
+      "slot_id": "H04/r3/pi-codex-gortex-first",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 109
+    },
+    {
+      "slot_id": "H04/r3/pi-codex-repowise-first",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 110
+    },
+    {
+      "slot_id": "H04/r3/pi-codex",
+      "case_id": "H04",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 111
+    },
+    {
+      "slot_id": "H09/r3/pi-codex-gortex-first",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 112
+    },
+    {
+      "slot_id": "H09/r3/pi-codex-repowise-first",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 113
+    },
+    {
+      "slot_id": "H09/r3/pi-codex",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 114
+    },
+    {
+      "slot_id": "H09/r3/pi-codex-codebase-memory-first",
+      "case_id": "H09",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 115
+    },
+    {
+      "slot_id": "H07/r3/pi-codex",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 116
+    },
+    {
+      "slot_id": "H07/r3/pi-codex-codebase-memory-first",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 117
+    },
+    {
+      "slot_id": "H07/r3/pi-codex-gortex-first",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 118
+    },
+    {
+      "slot_id": "H07/r3/pi-codex-repowise-first",
+      "case_id": "H07",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 119
+    },
+    {
+      "slot_id": "H06/r3/pi-codex-repowise-first",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 120
+    },
+    {
+      "slot_id": "H06/r3/pi-codex",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 121
+    },
+    {
+      "slot_id": "H06/r3/pi-codex-codebase-memory-first",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 122
+    },
+    {
+      "slot_id": "H06/r3/pi-codex-gortex-first",
+      "case_id": "H06",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 123
+    },
+    {
+      "slot_id": "H02/r3/pi-codex-repowise-first",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 124
+    },
+    {
+      "slot_id": "H02/r3/pi-codex",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 125
+    },
+    {
+      "slot_id": "H02/r3/pi-codex-codebase-memory-first",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 126
+    },
+    {
+      "slot_id": "H02/r3/pi-codex-gortex-first",
+      "case_id": "H02",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 127
+    },
+    {
+      "slot_id": "H12/r3/pi-codex-codebase-memory-first",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 128
+    },
+    {
+      "slot_id": "H12/r3/pi-codex-gortex-first",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 129
+    },
+    {
+      "slot_id": "H12/r3/pi-codex-repowise-first",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 130
+    },
+    {
+      "slot_id": "H12/r3/pi-codex",
+      "case_id": "H12",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 131
+    },
+    {
+      "slot_id": "H11/r3/pi-codex",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 132
+    },
+    {
+      "slot_id": "H11/r3/pi-codex-codebase-memory-first",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 133
+    },
+    {
+      "slot_id": "H11/r3/pi-codex-gortex-first",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 134
+    },
+    {
+      "slot_id": "H11/r3/pi-codex-repowise-first",
+      "case_id": "H11",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 135
+    },
+    {
+      "slot_id": "H01/r3/pi-codex-gortex-first",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 136
+    },
+    {
+      "slot_id": "H01/r3/pi-codex-repowise-first",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 137
+    },
+    {
+      "slot_id": "H01/r3/pi-codex",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 138
+    },
+    {
+      "slot_id": "H01/r3/pi-codex-codebase-memory-first",
+      "case_id": "H01",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 139
+    },
+    {
+      "slot_id": "H03/r3/pi-codex",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex",
+      "ordinal": 140
+    },
+    {
+      "slot_id": "H03/r3/pi-codex-codebase-memory-first",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex-codebase-memory-first",
+      "ordinal": 141
+    },
+    {
+      "slot_id": "H03/r3/pi-codex-gortex-first",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex-gortex-first",
+      "ordinal": 142
+    },
+    {
+      "slot_id": "H03/r3/pi-codex-repowise-first",
+      "case_id": "H03",
+      "repeat": 3,
+      "arm": "pi-codex-repowise-first",
+      "ordinal": 143
+    }
+  ]
+}

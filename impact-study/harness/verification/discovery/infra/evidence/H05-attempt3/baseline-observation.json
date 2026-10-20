@@ -1,0 +1,11 @@
+{
+  "case" : "H05",
+  "phase" : "baseline",
+  "registered_topics" : [ [ "inventory.reserved.v1", "inventory.reservation-rejected.v1", "inventory.committed.v1", "inventory.commit-failed.v1", "inventory.released.v1", "payment.charged.v1", "payment.declined.v1", "payment.refunded.v1", "shipment.created.v1", "inventory.reserved.v1.retry.1", "inventory.reserved.v1.retry.2", "payment.charged.v1.retry.1", "payment.charged.v1.retry.2" ] ],
+  "producer_topic" : "payment.charged.v1",
+  "broker_records" : 1,
+  "consumer_liveness" : true,
+  "order_status" : "INVENTORY_COMMIT_PENDING",
+  "next_event" : "inventory.commit.requested",
+  "payment_id_recorded" : true
+}

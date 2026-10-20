@@ -1,0 +1,9 @@
+--- a/src/main/java/com/poc/catalog/api/dto/ProductResponse.java
++++ b/src/main/java/com/poc/catalog/api/dto/ProductResponse.java
+@@ -11,4 +11,6 @@
+         String currency,
+         boolean active
+ ) {
++    @com.fasterxml.jackson.annotation.JsonProperty("merchandisingTag")
++    public String merchandisingTag() { return active ? "featured" : null; }
+ }

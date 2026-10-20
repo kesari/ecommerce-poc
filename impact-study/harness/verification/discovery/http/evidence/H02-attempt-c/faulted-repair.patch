@@ -1,0 +1,22 @@
+--- a/order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java
++++ b/order-service/src/main/java/com/poc/order/infrastructure/client/ShipmentClient.java
+@@ -22,7 +22,7 @@
+         this.client = builder.baseUrl(baseUrl).build();
+     }
+ 
+-    record EstimateResponse(LocalDate fromDate, LocalDate toDate, long shippingChargeMinor,
++    record EstimateResponse(LocalDate fromDate, LocalDate toDate, @com.fasterxml.jackson.annotation.JsonAlias("wrongFee") long shippingChargeMinor,
+                             String currency) {}
+ 
+     @Override
+--- a/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
++++ b/shipment-service/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java
+@@ -7,7 +7,7 @@
+ public record DeliveryEstimateResponse(
+         LocalDate fromDate,
+         LocalDate toDate,
+-        long shippingChargeMinor,
++        @com.fasterxml.jackson.annotation.JsonProperty("feeMinor") long shippingChargeMinor,
+         String currency
+ ) {
+ 

@@ -1,0 +1,8 @@
+{
+  "case": "H08-cache-closure",
+  "policy": "Preserve the existing configured cache TTL. Entries computed under the previous SLA may remain visible until normal expiration; every new nonmetro computation uses the updated SLA. No consumer repair or cache invalidation is required by this policy.",
+  "source": "Pinned shipment-service actual ShipmentService.estimate, DeliveryEstimator and domain records",
+  "phases": {"baseline": {"warm_days": [4,6],"cold_days": [4,6]},"changed": {"warm_days": [4,6],"cold_days": [5,7]},"repaired": {"warm_days": [4,6],"cold_days": [5,7]},"faulted-repair": {"warm_days": [4,6],"cold_days": [5,7]}},
+  "fault": "Keep the requested estimator fallback change but corrupt its resulting window to 6/8 days; protected cold-window assertion must reject it.",
+  "scope": ["Actual ShipmentService executes against a controlled EstimateCache populated with an old-policy entry, then manually expired to model a cold cache; a third read verifies the newly stored entry.","Real cache timekeeping, TTL expiry, Valkey connectivity, event delivery, database and deployed controller wiring are not executed.","Existing ValkeyEstimateCache source configures TTL Duration.ofMinutes(5); that existing rollout delay is explicitly allowed, not simulated as a measured five-minute wait."]
+}

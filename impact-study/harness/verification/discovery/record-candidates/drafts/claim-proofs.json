@@ -1,0 +1,1641 @@
+{
+  "status": "draft_pending_independent_root_freeze",
+  "evaluation_revision": "2.2",
+  "trusted_proofs": {
+    "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json": "7acb79b4f9f7561cd830d024c3dd46be529ae3bc36f0bb5bacdb206e0a315c90",
+    "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json": "b06cb34bd6141f61265ff819a4a0da79aa1c94a1b3b7acac60a60e244bc18ba8",
+    "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json": "1011379ca38f6c2dbcbf1f4e74a584aa04e3bee5bfe510c007ba093841fe9d27",
+    "harness/verification/discovery/http/evidence/H08-attempt-a/manifest.json": "1b1d194608d69a838800bc32981f79bcc0f7c06525093e066d404ef70402ba13",
+    "harness/verification/discovery/http/closure/evidence/manifest.json": "78635e2d4dcda6bd0a4f5359aa0eea062870169fd3097bd24a85768b93b30c76",
+    "harness/verification/discovery/web/evidence/manifest.json": "5de9c4388f4e9d550d2ea2bbf420d35931fe630f03ff138817e198da37dba6b5",
+    "harness/verification/discovery/web/closure/evidence/manifest.json": "f472b6666aff9778a31248f8ff717f1707fa2a9d303c1f31f3b890eb008f346a",
+    "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json": "ac7967688c912b7d82a978fad082d403c8870c304516fa3d6f800cfb12df0eb7"
+  },
+  "records": {
+    "H01": {
+      "file": "H01.json",
+      "record_sha256": "52556c8b7c5181f9d92d44a95a4bd0c7112c0c9a093363f399eb9095fffc4881",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H01",
+        "status": "draft",
+        "category": "rest_contract",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "catalog-service",
+        "proposed_change": {
+          "repo": "catalog-service",
+          "diff": "--- a/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n+++ b/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n@@ -8,7 +8,7 @@\n         String description,\n         String imageUrl,\n         long priceMinor,\n-        String currency,\n+        @com.fasterxml.jackson.annotation.JsonProperty(\"currencyCode\") String currency,\n         boolean active\n ) {\n }\n"
+        },
+        "repositories": [
+          {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "basket-service",
+            "runtime_status": "broken"
+          },
+          {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-web",
+            "runtime_status": "broken"
+          }
+        ],
+        "symbols": [
+          {
+            "repo": "basket-service",
+            "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency"
+          },
+          {
+            "repo": "commerce-web",
+            "fqn": "src/api/products.ts.listProducts"
+          }
+        ],
+        "edges": [
+          {
+            "provider": "catalog-service",
+            "consumer": "basket-service",
+            "type": "rest",
+            "identifier": "GET /api/v1/products/{productId}",
+            "field": "currency"
+          },
+          {
+            "provider": "catalog-service",
+            "consumer": "commerce-bff",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "currency"
+          },
+          {
+            "provider": "commerce-bff",
+            "consumer": "commerce-web",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "currency"
+          }
+        ],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_and_repair_consumers",
+            "actions": [
+              {
+                "repo": "basket-service",
+                "target": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency",
+                "operation": "read_json_field",
+                "before": "currency",
+                "after": "currencyCode",
+                "critical": true
+              },
+              {
+                "repo": "commerce-web",
+                "target": "src/api/products.ts.listProducts",
+                "operation": "read_json_field",
+                "before": "currency",
+                "after": "currencyCode",
+                "critical": true
+              }
+            ],
+            "obligations": [
+              {
+                "repo": "catalog-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "basket-service",
+                "obligation": "production_edit"
+              },
+              {
+                "repo": "commerce-bff",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-web",
+                "obligation": "production_edit"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "basket-service",
+            "runtime_status": "broken"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/3",
+          "claim": {
+            "repo": "commerce-web",
+            "runtime_status": "broken"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/symbols/0",
+          "claim": {
+            "repo": "basket-service",
+            "fqn": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/symbols/1",
+          "claim": {
+            "repo": "commerce-web",
+            "fqn": "src/api/products.ts.listProducts"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/0",
+          "claim": {
+            "provider": "catalog-service",
+            "consumer": "basket-service",
+            "type": "rest",
+            "identifier": "GET /api/v1/products/{productId}",
+            "field": "currency"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/1",
+          "claim": {
+            "provider": "catalog-service",
+            "consumer": "commerce-bff",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "currency"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/2",
+          "claim": {
+            "provider": "commerce-bff",
+            "consumer": "commerce-web",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "currency"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/actions/0",
+          "claim": {
+            "repo": "basket-service",
+            "target": "com.poc.basket.infrastructure.catalog.CatalogProductResponse.currency",
+            "operation": "read_json_field",
+            "before": "currency",
+            "after": "currencyCode",
+            "critical": true
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/actions/1",
+          "claim": {
+            "repo": "commerce-web",
+            "target": "src/api/products.ts.listProducts",
+            "operation": "read_json_field",
+            "before": "currency",
+            "after": "currencyCode",
+            "critical": true
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "catalog-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "basket-service",
+            "obligation": "production_edit"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/3",
+          "claim": {
+            "repo": "commerce-web",
+            "obligation": "production_edit"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H01-attempt-a/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H02": {
+      "file": "H02.json",
+      "record_sha256": "6b70004c8f031b737837a10f0a4b7de2bc5dc1d3b500080b0f2a32a613a154b5",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H02",
+        "status": "draft",
+        "category": "rest_contract",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "shipment-service",
+        "proposed_change": {
+          "repo": "shipment-service",
+          "diff": "--- a/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\n+++ b/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\n@@ -7,7 +7,7 @@\n public record DeliveryEstimateResponse(\n         LocalDate fromDate,\n         LocalDate toDate,\n-        long shippingChargeMinor,\n+        @com.fasterxml.jackson.annotation.JsonProperty(\"feeMinor\") long shippingChargeMinor,\n         String currency\n ) {\n \n"
+        },
+        "repositories": [
+          {
+            "repo": "shipment-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "order-service",
+            "runtime_status": "broken"
+          }
+        ],
+        "symbols": [
+          {
+            "repo": "order-service",
+            "fqn": "com.poc.order.infrastructure.client.ShipmentClient.EstimateResponse.shippingChargeMinor"
+          }
+        ],
+        "edges": [
+          {
+            "provider": "shipment-service",
+            "consumer": "order-service",
+            "type": "rest",
+            "identifier": "POST /api/v1/delivery-estimates",
+            "field": "shippingChargeMinor"
+          }
+        ],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_and_repair_consumers",
+            "actions": [
+              {
+                "repo": "order-service",
+                "target": "com.poc.order.infrastructure.client.ShipmentClient.EstimateResponse.shippingChargeMinor",
+                "operation": "read_json_field",
+                "before": "shippingChargeMinor",
+                "after": "feeMinor",
+                "critical": true
+              }
+            ],
+            "obligations": [
+              {
+                "repo": "shipment-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "order-service",
+                "obligation": "production_edit"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "shipment-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "order-service",
+            "runtime_status": "broken"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/symbols/0",
+          "claim": {
+            "repo": "order-service",
+            "fqn": "com.poc.order.infrastructure.client.ShipmentClient.EstimateResponse.shippingChargeMinor"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/0",
+          "claim": {
+            "provider": "shipment-service",
+            "consumer": "order-service",
+            "type": "rest",
+            "identifier": "POST /api/v1/delivery-estimates",
+            "field": "shippingChargeMinor"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/actions/0",
+          "claim": {
+            "repo": "order-service",
+            "target": "com.poc.order.infrastructure.client.ShipmentClient.EstimateResponse.shippingChargeMinor",
+            "operation": "read_json_field",
+            "before": "shippingChargeMinor",
+            "after": "feeMinor",
+            "critical": true
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "shipment-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "order-service",
+            "obligation": "production_edit"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H02-attempt-c/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H03": {
+      "file": "H03.json",
+      "record_sha256": "d2a716dc83424dde1b187d944b723df1f4cd833820c3b093ad4ba3265a542541",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H03",
+        "status": "draft",
+        "category": "rest_contract",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "basket-service",
+        "proposed_change": {
+          "repo": "basket-service",
+          "diff": "--- a/src/main/java/com/poc/basket/api/dto/BasketResponse.java\n+++ b/src/main/java/com/poc/basket/api/dto/BasketResponse.java\n@@ -8,7 +8,7 @@\n \n public record BasketResponse(UUID basketId, long basketVersion, String couponCode,\n                              List<BasketItemResponse> items, long subtotalMinor,\n-                             long discountMinor, long totalMinor, String currency) {\n+                             long discountMinor, @com.fasterxml.jackson.annotation.JsonProperty(\"payableMinor\") long totalMinor, String currency) {\n \n     public static BasketResponse from(BasketView view) {\n         List<BasketItemResponse> items = view.basket().items().stream()\n"
+        },
+        "repositories": [
+          {
+            "repo": "basket-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "order-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-web",
+            "runtime_status": "broken"
+          }
+        ],
+        "symbols": [
+          {
+            "repo": "commerce-web",
+            "fqn": "src/api/basket.ts.getBasket"
+          }
+        ],
+        "edges": [
+          {
+            "provider": "basket-service",
+            "consumer": "commerce-bff",
+            "type": "rest",
+            "identifier": "GET /api/v1/basket",
+            "field": "totalMinor"
+          },
+          {
+            "provider": "commerce-bff",
+            "consumer": "commerce-web",
+            "type": "rest",
+            "identifier": "GET /api/v1/basket",
+            "field": "totalMinor"
+          }
+        ],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_and_repair_consumers",
+            "actions": [
+              {
+                "repo": "commerce-web",
+                "target": "src/api/basket.ts.getBasket",
+                "operation": "read_json_field",
+                "before": "totalMinor",
+                "after": "payableMinor",
+                "critical": true
+              }
+            ],
+            "obligations": [
+              {
+                "repo": "basket-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "order-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-bff",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-web",
+                "obligation": "production_edit"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "basket-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "order-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/3",
+          "claim": {
+            "repo": "commerce-web",
+            "runtime_status": "broken"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/symbols/0",
+          "claim": {
+            "repo": "commerce-web",
+            "fqn": "src/api/basket.ts.getBasket"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/0",
+          "claim": {
+            "provider": "basket-service",
+            "consumer": "commerce-bff",
+            "type": "rest",
+            "identifier": "GET /api/v1/basket",
+            "field": "totalMinor"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/1",
+          "claim": {
+            "provider": "commerce-bff",
+            "consumer": "commerce-web",
+            "type": "rest",
+            "identifier": "GET /api/v1/basket",
+            "field": "totalMinor"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/actions/0",
+          "claim": {
+            "repo": "commerce-web",
+            "target": "src/api/basket.ts.getBasket",
+            "operation": "read_json_field",
+            "before": "totalMinor",
+            "after": "payableMinor",
+            "critical": true
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "basket-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "order-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/3",
+          "claim": {
+            "repo": "commerce-web",
+            "obligation": "production_edit"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H04": {
+      "file": "H04.json",
+      "record_sha256": "3b887e016f13dda1dc8ff20417044231429b1ad5d3511150db2ffde1afc10c97",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H04",
+        "status": "draft",
+        "category": "rest_contract",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "catalog-service",
+        "proposed_change": {
+          "repo": "catalog-service",
+          "diff": "--- a/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n+++ b/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n@@ -6,7 +6,7 @@\n         UUID id,\n         String name,\n         String description,\n-        String imageUrl,\n+        @com.fasterxml.jackson.annotation.JsonProperty(\"thumbnailUrl\") String imageUrl,\n         long priceMinor,\n         String currency,\n         boolean active\n"
+        },
+        "repositories": [
+          {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "basket-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-web",
+            "runtime_status": "broken"
+          }
+        ],
+        "symbols": [
+          {
+            "repo": "commerce-web",
+            "fqn": "src/pages/ProductsPage.tsx.ProductsPage"
+          }
+        ],
+        "edges": [
+          {
+            "provider": "catalog-service",
+            "consumer": "commerce-bff",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "imageUrl"
+          },
+          {
+            "provider": "commerce-bff",
+            "consumer": "commerce-web",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "imageUrl"
+          }
+        ],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_and_repair_consumers",
+            "actions": [
+              {
+                "repo": "commerce-web",
+                "target": "src/pages/ProductsPage.tsx.ProductsPage",
+                "operation": "read_json_field",
+                "before": "imageUrl",
+                "after": "thumbnailUrl",
+                "critical": true
+              }
+            ],
+            "obligations": [
+              {
+                "repo": "catalog-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "basket-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-bff",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-web",
+                "obligation": "production_edit"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "basket-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/3",
+          "claim": {
+            "repo": "commerce-web",
+            "runtime_status": "broken"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/symbols/0",
+          "claim": {
+            "repo": "commerce-web",
+            "fqn": "src/pages/ProductsPage.tsx.ProductsPage"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/0",
+          "claim": {
+            "provider": "catalog-service",
+            "consumer": "commerce-bff",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "imageUrl"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/1",
+          "claim": {
+            "provider": "commerce-bff",
+            "consumer": "commerce-web",
+            "type": "rest",
+            "identifier": "GET /api/v1/products?page=0&size=20",
+            "field": "imageUrl"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/actions/0",
+          "claim": {
+            "repo": "commerce-web",
+            "target": "src/pages/ProductsPage.tsx.ProductsPage",
+            "operation": "read_json_field",
+            "before": "imageUrl",
+            "after": "thumbnailUrl",
+            "critical": true
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "catalog-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "basket-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/3",
+          "claim": {
+            "repo": "commerce-web",
+            "obligation": "production_edit"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H07": {
+      "file": "H07.json",
+      "record_sha256": "2efc010331e3b1da3c5f5fb8f2e4dffcab1ab3e219f2f5bb0370d42ddd2e555e",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H07",
+        "status": "draft",
+        "category": "meaning_change",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims. The changed response expresses charges in whole INR. In-scope values are non-negative whole-INR amounts, represented before the change as integer minor units divisible by 100; existing public amount contracts must retain their documented units.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "shipment-service",
+        "proposed_change": {
+          "repo": "shipment-service",
+          "diff": "--- a/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\n+++ b/src/main/java/com/poc/shipment/api/dto/DeliveryEstimateResponse.java\n@@ -13,6 +13,6 @@\n \n     public static DeliveryEstimateResponse from(DeliveryEstimate estimate) {\n         return new DeliveryEstimateResponse(estimate.window().from(), estimate.window().to(),\n-                estimate.shippingMinor(), estimate.currency());\n+                estimate.shippingMinor() / 100, estimate.currency());\n     }\n }\n"
+        },
+        "repositories": [
+          {
+            "repo": "shipment-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "order-service",
+            "runtime_status": "broken"
+          }
+        ],
+        "symbols": [
+          {
+            "repo": "order-service",
+            "fqn": "com.poc.order.infrastructure.client.ShipmentClient.estimate"
+          }
+        ],
+        "edges": [
+          {
+            "provider": "shipment-service",
+            "consumer": "order-service",
+            "type": "rest",
+            "identifier": "POST /api/v1/delivery-estimates",
+            "field": "shippingChargeMinor"
+          }
+        ],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_and_repair_consumers",
+            "actions": [
+              {
+                "repo": "order-service",
+                "target": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+                "operation": "scale_numeric_field",
+                "before": "1",
+                "after": "100",
+                "critical": true
+              }
+            ],
+            "obligations": [
+              {
+                "repo": "shipment-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "order-service",
+                "obligation": "production_edit"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "shipment-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "order-service",
+            "runtime_status": "broken"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/symbols/0",
+          "claim": {
+            "repo": "order-service",
+            "fqn": "com.poc.order.infrastructure.client.ShipmentClient.estimate"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/edges/0",
+          "claim": {
+            "provider": "shipment-service",
+            "consumer": "order-service",
+            "type": "rest",
+            "identifier": "POST /api/v1/delivery-estimates",
+            "field": "shippingChargeMinor"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/actions/0",
+          "claim": {
+            "repo": "order-service",
+            "target": "com.poc.order.infrastructure.client.ShipmentClient.estimate",
+            "operation": "scale_numeric_field",
+            "before": "1",
+            "after": "100",
+            "critical": true
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "shipment-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "order-service",
+            "obligation": "production_edit"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H07-attempt-b/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H08": {
+      "file": "H08.json",
+      "record_sha256": "0efab15304385b3ff9dba30c5131d08033fc36d14da5f69b86ee6e7a0466759f",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H08",
+        "status": "draft",
+        "category": "meaning_change",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims. Preserve the existing configured estimate-cache TTL: entries computed under the previous delivery policy may remain visible until normal expiration. Every new nonmetro computation must use the updated SLA.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "shipment-service",
+        "proposed_change": {
+          "repo": "shipment-service",
+          "diff": "--- a/src/main/java/com/poc/shipment/application/DeliveryEstimator.java\n+++ b/src/main/java/com/poc/shipment/application/DeliveryEstimator.java\n@@ -27,6 +27,6 @@\n                     new DeliveryWindow(today.plusDays(2), today.plusDays(3)));\n         }\n         return new DeliveryEstimate(SHIPPING_CHARGE_MINOR, CURRENCY,\n-                new DeliveryWindow(today.plusDays(4), today.plusDays(6)));\n+                new DeliveryWindow(today.plusDays(5), today.plusDays(7)));\n     }\n }\n"
+        },
+        "repositories": [
+          {
+            "repo": "shipment-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "order-service",
+            "runtime_status": "unchanged"
+          }
+        ],
+        "symbols": [],
+        "edges": [],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_without_coordinated_edits",
+            "actions": [],
+            "obligations": [
+              {
+                "repo": "shipment-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "order-service",
+                "obligation": "validation_only"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "shipment-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H08-attempt-a/manifest.json",
+            "harness/verification/discovery/http/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "order-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H08-attempt-a/manifest.json",
+            "harness/verification/discovery/http/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "shipment-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H08-attempt-a/manifest.json",
+            "harness/verification/discovery/http/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "order-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/http/evidence/H08-attempt-a/manifest.json",
+            "harness/verification/discovery/http/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H11": {
+      "file": "H11.json",
+      "record_sha256": "9c5e028622ebfd7931762bd18de30fba9897dafcf8a6de49db5fb67f5ece219e",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H11",
+        "status": "draft",
+        "category": "compatible_control",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "catalog-service",
+        "proposed_change": {
+          "repo": "catalog-service",
+          "diff": "--- a/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n+++ b/src/main/java/com/poc/catalog/api/dto/ProductResponse.java\n@@ -11,4 +11,6 @@\n         String currency,\n         boolean active\n ) {\n+    @com.fasterxml.jackson.annotation.JsonProperty(value = \"merchandisingTag\", access = com.fasterxml.jackson.annotation.JsonProperty.Access.READ_ONLY)\n+    public String merchandisingTag() { return active ? \"featured\" : null; }\n }\n"
+        },
+        "repositories": [
+          {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "basket-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-web",
+            "runtime_status": "unchanged"
+          }
+        ],
+        "symbols": [],
+        "edges": [],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_without_coordinated_edits",
+            "actions": [],
+            "obligations": [
+              {
+                "repo": "catalog-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "basket-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-bff",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-web",
+                "obligation": "validation_only"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "basket-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/3",
+          "claim": {
+            "repo": "commerce-web",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "catalog-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "basket-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/2",
+          "claim": {
+            "repo": "commerce-bff",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/3",
+          "claim": {
+            "repo": "commerce-web",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    },
+    "H12": {
+      "file": "H12.json",
+      "record_sha256": "e04ac945e6ffe2e7be4e4c0d7856f55d4820eedc5aa92dea7883d79856fcdc33",
+      "record": {
+        "protocol_version": 2,
+        "evaluation_revision": "2.2",
+        "change_id": "H12",
+        "status": "draft",
+        "category": "compatible_control",
+        "query": "Assess this proposed change across the supplied repositories. Identify behavior that breaks, repositories needing production changes, validation-only obligations, directed contract dependencies, and a sufficient repair plan. Preserve the requested change and the stated compatibility requirements. Support findings with source evidence and state unresolved claims.",
+        "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+        "repository_universe": [
+          "account-service",
+          "basket-service",
+          "catalog-service",
+          "commerce-bff",
+          "commerce-platform",
+          "commerce-web",
+          "inventory-service",
+          "order-service",
+          "payment-service",
+          "shipment-service"
+        ],
+        "origin_repo": "catalog-service",
+        "proposed_change": {
+          "repo": "catalog-service",
+          "diff": "--- a/src/main/java/com/poc/catalog/application/CatalogService.java\n+++ b/src/main/java/com/poc/catalog/application/CatalogService.java\n@@ -31,9 +31,11 @@\n         return cache.getListPage(page, size)\n                 .map(this::readList)\n                 .orElseGet(() -> {\n-                    List<ProductResponse> items = products.findActivePage(page, size).stream()\n-                            .map(CatalogService::toResponse)\n-                            .toList();\n+                    var mapped = new java.util.ArrayList<ProductResponse>();\n+                    for (Product product : products.findActivePage(page, size)) {\n+                        mapped.add(toResponse(product));\n+                    }\n+                    List<ProductResponse> items = List.copyOf(mapped);\n                     cache.putListPage(page, size, writeList(items));\n                     return items;\n                 });\n"
+        },
+        "repositories": [
+          {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          {
+            "repo": "commerce-web",
+            "runtime_status": "unchanged"
+          }
+        ],
+        "symbols": [],
+        "edges": [],
+        "repair_alternatives": [
+          {
+            "name": "preserve_requested_change_without_coordinated_edits",
+            "actions": [],
+            "obligations": [
+              {
+                "repo": "catalog-service",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-bff",
+                "obligation": "validation_only"
+              },
+              {
+                "repo": "commerce-web",
+                "obligation": "validation_only"
+              }
+            ]
+          }
+        ]
+      },
+      "claims": [
+        {
+          "pointer": "/repositories/0",
+          "claim": {
+            "repo": "catalog-service",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/1",
+          "claim": {
+            "repo": "commerce-bff",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repositories/2",
+          "claim": {
+            "repo": "commerce-web",
+            "runtime_status": "unchanged"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/0",
+          "claim": {
+            "repo": "catalog-service",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/1",
+          "claim": {
+            "repo": "commerce-bff",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        },
+        {
+          "pointer": "/repair_alternatives/0/obligations/2",
+          "claim": {
+            "repo": "commerce-web",
+            "obligation": "validation_only"
+          },
+          "proof_manifests": [
+            "harness/verification/discovery/web/evidence/manifest.json",
+            "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json"
+          ]
+        }
+      ],
+      "limits": [
+        "Expected facts cover independently executed boundaries and concrete inputs; source audit identifies additional consumers but is not runtime evidence.",
+        "Unlisted repositories and relationships remain outside the proved critical set.",
+        "These draft records are evaluator material and must never enter tool indexes."
+      ]
+    }
+  }
+}

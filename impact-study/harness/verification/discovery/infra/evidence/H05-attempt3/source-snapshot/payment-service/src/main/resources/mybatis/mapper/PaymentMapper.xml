@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.poc.payment.infrastructure.persistence.mapper.PaymentMapper">
+    <resultMap id="paymentRow" type="com.poc.payment.infrastructure.persistence.row.PaymentRow" autoMapping="false">
+        <constructor>
+            <idArg name="paymentId" column="payment_id" javaType="java.util.UUID"
+                   typeHandler="com.poc.payment.infrastructure.persistence.typehandler.UuidTypeHandler"/>
+            <arg name="orderId" column="order_id" javaType="java.util.UUID"
+                 typeHandler="com.poc.payment.infrastructure.persistence.typehandler.UuidTypeHandler"/>
+            <arg name="amountMinor" column="amount_minor" javaType="_long"/>
+            <arg name="currency" column="currency" javaType="java.lang.String"/>
+            <arg name="status" column="status" javaType="java.lang.String"/>
+            <arg name="providerReference" column="provider_reference" javaType="java.lang.String"/>
+            <arg name="tokenUsed" column="token_used" javaType="java.lang.String"/>
+            <arg name="createdAt" column="created_at" javaType="java.time.Instant"/>
+        </constructor>
+    </resultMap>
+
+    <resultMap id="outboxRow" type="com.poc.payment.infrastructure.persistence.row.OutboxRow" autoMapping="false">
+        <constructor>
+            <idArg name="eventId" column="event_id" javaType="java.util.UUID"
+                   typeHandler="com.poc.payment.infrastructure.persistence.typehandler.UuidTypeHandler"/>
+            <arg name="aggregateId" column="aggregate_id" javaType="java.util.UUID"
+                 typeHandler="com.poc.payment.infrastructure.persistence.typehandler.UuidTypeHandler"/>
+            <arg name="topic" column="topic" javaType="java.lang.String"/>
+            <arg name="payload" column="payload" javaType="java.lang.String"/>
+            <arg name="published" column="published" javaType="_boolean"/>
+            <arg name="createdAt" column="created_at" javaType="java.time.Instant"/>
+        </constructor>
+    </resultMap>
+
+    <sql id="paymentColumns">
+        payment_id, order_id, amount_minor, currency, status,
+        provider_reference, token_used, created_at
+    </sql>
+
+    <insert id="insertInbox">
+        INSERT INTO inbox (event_id) VALUES (#{eventId,jdbcType=OTHER})
+        ON CONFLICT (event_id) DO NOTHING
+    </insert>
+
+    <select id="findByOrderId" resultMap="paymentRow">
+        SELECT <include refid="paymentColumns"/> FROM payments WHERE order_id = #{orderId,jdbcType=OTHER}
+    </select>
+
+    <select id="findByPaymentIdForUpdate" resultMap="paymentRow">
+        SELECT <include refid="paymentColumns"/> FROM payments
+        WHERE payment_id = #{paymentId,jdbcType=OTHER} FOR UPDATE
+    </select>
+
+    <insert id="insertPayment">
+        INSERT INTO payments (
+            payment_id, order_id, amount_minor, currency, status,
+            provider_reference, token_used, created_at
+        ) VALUES (
+            #{paymentId,jdbcType=OTHER}, #{orderId,jdbcType=OTHER}, #{amountMinor}, #{currency}, #{status},
+            #{providerReference,jdbcType=VARCHAR}, #{tokenUsed}, #{createdAt}
+        )
+    </insert>
+
+    <update id="updateStatus">
+        UPDATE payments SET status = #{status} WHERE payment_id = #{paymentId,jdbcType=OTHER}
+    </update>
+
+    <insert id="insertRefund">
+        INSERT INTO refunds (refund_id, payment_id, amount_minor, created_at)
+        VALUES (#{refundId,jdbcType=OTHER}, #{paymentId,jdbcType=OTHER}, #{amountMinor}, #{createdAt})
+    </insert>
+
+    <insert id="insertOutbox">
+        INSERT INTO outbox (event_id, aggregate_id, topic, payload, created_at)
+        VALUES (#{eventId,jdbcType=OTHER}, #{aggregateId,jdbcType=OTHER}, #{topic},
+                CAST(#{payload} AS jsonb), #{createdAt})
+    </insert>
+
+    <select id="findPendingOutbox" resultMap="outboxRow">
+        SELECT event_id, aggregate_id, topic, payload::text AS payload, published, created_at
+        FROM outbox
+        WHERE published = false
+        ORDER BY created_at, event_id
+        LIMIT #{limit}
+    </select>
+
+    <update id="markPublished">
+        UPDATE outbox SET published = true WHERE event_id = #{eventId,jdbcType=OTHER} AND published = false
+    </update>
+</mapper>

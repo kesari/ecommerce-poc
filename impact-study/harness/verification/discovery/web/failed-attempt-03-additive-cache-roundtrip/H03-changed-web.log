@@ -1,0 +1,34 @@
+
+> commerce-web@0.0.0 test
+> vitest run src/test/discovery-wire.test.tsx --reporter=verbose
+
+
+ RUN  v4.1.11 /private/tmp/discovery-web-mw0bl_m4/commerce-web
+
+ × src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION 28ms
+   → BASKET_VISIBLE_TOTAL: expected '₹NaN' to be '₹123.45' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION
+AssertionError: BASKET_VISIBLE_TOTAL: expected '₹NaN' to be '₹123.45' // Object.is equality
+
+Expected: "₹123.45"
+Received: "₹NaN"
+
+ ❯ src/test/discovery-wire.test.tsx:24:88
+     22|  if(basket) {
+     23|   await screen.findByText('Basket total')
+     24|   expect(container.querySelector('.total-row dd')?.textContent,'BASKET…
+       |                                                                                        ^
+     25|  } else {
+     26|   await screen.findByText('Bag')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:06:58
+   Duration  369ms (transform 29ms, setup 46ms, import 26ms, tests 29ms, environment 206ms)
+

@@ -1,0 +1,11 @@
+--- a/order-service/src/main/java/com/poc/order/application/OrderService.java
++++ b/order-service/src/main/java/com/poc/order/application/OrderService.java
+@@ -110,7 +110,7 @@
+         payload.put("items", order.lines().stream()
+                 .map(line -> Map.<String, Object>of(
+                         "productId", line.productId().toString(),
+-                        "quantity", line.quantity()))
++                        "units", line.quantity()))
+                 .toList());
+         return payload;
+     }

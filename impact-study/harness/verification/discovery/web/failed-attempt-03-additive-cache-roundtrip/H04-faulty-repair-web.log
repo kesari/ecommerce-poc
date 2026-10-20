@@ -1,0 +1,41 @@
+
+> commerce-web@0.0.0 test
+> vitest run src/test/discovery-wire.test.tsx --reporter=verbose
+
+
+ RUN  v4.1.11 /private/tmp/discovery-web-mw0bl_m4/commerce-web
+
+ × src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION 31ms
+   → PRODUCT_IMAGES: expected [ 'Canvas', 'Ceramic' ] to deeply equal [ …(2) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION
+AssertionError: PRODUCT_IMAGES: expected [ 'Canvas', 'Ceramic' ] to deeply equal [ …(2) ]
+
+- Expected
++ Received
+
+  [
+-   "https://images.example/bag.png",
+-   "https://images.example/cup.png",
++   "Canvas",
++   "Ceramic",
+  ]
+
+ ❯ src/test/discovery-wire.test.tsx:30:86
+     28|   const cards=Array.from(container.querySelectorAll('.product-card'))
+     29|   expect(cards.map(c=>c.querySelector('h2')?.textContent),'PRODUCT_ORD…
+     30|   expect(cards.map(c=>c.querySelector('img')?.getAttribute('src')),'PR…
+       |                                                                                      ^
+     31|   expect(cards.map(c=>c.querySelector('strong')?.textContent),'PRODUCT…
+     32|  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:07:17
+   Duration  362ms (transform 33ms, setup 58ms, import 31ms, tests 31ms, environment 189ms)
+

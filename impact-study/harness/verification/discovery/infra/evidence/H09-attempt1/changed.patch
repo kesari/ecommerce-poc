@@ -1,0 +1,24 @@
+--- a/catalog-service/src/main/resources/db/migration/V3__private_price_column.sql
++++ b/catalog-service/src/main/resources/db/migration/V3__private_price_column.sql
+@@ -0,0 +1 @@
++ALTER TABLE products RENAME COLUMN price_minor TO unit_price_minor;
+--- a/catalog-service/src/main/resources/mybatis/mapper/ProductMapper.xml
++++ b/catalog-service/src/main/resources/mybatis/mapper/ProductMapper.xml
+@@ -4,7 +4,7 @@
+ <mapper namespace="com.poc.catalog.infrastructure.persistence.mapper.ProductMapper">
+ 
+     <sql id="columns">
+-        id, name, description, image_url AS imageUrl, price_minor AS priceMinor,
++        id, name, description, image_url AS imageUrl, unit_price_minor AS priceMinor,
+         currency, active, created_at AS createdAt, updated_at AS updatedAt
+     </sql>
+ 
+@@ -34,7 +34,7 @@
+ 
+     <update id="updatePrice">
+         UPDATE products
+-        SET price_minor = #{priceMinor},
++        SET unit_price_minor = #{priceMinor},
+             updated_at = now()
+         WHERE id = #{id}
+     </update>

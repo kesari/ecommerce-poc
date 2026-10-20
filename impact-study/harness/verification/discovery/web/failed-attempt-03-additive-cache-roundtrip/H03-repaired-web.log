@@ -1,0 +1,14 @@
+
+> commerce-web@0.0.0 test
+> vitest run src/test/discovery-wire.test.tsx --reporter=verbose
+
+
+ RUN  v4.1.11 /private/tmp/discovery-web-mw0bl_m4/commerce-web
+
+ ✓ src/test/discovery-wire.test.tsx > PROTECTED_WIRE_CONSUMPTION 36ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  23:07:00
+   Duration  451ms (transform 47ms, setup 65ms, import 46ms, tests 36ms, environment 239ms)
+

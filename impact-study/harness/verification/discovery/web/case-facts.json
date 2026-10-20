@@ -1,0 +1,53 @@
+{
+  "status": "independently_executed_pending_root_freeze",
+  "evidence_root": "evidence",
+  "cases": {
+    "H03": {
+      "origin": "basket-service",
+      "upstream_patch": "evidence/H03-upstream.patch",
+      "upstream_baseline_symbol": "com.poc.basket.api.dto.BasketResponse.totalMinor",
+      "repositories": [{"repo":"basket-service","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-bff","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-web","runtime_status":"broken","obligation":"production_edit"}],
+      "edges": [{"provider":"basket-service","consumer":"commerce-bff","type":"rest","identifier":"GET /api/v1/basket","field":"totalMinor"},{"provider":"commerce-bff","consumer":"commerce-web","type":"rest","identifier":"GET /api/v1/basket","field":"totalMinor"}],
+      "required_action": {"repo":"commerce-web","target":"src/api/basket.ts.getBasket","operation":"read_json_field","before":"totalMinor","after":"payableMinor","critical":true},
+      "proved_implementation": "All basket response operations use the new shared basketRequest normalizer, which reads payableMinor into the existing internal Basket.totalMinor. GET display executed; six wrapper call sites inspected and complete web build passes.",
+      "repair_patch": "evidence/H03-repair.patch",
+      "fault_patch": "evidence/H03-fault.patch",
+      "protected_assertion": "BASKET_VISIBLE_TOTAL"
+    },
+    "H04": {
+      "origin": "catalog-service",
+      "upstream_patch": "evidence/H04-upstream.patch",
+      "upstream_baseline_symbol": "com.poc.catalog.api.dto.ProductResponse.imageUrl",
+      "repositories": [{"repo":"catalog-service","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-bff","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-web","runtime_status":"broken","obligation":"production_edit"}],
+      "edges": [{"provider":"catalog-service","consumer":"commerce-bff","type":"rest","identifier":"GET /api/v1/products?page=0&size=20","field":"imageUrl"},{"provider":"commerce-bff","consumer":"commerce-web","type":"rest","identifier":"GET /api/v1/products?page=0&size=20","field":"imageUrl"}],
+      "required_action": {"repo":"commerce-web","target":"src/pages/ProductsPage.tsx.ProductsPage","operation":"read_json_field","before":"imageUrl","after":"thumbnailUrl","critical":true},
+      "proved_implementation": "ProductsPage reads product.thumbnailUrl in image condition and src; Product type declares thumbnailUrl. Complete web build passes.",
+      "repair_patch": "evidence/H04-repair.patch",
+      "fault_patch": "evidence/H04-fault.patch",
+      "protected_assertion": "PRODUCT_IMAGES"
+    },
+    "H11": {
+      "origin": "catalog-service",
+      "upstream_patch": "evidence/H11-upstream.patch",
+      "upstream_baseline_symbol": "com.poc.catalog.api.dto.ProductResponse",
+      "repositories": [{"repo":"catalog-service","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-bff","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-web","runtime_status":"unchanged","obligation":"validation_only"}],
+      "required_actions": [],
+      "proved_implementation": "Computed readonly merchandisingTag appears on both Product DTOs and is preserved through actual BFF forwarding. Existing image/name/price DOM assertions remain unchanged; actual service miss and cache-hit JSON are equal.",
+      "baseline_provenance": "Reuse H04-baseline provider JSON and BFF capture from identical pinned source; H11-baseline component check executes separately.",
+      "fault_patch": "evidence/H11-fault.patch",
+      "protected_assertion": "PRODUCT_IMAGES"
+    },
+    "H12": {
+      "origin": "catalog-service",
+      "upstream_patch": "evidence/H12-upstream.patch",
+      "upstream_baseline_symbol": "com.poc.catalog.application.CatalogService.listActive",
+      "repositories": [{"repo":"catalog-service","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-bff","runtime_status":"unchanged","obligation":"validation_only"},{"repo":"commerce-web","runtime_status":"unchanged","obligation":"validation_only"}],
+      "required_actions": [],
+      "proved_implementation": "The ordered map loop returns exactly the baseline JSON for two concrete products. Actual CatalogService cache miss then cache hit preserve order/values with exactly one repository call. Unchanged consumer images/name/prices pass.",
+      "baseline_provenance": "Reuse H04-baseline provider JSON and BFF capture from identical pinned source; H12-baseline component check executes separately.",
+      "fault_patch": "evidence/H12-fault.patch",
+      "protected_assertion": "PRODUCT_PRICES"
+    }
+  },
+  "limits": ["Only the declared provider serialization/application, BFF forwarding and web consumption surfaces are proved.","Catalog repository/cache collaborators are controlled. No live database/Valkey claim.","No deployed security/filter chain or complete browser checkout journey.","Unexecuted services and APIs stay unresolved; no absence-of-impact claim for the entire estate."]
+}

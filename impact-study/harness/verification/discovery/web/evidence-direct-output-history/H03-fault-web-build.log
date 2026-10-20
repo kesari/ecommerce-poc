@@ -1,0 +1,14 @@
+
+> commerce-web@0.0.0 build
+> tsc -b && vite build
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 49 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.52 kB │ gzip:  0.31 kB
+dist/assets/index-DnspaWt7.css   11.34 kB │ gzip:  3.25 kB
+dist/assets/index-BGpwg803.js   255.63 kB │ gzip: 80.50 kB
+
+✓ built in 57ms

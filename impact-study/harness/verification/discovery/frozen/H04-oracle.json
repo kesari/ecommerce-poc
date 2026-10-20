@@ -1,0 +1,930 @@
+{
+  "protocol_version": 2,
+  "snapshot_sha256": "fcb7d2471cb0756fb7eaf817c233522c9457861469eb7b68e87a826aebaaf4a8",
+  "change_id": "H04",
+  "record_sha256": "40019d8c3287979055d545afbd91de3d0fe0aa31fcf980a3caff3907c83aed59",
+  "scoring_policy": {
+    "mode": "scoped_reference_v1"
+  },
+  "artifacts": [
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/BasketClosureTest.java",
+      "sha256": "9d69eda798563f8c28b1ab01633d4d3ab43d94213850e8c6c08dcd24fd8f0ef0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/CurrencyClosure.test.tsx",
+      "sha256": "43fc628f05ccf8f5f47386d6f5e38534d32ed925d22a92510f2947fef93d98e0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-bff.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-forward-TEST-com.poc.bff.api.ForwardWireTest.xml",
+      "sha256": "1fe1bf37fdd57f9e1933e0520948c3479285820dcd1d6dae56f8b379f6f4a7a9"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-forward-com.poc.bff.api.ForwardWireTest.txt",
+      "sha256": "47565b6b1932f7888bdf3e55bd74f28c0ca65b0ce0f15b97461b52178936385f"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-forward.log",
+      "sha256": "ae2e0bb0c2370e0ddf584402096f879ac243e873acd4dfdd442cf9b576d02890"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-origin-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "fe59bd30e06bcead6c827da1240eb31cfb8f7b2e2db9b9a5c30e4aa12f571f49"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-origin-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "d0d8c3bf88414af68f7efc50a149bd033ebe5573bb2539d173ef69ad52c7b21a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-provider.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-provider.json.cache.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-baseline-web.log",
+      "sha256": "81772e979bb7f1c078d0bcc0aaeb54addc95017ae05ed20a5f88dfa844388ac9"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-bff.json",
+      "sha256": "96c3c1f1dfac3c9bbeb27d11d019f3aec5afb4428889a3a9502503afd781e6a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-forward-TEST-com.poc.bff.api.ForwardWireTest.xml",
+      "sha256": "10d4f3a1a425ef92fdc75f10431140fbe5ff6c0d7ef23895c4e443272b9a44c5"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-forward-com.poc.bff.api.ForwardWireTest.txt",
+      "sha256": "2e05cb3ba11c33a7b3162a01b1fae243d7c2c25b66c0a21b65d3545c94e74a71"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-forward.log",
+      "sha256": "b7c6c81c7f1c1893b8d8a95faf1ab917e7b43939ce1d531f4c67f6e24acd85a0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-origin-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "86e9374a33060f6d0a9d7b4d4670b04c0a232b6a6c141b49ee139da1c11fd5d6"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-origin-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "83de68fa96d09fd4287af2015f44de44abcdcdca3e3aacb39ba37ab8444e319c"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-provider.json",
+      "sha256": "96c3c1f1dfac3c9bbeb27d11d019f3aec5afb4428889a3a9502503afd781e6a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-provider.json.cache.json",
+      "sha256": "96c3c1f1dfac3c9bbeb27d11d019f3aec5afb4428889a3a9502503afd781e6a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-changed-web.log",
+      "sha256": "0fa702f9ac612560fcd5b760aa8076f05d744e8b62e03a5774e8dfb1ecc144c0"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-fault-web-build.log",
+      "sha256": "a72553397ccaf9a6bda4498594f877b19a7cbc2076298d575cf05bb76d97bbbc"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-faulty-repair-web.log",
+      "sha256": "3d14b8773ac03d07819ce80113bda9c0153288f30df67a45869ddb0d37395e66"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-repaired-web-build.log",
+      "sha256": "f90753b23bf48d383a120c15505060f6be00c9a4ceaa3a97f637586a48e53262"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-repaired-web.log",
+      "sha256": "edea7aa2d04a21829c34d2107582789ec2caf1171d16bab6600f1223f6ab6931"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-upstream.patch",
+      "sha256": "f7cd1f284b9423dbe86eb2ffef1ac617708803c0bdfc304530e8688b42dc2c2e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-web-fault.patch",
+      "sha256": "10c48abdab827df438905783e2cf79d9507a5468e470137d871ac6909d3f6c9b"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H01-web-repair.patch",
+      "sha256": "e27789455561ad38e559b23813863536ab9c7d9009b09bae28a6b867ecb542fd"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-basket-snapshot.json",
+      "sha256": "70dfbb1114fcd0179f24ce6651528d4e90f9c252eb2c9981c28b911c36711f9a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-input.json",
+      "sha256": "4a03d1d12c306ae1d62a426da5e2d8df1a7a503b1fe53400a4f0b4bb761532aa"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-order-TEST-com.poc.order.verification.BasketClosureTest.xml",
+      "sha256": "c22c18153b87c263289e67c8943f63c6e2d1104863e1f56020ad1c438d7c5724"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-order-com.poc.order.verification.BasketClosureTest.txt",
+      "sha256": "61c34084013e72fc0f47b099932280ce30e46716f02a358ff1d1738c0cfd26da"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-baseline-order.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-basket-snapshot.json",
+      "sha256": "70dfbb1114fcd0179f24ce6651528d4e90f9c252eb2c9981c28b911c36711f9a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-input.json",
+      "sha256": "7938e5ed099c2654491cd5032035c1f1f03827f37ff7ef1fbff7f6826fd5a36a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-order-TEST-com.poc.order.verification.BasketClosureTest.xml",
+      "sha256": "d2ed394000e19c38499346af2c95c0d11518e3c3279bbe1f7a25ce7b6af465d1"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-order-com.poc.order.verification.BasketClosureTest.txt",
+      "sha256": "b2180e4d3c45a260736252e9fca24119d2b4954e9c20c1564a7bac9085b3e8ee"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H03-changed-order.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "06c463c6fc99b52676fd9fa32af3003fd5e658cb2491bc3d87d904f9b1e9b8d5"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "afd124145af441bc60ba620d2f21c1b0dffaa12a4d271248cb9d687b75fc74af"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-input.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "f8203f9960b5ebd691051fce4d68cab1037b512cd5f8bc11af3143f58b3ba568"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "f548cbc6b2eaaa07e817c84aa043f4cb84136ce77617c6fa52c93c24d39e36a8"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-input.json",
+      "sha256": "d15d1aac3262bc1db71ca566eb17f2e4ff76da11f18e1401bca2336779661743"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "1a6fe8a372e38587975ecb7b384a02f7ff459060df3e9ba111476717e085ba15"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "afd124145af441bc60ba620d2f21c1b0dffaa12a4d271248cb9d687b75fc74af"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-input.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-baseline-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-basket-TEST-com.poc.basket.verification.ProductClosureTest.xml",
+      "sha256": "18e71b6cc11e87d1a6dc811a18d00651c0c76d6abe42835e6133133c0b509b5b"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-basket-com.poc.basket.verification.ProductClosureTest.txt",
+      "sha256": "afd124145af441bc60ba620d2f21c1b0dffaa12a4d271248cb9d687b75fc74af"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-basket.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-input.json",
+      "sha256": "a3ab8dad765c7354eb47380ed74d9fdb55e06e5f7a11431cf11679d1ae6ed687"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/H11-changed-product-info.json",
+      "sha256": "ef204cc4a285a455b3cec422d4b04dd2a49e50ab79cee2fb8e1286ac5f81d8b4"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/ProductClosureTest.java",
+      "sha256": "847a1b77ebe6f39413e2b346bcaaafcbc8c1ba0bc1f61a1980912d002aec4279"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/commands.json",
+      "sha256": "c9b654ac64146c5794b17fc9448916dcaaee1284820057408ff1ffb309ae1390"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/criteria.json",
+      "sha256": "f88b7dac3391639453fbf1ab9908f98446d1642d3ae4fd86086ccd75ba00ccaa"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/manifest.json",
+      "sha256": "f472b6666aff9778a31248f8ff717f1707fa2a9d303c1f31f3b890eb008f346a"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/source-snapshots.json",
+      "sha256": "15264651799e601679e499250f0ae8dfb4122dec5c9a3b42f0fd5cbe3a5164da"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/evidence/summary.json",
+      "sha256": "437805f2e4d4814f27ecd04dd40891c1ed57db1a4ec8ee7288bbc2bc62902c12"
+    },
+    {
+      "path": "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+      "sha256": "ac7967688c912b7d82a978fad082d403c8870c304516fa3d6f800cfb12df0eb7"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-TEST-com.poc.basket.BasketWireTest.xml",
+      "sha256": "9646b1c0c2b57658bed5b26cfd7b825c41225b49d64c5bb184ec602c25a6ecb7"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-bff.json",
+      "sha256": "4a03d1d12c306ae1d62a426da5e2d8df1a7a503b1fe53400a4f0b4bb761532aa"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-bff.log",
+      "sha256": "078558182476929669bf8018172cc05bae5a93f34b9d3eb61f95ba7419ddafe0"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-com.poc.basket.BasketWireTest.txt",
+      "sha256": "cabd4c97aafa0629c305174ffd485d15ed96d15dd71a82315c8bd089c0085793"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-origin.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-provider.json",
+      "sha256": "4a03d1d12c306ae1d62a426da5e2d8df1a7a503b1fe53400a4f0b4bb761532aa"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-baseline-web.log",
+      "sha256": "4db40d100af1b24d372cd3b03fab7b980b495d8b1c40fbd8663b6ed151aff716"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-TEST-com.poc.basket.BasketWireTest.xml",
+      "sha256": "7b096f78e03fabe9fea245b8c50bca8ad90c668f32bb9f86b0216e1428fa1b6b"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-bff.json",
+      "sha256": "7938e5ed099c2654491cd5032035c1f1f03827f37ff7ef1fbff7f6826fd5a36a"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-bff.log",
+      "sha256": "178a6ce321c8e916d3c660db38018a66887afff50fd977b4c72b77f8e2ad597b"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-com.poc.basket.BasketWireTest.txt",
+      "sha256": "b3595d5a101287318fcfbf3ffc842edccb6ae841a98293013a033521127f1282"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-origin.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-provider.json",
+      "sha256": "7938e5ed099c2654491cd5032035c1f1f03827f37ff7ef1fbff7f6826fd5a36a"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-changed-web.log",
+      "sha256": "40d3d1360f1f5dd8368f180b6dd15256cde519f87a5436e7bb454a09275c2921"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-fault-web-build.log",
+      "sha256": "31a2122ac3946f10921212cd1dafd9310f2aa1b7ce5a6b474d8aea198d92fd7d"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-fault.patch",
+      "sha256": "9ea02f1f31ba7ced460890b71f7b8ad3fbfa3d3bccab99751ef2dca98c264672"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-faulty-repair-web.log",
+      "sha256": "03c55e4f65c54619deb8053e445739bb0d9887b57acb78b6e424d39c94da9940"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-repair.patch",
+      "sha256": "de7290fa2f16f9bf7e62241ec529507fcecc21f10548c2d17f82b51e4b0bb58f"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-repaired-web-build.log",
+      "sha256": "8605eba46548ff4a1fe2bf0941d302b59a549d486b07393b457852d8fc20b5bc"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-repaired-web.log",
+      "sha256": "c93628cdeb6ed1df36dbc96ae96462ccece17cceab678feba74834c6d260b070"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H03-upstream.patch",
+      "sha256": "7b3ec5653d3bcbacb819c5450f71b9518e58348daa9043a85f99379eb25f6c85"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "e42935f3f4c5bc7c80f14ebe6964322cc02f20b997283df79489d54c1c8557db"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-bff.log",
+      "sha256": "3dff961fecf48b0d6d8b90d7d8ca56d3a31630c515f771a8f4223da284b3b2f4"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "d0d8c3bf88414af68f7efc50a149bd033ebe5573bb2539d173ef69ad52c7b21a"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-provider.json.cache.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+      "sha256": "97ef89e501ab5563105c54a9bdc0febb7865a01c9bb37e35e4fb3fbff567f080"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "e8075cebc17c2914d082516cf0573beba53a47c8a6024c576be70b5607614aff"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+      "sha256": "d15d1aac3262bc1db71ca566eb17f2e4ff76da11f18e1401bca2336779661743"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-bff.log",
+      "sha256": "b0dfee7843a70a35489654471e8ca8fe7265118f192599186485e1219cf46732"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "80d186efe9470cdd03d2612895d0c3b949e800e62aa737ea9aa7f3fa6a46e1cd"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+      "sha256": "d15d1aac3262bc1db71ca566eb17f2e4ff76da11f18e1401bca2336779661743"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-provider.json.cache.json",
+      "sha256": "d15d1aac3262bc1db71ca566eb17f2e4ff76da11f18e1401bca2336779661743"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-changed-web.log",
+      "sha256": "be7d678ea21da576071ca6bc49c0ee39ad6251c0592d3084cbfb864f6891b551"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-fault-web-build.log",
+      "sha256": "da39e18f5ce13a8fb8d679676c9a3f623cbc8033d7f3913735b9c6bfbb69c596"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-fault.patch",
+      "sha256": "733a5be2e19327c22e630ce73ca6c62600de16141756529e0f815491007b4bef"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+      "sha256": "497815b95bf75b2bf61c79df985b4c09c46fe4817b8459d83d45cf3c00bf42a5"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-repair.patch",
+      "sha256": "950e8389b5c933c7c385f5d4fa81768657e4938fd1776c01ffac5a7179e5c2a3"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+      "sha256": "fcd084b1736b73781833280d4f5ca5f5cff0e4fbc57d933b8fe2091a5181c53d"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+      "sha256": "fa355d5eacc602eb5ecab7c612fcd2a5a50ad855c138885a7ed8e0331e50278f"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H04-upstream.patch",
+      "sha256": "9f8329cf4a2ccff55b2e7fef176c3b845f8833a298b868a6cf94303fa100065c"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-baseline-web.log",
+      "sha256": "0d6f376de8ded83d249da655e9e44d1d3c90e5eedf41be9ac9623289f33d3986"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "cda4ad406fe01fa69d8476b97dce0b367db3cad1c112dcbbafcf5a00d5630730"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-bff.json",
+      "sha256": "a3ab8dad765c7354eb47380ed74d9fdb55e06e5f7a11431cf11679d1ae6ed687"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-bff.log",
+      "sha256": "57423a5ede329346a9935785ad326fb4184ee83d83839f29234a10dc35ad5628"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "83de68fa96d09fd4287af2015f44de44abcdcdca3e3aacb39ba37ab8444e319c"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-provider.json",
+      "sha256": "a3ab8dad765c7354eb47380ed74d9fdb55e06e5f7a11431cf11679d1ae6ed687"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-provider.json.cache.json",
+      "sha256": "a3ab8dad765c7354eb47380ed74d9fdb55e06e5f7a11431cf11679d1ae6ed687"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-changed-web.log",
+      "sha256": "6adc6c326cfe742bd4bb7ad0bfbe6186a44d06e63d7b771924a8171182179305"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "a45664c6624b1c7875f53a96480c72d3012ca34407f0ad9469b62c22af11f0fb"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-bff.json",
+      "sha256": "d1de327173907efddec4864ff9a0af6af024bb40019e37f6140f7792dde0cbec"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-bff.log",
+      "sha256": "2c15d65b4720caa428f094284eb11a7078bf1742f7e67945f488ac57633d51e7"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "9aca5e1858828ba6797089959ed535f64768ee254df7203247475c8d92c14cdd"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-provider.json",
+      "sha256": "d1de327173907efddec4864ff9a0af6af024bb40019e37f6140f7792dde0cbec"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault-provider.json.cache.json",
+      "sha256": "d1de327173907efddec4864ff9a0af6af024bb40019e37f6140f7792dde0cbec"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-fault.patch",
+      "sha256": "b7014e4a5a518da0892a2fe5e0778442fff4568bff6fda89b1103cfaa2e100ee"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-incompatible-fault-web.log",
+      "sha256": "6711609759bde385e96d95150e99e7e2da1c7febca910d4cab2f9a276d294d34"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H11-upstream.patch",
+      "sha256": "51ca699fc9c3848605e80e1db58db034143cecb6437f3a1dee215a680121046c"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-baseline-web.log",
+      "sha256": "a73f9f4cb811321c27f9fe290d4cfbdb8a6a21fd2df23160b495e602b866a5b5"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "786cfe5b7cc24bb854ff63ca7fc638f04d5d1870c4f131ba9486ae9225a0fd80"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-bff.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-bff.log",
+      "sha256": "dfa0da134eebb8b83d9a68ec5577a6bb9212938270e2777ee8273e78cf00cefb"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "81f75235b2fa12a4abf3a1e4c25b35ad4f4160fc96f6010bfde514e77814226b"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-provider.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-provider.json.cache.json",
+      "sha256": "3ad6b812a37d40c8d90de361580558f3bf0af0c9c6c0100b4214ec67ee5d8d7e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-changed-web.log",
+      "sha256": "446463b02f6bfeb8e5cc4637fa75038390aaf74766c445dde26c73b4aa1214f0"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-TEST-com.poc.catalog.CatalogWireTest.xml",
+      "sha256": "58d1478c16d709c846b15dd077fcec1a5c42f44a567509c88921e4afb603d6be"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-bff.json",
+      "sha256": "eb0eefd18a227c6460a6d167d559d98fed4f9a1ae61bd484aa8dce0e1d70abcf"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-bff.log",
+      "sha256": "ddb776c7f7698e292d7f4fa6ff932ff3fa12375d3e0f70099e23703ab1f9abb7"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-com.poc.catalog.CatalogWireTest.txt",
+      "sha256": "d304387773c7965c58c7b5f89c00c67a9ba0a953b1235bfd8daab93b0f1a832d"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-origin.log",
+      "sha256": "c64008799d449e656da01f50798f04d2fbbe51b56219b6f2bb24dc811b8b9a22"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-provider.json",
+      "sha256": "eb0eefd18a227c6460a6d167d559d98fed4f9a1ae61bd484aa8dce0e1d70abcf"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault-provider.json.cache.json",
+      "sha256": "eb0eefd18a227c6460a6d167d559d98fed4f9a1ae61bd484aa8dce0e1d70abcf"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-fault.patch",
+      "sha256": "a36d97d5a91999ac542092f11c9c1fc671aa0be3c06a718c5ccf99232689e0c1"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-incompatible-fault-web.log",
+      "sha256": "850be4a34873c54c3946c5ce18dc0c494cba8a161d223cd97c9345ea1fed2eba"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/H12-upstream.patch",
+      "sha256": "a633078b268082eccb94f1649b3a45c906a0d0fc6d8ab1644f4121fb0f8e8365"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/baseline-web-build.log",
+      "sha256": "fdf187a92d80e123f426d11dc987cf8f7f907f1511e4b7c9a195822e2acc5433"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/commands.json",
+      "sha256": "31456ccd55169bd9367b04a665c689f629b6902e970a771670d4158b58cf3123"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/criteria.json",
+      "sha256": "2494fa7ffa86b6de3ccf9943a24af0f8a3ac2e8bd54f7a1f24213838d191ebd5"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/manifest.json",
+      "sha256": "5de9c4388f4e9d550d2ea2bbf420d35931fe630f03ff138817e198da37dba6b5"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/protected-before.json",
+      "sha256": "f2b7e0b5527c3fc69f816dc73bd40b48251a0b93dec1b25a06a99432917a906e"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/source-snapshot-hashes.json",
+      "sha256": "d166643165da92c779886bd0082223f54246db3850645c658ca34208a61d8b2c"
+    },
+    {
+      "path": "harness/verification/discovery/web/evidence/summary.json",
+      "sha256": "f24097d74887bbec9323fa7767642a945c6d62e37392c96216a8cfa0c7104155"
+    }
+  ],
+  "attestations": [
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "catalog-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "basket-service",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "commerce-bff",
+        "runtime_status": "unchanged"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "repositories",
+      "claim": {
+        "repo": "commerce-web",
+        "runtime_status": "broken"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "symbols",
+      "claim": {
+        "repo": "commerce-web",
+        "fqn": "src/pages/ProductsPage.tsx.ProductsPage"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "catalog-service",
+        "consumer": "commerce-bff",
+        "type": "rest",
+        "identifier": "GET /api/v1/products",
+        "field": "imageUrl"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "edges",
+      "claim": {
+        "provider": "commerce-bff",
+        "consumer": "commerce-web",
+        "type": "rest",
+        "identifier": "GET /api/v1/products",
+        "field": "imageUrl"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "actions",
+      "claim": {
+        "repo": "commerce-web",
+        "target": "src/pages/ProductsPage.tsx.ProductsPage",
+        "operation": "read_json_field",
+        "before": "imageUrl",
+        "after": "thumbnailUrl"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "catalog-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "basket-service",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "commerce-bff",
+        "obligation": "validation_only"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    },
+    {
+      "kind": "obligations",
+      "claim": {
+        "repo": "commerce-web",
+        "obligation": "production_edit"
+      },
+      "artifact_paths": [
+        "harness/verification/discovery/web/closure/evidence/H04-baseline-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/H04-changed-product-info.json",
+        "harness/verification/discovery/web/closure/evidence/manifest.json",
+        "harness/verification/discovery/web/closure/source-audit/all-ten-repo-consumer-audit.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-bff.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-provider.json",
+        "harness/verification/discovery/web/evidence/H04-baseline-web.log",
+        "harness/verification/discovery/web/evidence/H04-changed-bff.json",
+        "harness/verification/discovery/web/evidence/H04-changed-provider.json",
+        "harness/verification/discovery/web/evidence/H04-changed-web.log",
+        "harness/verification/discovery/web/evidence/H04-faulty-repair-web.log",
+        "harness/verification/discovery/web/evidence/H04-repair.patch",
+        "harness/verification/discovery/web/evidence/H04-repaired-web-build.log",
+        "harness/verification/discovery/web/evidence/H04-repaired-web.log",
+        "harness/verification/discovery/web/evidence/manifest.json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+--- a/src/api/products.ts
++++ b/src/api/products.ts
+@@ -1,6 +1,7 @@
+ import { apiRequest } from './client'
+ import type { Product } from './types'
+ 
+-export function listProducts(page: number, size: number) {
+-  return apiRequest<Product[]>(`/products?page=${page}&size=${size}`, {}, false)
++export async function listProducts(page: number, size: number) {
++  const products = await apiRequest<Array<Product & { currencyCode: string }>>(`/products?page=${page}&size=${size}`, {}, false)
++  return products.map((product) => ({ ...product, currency: product.currencyCode }))
+ }

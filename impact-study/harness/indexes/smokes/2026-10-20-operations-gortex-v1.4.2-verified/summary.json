@@ -1,0 +1,9 @@
+{
+  "provider_calls": 0,
+  "reports": [
+    {
+      "product": "gortex",
+      "status": "expected_outcomes"
+    }
+  ]
+}

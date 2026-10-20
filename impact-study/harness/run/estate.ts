@@ -76,7 +76,7 @@ export async function assertBlindEstate(estate: string, repositories: readonly s
 			const protectedPath = protectedDirectories.has(entry.name) || ["verification", "verifier", "oracles", "records-v2"].includes(entry.name)
 				|| (parts.at(-1) === "harness" && protectedHarness.has(entry.name))
 				|| (parts.at(-1) === "records" && entry.name.endsWith(".json"))
-				|| /^(REST|KAFKA|INT|DB|SEM)-[0-9]+\.json$/.test(entry.name);
+				|| /^(?:(REST|KAFKA|INT|DB|SEM)-[0-9]+|H(?:0[1-9]|1[0-2]))\.json$/.test(entry.name);
 			if (protectedPath) throw new Error(`ground-truth leak in estate: ${segments.join("/")}`);
 			if (entry.isSymbolicLink()) {
 				// Product indexers may follow links even when the read tools refuse them.

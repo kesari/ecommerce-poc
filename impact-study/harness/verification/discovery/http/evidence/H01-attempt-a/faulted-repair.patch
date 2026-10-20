@@ -1,0 +1,22 @@
+--- a/basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java
++++ b/basket-service/src/main/java/com/poc/basket/infrastructure/catalog/CatalogProductResponse.java
+@@ -8,7 +8,7 @@
+         String description,
+         String imageUrl,
+         long priceMinor,
+-        String currency,
++        @com.fasterxml.jackson.annotation.JsonAlias("wrongCurrency") String currency,
+         boolean active
+ ) {
+ }
+--- a/catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java
++++ b/catalog-service/src/main/java/com/poc/catalog/api/dto/ProductResponse.java
+@@ -8,7 +8,7 @@
+         String description,
+         String imageUrl,
+         long priceMinor,
+-        String currency,
++        @com.fasterxml.jackson.annotation.JsonProperty("currencyCode") String currency,
+         boolean active
+ ) {
+ }

@@ -1,0 +1,115 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------------< com.poc:catalog_service >-----------------------
+[INFO] Building catalog-service 0.1.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ catalog_service ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 7 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ catalog_service ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ catalog_service ---
+[INFO] skip non existing resourceDirectory /private/tmp/discovery-infra-h09-20261019-a1/faulted-change/catalog-service/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ catalog_service ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 9 source files with javac [debug parameters release 21] to target/test-classes
+[WARNING] The following options were not recognized by any processor: '[mapstruct.unmappedTargetPolicy, mapstruct.defaultComponentModel]'
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ catalog_service ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.poc.catalog.verification.StorageBoundaryTest
+23:27:39.009 [main] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+23:27:39.011 [main] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+23:27:39.020 [main] INFO org.testcontainers.DockerClientFactory -- Testcontainers version: 1.21.4
+23:27:39.180 [main] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with Environment variables, system properties and defaults. Resolved dockerHost=unix:///Users/rajmohan/.docker/run/docker.sock
+23:27:39.181 [main] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+23:27:39.190 [main] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 29.9.1
+  API Version: 1.56
+  Operating System: Docker Desktop
+  Total Memory: 7931 MB
+  Labels: 
+    com.docker.desktop.address=unix:///Users/rajmohan/Library/Containers/com.docker.docker/Data/docker-cli.sock
+23:27:39.191 [main] WARN org.testcontainers.utility.ResourceReaper -- 
+********************************************************************************
+Ryuk has been disabled. This can cause unexpected behavior in your environment.
+********************************************************************************
+23:27:39.192 [main] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+23:27:39.192 [main] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+23:27:39.193 [main] INFO tc.postgres:17 -- Creating container for image: postgres:17
+23:27:39.221 [main] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for https://index.docker.io/v1/
+23:27:39.283 [main] INFO tc.postgres:17 -- Container postgres:17 is starting: 0a9656df016f5767f5b6746f09ad07d1748471855a617f4ee07bbcb146e6b6d7
+23:27:39.872 [main] INFO tc.postgres:17 -- Container postgres:17 started in PT0.67895S
+23:27:39.873 [main] INFO tc.postgres:17 -- Container is started (JDBC URL: jdbc:postgresql://localhost:55006/test?loggerLevel=OFF)
+23:27:39.991 [main] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://localhost:55006/test?loggerLevel=OFF (PostgreSQL 17.10)
+23:27:40.007 [main] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Schema history table "public"."flyway_schema_history" does not exist yet
+23:27:40.008 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 3 migrations (execution time 00:00.007s)
+23:27:40.015 [main] INFO org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory -- Creating Schema History table "public"."flyway_schema_history" ...
+23:27:40.036 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "public": << Empty Schema >>
+23:27:40.040 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "public" to version "1 - catalog schema"
+23:27:40.052 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "public" to version "2 - seed products"
+23:27:40.059 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 2 migrations to schema "public", now at version v2 (execution time 00:00.005s)
+23:27:40.078 [main] INFO org.flywaydb.core.FlywayExecutor -- Database: jdbc:postgresql://localhost:55006/test?loggerLevel=OFF (PostgreSQL 17.10)
+23:27:40.086 [main] INFO org.flywaydb.core.internal.command.DbValidate -- Successfully validated 3 migrations (execution time 00:00.003s)
+23:27:40.095 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Current version of schema "public": 2
+23:27:40.097 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Migrating schema "public" to version "3 - private price column"
+23:27:40.103 [main] INFO org.flywaydb.core.internal.command.DbMigrate -- Successfully applied 1 migration to schema "public", now at version v3 (execution time 00:00.002s)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/Users/rajmohan/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.6/byte-buddy-agent-1.17.6.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+23:27:40.609 [main] INFO org.hibernate.validator.internal.util.Version -- HV000001: Hibernate Validator 8.0.2.Final
+23:27:40.754 [main] INFO org.springframework.mock.web.MockServletContext -- Initializing Spring TestDispatcherServlet ''
+23:27:40.755 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Initializing Servlet ''
+23:27:40.755 [main] INFO org.springframework.test.web.servlet.TestDispatcherServlet -- Completed initialization in 0 ms
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 2.132 s <<< FAILURE! -- in com.poc.catalog.verification.StorageBoundaryTest
+[ERROR] com.poc.catalog.verification.StorageBoundaryTest.privateRepresentationPreservesPublishedBehavior -- Time elapsed: 2.068 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: PRIVATE_SQL_PUBLIC_PRICE ==> expected: <65000> but was: <65001>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:166)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:664)
+	at com.poc.catalog.verification.StorageBoundaryTest.sql(StorageBoundaryTest.java:56)
+	at com.poc.catalog.verification.StorageBoundaryTest.privateRepresentationPreservesPublishedBehavior(StorageBoundaryTest.java:41)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   StorageBoundaryTest.privateRepresentationPreservesPublishedBehavior:41->sql:56 PRIVATE_SQL_PUBLIC_PRICE ==> expected: <65000> but was: <65001>
+[INFO] 
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[ERROR] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  3.784 s
+[INFO] Finished at: 2026-10-19T23:27:41+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.5.3:test (default-test) on project catalog_service: There are test failures.
+[ERROR] 
+[ERROR] See /private/tmp/discovery-infra-h09-20261019-a1/faulted-change/catalog-service/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,0 +1,14 @@
+{
+  "case" : "H06",
+  "phase" : "baseline",
+  "registered_topics" : [ [ "inventory.reserve.requested.v1", "inventory.reserve.requested.v1.retry.1", "inventory.reserve.requested.v1.retry.2", "inventory.commit.requested.v1", "inventory.commit.requested.v1.retry.1", "inventory.commit.requested.v1.retry.2", "inventory.release.requested.v1", "inventory.release.requested.v1.retry.1", "inventory.release.requested.v1.retry.2" ] ],
+  "producer_item" : {
+    "quantity" : 3,
+    "productId" : "a7a64762-a144-4a18-9d33-4abd274ffd28"
+  },
+  "broker_records" : 1,
+  "consumer_liveness" : true,
+  "reservation_quantity" : 3,
+  "remaining_stock" : 7,
+  "reservations" : 1
+}

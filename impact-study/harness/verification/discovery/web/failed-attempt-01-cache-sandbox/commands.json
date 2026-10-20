@@ -1,0 +1,19 @@
+[
+  {
+    "label": "H03-baseline-origin",
+    "command": [
+      "mvn",
+      "-o",
+      "-q",
+      "-Dtest=BasketWireTest",
+      "test"
+    ],
+    "cwd_repo": "basket-service",
+    "env": {
+      "WIRE_OUTPUT": "/Users/rajmohan/Projects/POC/cross-repo-impact-study/harness/verification/discovery/web/evidence/H03-baseline-provider.json"
+    },
+    "exit": 1,
+    "expected_exit": 0,
+    "elapsed_seconds": 1.001
+  }
+]
