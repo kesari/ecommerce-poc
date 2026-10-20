@@ -3,69 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A simple comparison of tools for finding cross-repository software change impact.">
-  <title>Cross-Repository Change-Impact POC</title>
+  <meta name="description" content="Verified cross-repository impact cases, current evidence and the planned paired comparison against agent-only.">
+  <title>If I change this, what else breaks? · Cross-Repository Change-Impact POC</title>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
   <header>
-    <nav>
-      <a href="index.html">Overview</a>
-      <a href="architecture.html">The comparison</a><a href="results.html">Results</a>
-      <a href="running-locally.html">Run it</a>
-      <a href="contracts.html">Test data &amp; scores</a>
-      <a href="https://github.com/kesari/ecommerce-poc">GitHub</a>
-    </nav>
+    <nav aria-label="Main navigation"><a href="index.html" aria-current="page">Overview</a><a href="architecture.html">The comparison</a><a href="results.html">Results</a><a href="running-locally.html">Run it</a><a href="contracts.html">Test data &amp; scores</a><a href="https://github.com/kesari/ecommerce-poc">GitHub</a></nav>
     <h1>If I change this, what else breaks?</h1>
-    <p class="lead">We built a small e-commerce system to compare four ways of finding change impact across repositories.</p>
+    <p class="lead">We are testing whether a repository tool helps an agent identify cross-repository changes more completely than the same agent working alone.</p>
   </header>
+  <div class="notice" role="note"><strong>Updated <time datetime="2026-10-20">20 October 2026</time>.</strong> Twelve cases are runtime-verified. The 144-attempt comparison has not run; paid execution is disabled. <a href="https://github.com/kesari/ecommerce-poc/blob/7ed3ef7d1bef006fb388233704db2afc7ca3259f/impact-study/docs/methodology/2026-10-19-discovery-implementation.md">Read the full checkpoint</a>.</div>
   <main>
-    <section class="panel">
-      <h2>The idea</h2>
-      <p>The shop is not the product. It is realistic test data: separate services connected through Java code, REST APIs, Kafka events, schemas, and a React client.</p>
-      <p>We make one change, ask each approach what else will break, and compare its answer with the correct answer — written down before any testing begins.</p>
-    </section>
-    <section class="panel">
-      <h2>The four approaches</h2>
-      <table>
-        <thead><tr><th>Approach</th><th>Think of it as</th><th>Best at</th></tr></thead>
-        <tbody>
-          <tr><td><strong>SCIP</strong></td><td>A compiler-accurate map</td><td>Exact code definitions and references</td></tr>
-          <tr><td><strong>Gortex</strong></td><td>A map of service communication</td><td>REST, Kafka, schemas, and blast radius</td></tr>
-          <tr><td><strong>Graphify</strong></td><td>A broad, lightweight graph</td><td>Quick visual context across code and docs</td></tr>
-          <tr><td><strong>Claude / Codex</strong></td><td>An investigator</td><td>Searching, reasoning, and explaining meaning</td></tr>
-        </tbody>
-      </table>
-    </section>
-    <section class="panel">
-      <h2>Why one approach is not enough</h2>
-      <div class="flow" aria-label="Combined approach">
-        <span class="node">SCIP: code truth</span><span class="arrow">+</span>
-        <span class="node">Gortex: system map</span><span class="arrow">+</span>
-        <span class="node">Agent: reasoning</span>
-      </div>
-      <p>Graphify is the lightweight control. It helps us test whether a simpler graph provides enough value before adopting a specialized system graph.</p>
-    </section>
-    <section class="panel">
-      <h2>A change that looks small</h2>
-      <p>Account renames <code>postalCode</code> to <code>postcode</code>.</p>
-      <div class="flow"><span class="node">Account JSON</span><span class="arrow">→</span><span class="node">Order gets null</span><span class="arrow">→</span><span class="node">Kafka carries null</span><span class="arrow">→</span><span class="node">Shipment DLQ</span></div>
-      <p>Shipment does not directly reference Account's field. Finding that transitive failure is the point of the POC.</p>
-    </section>
-    <section class="panel">
-      <h2>First results</h2>
-      <p>Same model, same question, three runs each: agent-only averages 0.81 with critical misses in two runs, the symbol index 0.88 with none, the contract graph 0.67 — <a href="results.html">see the full results across all four measured scenarios</a>.</p>
-    </section>
-    <section class="panel">
-      <h2>The decision</h2>
-      <p><strong>Does Gortex find important cross-service dependencies that SCIP plus a good coding agent misses often enough to justify another graph platform?</strong></p>
-    </section>
-    <section class="grid">
-      <article class="card"><h3><a href="architecture.html">See the comparison</a></h3><p>A clear Gortex, Graphify, SCIP, and agent comparison.</p></article>
-      <article class="card"><h3><a href="running-locally.html">Run it</a></h3><p>Three commands to test and score the worked example.</p></article>
-      <article class="card"><h3><a href="contracts.html">Understand the score</a></h3><p>What we count, why missed dependencies matter most, and current progress.</p></article>
-    </section>
+    <section class="panel"><h2>What we need to learn</h2><p>A useful answer identifies what breaks after a proposed change, the contracts carrying that change, the production edits needed to repair it, and the repositories that need validation without edits. Finding a few related files is not enough.</p><p>The e-commerce estate is the test fixture: ten repositories connected through Java clients, REST, Kafka, a proxy and a React storefront. Expected answers stay outside the searchable source estate.</p></section><section class="grid" aria-label="Current status"><article class="card"><h3>12 verified cases</h3><p>Real business assertions, sufficient repairs and deliberately wrong variants were executed before model evaluation.</p></article><article class="card"><h3>359 local checks passed</h3><p>258 Python tests and 101 Node tests, with no skips on the configured evaluation host.</p></article><article class="card"><h3>0 of 144 attempts run</h3><p>The paired schedule is frozen. Paid development and comparison runs remain on hold.</p></article></section><section class="panel"><h2>The active comparison</h2><table><thead><tr><th scope="col">Arm</th><th scope="col">What changes</th></tr></thead><tbody><tr><td>Agent-only</td><td>Read-only source search and reasoning, with no product index.</td></tr><tr><td>Gortex-first</td><td>Native graph and contract queries before the same agent inspects the evidence.</td></tr><tr><td>RepoWise-first</td><td>Native structural search, symbol context and workspace blast radius before the agent.</td></tr><tr><td>Codebase Memory-first</td><td>Native graph search, traversal and cross-repository candidates before the agent.</td></tr></tbody></table><p>Every arm gets the same public task, source snapshot, model and ceilings. Product results are evidence candidates for the agent to verify. SCIP and Graphify remain earlier research candidates; they are not arms in this prepared comparison. <a href="architecture.html">See the protocol and limitations</a>.</p></section><section class="panel"><h2>Establish behavior before scoring an answer</h2><div class="flow" aria-label="Verification process"><span class="node">Pinned baseline</span><span class="arrow">→</span><span class="node">Proposed change</span><span class="arrow">→</span><span class="node">Repair or compatibility proof</span><span class="arrow">→</span><span class="node">Reject a wrong variant</span></div><p>The twelve cases cover HTTP bindings, web consumption, Kafka, amount units, delivery policy, private SQL/cache changes and compatible controls. Kafka, PostgreSQL and Valkey cases use real dependencies on the stated test boundaries. <a href="contracts.html">Understand what is proved and scored</a>.</p></section><section class="panel"><h2>What the results say today</h2><p>Two fresh product reruns on one guided REST case accepted the required bounded repair. They do not establish improvement over agent-only. Historical simulation scores used harness-built indexes and cannot justify adopting a real product.</p><p><a href="results.html">See the current evidence and pending comparison</a>.</p></section><section class="panel"><h2>What happens next</h2><ol><li>Run eight separately authorized development attempts: one breaking and one compatible development case per arm.</li><li>If development changes the protocol, refreeze it before predicting the twelve comparison cases.</li><li>With a new approved total budget, execute 12 cases × 4 arms × 3 independent sessions and compare each product with agent-only.</li></ol><p>The prepared campaign has a zero approved total allowance. No prior smoke-test allowance transfers to it.</p></section>
   </main>
-  <footer>Change something. See everything it breaks. Show your work.</footer>
+  <footer>Source snapshot: <a href="https://github.com/kesari/ecommerce-poc/commit/7ed3ef7d1bef006fb388233704db2afc7ca3259f">7ed3ef7d</a>. Implementation: <code>codex/verify-impact-benchmark</code>. No product winner has been established.</footer>
 </body>
 </html>
